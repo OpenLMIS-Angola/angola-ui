@@ -67,4 +67,4 @@ services:
       - '/openlmis-ui-layout'
   image:
     build: .
-    image: angola-ui
+    image: openlmisao/angola-ui:latest
