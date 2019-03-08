@@ -1,0 +1,15 @@
+{
+  "orderedBuildDirectories": [
+    "/openlmis-ui-components",
+    "/openlmis-ui-layout",
+    "/openlmis-auth-ui",
+    "/openlmis-referencedata-ui",
+    "/openlmis-report-ui",
+    "/openlmis-requisition-ui",
+    "/openlmis-fulfillment-ui",
+    "/openlmis-cce-ui",
+    "/openlmis-stockmanagement-ui"
+  ],
+  "applicationLoadingMessage": "Starting Angola OpenLMIS",
+  "applicationTitle": "Angola OpenLMIS"
+}

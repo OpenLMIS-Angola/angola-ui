@@ -1,0 +1,70 @@
+version: "2"
+services:
+  angola-ui:
+    image: openlmis/dev-ui:8.1.0
+    working_dir: /app
+    volumes:
+      - '.:/app'
+    ports:
+      - "9000:9000"
+      - "9876:9876"
+    env_file: .env
+    volumes_from:
+      - auth-ui
+      - fulfillment-ui
+      - referencedata-ui
+      - requisition-ui
+      - report-ui
+      - stockmanagement-ui
+      - cce-ui
+      - ui-components
+      - ui-layout
+    depends_on:
+      - auth-ui
+      - fulfillment-ui
+      - referencedata-ui
+      - requisition-ui
+      - report-ui
+      - stockmanagement-ui
+      - cce-ui
+      - ui-components
+      - ui-layout
+  auth-ui:
+    image: openlmis/auth-ui:6.1.3
+    volumes:
+      - '/openlmis-auth-ui'
+  fulfillment-ui:
+    image: openlmis/fulfillment-ui:6.0.2
+    volumes:
+      - '/openlmis-fulfillment-ui'
+  referencedata-ui:
+    image: openlmis/referencedata-ui:5.5.0
+    volumes:
+      - '/openlmis-referencedata-ui'
+  report-ui:
+    image: openlmis/report-ui:5.1.0
+    volumes:
+      - '/openlmis-report-ui'
+  requisition-ui:
+    image: openlmis/requisition-ui:5.5.0
+    volumes:
+      - '/openlmis-requisition-ui'
+  stockmanagement-ui:
+    image: openlmis/stockmanagement-ui:2.0.2
+    volumes:
+     - '/openlmis-stockmanagement-ui'
+  cce-ui:
+    image: openlmis/cce-ui:1.0.2
+    volumes:
+     - '/openlmis-cce-ui'
+  ui-components:
+    image: openlmis/ui-components:7.0.0
+    volumes:
+      - '/openlmis-ui-components'
+  ui-layout:
+    image: openlmis/ui-layout:5.1.2
+    volumes:
+      - '/openlmis-ui-layout'
+  image:
+    build: .
+    image: angola-ui
