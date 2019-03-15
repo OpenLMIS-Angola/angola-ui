@@ -16,7 +16,6 @@ services:
       - requisition-ui
       - report-ui
       - stockmanagement-ui
-      - cce-ui
       - ui-components
       - ui-layout
     depends_on:
@@ -26,7 +25,6 @@ services:
       - requisition-ui
       - report-ui
       - stockmanagement-ui
-      - cce-ui
       - ui-components
       - ui-layout
   auth-ui:
@@ -53,10 +51,6 @@ services:
     image: openlmis/stockmanagement-ui:2.0.2
     volumes:
      - '/openlmis-stockmanagement-ui'
-  cce-ui:
-    image: openlmis/cce-ui:1.0.2
-    volumes:
-     - '/openlmis-cce-ui'
   ui-components:
     image: openlmis/ui-components:7.0.0
     volumes:
