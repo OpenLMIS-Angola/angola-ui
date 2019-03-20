@@ -25,11 +25,10 @@
     function config($stateProvider) {
 
         $stateProvider.state('openlmis.contactSupport', {
-            label: 'openlmisSupport.contactSupport',
+            label: 'Apoio ao Cliente',
             showInNavigation: true,
             priority: -999,
             externalUrl: 'http://www.angola-support.openlmis.org'
         });
     }
-
 })();
