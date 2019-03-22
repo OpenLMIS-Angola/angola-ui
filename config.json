@@ -9,6 +9,6 @@
     "/openlmis-fulfillment-ui",
     "/openlmis-stockmanagement-ui"
   ],
-  "applicationLoadingMessage": "Starting Angola OpenLMIS",
-  "applicationTitle": "Angola OpenLMIS"
+  "applicationLoadingMessage": "Starting SIGLOFA",
+  "applicationTitle": "SIGLOFA"
 }

@@ -1,0 +1,6 @@
+.locale-container {
+    @extend .dropdown-button;
+    // AO-125: fixed wrapping text in locale button
+    white-space: nowrap;
+    // AO-125: ends here
+}
