@@ -9,6 +9,6 @@
     "/openlmis-fulfillment-ui",
     "/openlmis-stockmanagement-ui"
   ],
-  "applicationLoadingMessage": "Starting SIGLOFA",
+  "applicationLoadingMessage": "Iniciando SIGLOFA",
   "applicationTitle": "SIGLOFA"
 }
