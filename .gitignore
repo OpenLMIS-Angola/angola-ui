@@ -9,6 +9,7 @@ out/
 node_modules/
 .tx/
 .env
+bower_components
 .tmp
 .sonar
 .vscode/
