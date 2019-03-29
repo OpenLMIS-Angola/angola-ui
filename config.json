@@ -9,6 +9,7 @@
     "/openlmis-fulfillment-ui",
     "/openlmis-stockmanagement-ui"
   ],
+  "REPORTING_SERVICES": "angola",
   "applicationLoadingMessage": "Iniciando SIGLOFA",
   "applicationTitle": "SIGLOFA"
 }
