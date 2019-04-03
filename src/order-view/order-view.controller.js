@@ -237,6 +237,7 @@
          * @return {String}       the prepared URL
          */
         function getPrintUrl(order) {
+            // Angola: custom order print url
             return fulfillmentUrlFactory(
                 '/api/reports/templates/angola/9b8726b9-0de6-46eb-b5d0-d035d400a61e/pdf?order=' + order.id
             );
@@ -254,6 +255,7 @@
          * @return {String}       the prepared URL
          */
         function getDownloadUrl(order) {
+            // Angola: custom order download url
             return fulfillmentUrlFactory(
                 '/api/reports/templates/angola/9b8726b9-0de6-46eb-b5d0-d035d400a61e/csv?order=' + order.id
             );

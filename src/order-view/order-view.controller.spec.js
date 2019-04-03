@@ -338,6 +338,7 @@ describe('OrderViewController', function() {
         });
 
         it('should prepare print URL correctly', function() {
+            // Angola: custom order print url
             expect(this.vm.getPrintUrl(this.orders[0]))
                 .toEqual('http://some.url/api/reports/templates/angola/'
                     + '9b8726b9-0de6-46eb-b5d0-d035d400a61e/pdf?order=order-one');
@@ -365,6 +366,7 @@ describe('OrderViewController', function() {
         });
 
         it('should prepare download URL correctly', function() {
+            // Angola: custom order download url
             expect(this.vm.getDownloadUrl(this.orders[1]))
                 .toEqual('http://some.url/api/reports/templates/angola/'
                     + '9b8726b9-0de6-46eb-b5d0-d035d400a61e/csv?order=order-two');
