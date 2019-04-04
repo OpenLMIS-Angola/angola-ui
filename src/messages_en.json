@@ -960,5 +960,6 @@
     "stockReceive.title": "Entrada para ${facility}",
     "stockReceive.noProgramAvailable": "Não existem programas para estas instalações. Contacte o administrador.",
     "stockmanagement.title": "Gestão de stocks",
-    "stockmanagement.numberTooLarge": "Este número é demasiado grande"
-  }
+    "stockmanagement.numberTooLarge": "Este número é demasiado grande",
+    "report.dueDaysInfo": "Insira o número de dias após a data final do período de vencimento das requisições. O padrão é 15 dias."
+}
