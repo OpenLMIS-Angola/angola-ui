@@ -1634,5 +1634,5 @@
     "requisitionConstants.approved": "Aprovado",
     "requisitionConstants.released": "Terminado",
     "requisitionConstants.releasedWithoutOrder": "Terminado sem encomenda",
-    "requisitionConstants.skipped": "Ignorado",
+    "requisitionConstants.skipped": "Ignorado"
 }
