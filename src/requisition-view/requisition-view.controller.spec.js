@@ -639,8 +639,10 @@ describe('RequisitionViewController', function() {
             vm.syncRnrAndPrint();
             $scope.$apply();
 
+            // Angola: link to the updated requisition printout
             expect(accessTokenFactorySpy.addAccessToken)
-                .toHaveBeenCalledWith('http://some.url/api/requisitions/1/print');
+                .toHaveBeenCalledWith('http://some.url/api/reports/requisitions/1/print');
+            // --- ends here ---
         });
 
         it('should not open report when sync failed', function() {
