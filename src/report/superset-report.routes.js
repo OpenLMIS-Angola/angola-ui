@@ -23,7 +23,7 @@
 
     config.$inject = ['$stateProvider', 'SUPERSET_REPORTS'];
 
-    function config($stateProvider) {
+    function config($stateProvider, SUPERSET_REPORTS) {
 
         $stateProvider.state('openlmis.reports.list.superset', {
             abstract: true,
@@ -36,7 +36,33 @@
             }
         });
 
-        // Angola: removed all superset subpages
+        if (Object.keys(SUPERSET_REPORTS).length) {
+            addReporingPage($stateProvider, SUPERSET_REPORTS.REPORTING_RATE_AND_TIMELINESS);
+            addReporingPage($stateProvider, SUPERSET_REPORTS.STOCK_STATUS);
+            addReporingPage($stateProvider, SUPERSET_REPORTS.STOCKOUTS);
+            addReporingPage($stateProvider, SUPERSET_REPORTS.CONSUMPTION);
+            addReporingPage($stateProvider, SUPERSET_REPORTS.ORDERS);
+            addReporingPage($stateProvider, SUPERSET_REPORTS.ADJUSTMENTS);
+            addReporingPage($stateProvider, SUPERSET_REPORTS.ADMINISTRATIVE);
+        }
+    }
+
+    function addReporingPage($stateProvider, report) {
+        $stateProvider.state('openlmis.reports.list.superset.' + report.code, {
+            url: '/' + report.code,
+            label: 'report.superset.' + report.code,
+            controller: 'SupersetReportController',
+            templateUrl: 'report/superset-report.html',
+            controllerAs: 'vm',
+            resolve: {
+                reportUrl: function($sce) {
+                    return $sce.trustAsResourceUrl(report.url);
+                },
+                reportCode: function() {
+                    return report.code;
+                }
+            }
+        });
     }
 
 })();

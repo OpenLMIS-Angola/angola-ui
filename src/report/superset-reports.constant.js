@@ -29,7 +29,42 @@
         .constant('SUPERSET_REPORTS', getReports());
 
     function getReports() {
-        // Angola: returning empty list of superset reports to not show them on reports screen
-        return {};
+        var supersetUrl = '${SUPERSET_URL}';
+        if (supersetUrl.substr(0, 2) === '${') {
+            supersetUrl = '';
+        }
+
+        return supersetUrl ? {
+            REPORTING_RATE_AND_TIMELINESS: createReport('reportingRateAndTimeliness',
+                supersetUrl + '/login/openlmis?redirect_url=/superset/dashboard/1/',
+                'REPORTING_RATE_AND_TIMELINESS_REPORT_VIEW'),
+            STOCK_STATUS: createReport('stockStatus',
+                supersetUrl + '/login/openlmis?redirect_url=/superset/dashboard/6/',
+                'STOCK_STATUS_REPORT_VIEW'),
+            STOCKOUTS: createReport('stockouts',
+                supersetUrl + '/login/openlmis?redirect_url=/superset/dashboard/2/',
+                'STOCKOUTS_REPORT_VIEW'),
+            CONSUMPTION: createReport('consumption',
+                supersetUrl + '/login/openlmis?redirect_url=/superset/dashboard/3/',
+                'CONSUMPTION_REPORT_VIEW'),
+            ORDERS: createReport('orders',
+                supersetUrl + '/login/openlmis?redirect_url=/superset/dashboard/4/',
+                'ORDERS_REPORT_VIEW'),
+            ADJUSTMENTS: createReport('adjustments',
+                supersetUrl + '/login/openlmis?redirect_url=/superset/dashboard/5/',
+                'ADJUSTMENTS_REPORT_VIEW'),
+            ADMINISTRATIVE: createReport('administrative',
+                supersetUrl + '/login/openlmis?redirect_url=/superset/dashboard/7/',
+                'ADMINISTRATIVE_REPORT_VIEW')
+        } : {};
     }
+
+    function createReport(code, url, right) {
+        return {
+            code: code,
+            url: url,
+            right: right
+        };
+    }
+
 })();
