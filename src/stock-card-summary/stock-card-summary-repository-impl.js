@@ -69,6 +69,7 @@
          * @param {string} facility the facility UUID the stock cards will be retrieved
          */
         function print(program, facility) {
+        // Angola: link to the updated printout
             var sohPrintUrl = '/api/reports/templates/angola/858ee6ff-1668-4dce-a3ff-64176b5cf87d/pdf',
                 params = 'programId=' + program + '&' + 'facilityId=' + facility;
 
