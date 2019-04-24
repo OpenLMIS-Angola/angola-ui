@@ -1676,5 +1676,6 @@
     "openlmisHome.home": "Início",
     "openlmisHome.welcome": "Bem-vindo ao\n Logistics Management Information System",
     "openlmisMainState.home": "Início",
-    "openlmisServerErrorHandler.serverResponse.error": "Ocorreu um erro com esta solicitação, entre em contato com o administrador do servidor."
+    "openlmisServerErrorHandler.serverResponse.error": "Ocorreu um erro com esta solicitação, entre em contato com o administrador do servidor.",
+    "openlmisServerErrorHandler.badCredentials": "Erro de Autenticação"
   }
