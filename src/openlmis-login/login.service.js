@@ -78,7 +78,7 @@
                     alertService.error('openlmisServerErrorHandler.badCredentials', message);
                     return $q.reject(message);
                 });
-                // AO-223: ends here
+            // AO-223: ends here
         }
 
         /**
