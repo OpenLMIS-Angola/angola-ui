@@ -25,7 +25,7 @@
     function config($stateProvider) {
 
         $stateProvider.state('openlmis.contactSupport', {
-            label: 'Apoio ao Cliente',
+            label: 'openlmisSupport.title',
             showInNavigation: true,
             priority: -999,
             externalUrl: 'http://www.angola-support.openlmis.org'
