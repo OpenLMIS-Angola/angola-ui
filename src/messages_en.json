@@ -31,5 +31,6 @@
     "stockIssueCreation.productHasNoLots": "No lot defined",
     "orderableGroupService.noLotDefined": "No lot defined",
     "stockReceiveCreation.noLotDefined": "No lot defined",
-    "stockReceiveCreation.productHasNoLots": "No lot defined"
+    "stockReceiveCreation.productHasNoLots": "No lot defined",
+    "report.dueDaysInfo": "Insert number of days past the period end date the requisitions are due by. Default is 15 days."
 }
