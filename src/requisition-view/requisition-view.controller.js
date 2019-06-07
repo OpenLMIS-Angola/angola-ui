@@ -31,7 +31,7 @@
     RequisitionViewController.$inject = [
         '$state', 'requisition', 'requisitionValidator', 'authorizationService',
         'requisitionService', 'loadingModalService', 'alertService', 'notificationService',
-        'confirmService', 'REQUISITION_RIGHTS', 'FULFILLMENT_RIGHTS', 'offlineService', '$window',
+        'confirmService', 'offlineService', '$window',
         'requisitionUrlFactory', '$filter', '$scope', 'RequisitionWatcher',
         'accessTokenFactory', 'messageService', 'stateTrackerService', 'RequisitionStockCountDateModal',
         'localStorageFactory', 'canSubmit', 'canAuthorize',
@@ -41,8 +41,7 @@
     function RequisitionViewController($state, requisition, requisitionValidator,
                                        authorizationService, requisitionService,
                                        loadingModalService, alertService, notificationService,
-                                       confirmService, REQUISITION_RIGHTS, FULFILLMENT_RIGHTS,
-                                       offlineService, $window, requisitionUrlFactory, $filter,
+                                       confirmService, offlineService, $window, requisitionUrlFactory, $filter,
                                        $scope, RequisitionWatcher, accessTokenFactory,
                                        messageService, stateTrackerService, RequisitionStockCountDateModal,
                                        localStorageFactory, canSubmit, canAuthorize, canApproveAndReject,
@@ -213,6 +212,7 @@
             vm.displayAuthorizeButton = canAuthorize;
             vm.displayDeleteButton = canDelete;
             vm.displayApproveAndRejectButtons = canApproveAndReject;
+            vm.displayRejectButton = canApproveAndReject && !vm.requisition.extraData.originalRequisition;
             vm.displaySkipButton = canSkip;
             vm.displaySyncButton = canSync;
         }
