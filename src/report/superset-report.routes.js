@@ -60,8 +60,80 @@
                 },
                 reportCode: function() {
                     return report.code;
+                },
+                _: function($sce, $q, $http, $httpParamSerializer) {
+                    return checkAuthorizationInSuperset($sce, $q, $http)
+                        .then(function(data) {
+                            if (data.isAuthorized !== true) {
+                                return signInToOpenLmis($sce, $http, data)
+                                    .then(function() {
+                                        return approveSupersetIfNeeded($sce, $q, $http, $httpParamSerializer);
+                                    });
+                            }
+                        });
                 }
             }
+        });
+    }
+
+    function approveSupersetIfNeeded($sce, $q, $http, $httpParamSerializer) {
+        return checkAuthorizationInSuperset($sce, $q, $http, $httpParamSerializer)
+            .then(function(data) {
+                if (data.isAuthorized !== true) {
+                    return approveSuperset($sce, $http, $httpParamSerializer);
+                }
+            });
+    }
+
+    function checkAuthorizationInSuperset($sce, $q, $http) {
+        var deferred = $q.defer();
+
+        var url = '${SUPERSET_URL}/oauth-init/openlmis';
+        var httpPromise = $http({
+            method: 'GET',
+            url: $sce.trustAsResourceUrl(url).toString()
+        });
+        httpPromise.then(function(x) {
+            deferred.resolve(x.data);
+        });
+        httpPromise.catch(function() {
+            deferred.reject();
+        });
+
+        return deferred.promise;
+    }
+
+    function signInToOpenLmis($sce, $http, data) {
+        var state = data.state;
+        var redirectUrl = '${SUPERSET_URL}/oauth-authorized/openlmis';
+        var url = '/api/oauth/authorize?response_type=code&client_id=superset&redirect_uri=' + redirectUrl
+            + '&scope=read+write&state=' + state;
+        return $http({
+            method: 'GET',
+            headers: {
+                'Access-Control-Allow-Credentials': 'true'
+            },
+            url: $sce.trustAsResourceUrl(url).toString(),
+            withCredentials: true
+        });
+    }
+
+    function approveSuperset($sce, $http, $httpParamSerializer) {
+        var redirectUrl = '${SUPERSET_URL}/oauth-authorized/openlmis';
+        var url = '/api/oauth/authorize?response_type=code&client_id=superset&redirect_uri=' + redirectUrl;
+        return $http({
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            url: $sce.trustAsResourceUrl(url).toString(),
+            data: $httpParamSerializer({
+                authorize: 'Authorize',
+                // eslint-disable-next-line camelcase
+                user_oauth_approval: 'true',
+                'scope.read': 'true',
+                'scope.write': 'true'
+            })
         });
     }
 
