@@ -114,7 +114,8 @@
                 'Access-Control-Allow-Credentials': 'true'
             },
             url: $sce.trustAsResourceUrl(url).toString(),
-            withCredentials: true
+            withCredentials: true,
+            ignoreAuthModule: true
         });
     }
 
@@ -133,7 +134,8 @@
                 user_oauth_approval: 'true',
                 'scope.read': 'true',
                 'scope.write': 'true'
-            })
+            }),
+            ignoreAuthModule: true
         });
     }
 
