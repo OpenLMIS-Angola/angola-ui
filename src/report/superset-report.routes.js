@@ -91,7 +91,8 @@
         var url = '${SUPERSET_URL}/oauth-init/openlmis';
         var httpPromise = $http({
             method: 'GET',
-            url: $sce.trustAsResourceUrl(url).toString()
+            url: $sce.trustAsResourceUrl(url).toString(),
+            withCredentials: true
         });
         httpPromise.then(function(x) {
             deferred.resolve(x.data);
