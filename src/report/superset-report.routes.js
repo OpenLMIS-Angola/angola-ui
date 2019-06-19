@@ -135,6 +135,7 @@
                 'scope.read': 'true',
                 'scope.write': 'true'
             }),
+            withCredentials: true,
             ignoreAuthModule: true
         });
     }
