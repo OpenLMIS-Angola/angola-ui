@@ -88,7 +88,8 @@
     function checkAuthorizationInSuperset($sce, $q, $http) {
         var deferred = $q.defer();
 
-        var url = '${SUPERSET_URL}/oauth-init/openlmis';
+        var redirectUrl = '${SUPERSET_URL}/oauth-authorized/openlmis';
+        var url = '${SUPERSET_URL}/oauth-init/openlmis?redirect_url=' + redirectUrl;
         var httpPromise = $http({
             method: 'GET',
             url: $sce.trustAsResourceUrl(url).toString(),
