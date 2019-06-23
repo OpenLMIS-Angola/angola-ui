@@ -1,0 +1,6 @@
+<div ng-repeat="file in getViewValue()">
+    <span class="file-icon"></span>
+    <p>{{getFileName($index)}}</p>
+    <span class="clear" ng-click="clear($index)"></span>
+</div>
+<button class="file" type="button" ng-click="select()">{{'openlmisFileUpload.selectFile' | message}}</button>

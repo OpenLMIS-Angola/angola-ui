@@ -18,13 +18,18 @@
     'use strict';
 
     /**
-     * @module openlmis-support
+     * @module angola-service-desk
      *
      * @description
-     * Provides link for Contact Support in main menu.
+     * Provides Service Desk form.
      */
-    angular.module('openlmis-support', [
-        'openlmis-external-url'
+    angular.module('angola-service-desk', [
+        'auth-user',
+        'openlmis-class-extender',
+        'openlmis-i18n',
+        'openlmis-repository',
+        'referencedata-user',
+        'ui.router'
     ]);
 
 })();

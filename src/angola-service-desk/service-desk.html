@@ -1,0 +1,29 @@
+<h2>{{'serviceDesk.title' | message}}</h2>
+<form id="newIssueForm" ng-submit="vm.send()">
+    <label for="type">{{'serviceDesk.howCanWeHelpYou' | message}}</label>
+    <select id="type"
+            ng-options="type.value as type.label | message for type in vm.issueTypes"
+            ng-model="vm.issue.type"
+            required>
+    </select>
+    <label for="summary">{{'serviceDesk.summary' | message}}</label>
+    <input id="summary" type="text" ng-model="vm.issue.summary" required/>
+    <label for="description">{{'serviceDesk.description' | message}}</label>
+    <input id="description" type="text" ng-model="vm.issue.description" required/>
+    <label for="attachment">{{'serviceDesk.attachment' | message}}</label>
+    <input type="file" id="attachment" multiple ng-model="vm.attachments"/>
+    <label for="priority">{{'serviceDesk.howUrgentIsThisRequest' | message}}</label>
+    <select id="priority" required
+            ng-options="priority.value as priority.label | message for priority in vm.priorities"
+            ng-model="vm.issue.priority">
+    </select>
+    <label for="impact">{{'serviceDesk.impact' | message}}</label>
+    <select id="impact" required
+            ng-options="impact.value as impact.label | message for impact in vm.impactTypes"
+            ng-model="vm.issue.impact">
+    </select>
+</form>
+<div class="openlmis-toolbar">
+    <button type="submit" form="newIssueForm" class="primary">{{'serviceDesk.send' | message}}</button>
+    <button ng-click="vm.redirectToHome()">{{'serviceDesk.cancel' | message}}</button>
+</div>

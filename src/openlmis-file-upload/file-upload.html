@@ -1,0 +1,11 @@
+<div ng-if="isMultipleSelectionEnabled()" ng-repeat="file in getViewValue()">
+    <span class="file-icon"></span>
+    <p>{{getFileName($index)}}</p>
+    <span class="clear" ng-click="clear($index)"></span>
+</div>
+<div ng-if="!isMultipleSelectionEnabled()">
+    <span class="file-icon"></span>
+    <p>{{getFileName()}}</p>
+    <span class="clear" ng-click="clear()"></span>
+</div>
+<button ng-if="isMultipleSelectionEnabled() || !getFileName()" class="file" type="button" ng-click="select()">{{'openlmisFileUpload.selectFile' | message}}</button>
