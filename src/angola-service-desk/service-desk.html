@@ -18,7 +18,7 @@
             ng-options="priority.value as priority.label | message for priority in vm.priorities"
             ng-model="vm.issue.priority">
     </select>
-    <label for="impact">{{'serviceDesk.impact' | message}}</label>
+    <label for="impact">{{'serviceDesk.whatIsTheImpactOfThisRequest' | message}}</label>
     <select id="impact" required
             ng-options="impact.value as impact.label | message for impact in vm.impactTypes"
             ng-model="vm.issue.impact">
