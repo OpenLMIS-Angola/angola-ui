@@ -32,6 +32,9 @@
 
     function ServiceDeskResource($resource, openlmisUrlFactory) {
 
+        ServiceDeskResource.prototype.create = create;
+        ServiceDeskResource.prototype.addAttachment = addAttachment;
+
         var resource = $resource(openlmisUrlFactory('/api/issues'), {}, {
             addAttachment: {
                 url: openlmisUrlFactory('/api/issues/:issueId/attachment'),
@@ -42,10 +45,10 @@
             }
         });
 
-        return {
-            create: create,
-            addAttachment: addAttachment
-        };
+        return ServiceDeskResource;
+
+        function ServiceDeskResource() {
+        }
 
         /**
          * @ngdoc method

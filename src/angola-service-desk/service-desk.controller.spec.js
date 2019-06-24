@@ -27,6 +27,8 @@ describe('ServiceDeskController', function() {
             this.$state = $injector.get('$state');
             this.$rootScope = $injector.get('$rootScope');
 
+            this.ServiceDeskResource = $injector.get('ServiceDeskResource');
+
             this.ISSUE_TYPE = $injector.get('ISSUE_TYPE');
             this.PRIORITY_TYPE = $injector.get('PRIORITY_TYPE');
             this.IMPACT_TYPE = $injector.get('IMPACT_TYPE');
@@ -37,11 +39,11 @@ describe('ServiceDeskController', function() {
         this.issueId = '1';
         this.message = 'test-message';
 
-        this.ServiceDeskResource = jasmine.createSpyObj('ServiceDeskResource', ['create', 'addAttachment']);
-        this.ServiceDeskResource.create.andReturn($q.resolve({
+        spyOn(this.ServiceDeskResource.prototype, 'create').andReturn($q.resolve({
             issueKey: this.issueKey,
             issueId: this.issueId
         }));
+        spyOn(this.ServiceDeskResource.prototype, 'addAttachment');
 
         this.notificationService = jasmine.createSpyObj('notificationService', ['success']);
 
@@ -54,7 +56,6 @@ describe('ServiceDeskController', function() {
             issueTypes: new this.ISSUE_TYPE.toList(),
             priorities: new this.PRIORITY_TYPE.toList(),
             impactTypes: new this.IMPACT_TYPE.toList(),
-            ServiceDeskResource: this.ServiceDeskResource,
             notificationService: this.notificationService,
             messageService: this.messageService,
             loadingModalService: this.loadingModalService,
@@ -115,12 +116,12 @@ describe('ServiceDeskController', function() {
         });
 
         it('should create issue', function() {
-            expect(this.ServiceDeskResource.create).toHaveBeenCalledWith(this.vm.issue);
+            expect(this.ServiceDeskResource.prototype.create).toHaveBeenCalledWith(this.vm.issue);
         });
 
         it('should attach files', function() {
-            expect(this.ServiceDeskResource.addAttachment).toHaveBeenCalledWith('attachment1', this.issueId);
-            expect(this.ServiceDeskResource.addAttachment).toHaveBeenCalledWith('attachment2', this.issueId);
+            expect(this.ServiceDeskResource.prototype.addAttachment).toHaveBeenCalledWith('attachment1', this.issueId);
+            expect(this.ServiceDeskResource.prototype.addAttachment).toHaveBeenCalledWith('attachment2', this.issueId);
         });
 
         it('should call message service', function() {

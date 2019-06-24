@@ -124,12 +124,14 @@
          * Reloads page with new search parameters.
          */
         function send() {
+            var serviceDeskResource = new ServiceDeskResource();
+
             loadingModalService.open();
-            return ServiceDeskResource.create(vm.issue)
+            return serviceDeskResource.create(vm.issue)
                 .then(function(response) {
                     var attachmentPromises = [];
                     vm.attachments.forEach(function(attachment) {
-                        attachmentPromises.push(ServiceDeskResource.addAttachment(attachment, response.issueId));
+                        attachmentPromises.push(serviceDeskResource.addAttachment(attachment, response.issueId));
                     });
 
                     $q.all(attachmentPromises)

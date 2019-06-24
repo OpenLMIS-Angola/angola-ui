@@ -139,8 +139,13 @@
 
                 for (var i = 0; i < files.length; i++) {
                     var file = files[i];
-                    if (fileExtension && !file.name.endsWith(fileExtension)) {
-                        ngModelController.$setValidity('openlmisFileUpload.wrongFileExtension', false);
+                    if (fileExtension) {
+                        var extensions = fileExtension.split(','),
+                            valid = false;
+                        extensions.forEach(function(extension) {
+                            valid = valid || !file.name.endsWith(extension);
+                        });
+                        ngModelController.$setValidity('openlmisFileUpload.wrongFileExtension', valid);
                     }
                     if (file.size === 0) {
                         ngModelController.$setValidity('openlmisFileUpload.fileEmpty', false);
