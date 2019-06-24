@@ -143,7 +143,8 @@
                         var extensions = fileExtension.split(','),
                             valid = false;
                         extensions.forEach(function(extension) {
-                            valid = valid || !file.name.endsWith(extension);
+                            var parsedExtension = parseExtension(extension);
+                            valid = valid || !file.name.endsWith(parsedExtension);
                         });
                         ngModelController.$setValidity('openlmisFileUpload.wrongFileExtension', valid);
                     }
@@ -151,6 +152,14 @@
                         ngModelController.$setValidity('openlmisFileUpload.fileEmpty', false);
                     }
                 }
+            }
+
+            function parseExtension(extension) {
+                var parts = extension.split('/');
+                if (parts && parts.length > 1) {
+                    return parts[length - 1];
+                }
+                return extension;
             }
         }
     }
