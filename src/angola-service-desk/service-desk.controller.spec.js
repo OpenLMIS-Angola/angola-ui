@@ -35,6 +35,7 @@ describe('ServiceDeskController', function() {
         this.user = new UserDataBuilder().build();
         this.issueKey = 'ServiceDesk-1';
         this.issueId = '1';
+        this.message = 'test-message';
 
         this.ServiceDeskResource = jasmine.createSpyObj('ServiceDeskResource', ['create', 'addAttachment']);
         this.ServiceDeskResource.create.andReturn($q.resolve({
@@ -44,12 +45,19 @@ describe('ServiceDeskController', function() {
 
         this.notificationService = jasmine.createSpyObj('notificationService', ['success']);
 
+        this.loadingModalService = jasmine.createSpyObj('loadingModalService', ['open']);
+
+        this.messageService = jasmine.createSpyObj('messageService', ['get']);
+        this.messageService.get.andReturn(this.message);
+
         this.vm = $controller('ServiceDeskController', {
             issueTypes: new this.ISSUE_TYPE.toList(),
             priorities: new this.PRIORITY_TYPE.toList(),
             impactTypes: new this.IMPACT_TYPE.toList(),
             ServiceDeskResource: this.ServiceDeskResource,
             notificationService: this.notificationService,
+            messageService: this.messageService,
+            loadingModalService: this.loadingModalService,
             user: this.user
         });
         this.vm.$onInit();
@@ -102,6 +110,10 @@ describe('ServiceDeskController', function() {
             this.$rootScope.$apply();
         });
 
+        it('should open loading modal', function() {
+            expect(this.loadingModalService.open).toHaveBeenCalled();
+        });
+
         it('should create issue', function() {
             expect(this.ServiceDeskResource.create).toHaveBeenCalledWith(this.vm.issue);
         });
@@ -111,11 +123,15 @@ describe('ServiceDeskController', function() {
             expect(this.ServiceDeskResource.addAttachment).toHaveBeenCalledWith('attachment2', this.issueId);
         });
 
-        it('should show notification', function() {
-            expect(this.notificationService.success).toHaveBeenCalledWith('serviceDesk.sendSuccessfully', {
+        it('should call message service', function() {
+            expect(this.messageService.get).toHaveBeenCalledWith('serviceDesk.sendSuccessfully', {
                 ticketNumber: this.issueKey,
                 userEmailAddress: this.user.email
             });
+        });
+
+        it('should show notification', function() {
+            expect(this.notificationService.success).toHaveBeenCalledWith(this.message);
         });
 
         it('should call state go method', function() {

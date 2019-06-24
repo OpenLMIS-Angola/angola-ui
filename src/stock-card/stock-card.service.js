@@ -57,7 +57,7 @@
             }).$promise;
         }
 
-        // Angola: link to the updated requisition printout
+        // Angola: link to the updated stock card printout
         function print(stockCardId) {
             var url = stockmanagementUrlFactory(
                 '/api/reports/templates/angola/ee8a9387-1421-43c8-a871-48240d8fbd40/pdf?stockCard=' + stockCardId

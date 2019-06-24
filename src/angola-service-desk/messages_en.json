@@ -6,7 +6,7 @@
     "serviceDesk.description": "Description",
     "serviceDesk.attachment": "Attachment",
     "serviceDesk.howUrgentIsThisRequest": "How urgent is this request?",
-    "serviceDesk.impact": "Impact",
+    "serviceDesk.whatIsTheImpactOfThisRequest": "What is the impact of this request?",
     "serviceDesk.send": "Send",
     "serviceDesk.cancel": "Cancel",
     "serviceDesk.sendSuccessfully": "Thank you! Your reference is ${ticketNumber}. Please check email ${userEmailAddress} for confirmation and updates.",

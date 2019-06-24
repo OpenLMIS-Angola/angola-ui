@@ -30,11 +30,11 @@
 
     controller.$inject = [
         '$q', '$state', 'issueTypes', 'priorities', 'impactTypes', 'ServiceDeskResource', 'notificationService',
-        'user'
+        'user', 'messageService', 'loadingModalService'
     ];
 
     function controller($q, $state, issueTypes, priorities, impactTypes, ServiceDeskResource, notificationService,
-                        user) {
+                        user, messageService, loadingModalService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -124,6 +124,7 @@
          * Reloads page with new search parameters.
          */
         function send() {
+            loadingModalService.open();
             return ServiceDeskResource.create(vm.issue)
                 .then(function(response) {
                     var attachmentPromises = [];
@@ -133,10 +134,11 @@
 
                     $q.all(attachmentPromises)
                         .then(function() {
-                            notificationService.success('serviceDesk.sendSuccessfully', {
+                            var successMessage = messageService.get('serviceDesk.sendSuccessfully', {
                                 ticketNumber: response.issueKey,
                                 userEmailAddress: user.email
                             });
+                            notificationService.success(successMessage);
                             redirectToHome();
                         });
                 });
