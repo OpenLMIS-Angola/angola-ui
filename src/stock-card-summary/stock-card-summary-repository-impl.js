@@ -70,7 +70,7 @@
          */
         function print(program, facility) {
         // Angola: link to the updated printout
-            var sohPrintUrl = '/api/reports/templates/angola/858ee6ff-1668-4dce-a3ff-64176b5cf87d/pdf',
+            var sohPrintUrl = '/api/reports/templates/angola/1e0221c4-58f4-40b6-9cde-4b3781cea6a1/pdf',
                 params = 'programId=' + program + '&' + 'facilityId=' + facility;
 
             $window.open(accessTokenFactory.addAccessToken(
