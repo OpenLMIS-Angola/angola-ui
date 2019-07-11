@@ -55,7 +55,19 @@
                 'ADJUSTMENTS_REPORT_VIEW'),
             ADMINISTRATIVE: createReport('administrative',
                 supersetUrl + '/login/openlmis?redirect_url=/superset/dashboard/7/',
-                'ADMINISTRATIVE_REPORT_VIEW')
+                'ADMINISTRATIVE_REPORT_VIEW'),
+            AGGREGATE_CONSUMPTION: createReport('aggregateConsumption',
+                supersetUrl + '/login/openlmis?redirect_url=/superset/dashboard/10/',
+                'AGGREGATE_CONSUMPTION_REPORT_VIEW'),
+            REPORTED_AND_ORDERED_PRODUCTS: createReport('reportedAndOrderedProducts',
+                supersetUrl + '/login/openlmis?redirect_url=/superset/dashboard/14/',
+                'REPORTED_AND_ORDERED_PRODUCTS_REPORT_VIEW'),
+            OCCURRENCE_OF_ADJUSTMENTS: createReport('occurrenceOfAdjustments',
+                supersetUrl + '/login/openlmis?redirect_url=/superset/dashboard/9/',
+                'OCCURRENCE_OF_ADJUSTMENTS_REPORT_VIEW'),
+            SUBMISSION_OF_MONTHLY_REPORTS: createReport('submissionOfMonthlyReports',
+                supersetUrl + '/login/openlmis?redirect_url=/superset/dashboard/13/',
+                'SUBMISSION_OF_MONTHLY_REPORTS_REPORT_VIEW')
         } : {};
     }
 
