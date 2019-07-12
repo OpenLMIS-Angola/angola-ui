@@ -1,6 +1,6 @@
 {
-  "report.aggregateConsumption": "Aggregate Consumption",
-  "report.reportedAndOrderedProducts": "Reported and Ordered Products",
-  "report.occurrenceOfAdjustments": "Occurrence of Adjustments",
-  "report.submissionOfMonthlyReports": "Submission of Monthly Reports"
+  "report.superset.aggregateConsumption": "Aggregate Consumption",
+  "report.superset.reportedAndOrderedProducts": "Reported and Ordered Products",
+  "report.superset.occurrenceOfAdjustments": "Occurrence of Adjustments",
+  "report.superset.submissionOfMonthlyReports": "Submission of Monthly Reports"
 }

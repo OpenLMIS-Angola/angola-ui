@@ -44,6 +44,10 @@
             addReporingPage($stateProvider, SUPERSET_REPORTS.ORDERS);
             addReporingPage($stateProvider, SUPERSET_REPORTS.ADJUSTMENTS);
             addReporingPage($stateProvider, SUPERSET_REPORTS.ADMINISTRATIVE);
+            addReporingPage($stateProvider, SUPERSET_REPORTS.AGGREGATE_CONSUMPTION);
+            addReporingPage($stateProvider, SUPERSET_REPORTS.REPORTED_AND_ORDERED_PRODUCTS);
+            addReporingPage($stateProvider, SUPERSET_REPORTS.OCCURRENCE_OF_ADJUSTMENTS);
+            addReporingPage($stateProvider, SUPERSET_REPORTS.SUBMISSION_OF_MONTHLY_REPORTS);
         }
     }
 
