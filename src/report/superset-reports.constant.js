@@ -72,8 +72,8 @@
                 supersetUrl + '/login/openlmis?redirect_url=/superset/dashboard/resumo-de-stocks/',
                 'STOCK_SUMMARY_REPORT_VIEW'),
             STOCK_ON_HAND_PER_INSTITUTION: createReport('stockOnHandPerInstitution',
-            supersetUrl + '/login/openlmis?redirect_url=/superset/dashboard/stock-disponível-por-instituicao/',
-            'STOCK_ON_HAND_PER_INSTITUTION_REPORT_VIEW')
+                supersetUrl + '/login/openlmis?redirect_url=/superset/dashboard/stock-disponível-por-instituicao/',
+                'STOCK_ON_HAND_PER_INSTITUTION_REPORT_VIEW')
         } : {};
     }
 
