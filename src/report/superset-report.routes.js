@@ -50,6 +50,7 @@
             addReporingPage($stateProvider, SUPERSET_REPORTS.SUBMISSION_OF_MONTHLY_REPORTS);
             addReporingPage($stateProvider, SUPERSET_REPORTS.STOCKS_SUMMARY);
             addReporingPage($stateProvider, SUPERSET_REPORTS.STOCK_ON_HAND_PER_INSTITUTION);
+            addReporingPage($stateProvider, SUPERSET_REPORTS.COMPARISON_OF_CONSUMPTION_BY_REGION);
         }
     }
 
