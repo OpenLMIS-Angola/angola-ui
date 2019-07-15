@@ -49,6 +49,7 @@
             addReporingPage($stateProvider, SUPERSET_REPORTS.OCCURRENCE_OF_ADJUSTMENTS);
             addReporingPage($stateProvider, SUPERSET_REPORTS.SUBMISSION_OF_MONTHLY_REPORTS);
             addReporingPage($stateProvider, SUPERSET_REPORTS.STOCKS_SUMMARY);
+            addReporingPage($stateProvider, SUPERSET_REPORTS.STOCK_ON_HAND_PER_INSTITUTION);
         }
     }
 

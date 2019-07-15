@@ -70,8 +70,10 @@
                 'SUBMISSION_OF_MONTHLY_REPORTS_REPORT_VIEW'),
             STOCKS_SUMMARY: createReport('stocksSummary',
                 supersetUrl + '/login/openlmis?redirect_url=/superset/dashboard/resumo-de-stocks/',
-                'STOCK_SUMMARY_REPORT_VIEW')
-
+                'STOCK_SUMMARY_REPORT_VIEW'),
+            STOCK_ON_HAND_PER_INSTITUTION: createReport('stockOnHandPerInstitution',
+            supersetUrl + '/login/openlmis?redirect_url=/superset/dashboard/stock-disponível-por-instituicao/',
+            'STOCK_ON_HAND_PER_INSTITUTION_REPORT_VIEW')
         } : {};
     }
 
