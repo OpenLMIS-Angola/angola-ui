@@ -68,85 +68,41 @@
                 reportCode: function() {
                     return report.code;
                 },
-                _: function($sce, $q, $http, $httpParamSerializer) {
-                    return checkAuthorizationInSuperset($sce, $q, $http)
-                        .then(function(data) {
-                            if (data.isAuthorized !== true) {
-                                return signInToOpenLmis($sce, $http, data)
-                                    .then(function() {
-                                        return approveSupersetIfNeeded($sce, $q, $http, $httpParamSerializer);
-                                    });
-                            }
-                        });
-                }
+                authorizationInSuperset: authorizeInSuperset
             }
         });
     }
 
-    function approveSupersetIfNeeded($sce, $q, $http, $httpParamSerializer) {
-        return checkAuthorizationInSuperset($sce, $q, $http, $httpParamSerializer)
-            .then(function(data) {
-                if (data.isAuthorized !== true) {
-                    return approveSuperset($sce, $http, $httpParamSerializer);
-                }
-            });
-    }
-
-    function checkAuthorizationInSuperset($sce, $q, $http) {
+    var dialog;
+    function authorizeInSuperset(loadingModalService, openlmisModalService, $q, $state, MODEL_CANCELLED) {
         var deferred = $q.defer();
 
-        var redirectUrl = '${SUPERSET_URL}/oauth-authorized/openlmis';
-        var url = '${SUPERSET_URL}/oauth-init/openlmis?redirect_url=' + redirectUrl;
-        var httpPromise = $http({
-            method: 'GET',
-            url: $sce.trustAsResourceUrl(url).toString(),
-            withCredentials: true
+        if (dialog) {
+            return dialog.promise;
+        }
+        loadingModalService.close();
+        dialog = openlmisModalService.createDialog({
+            backdrop: 'static',
+            keyboard: false,
+            controller: 'SupersetOAuthLoginController',
+            controllerAs: 'vm',
+            templateUrl: 'report/superset-oauth-login.html',
+            show: true
         });
-        httpPromise.then(function(x) {
-            deferred.resolve(x.data);
-        });
-        httpPromise.catch(function() {
-            deferred.reject();
-        });
+
+        dialog.promise.then(deferred.resolve)
+            .catch(function(reason) {
+                if (reason === MODEL_CANCELLED) {
+                    deferred.resolve();
+                    $state.go('openlmis.reports.list');
+                } else {
+                    deferred.reject(reason);
+                }
+            })
+            .finally(function() {
+                dialog = undefined;
+            });
 
         return deferred.promise;
     }
-
-    function signInToOpenLmis($sce, $http, data) {
-        var state = data.state;
-        var redirectUrl = '${SUPERSET_URL}/oauth-authorized/openlmis';
-        var url = '/api/oauth/authorize?response_type=code&client_id=superset&redirect_uri=' + redirectUrl
-            + '&scope=read+write&state=' + state;
-        return $http({
-            method: 'GET',
-            headers: {
-                'Access-Control-Allow-Credentials': 'true'
-            },
-            url: $sce.trustAsResourceUrl(url).toString(),
-            withCredentials: true,
-            ignoreAuthModule: true
-        });
-    }
-
-    function approveSuperset($sce, $http, $httpParamSerializer) {
-        var redirectUrl = '${SUPERSET_URL}/oauth-authorized/openlmis';
-        var url = '/api/oauth/authorize?response_type=code&client_id=superset&redirect_uri=' + redirectUrl;
-        return $http({
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            url: $sce.trustAsResourceUrl(url).toString(),
-            data: $httpParamSerializer({
-                authorize: 'Authorize',
-                // eslint-disable-next-line camelcase
-                user_oauth_approval: 'true',
-                'scope.read': 'true',
-                'scope.write': 'true'
-            }),
-            withCredentials: true,
-            ignoreAuthModule: true
-        });
-    }
-
 })();

@@ -5,5 +5,12 @@
   "report.superset.submissionOfMonthlyReports": "Submission of Monthly Reports",
   "report.superset.stocksSummary": "Stocks Summary",
   "report.superset.stockOnHandPerInstitution": "Stock on Hand per Institution",
-  "report.superset.comparisonOfConsumptionByRegion": "Comparison of Consumption by Region"
+  "report.superset.comparisonOfConsumptionByRegion": "Comparison of Consumption by Region",
+  "report.superset.oAuthLogin.header": "Allow Superset to get access to OpenLMIS",
+  "report.superset.oAuthLogin.authorize": "Authorize",
+  "report.superset.oAuthLogin.cancel": "Cancel",
+  "report.superset.oAuthLogin.username": "Username",
+  "report.superset.oAuthLogin.password": "Password",
+  "report.superset.oAuthLogin.invalidCredentailsOrOAuthRequest": "Invalid credentails or unsuccessful OAuth request",
+  "report.superset.oAuthLogin.unsuccessfulApprovingPermissions": "Unsuccessful approving permissions for Superset"
 }
