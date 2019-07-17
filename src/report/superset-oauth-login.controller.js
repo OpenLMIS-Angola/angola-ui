@@ -27,11 +27,11 @@
         .controller('SupersetOAuthLoginController', SupersetOAuthLoginController);
 
     SupersetOAuthLoginController.$inject = [
-        'MODEL_CANCELLED', 'modalDeferred', 'authorizationService', 'loadingModalService',
+        'MODAL_CANCELLED', 'modalDeferred', 'authorizationService', 'loadingModalService',
         '$sce', '$q', '$http', '$httpParamSerializer'
     ];
 
-    function SupersetOAuthLoginController(MODEL_CANCELLED, modalDeferred, authorizationService, loadingModalService,
+    function SupersetOAuthLoginController(MODAL_CANCELLED, modalDeferred, authorizationService, loadingModalService,
                                           $sce, $q, $http, $httpParamSerializer) {
         var vm = this;
         vm.$onInit = onInit;
@@ -58,7 +58,7 @@
         }
 
         function cancel() {
-            modalDeferred.reject(MODEL_CANCELLED);
+            modalDeferred.reject(MODAL_CANCELLED);
         }
 
         function doLogin() {

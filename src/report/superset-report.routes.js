@@ -74,7 +74,7 @@
     }
 
     var dialog;
-    function authorizeInSuperset(loadingModalService, openlmisModalService, $q, $state, MODEL_CANCELLED) {
+    function authorizeInSuperset(loadingModalService, openlmisModalService, $q, $state, MODAL_CANCELLED) {
         var deferred = $q.defer();
 
         if (dialog) {
@@ -92,7 +92,7 @@
 
         dialog.promise.then(deferred.resolve)
             .catch(function(reason) {
-                if (reason === MODEL_CANCELLED) {
+                if (reason === MODAL_CANCELLED) {
                     deferred.resolve();
                     $state.go('openlmis.reports.list');
                 } else {

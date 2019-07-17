@@ -27,7 +27,7 @@
     angular
         .module('report')
         .constant('SUPERSET_REPORTS', getReports())
-        .constant('MODEL_CANCELLED', 'MODEL_CANCELLED');
+        .constant('MODAL_CANCELLED', 'MODAL_CANCELLED');
 
     function getReports() {
         var supersetUrl = '${SUPERSET_URL}';
