@@ -77,7 +77,10 @@
                 'STOCK_ON_HAND_PER_INSTITUTION_REPORT_VIEW'),
             COMPARISON_OF_CONSUMPTION_BY_REGION: createReport('comparisonOfConsumptionByRegion',
                 supersetUrl + '/login/openlmis?redirect_url=/superset/dashboard/comparacao-de-consumos-por-regiao/',
-                'COMPARISON_OF_CONSUMPTION_BY_REGION')
+                'COMPARISON_OF_CONSUMPTION_BY_REGION'),
+            STOCKOUTS_IN_US: createReport('stockoutsInUS',
+                supersetUrl + '/login/openlmis?redirect_url=/superset/dashboard/rupturas-de-stock-nas-us/',
+                'STOCKOUTS_IN_US_REPORT_VIEW')
         } : {};
     }
 

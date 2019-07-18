@@ -12,5 +12,6 @@
   "report.superset.oAuthLogin.username": "Username",
   "report.superset.oAuthLogin.password": "Password",
   "report.superset.oAuthLogin.invalidCredentailsOrOAuthRequest": "Invalid credentails or unsuccessful OAuth request",
-  "report.superset.oAuthLogin.unsuccessfulApprovingPermissions": "Unsuccessful approving permissions for Superset"
+  "report.superset.oAuthLogin.unsuccessfulApprovingPermissions": "Unsuccessful approving permissions for Superset",
+  "report.superset.stockoutsInUS": "Stockouts in US"
 }
