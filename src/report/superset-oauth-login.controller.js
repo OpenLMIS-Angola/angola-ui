@@ -111,7 +111,7 @@
                 ignoreAuthModule: true
             });
             httpPromise.catch(function() {
-                vm.loginError = 'report.superset.oAuthLogin.invalidCredentailsOrOAuthRequest';
+                vm.loginError = 'report.superset.oAuthLogin.invalidCredentialsOrOAuthRequest';
                 return $q.reject();
             });
             return httpPromise;
