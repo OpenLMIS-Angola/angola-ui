@@ -19,15 +19,37 @@
 
     /**
     * @ngdoc object
+    * @name report.CHECK_SUPERSET_AUTORIZATION_URL
+    *
+    * @description
+    * This is the constant defining URL which allows to check user authorization and init OAuth Request in Superset.
+   */
+
+    /**
+    * @ngdoc object
     * @name report.SUPERSET_REPORTS
     *
     * @description
-    * This is constant defining available superset reports.
+    * This is the constant defining available superset reports.
+   */
+
+    /**
+    * @ngdoc object
+    * @name report.MODAL_CANCELLED
+    *
+    * @description
+    * This is the constant describing the rejection of promise in case of cancellation of OAuth approving modal.
    */
     angular
         .module('report')
+        .constant('CHECK_SUPERSET_AUTORIZATION_URL', getCheckSupersetAuthorizationUrl())
         .constant('SUPERSET_REPORTS', getReports())
         .constant('MODAL_CANCELLED', 'MODAL_CANCELLED');
+
+    function getCheckSupersetAuthorizationUrl() {
+        var redirectUrl = '${SUPERSET_URL}/oauth-authorized/openlmis';
+        return '${SUPERSET_URL}/oauth-init/openlmis?redirect_url=' + redirectUrl;
+    }
 
     function getReports() {
         var supersetUrl = '${SUPERSET_URL}';

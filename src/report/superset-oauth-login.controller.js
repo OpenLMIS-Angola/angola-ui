@@ -27,21 +27,40 @@
         .controller('SupersetOAuthLoginController', SupersetOAuthLoginController);
 
     SupersetOAuthLoginController.$inject = [
-        'MODAL_CANCELLED', 'modalDeferred', 'authorizationService', 'loadingModalService',
-        '$sce', '$q', '$http', '$httpParamSerializer'
+        'modalDeferred', 'authorizationService', 'loadingModalService',
+        'supersetUrlFactory', '$q', '$http', '$httpParamSerializer',
+        'MODAL_CANCELLED', 'CHECK_SUPERSET_AUTORIZATION_URL'
     ];
 
-    function SupersetOAuthLoginController(MODAL_CANCELLED, modalDeferred, authorizationService, loadingModalService,
-                                          $sce, $q, $http, $httpParamSerializer) {
+    function SupersetOAuthLoginController(modalDeferred, authorizationService, loadingModalService,
+                                          supersetUrlFactory, $q, $http, $httpParamSerializer,
+                                          MODAL_CANCELLED, CHECK_SUPERSET_AUTORIZATION_URL) {
         var vm = this;
         vm.$onInit = onInit;
 
         vm.cancel = cancel;
         vm.doLogin = doLogin;
 
-        vm.show = false;
+        /**
+         * @ngdoc property
+         * @propertyOf report:SupersetOAuthLoginController
+         * @name username
+         * @type {String}
+         *
+         * @description
+         * The username of the currently signed-in user.
+         */
         vm.username = authorizationService.getUser().username;
 
+        /**
+         * @ngdoc method
+         * @methodOf report:SupersetOAuthLoginController
+         * @name $onInit
+         *
+         * @description
+         * The method that is executed on initiating SupersetOAuthLoginController.
+         * It checks whatever the user is already authorized in Superset.
+         */
         function onInit() {
             loadingModalService.open();
             checkAuthorizationInSuperset()
@@ -57,10 +76,27 @@
                 .finally(loadingModalService.close);
         }
 
+        /**
+         * @ngdoc method
+         * @methodOf report:SupersetOAuthLoginController
+         * @name cancel
+         *
+         * @description
+         * The method that is invoked when user clicks the cancel button. It rejects the modal.
+         */
         function cancel() {
             modalDeferred.reject(MODAL_CANCELLED);
         }
 
+        /**
+         * @ngdoc method
+         * @methodOf report:SupersetOAuthLoginController
+         * @name doLogin
+         *
+         * @description
+         * The method that is invoked when the user clicks the authorize button.
+         * It starts the authorization process to Superset via OpenLMIS OAuth.
+         */
         function doLogin() {
             loadingModalService.open();
 
@@ -77,12 +113,9 @@
 
         function checkAuthorizationInSuperset() {
             var deferred = $q.defer();
-
-            var redirectUrl = '${SUPERSET_URL}/oauth-authorized/openlmis';
-            var url = '${SUPERSET_URL}/oauth-init/openlmis?redirect_url=' + redirectUrl;
             var httpPromise = $http({
                 method: 'GET',
-                url: $sce.trustAsResourceUrl(url).toString(),
+                url: CHECK_SUPERSET_AUTORIZATION_URL,
                 withCredentials: true
             });
             httpPromise.then(function(response) {
@@ -96,17 +129,13 @@
         }
 
         function sendOAuthRequest() {
-            var redirectUrl = '${SUPERSET_URL}/oauth-authorized/openlmis';
-            var url = '/api/oauth/authorize?response_type=code&client_id=superset'
-                    + '&redirect_uri=' + redirectUrl
-                    + '&scope=read+write&state=' + vm.supersetOAuthState;
             var httpPromise = $http({
                 method: 'GET',
                 headers: {
                     'Access-Control-Allow-Credentials': 'false',
                     Authorization: authorizationHeader()
                 },
-                url: $sce.trustAsResourceUrl(url).toString(),
+                url: supersetUrlFactory.buildSupersetOAuthRequestUrl(vm.supersetOAuthState),
                 withCredentials: true,
                 ignoreAuthModule: true
             });
@@ -127,16 +156,13 @@
         }
 
         function approveSuperset() {
-            var redirectUrl = '${SUPERSET_URL}/oauth-authorized/openlmis';
-            var url = '/api/oauth/authorize?response_type=code&client_id=superset'
-                    + '&redirect_uri=' + redirectUrl;
             var httpPromise = $http({
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                     Authorization: authorizationHeader()
                 },
-                url: $sce.trustAsResourceUrl(url).toString(),
+                url: supersetUrlFactory.buildApproveSupersetUrl(),
                 data: $httpParamSerializer({
                     authorize: 'Authorize',
                     // eslint-disable-next-line camelcase
