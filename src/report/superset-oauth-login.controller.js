@@ -53,6 +53,17 @@
         vm.username = authorizationService.getUser().username;
 
         /**
+         * @ngdoc property
+         * @propertyOf report:SupersetOAuthLoginController
+         * @name supersetOAuthState
+         * @type {String}
+         *
+         * @description
+         * The Superset state which should be passed to Superset during next authorizing requests.
+         */
+        vm.supersetOAuthState = undefined;
+
+        /**
          * @ngdoc method
          * @methodOf report:SupersetOAuthLoginController
          * @name $onInit
