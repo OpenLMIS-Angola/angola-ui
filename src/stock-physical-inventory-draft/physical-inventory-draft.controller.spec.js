@@ -214,18 +214,49 @@ describe('PhysicalInventoryDraftController', function() {
         expect(addProductsModalService.show).toHaveBeenCalledWith([lineItem2, lineItem4], true);
     });
 
-    it('should save draft', function() {
-        spyOn(draftFactory, 'saveDraft');
+    describe('saveDraft', function() {
 
-        lineItem3.lot.id = undefined;
-        spyOn(this.LotResource.prototype, 'create').andReturn($q.resolve());
-        draftFactory.saveDraft.andReturn($q.resolve());
+        it('should not save lots if all exists', function() {
+            spyOn(draftFactory, 'saveDraft');
+            spyOn(this.LotResource.prototype, 'create');
 
-        vm.saveDraft();
-        $rootScope.$apply();
+            draftFactory.saveDraft.andReturn($q.resolve());
 
-        expect(this.LotResource.prototype.create).toHaveBeenCalledWith(lineItem3.lot);
-        expect(draftFactory.saveDraft).toHaveBeenCalledWith(draft);
+            vm.saveDraft();
+            $rootScope.$apply();
+
+            expect(this.LotResource.prototype.create).not.toHaveBeenCalled();
+        });
+
+        it('should save lots if any missing lots were added', function() {
+            spyOn(draftFactory, 'saveDraft');
+
+            lineItem3.lot.id = undefined;
+            lineItem4.lot.id = undefined;
+            spyOn(this.LotResource.prototype, 'create').andCallFake(function(lot) {
+                return $q.resolve(lot);
+            });
+
+            draftFactory.saveDraft.andReturn($q.resolve());
+
+            vm.saveDraft();
+            $rootScope.$apply();
+
+            expect(this.LotResource.prototype.create.calls.length).toBe(2);
+            expect(draftFactory.saveDraft).toHaveBeenCalledWith(draft);
+        });
+
+        it('should save draft', function() {
+            spyOn(draftFactory, 'saveDraft');
+
+            draftFactory.saveDraft.andReturn($q.resolve());
+
+            vm.saveDraft();
+            $rootScope.$apply();
+
+            expect(draftFactory.saveDraft).toHaveBeenCalledWith(draft);
+        });
+
     });
 
     it('should highlight empty quantities before submit', function() {
