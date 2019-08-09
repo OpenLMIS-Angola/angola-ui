@@ -352,6 +352,40 @@ describe('PhysicalInventoryDraftController', function() {
             expect(accessTokenFactory.addAccessToken).not.toHaveBeenCalled();
             expect(state.go).not.toHaveBeenCalled();
         });
+
+        it('should save lots if any missing lots were added', function() {
+            physicalInventoryService.submitPhysicalInventory
+                .andReturn($q.when());
+            confirmService.confirm.andReturn($q.reject());
+            accessTokenFactory.addAccessToken.andReturn('url');
+
+            lineItem3.lot.id = undefined;
+            lineItem4.lot.id = undefined;
+            spyOn(this.LotResource.prototype, 'create').andCallFake(function(lot) {
+                return $q.resolve(lot);
+            });
+
+            vm.submit();
+            $rootScope.$apply();
+
+            expect(this.LotResource.prototype.create.calls.length).toBe(2);
+            expect(physicalInventoryService.submitPhysicalInventory).toHaveBeenCalledWith(draft);
+        });
+
+        it('should not save lots if all exists', function() {
+            physicalInventoryService.submitPhysicalInventory
+                .andReturn($q.when());
+            confirmService.confirm.andReturn($q.reject());
+            accessTokenFactory.addAccessToken.andReturn('url');
+            spyOn(this.LotResource.prototype, 'create');
+
+            vm.submit();
+            $rootScope.$apply();
+
+            expect(this.LotResource.prototype.create).not.toHaveBeenCalled();
+            expect(physicalInventoryService.submitPhysicalInventory).toHaveBeenCalledWith(draft);
+        });
+
     });
 
     it('should aggregate given field values', function() {
