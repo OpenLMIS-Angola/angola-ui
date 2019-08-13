@@ -14,6 +14,7 @@
  */
 
 (function() {
+
     'use strict';
 
     angular.module('stock-adjustment-creation', [
@@ -26,7 +27,9 @@
         'stock-valid-reason',
         'referencedata-program',
         'referencedata-facility',
+        // AO-384: added referencedata-lot dependency
         'referencedata-lot',
+        // AO-384: ends here
         'stock-reasons-modal'
     ]);
 })();

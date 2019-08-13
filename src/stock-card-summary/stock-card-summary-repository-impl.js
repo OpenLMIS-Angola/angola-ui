@@ -29,11 +29,13 @@
         .factory('StockCardSummaryRepositoryImpl', StockCardSummaryRepositoryImpl);
 
     StockCardSummaryRepositoryImpl.$inject = [
-        '$resource', 'stockmanagementUrlFactory', 'LotResource', 'OrderableResource', '$q', '$window',
+        'stockmanagementUrlFactory', 'LotResource', 'OrderableResource', '$q', '$window',
         'accessTokenFactory', 'StockCardSummaryResource'
     ];
 
-    function StockCardSummaryRepositoryImpl($resource, stockmanagementUrlFactory, LotResource, OrderableResource,
+    // AO-384: changed LotRepositoryImpl to LotResource, fixed in core, can be removed after next release
+
+    function StockCardSummaryRepositoryImpl(stockmanagementUrlFactory, LotResource, OrderableResource,
                                             $q, $window, accessTokenFactory, StockCardSummaryResource) {
 
         StockCardSummaryRepositoryImpl.prototype.query = query;

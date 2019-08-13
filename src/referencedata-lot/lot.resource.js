@@ -23,6 +23,8 @@
 
     LotResource.inject = ['OpenlmisResource', 'classExtender'];
 
+    // AO-384: added with core, can be removed after next release
+
     function LotResource(OpenlmisResource, classExtender) {
 
         classExtender.extend(LotResource, OpenlmisResource);
@@ -32,7 +34,5 @@
         function LotResource() {
             this.super('/api/lots');
         }
-
     }
-
 })();

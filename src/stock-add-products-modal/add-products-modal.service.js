@@ -31,6 +31,7 @@
     service.$inject = ['openlmisModalService'];
 
     function service(openlmisModalService) {
+
         this.show = show;
 
         /**
@@ -41,7 +42,9 @@
          * @description
          * Shows modal that allows users to choose products.
          *
-         * @return {Promise} resolved with selected products.
+         * @param  {Array}   items  orderable + lot items
+         * @param  {boolean} hasLot true if at least some items have lot info
+         * @return {Promise}        resolved with selected products.
          */
         function show(items, hasLot) {
             return openlmisModalService.createDialog(
@@ -56,9 +59,25 @@
                         },
                         hasLot: function() {
                             return hasLot;
+                        // AO-384: added checking user rights, 
+                        // should be changed to LOTS_MANAGE after moving to core project, 
+                        // ORDERABLES_MANAGE used as a workaround
                         },
-                        addMissingLotAllowed: function() {
-                            return true;
+                        hasPermissionToAddNewLot: function(permissionService, ADMINISTRATION_RIGHTS,
+                            authorizationService) {
+                            return permissionService.hasPermissionWithAnyProgramAndAnyFacility(
+                                authorizationService.getUser().user_id,
+                                {
+                                    right: ADMINISTRATION_RIGHTS.ORDERABLES_MANAGE
+                                }
+                            )
+                                .then(function() {
+                                    return true;
+                                })
+                                .catch(function() {
+                                    return false;
+                                });
+                        // AO-384: ends here
                         }
                     }
                 }

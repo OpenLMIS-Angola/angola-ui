@@ -38,10 +38,6 @@
             lotCode: messageService.get('orderableGroupService.noLotDefined')
         };
 
-        var addMissingLot = {
-            lotCode: messageService.get('orderableGroupService.addMissingLot')
-        };
-
         this.findAvailableProductsAndCreateOrderableGroups = findAvailableProductsAndCreateOrderableGroups;
         this.lotsOf = lotsOf;
         this.determineLotMessage = determineLotMessage;
@@ -59,25 +55,33 @@
          * Extract lots from orderable group. Adds no lot defined as an option when some group
          * has no lot
          *
-         * @param {Object} orderableGroup   orderable group
-         * @return {Array}                  array with lots
+         * @param  {Object}  orderableGroup       orderable group
+         * @param  {boolean} addMissingLotAllowed true if adding new lots is available
+         * @return {Array}                        array with lots
          */
         function lotsOf(orderableGroup, addMissingLotAllowed) {
-            var lots = _.chain(orderableGroup).pluck('lot')
-                .compact()
-                .value();
-
-            var someHasLot = lots.length > 0;
-            var someHasNoLot = _.any(orderableGroup, function(item) {
-                return !item.lot;
-            });
+            // AO-384: added message for missing lot
+            var addMissingLot = {
+                    lotCode: messageService.get('orderableGroupService.addMissingLot')
+                },
+                // AO-384: ends here
+                lots = _.chain(orderableGroup).pluck('lot')
+                    .compact()
+                    .value(),
+                someHasLot = lots.length > 0,
+                someHasNoLot = _.any(orderableGroup, function(item) {
+                    return !item.lot;
+                });
 
             if (someHasLot && someHasNoLot) {
+            // AO-384: added missing lot message to lot list
                 //add no lot defined and add missing lot (if is allowed) as options
                 addMissingLotAllowed ? lots.unshift(addMissingLot, noLotDefined) : lots.unshift(noLotDefined);
+
             } else if (someHasLot && !someHasNoLot && addMissingLotAllowed) {
                 lots.unshift(addMissingLot);
             }
+            // AO-384: ends here
             return lots;
         }
 
@@ -89,15 +93,20 @@
          * @description
          * Determines lot message based on a lot and an orderable group.
          *
-         * @param {Object} orderableGroup   orderable group
-         * @param {Object} selectedItem     product with lot property. Property displayLotMessage
-         *                                  will be assigned to id.
+         * @param {Object} orderableGroup         orderable group
+         * @param {Object} selectedItem           product with lot property. Property displayLotMessage
+         *                                        will be assigned to id.
+         * @param {boolean} addMissingLotAllowed  true if adding new lot should be available
          */
+        // AO-384: added addMissingLotAllowed parameter
         function determineLotMessage(selectedItem, orderableGroup, addMissingLotAllowed) {
+        // AO-384: ends here
             if (selectedItem.lot) {
                 selectedItem.displayLotMessage = selectedItem.lot.lotCode;
             } else {
+                // AO-384: passing addMissingLotAllowed parameter
                 var messageKey = lotsOf(orderableGroup, addMissingLotAllowed).length > 0
+                // AO-384: ends here
                     ? 'noLotDefined' : 'productHasNoLots';
                 selectedItem.displayLotMessage = messageService.get('orderableGroupService.' + messageKey);
             }
@@ -161,23 +170,29 @@
          * @description
          * Find product in orderable group based on lot.
          *
-         * @param {Object} orderableGroup   orderable group
-         * @param {Object} selectedLot      selected lot
+         * @param  {Object}  orderableGroup orderable group
+         * @param  {Object}  selectedLot    selected lot
+         * @param  {boolean} isNewLot       true if lot is not saved yet
          * @return {Object}                 found product
          */
+        // AO-384: added isNewLot paramter
         function findByLotInOrderableGroup(orderableGroup, selectedLot, isNewLot) {
+        // AO-384: ends here
             var selectedItem = _.chain(orderableGroup)
                 .find(function(groupItem) {
-                    var selectedNoLot = !groupItem.lot && (!selectedLot || selectedLot === noLotDefined);
-                    var selectedNewLot = isNewLot;
-                    var lotMatch = groupItem.lot && groupItem.lot === selectedLot;
-                    return selectedNoLot || lotMatch || selectedNewLot;
+                    var selectedNoLot = !groupItem.lot && (!selectedLot || selectedLot === noLotDefined),
+                        lotMatch = groupItem.lot && groupItem.lot === selectedLot;
+                    // AO-384: added isNewLot to expression
+                    return selectedNoLot || lotMatch || isNewLot;
+                    // AO-384: ends here
                 })
                 .value();
 
+            // AO-384: adding new lot to selected item before saving
             if (isNewLot) {
                 selectedItem.lot = selectedLot;
             }
+            // AO-384: ends here
 
             if (selectedItem) {
                 determineLotMessage(selectedItem, orderableGroup);
@@ -232,7 +247,5 @@
         function isGroupNotEmpty(group) {
             return group.length > 0;
         }
-
     }
-
 })();

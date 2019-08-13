@@ -144,11 +144,13 @@ describe('openlmis.stockmanagement.kitunpack.creation state', function() {
             expect(this.getResolvedValue('adjustmentType')).toEqual(this.ADJUSTMENT_TYPE.KIT_UNPACK);
         });
 
-        it('should resolve addMissingLotAllowed to ADJUSTMENT_TYPE.KIT_UNPACK', function() {
+        // AO-384: test for disabling adding new lots on this screen
+        it('should resolve hasPermissionToAddNewLot to ADJUSTMENT_TYPE.KIT_UNPACK', function() {
             this.goToUrl('stockmanagement/unpack/3/create?page=0&size=10');
 
-            expect(this.getResolvedValue('addMissingLotAllowed')).toEqual(false);
+            expect(this.getResolvedValue('hasPermissionToAddNewLot')).toEqual(false);
         });
+        // AO-384: ends here
 
         it('should call getKitOnlyOrderablegroup', function() {
             this.goToUrl('stockmanagement/unpack/3/create?page=0&size=10');

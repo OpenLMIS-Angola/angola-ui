@@ -29,6 +29,8 @@
         .module('stock-products')
         .factory('FullStockCardSummaryRepositoryImpl', FullStockCardSummaryRepositoryImpl);
 
+    // AO-384: changed LotRepositoryImpl to LotResource, fixed in core, can be removed after next release
+
     FullStockCardSummaryRepositoryImpl.$inject = ['$resource', 'stockmanagementUrlFactory', 'LotResource',
         'OrderableResource', '$q', 'OrderableFulfillsResource', 'StockCardSummaryResource'];
 

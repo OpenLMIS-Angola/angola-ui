@@ -15,45 +15,48 @@
 
 describe('AddProductsModalController', function() {
 
+    var that;
+
     beforeEach(function() {
         module('stock-add-products-modal');
-        module('referencedata-orderable');
-        module('referencedata');
+
+        that = this;
 
         inject(function($injector) {
-            this.$controller = $injector.get('$controller');
-            this.$rootScope = $injector.get('$rootScope');
-            this.$q = $injector.get('$q');
-            this.LotDataBuilder = $injector.get('LotDataBuilder');
-            this.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
-
-            this.deferred = this.$q.defer();
-            this.scope = this.$rootScope.$new();
-
-            spyOn(this.scope, '$broadcast').andCallThrough();
-
-            this.orderable = new this.OrderableDataBuilder()
-                .withIdentifiers({
-                    tradeItem: 'trade-item-id-1'
-                })
-                .build();
-            this.lot = new this.LotDataBuilder().build();
-
-            this.item1 = {
-                orderable: this.orderable,
-                lot: this.lot
-            };
-
-            this.scope.productForm = jasmine.createSpyObj('productForm', ['$setUntouched', '$setPristine']);
-
-            this.vm = this.$controller('AddProductsModalController', {
-                items: [this.item1],
-                hasLot: true,
-                modalDeferred: this.deferred,
-                $scope: this.scope,
-                addMissingLotAllowed: true
-            });
+            that.$controller = $injector.get('$controller');
+            that.$rootScope = $injector.get('$rootScope');
+            that.$q = $injector.get('$q');
+            that.LotDataBuilder = $injector.get('LotDataBuilder');
+            that.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
         });
+
+        that.deferred = that.$q.defer();
+        that.scope = that.$rootScope.$new();
+
+        spyOn(that.scope, '$broadcast').andCallThrough();
+
+        that.orderable = new that.OrderableDataBuilder()
+            .withIdentifiers({
+                tradeItem: 'trade-item-id-1'
+            })
+            .build();
+        that.lot = new that.LotDataBuilder().build();
+
+        that.item1 = {
+            orderable: that.orderable,
+            lot: that.lot
+        };
+
+        that.scope.productForm = jasmine.createSpyObj('productForm', ['$setUntouched', '$setPristine']);
+
+        that.vm = that.$controller('AddProductsModalController', {
+            items: [that.item1],
+            hasLot: true,
+            modalDeferred: that.deferred,
+            $scope: that.scope,
+            hasPermissionToAddNewLot: true
+        });
+        that.vm.$onInit();
     });
 
     it('should NOT add if select box is empty', function() {
@@ -61,57 +64,57 @@ describe('AddProductsModalController', function() {
         //do nothing here, to simulate that select box is empty
 
         //when
-        this.vm.addOneProduct();
+        that.vm.addOneProduct();
 
         //then
-        expect(this.vm.addedItems).toEqual([]);
+        expect(that.vm.addedItems).toEqual([]);
     });
 
     it('should NOT add twice if selected item already added', function() {
         //given
-        this.vm.selectedOrderableGroup = [this.item1];
-        this.vm.selectedLot = this.item1.lot;
+        that.vm.selectedOrderableGroup = [that.item1];
+        that.vm.selectedLot = that.item1.lot;
 
-        this.vm.addedItems = [this.item1];
+        that.vm.addedItems = [that.item1];
         //when
-        this.vm.addOneProduct();
+        that.vm.addOneProduct();
 
         //then
         //only appear once, not twice
-        expect(this.vm.addedItems).toEqual([this.item1]);
+        expect(that.vm.addedItems).toEqual([that.item1]);
     });
 
     it('should add if selected item not added yet', function() {
         //given
-        this.vm.selectedOrderableGroup = [this.item1];
-        this.vm.selectedLot = this.item1.lot;
+        that.vm.selectedOrderableGroup = [that.item1];
+        that.vm.selectedLot = that.item1.lot;
 
-        this.vm.addedItems = [];
+        that.vm.addedItems = [];
 
         //when
-        this.vm.addOneProduct();
+        that.vm.addOneProduct();
 
         //then
-        expect(this.vm.addedItems).toEqual([this.item1]);
+        expect(that.vm.addedItems).toEqual([that.item1]);
     });
 
     it('should add if missing lot provided', function() {
-        this.vm.selectedOrderableGroup = [this.item1];
-        this.vm.newLotCode = 'NewLot001';
+        that.vm.selectedOrderableGroup = [that.item1];
+        that.vm.newLot.lotCode = 'NewLot001';
 
-        this.vm.addedItems = [];
+        that.vm.addedItems = [];
 
         var newLot = {
-            lotCode: this.vm.newLotCode,
-            expirationDate: this.vm.newExpirationDate,
-            tradeItemId: this.vm.selectedOrderableGroup[0].orderable.identifiers.tradeItem,
+            lotCode: that.vm.newLot.lotCode,
+            expirationDate: that.vm.newLot.expirationDate,
+            tradeItemId: that.vm.selectedOrderableGroup[0].orderable.identifiers.tradeItem,
             active: true
         };
 
-        this.vm.addOneProduct();
+        that.vm.addOneProduct();
 
-        expect(this.vm.addedItems).toEqual([{
-            orderable: this.vm.selectedOrderableGroup[0].orderable,
+        expect(that.vm.addedItems).toEqual([{
+            orderable: that.vm.selectedOrderableGroup[0].orderable,
             lot: newLot,
             displayLotMessage: 'NewLot001'
         }]);
@@ -122,14 +125,14 @@ describe('AddProductsModalController', function() {
         var item = {
             quantity: 123
         };
-        this.vm.addedItems = [item];
+        that.vm.addedItems = [item];
 
         //when
-        this.vm.removeAddedProduct(item);
+        that.vm.removeAddedProduct(item);
 
         //then
         expect(item.quantity).not.toBeDefined();
-        expect(this.vm.addedItems).toEqual([]);
+        expect(that.vm.addedItems).toEqual([]);
     });
 
     it('should reset all item quantities and error messages when cancel', function() {
@@ -141,12 +144,12 @@ describe('AddProductsModalController', function() {
         var item2 = {
             quantity: 456
         };
-        this.vm.addedItems = [item1, item2];
+        that.vm.addedItems = [item1, item2];
 
         //when
         //pretend modal was closed by user
-        this.deferred.reject();
-        this.$rootScope.$apply();
+        that.deferred.reject();
+        that.$rootScope.$apply();
 
         //then
         expect(item1.quantity).not.toBeDefined();
@@ -162,7 +165,7 @@ describe('AddProductsModalController', function() {
         };
 
         //when
-        this.vm.validate(item1);
+        that.vm.validate(item1);
 
         //then
         expect(item1.quantityInvalid).toBeDefined();
@@ -176,16 +179,16 @@ describe('AddProductsModalController', function() {
 
         //when
         item1.quantity = 123;
-        this.vm.validate(item1);
+        that.vm.validate(item1);
 
         //then
         expect(item1.quantityInvalid).not.toBeDefined();
     });
 
     it('should broadcast form submit when confirming', function() {
-        this.vm.confirm();
+        that.vm.confirm();
 
-        expect(this.scope.$broadcast).toHaveBeenCalledWith('openlmis-form-submit');
+        expect(that.scope.$broadcast).toHaveBeenCalledWith('openlmis-form-submit');
     });
 
     it('should confirm add products if all items have quantities', function() {
@@ -196,15 +199,15 @@ describe('AddProductsModalController', function() {
         var item2 = {
             quantity: 2
         };
-        this.vm.addedItems = [item1, item2];
+        that.vm.addedItems = [item1, item2];
 
-        spyOn(this.deferred, 'resolve');
+        spyOn(that.deferred, 'resolve');
 
         //when
-        this.vm.confirm();
+        that.vm.confirm();
 
         //then
-        expect(this.deferred.resolve).toHaveBeenCalled();
+        expect(that.deferred.resolve).toHaveBeenCalled();
     });
 
     it('should NOT confirm add products if some items have no quantity', function() {
@@ -215,90 +218,87 @@ describe('AddProductsModalController', function() {
         var item2 = {
             quantity: undefined
         };
-        this.vm.addedItems = [item1, item2];
+        that.vm.addedItems = [item1, item2];
 
-        spyOn(this.deferred, 'resolve');
+        spyOn(that.deferred, 'resolve');
 
         //when
-        this.vm.confirm();
+        that.vm.confirm();
 
         //then
-        expect(this.deferred.resolve).not.toHaveBeenCalled();
+        expect(that.deferred.resolve).not.toHaveBeenCalled();
     });
 
     describe('orderableSelectionChanged', function() {
 
         it('should unselect lot', function() {
-            this.vm.selectedLot = this.vm.items[0].lot;
+            that.vm.selectedLot = that.vm.items[0].lot;
 
-            this.vm.orderableSelectionChanged();
+            that.vm.orderableSelectionChanged();
 
-            expect(this.vm.selectedLot).toBe(null);
+            expect(that.vm.selectedLot).toBe(null);
         });
 
         it('should clear new lot code', function() {
-            this.vm.newLotCode = 'NewLot001';
-            this.vm.orderableSelectionChanged();
+            that.vm.newLot.lotCode = 'NewLot001';
+            that.vm.orderableSelectionChanged();
 
-            expect(this.vm.newLotCode).toBe(null);
+            expect(that.vm.newLot.lotCode).not.toBeDefined(null);
         });
 
         it('should clear new lot expiration date', function() {
-            this.vm.newExpirationDate = '2019-08-06';
-            this.vm.orderableSelectionChanged();
+            that.vm.newLot.expirationDate = '2019-08-06';
+            that.vm.orderableSelectionChanged();
 
-            expect(this.vm.newExpirationDate).toBe(null);
+            expect(that.vm.newLot.expirationDate).not.toBeDefined();
         });
 
         it('should set canAddNewLot as false', function() {
-            this.vm.canAddNewLot = true;
-            this.vm.orderableSelectionChanged();
+            that.vm.canAddNewLot = true;
+            that.vm.orderableSelectionChanged();
 
-            expect(this.vm.canAddNewLot).toBeFalsy();
+            expect(that.vm.canAddNewLot).toBeFalsy();
         });
 
         it('should clear form', function() {
-            this.vm.selectedLot = this.vm.items[0].lot;
+            that.vm.selectedLot = that.vm.items[0].lot;
 
-            this.vm.orderableSelectionChanged();
+            that.vm.orderableSelectionChanged();
 
-            expect(this.scope.productForm.$setPristine).toHaveBeenCalled();
-            expect(this.scope.productForm.$setUntouched).toHaveBeenCalled();
+            expect(that.scope.productForm.$setPristine).toHaveBeenCalled();
+            expect(that.scope.productForm.$setUntouched).toHaveBeenCalled();
         });
-
     });
 
     describe('lotChanged', function() {
 
         it('should clear new lot code', function() {
-            this.vm.newLotCode = 'NewLot001';
-            this.vm.lotChanged();
+            that.vm.newLot.lotCode = 'NewLot001';
+            that.vm.lotChanged();
 
-            expect(this.vm.newLotCode).toBe(null);
+            expect(that.vm.newLot.lotCode).not.toBeDefined();
         });
 
         it('should clear new lot expiration date', function() {
-            this.vm.newExpirationDate = '2019-08-06';
-            this.vm.lotChanged();
+            that.vm.newLot.expirationDate = '2019-08-06';
+            that.vm.lotChanged();
 
-            expect(this.vm.newExpirationDate).toBe(null);
+            expect(that.vm.newLot.expirationDate).not.toBeDefined();
         });
 
         it('should set canAddNewLot as true', function() {
-            this.vm.selectedLot = this.vm.items[0].lot;
-            this.vm.selectedLot.lotCode = 'orderableGroupService.addMissingLot';
-            this.vm.lotChanged();
+            that.vm.selectedLot = that.vm.items[0].lot;
+            that.vm.selectedLot.lotCode = 'orderableGroupService.addMissingLot';
+            that.vm.lotChanged();
 
-            expect(this.vm.canAddNewLot).toBeTruthy();
+            expect(that.vm.canAddNewLot).toBeTruthy();
         });
 
         it('should set canAddNewLot as false', function() {
-            this.vm.selectedLot = this.vm.items[0].lot;
-            this.vm.lotChanged();
+            that.vm.selectedLot = that.vm.items[0].lot;
+            that.vm.lotChanged();
 
-            expect(this.vm.canAddNewLot).toBeFalsy();
+            expect(that.vm.canAddNewLot).toBeFalsy();
         });
-
     });
-
 });

@@ -14,6 +14,7 @@
  */
 
 (function() {
+
     'use strict';
 
     angular
@@ -81,9 +82,11 @@
                     }
                     return $stateParams.srcDstAssignments;
                 },
-                addMissingLotAllowed: function() {
+                // AO-384: disabled adding new lots on this screen
+                hasPermissionToAddNewLot: function() {
                     return false;
                 }
+                // AO-384: ends here
             }
         });
     }

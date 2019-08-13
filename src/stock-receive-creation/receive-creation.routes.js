@@ -82,10 +82,22 @@
                         return sourceDestinationService.getSourceAssignments($stateParams.programId, facility.type.id);
                     }
                     return $stateParams.srcDstAssignments;
+                // AO-384: added checking user rights, 
+                // should be changed to LOTS_MANAGE after moving to core project, 
+                // ORDERABLES_MANAGE used as a workaround
                 },
-                addMissingLotAllowed: function() {
-                    return true;
+                hasPermissionToAddNewLot: function(permissionService, ADMINISTRATION_RIGHTS, user) {
+                    return permissionService.hasPermissionWithAnyProgramAndAnyFacility(user.user_id, {
+                        right: ADMINISTRATION_RIGHTS.ORDERABLES_MANAGE
+                    })
+                        .then(function() {
+                            return true;
+                        })
+                        .catch(function() {
+                            return false;
+                        });
                 }
+                // AO-384: ends here
             }
         });
     }
