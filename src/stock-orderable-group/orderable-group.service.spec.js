@@ -15,193 +15,174 @@
 
 describe('orderableGroupService', function() {
 
-    var $q, $rootScope, service, stockCardRepositoryMock, stockCardSummaries, lots, StockCardSummaryDataBuilder,
-        OrderableDataBuilder, LotDataBuilder, CanFulfillForMeEntryDataBuilder;
-
-    var lot1 = {
-        id: 'lot id 1'
-    };
-
-    var item1 = {
-        orderable: {
-            id: 'a'
-        },
-        lot: lot1
-    };
-    var item2 = {
-        orderable: {
-            id: 'a'
-        }
-    };
-    var item3 = {
-        orderable: {
-            id: 'b'
-        }
-    };
+    var that = this;
 
     beforeEach(function() {
-        stockCardRepositoryMock = jasmine.createSpyObj('stockCardSummaryRepository', ['query']);
+
+        that.stockCardRepositoryMock = jasmine.createSpyObj('stockCardSummaryRepository', ['query']);
         module('stock-orderable-group', function($provide) {
             $provide.factory('StockCardSummaryRepository', function() {
                 return function() {
-                    return stockCardRepositoryMock;
+                    return that.stockCardRepositoryMock;
                 };
             });
         });
-        module('referencedata');
-        module('referencedata-orderable');
-        module('referencedata-lot');
 
         inject(function($injector) {
-            $q = $injector.get('$q');
-            $rootScope = $injector.get('$rootScope');
-            service = $injector.get('orderableGroupService');
-            StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
-            CanFulfillForMeEntryDataBuilder = $injector.get('CanFulfillForMeEntryDataBuilder');
-            OrderableDataBuilder = $injector.get('OrderableDataBuilder');
-            LotDataBuilder = $injector.get('LotDataBuilder');
-            this.OrderableChildrenDataBuilder = $injector.get('OrderableChildrenDataBuilder');
-            this.OrderableGroupDataBuilder = $injector.get('OrderableGroupDataBuilder');
+            that.$q = $injector.get('$q');
+            that.$rootScope = $injector.get('$rootScope');
+            that.orderableGroupService = $injector.get('orderableGroupService');
+            that.StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
+            that.CanFulfillForMeEntryDataBuilder = $injector.get('CanFulfillForMeEntryDataBuilder');
+            that.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
+            that.LotDataBuilder = $injector.get('LotDataBuilder');
+            that.OrderableChildrenDataBuilder = $injector.get('OrderableChildrenDataBuilder');
+            that.OrderableGroupDataBuilder = $injector.get('OrderableGroupDataBuilder');
         });
 
-        this.kitConstituents = [
-            new this.OrderableChildrenDataBuilder().withId('child_product_1_id')
+        that.lot1 = {
+            id: 'lot id 1'
+        };
+
+        that.item1 = {
+            orderable: {
+                id: 'a'
+            },
+            lot: that.lot1
+        };
+        that.item2 = {
+            orderable: {
+                id: 'a'
+            }
+        };
+        that.item3 = {
+            orderable: {
+                id: 'b'
+            }
+        };
+
+        that.items = [that.item1, that.item2, that.item3];
+
+        that.kitConstituents = [
+            new that.OrderableChildrenDataBuilder().withId('child_product_1_id')
                 .withQuantity(30)
                 .buildJson()
         ];
-        this.orderable = new OrderableDataBuilder().withChildren(this.kitConstituents)
+        that.orderable = new that.OrderableDataBuilder().withChildren(that.kitConstituents)
             .buildJson();
-        this.kitOrderableGroup = new this.OrderableGroupDataBuilder().withOrderable(this.orderable)
+        that.kitOrderableGroup = new that.OrderableGroupDataBuilder().withOrderable(that.orderable)
             .build();
-        this.orderableGroups = [
-            new this.OrderableGroupDataBuilder().withOrderable(
-                new OrderableDataBuilder().withChildren([])
+        that.orderableGroups = [
+            new that.OrderableGroupDataBuilder().withOrderable(
+                new that.OrderableDataBuilder().withChildren([])
                     .buildJson()
             )
                 .build(),
-            new this.OrderableGroupDataBuilder().withOrderable(this.orderable)
+            new that.OrderableGroupDataBuilder().withOrderable(that.orderable)
                 .build()
         ];
-
     });
 
-    it('should group items by orderable id', function() {
-        //given
-        var items = [item1, item2, item3];
+    describe('groupByOrderableId', function() {
 
-        //when
-        var groups = service.groupByOrderableId(items);
-
-        //then
-        expect(groups).toEqual([
-            [item1, item2],
-            [item3]
-        ]);
+        it('should group items by orderable id', function() {
+            expect(that.orderableGroupService.groupByOrderableId(that.items)).toEqual([
+                [that.item1, that.item2],
+                [that.item3]
+            ]);
+        });
     });
 
-    it('should find item in group by lot', function() {
-        //given
-        var items = [item1, item2, item3];
+    describe('findByLotInOrderableGroup', function() {
 
-        //when
-        var found = service.findByLotInOrderableGroup(items, lot1);
-
-        //then
-        expect(found).toBe(item1);
-    });
-
-    it('should find item in group by NULL lot', function() {
-        //given
-        var items = [item1, item2, item3];
-
-        //when
-        var found = service.findByLotInOrderableGroup(items, null);
-
-        //then
-        expect(found).toBe(item2);
-    });
-
-    it('should find lots in orderable group', function() {
-        //given
-        var group = [item1, item2];
-
-        //when
-        var lots = service.lotsOf(group);
-
-        //then
-        expect(lots[0]).toEqual({
-            lotCode: 'orderableGroupService.noLotDefined'
+        it('should find item in group by lot', function() {
+            expect(that.orderableGroupService.findByLotInOrderableGroup(that.items, that.lot1)).toBe(that.item1);
         });
 
-        expect(lots[1]).toEqual(lot1);
+        it('should find item in group by NULL lot', function() {
+            expect(that.orderableGroupService.findByLotInOrderableGroup(that.items, null)).toBe(that.item2);
+        });
     });
 
-    it('should add option to add missing lot if is allowed', function() {
-        var group = [item1, item2];
+    describe('lotsOf', function() {
 
-        var lots = service.lotsOf(group, true);
+        it('should find lots in orderable group', function() {
+            var group = [that.item1, that.item2],
+                lots = that.orderableGroupService.lotsOf(group);
 
-        expect(lots[0]).toEqual({
-            lotCode: 'orderableGroupService.addMissingLot'
+            expect(lots[0]).toEqual({
+                lotCode: 'orderableGroupService.noLotDefined'
+            });
+
+            expect(lots[1]).toEqual(that.lot1);
         });
 
-        expect(lots[1]).toEqual({
-            lotCode: 'orderableGroupService.noLotDefined'
+        it('should add option to add missing lot if is allowed', function() {
+            var group = [that.item1, that.item2],
+                lots = that.orderableGroupService.lotsOf(group, true);
+
+            expect(lots[0]).toEqual({
+                lotCode: 'orderableGroupService.addMissingLot'
+            });
+
+            expect(lots[1]).toEqual({
+                lotCode: 'orderableGroupService.noLotDefined'
+            });
+
+            expect(lots[2]).toEqual(that.lot1);
         });
 
-        expect(lots[2]).toEqual(lot1);
+        it('should not add option to add missing lot if is not allowed', function() {
+            var group = [that.item1, that.item2],
+                lots = that.orderableGroupService.lotsOf(group, false);
+
+            expect(lots[0]).toEqual({
+                lotCode: 'orderableGroupService.noLotDefined'
+            });
+
+            expect(lots[1]).toEqual(that.lot1);
+        });
+
+        it('should add option to add missing lot if all items has lots', function() {
+            var group = [that.item1],
+                lots = that.orderableGroupService.lotsOf(group, true);
+
+            expect(lots[0]).toEqual({
+                lotCode: 'orderableGroupService.addMissingLot'
+            });
+
+            expect(lots[1]).toEqual(that.lot1);
+        });
     });
 
-    it('should not add option to add missing lot if is not allowed', function() {
-        var group = [item1, item2];
+    describe('getKitOnlyOrderablegroup', function() {
 
-        var lots = service.lotsOf(group, false);
-
-        expect(lots[0]).toEqual({
-            lotCode: 'orderableGroupService.noLotDefined'
+        it('should return kit only orderableGroups', function() {
+            expect(that.orderableGroupService.getKitOnlyOrderablegroup(that.orderableGroups))
+                .toEqual([that.orderableGroups.pop()]);
         });
-
-        expect(lots[1]).toEqual(lot1);
-    });
-
-    it('should add option to add missing lot if all items has lots', function() {
-        var group = [item1];
-
-        var lots = service.lotsOf(group, true);
-
-        expect(lots[0]).toEqual({
-            lotCode: 'orderableGroupService.addMissingLot'
-        });
-
-        expect(lots[1]).toEqual(lot1);
-    });
-
-    it('should return kit only orderableGroups', function() {
-        var item = service.getKitOnlyOrderablegroup(this.orderableGroups);
-
-        expect(item).toEqual([this.orderableGroups.pop()]);
-
     });
 
     describe('findAvailableProductsAndCreateOrderableGroups', function() {
         beforeEach(function() {
             prepareStockCardSummaries(
-                new StockCardSummaryDataBuilder().build(),
-                new StockCardSummaryDataBuilder().build()
+                new that.StockCardSummaryDataBuilder().build(),
+                new that.StockCardSummaryDataBuilder().build()
             );
 
-            lots = [
-                new LotDataBuilder().withTradeItemId('trade-item-id-1')
+            that.lots = [
+                new that.LotDataBuilder().withTradeItemId('trade-item-id-1')
                     .build(),
-                new LotDataBuilder().withTradeItemId('trade-item-id-2')
+                new that.LotDataBuilder().withTradeItemId('trade-item-id-2')
                     .build()
             ];
         });
 
         it('should query stock card summaries', function() {
-            service.findAvailableProductsAndCreateOrderableGroups('program-id', 'facility-id', false);
+            that.orderableGroupService
+                .findAvailableProductsAndCreateOrderableGroups('program-id', 'facility-id', false);
 
-            expect(stockCardRepositoryMock.query).toHaveBeenCalledWith({
+            expect(that.stockCardRepositoryMock.query).toHaveBeenCalledWith({
                 programId: 'program-id',
                 facilityId: 'facility-id'
             });
@@ -211,44 +192,44 @@ describe('orderableGroupService', function() {
             var orderableGroups = findAvailableProductsAndCreateOrderableGroups(false);
 
             expect(orderableGroups.length).toBe(2);
-            orderableGroupElementEquals(orderableGroups[0][0], stockCardSummaries[0].canFulfillForMe[0]);
-            orderableGroupElementEquals(orderableGroups[1][0], stockCardSummaries[1].canFulfillForMe[0]);
+            orderableGroupElementEquals(orderableGroups[0][0], that.stockCardSummaries[0].canFulfillForMe[0]);
+            orderableGroupElementEquals(orderableGroups[1][0], that.stockCardSummaries[1].canFulfillForMe[0]);
         });
 
         it('should create orderable groups from approved products', function() {
-            var orderableOne = new OrderableDataBuilder()
+            var orderableOne = new that.OrderableDataBuilder()
                     .withIdentifiers({
                         tradeItem: 'trade-item-id-1'
                     })
                     .build(),
-                orderableTwo = new OrderableDataBuilder()
+                orderableTwo = new that.OrderableDataBuilder()
                     .withIdentifiers({
                         tradeItem: 'trade-item-id-2'
                     })
                     .build();
 
-            var stockCardSummaryOne = new StockCardSummaryDataBuilder()
+            var stockCardSummaryOne = new that.StockCardSummaryDataBuilder()
                 .withOrderable(orderableOne)
                 .withCanFulfillForMe([
-                    new CanFulfillForMeEntryDataBuilder()
+                    new that.CanFulfillForMeEntryDataBuilder()
                         .withoutLot()
                         .withOrderable(orderableOne)
                         .buildJson(),
-                    new CanFulfillForMeEntryDataBuilder()
-                        .withLot(lots[0])
+                    new that.CanFulfillForMeEntryDataBuilder()
+                        .withLot(that.lots[0])
                         .withOrderable(orderableOne)
                         .buildJson()
                 ])
                 .build();
-            var stockCardSummaryTwo = new StockCardSummaryDataBuilder()
+            var stockCardSummaryTwo = new that.StockCardSummaryDataBuilder()
                 .withOrderable(orderableTwo)
                 .withCanFulfillForMe([
-                    new CanFulfillForMeEntryDataBuilder()
+                    new that.CanFulfillForMeEntryDataBuilder()
                         .withoutLot()
                         .withOrderable(orderableTwo)
                         .buildJson(),
-                    new CanFulfillForMeEntryDataBuilder()
-                        .withLot(lots[1])
+                    new that.CanFulfillForMeEntryDataBuilder()
+                        .withLot(that.lots[1])
                         .withOrderable(orderableTwo)
                         .buildJson()
                 ])
@@ -260,27 +241,28 @@ describe('orderableGroupService', function() {
             expect(orderableGroups.length).toBe(2);
             orderableGroupElementEqualsNoLot(orderableGroups[0][0], stockCardSummaryOne);
             orderableGroupElementEqualsNoLot(orderableGroups[1][0], stockCardSummaryTwo);
-            orderableGroupElementEqualsWithLot(orderableGroups[0][1], stockCardSummaryOne, lots[0]);
-            orderableGroupElementEqualsWithLot(orderableGroups[1][1], stockCardSummaryTwo, lots[1]);
+            orderableGroupElementEqualsWithLot(orderableGroups[0][1], stockCardSummaryOne, that.lots[0]);
+            orderableGroupElementEqualsWithLot(orderableGroups[1][1], stockCardSummaryTwo, that.lots[1]);
         });
 
         function prepareStockCardSummaries(stockCardSummaryOne, stockCardSummaryTwo) {
-            stockCardSummaries = [
+            that.stockCardSummaries = [
                 stockCardSummaryOne,
                 stockCardSummaryTwo
             ];
-            stockCardRepositoryMock.query.andReturn($q.when({
-                content: stockCardSummaries
+            that.stockCardRepositoryMock.query.andReturn(that.$q.when({
+                content: that.stockCardSummaries
             }));
         }
 
         function findAvailableProductsAndCreateOrderableGroups(includeApprovedProducts) {
             var orderableGroups;
-            service.findAvailableProductsAndCreateOrderableGroups('program-id', 'facility-id', includeApprovedProducts)
+            that.orderableGroupService
+                .findAvailableProductsAndCreateOrderableGroups('program-id', 'facility-id', includeApprovedProducts)
                 .then(function(response) {
                     orderableGroups = response;
                 });
-            $rootScope.$apply();
+            that.$rootScope.$apply();
             return orderableGroups;
         }
 
@@ -301,7 +283,5 @@ describe('orderableGroupService', function() {
             expect(orderableGroupElement.stockOnHand).toEqual(expected.stockOnHand);
             expect(orderableGroupElement.lot).toEqual(lot);
         }
-
     });
-
 });

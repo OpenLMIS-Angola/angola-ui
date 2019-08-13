@@ -49,10 +49,12 @@
             return this;
         }
 
+        // AO-384: added with code method to databuilder
         function withCode(code) {
             this.lotCode = code;
             return this;
         }
+        // AO-384: ends here
 
         function withExpirationDate(newExpirationDate) {
             this.expirationDate = newExpirationDate;
@@ -78,7 +80,5 @@
                 true
             );
         }
-
     }
-
 })();

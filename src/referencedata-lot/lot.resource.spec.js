@@ -15,6 +15,8 @@
 
 describe('LotResource', function() {
 
+    // AO-384: added with core, can be removed after next release
+
     beforeEach(function() {
         var test = this;
         module('referencedata-lot', function($provide) {

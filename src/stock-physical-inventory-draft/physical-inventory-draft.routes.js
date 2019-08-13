@@ -92,7 +92,9 @@
                             .value();
                         groups.forEach(function(group) {
                             group.forEach(function(lineItem) {
+                                // AO-384: allowed adding new lots
                                 orderableGroupService.determineLotMessage(lineItem, group, true);
+                                // AO-384: ends here
                             });
                         });
                         return groups;

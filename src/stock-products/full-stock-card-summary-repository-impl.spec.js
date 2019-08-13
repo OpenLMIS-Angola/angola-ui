@@ -15,6 +15,8 @@
 
 describe('FullStockCardSummaryRepositoryImpl', function() {
 
+    // AO-384: changed LotRepositoryImpl to LotResource, fixed in core, can be removed after next release
+
     var fullStockCardSummaryRepositoryImpl, FullStockCardSummaryRepositoryImpl, lotResourceMock, $q, $rootScope,
         orderableResourceMock, orderableFulfillsResourceMock, stockCardSummaryResourceMock, PageDataBuilder,
         StockCardSummaryDataBuilder, CanFulfillForMeEntryDataBuilder, OrderableDataBuilder, LotDataBuilder,

@@ -33,17 +33,35 @@
         'orderableGroups', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
         'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
-        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'addMissingLotAllowed', 'LotResource', '$q'
+        // AO-384: added hasPermissionToAddNewLot, LotResource and $q
+        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'hasPermissionToAddNewLot', 'LotResource', '$q'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
                         facility, orderableGroups, reasons, confirmService, messageService, user,
                         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
-                        alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, addMissingLotAllowed,
+                        alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, hasPermissionToAddNewLot,
                         LotResource, $q) {
+        // AO-384: ends here
         var vm = this,
             previousAdded = {};
+
+        vm.$onInit = onInit;
+        vm.key = key;
+        vm.search = search;
+        vm.addProduct = addProduct;
+        vm.remove = remove;
+        vm.removeDisplayItems = removeDisplayItems;
+        vm.validateQuantity = validateQuantity;
+        vm.validateAssignment = validateAssignment;
+        vm.validateReason = validateReason;
+        vm.validateDate = validateDate;
+        vm.clearFreeText = clearFreeText;
+        vm.submit = submit;
+        vm.orderableSelectionChanged = orderableSelectionChanged;
+        vm.getStatusDisplay = getStatusDisplay;
+        vm.lotChanged = lotChanged;
 
         /**
          * @ngdoc property
@@ -54,7 +72,7 @@
          * @description
          * Holds list of VVM statuses.
          */
-        vm.vvmStatuses = VVM_STATUS;
+        vm.vvmStatuses = undefined;
 
         /**
          * @ngdoc property
@@ -65,11 +83,64 @@
          * @description
          * Indicates if VVM Status column should be visible.
          */
-        vm.showVVMStatusColumn = false;
+        vm.showVVMStatusColumn = undefined;
 
-        vm.key = function(secondaryKey) {
+        // AO-384: added newLot that holds new lot info
+        /**
+         * @ngdoc property
+         * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name newLot
+         * @type {Object}
+         *
+         * @description
+         * Holds new lot object.
+         */
+        vm.newLot = undefined;
+        // AO-384: ends here
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name $onInit
+         *
+         * @description
+         * Initialization method of the StockAdjustmentCreationController.
+         */
+        function onInit() {
+            $state.current.label = messageService.get(vm.key('title'), {
+                facilityCode: facility.code,
+                facilityName: facility.name,
+                program: program.name
+            });
+
+            initViewModel();
+            initStateParams();
+
+            $scope.$watch(function() {
+                return vm.addedLineItems;
+            }, function(newValue) {
+                $scope.needToConfirm = newValue.length > 0;
+            }, true);
+            confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
+
+            $scope.$on('$stateChangeStart', function() {
+                angular.element('.popover').popover('destroy');
+            });
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name key
+         *
+         * @description
+         * Returns generated message key for screen title.
+         * 
+         * @returns {stirng} screen  title message key
+         */
+        function key(secondaryKey) {
             return adjustmentType.prefix + 'Creation.' + secondaryKey;
-        };
+        }
 
         /**
          * @ngdoc method
@@ -80,7 +151,7 @@
          * It searches from the total line items with given keyword. If keyword is empty then all line
          * items will be shown.
          */
-        vm.search = function() {
+        function search() {
             vm.displayItems = stockAdjustmentCreationService.search(vm.keyword, vm.addedLineItems, vm.hasLot);
 
             $stateParams.addedLineItems = vm.addedLineItems;
@@ -91,7 +162,7 @@
                 reload: true,
                 notify: false
             });
-        };
+        }
 
         /**
          * @ngdoc method
@@ -101,17 +172,20 @@
          * @description
          * Add a product for stock adjustment.
          */
-        vm.addProduct = function() {
+        function addProduct() {
+
             var selectedItem;
-            if (vm.newLotCode) {
+
+            // AO-384: added creating new lot on adding product
+            if (vm.selectedOrderableGroup && vm.selectedOrderableGroup.length) {
+                vm.newLot.tradeItemId = vm.selectedOrderableGroup[0].orderable.identifiers.tradeItem;
+            }
+
+            if (vm.newLot.lotCode) {
                 selectedItem = orderableGroupService
-                    .findByLotInOrderableGroup(vm.selectedOrderableGroup, {
-                        lotCode: vm.newLotCode,
-                        expirationDate: vm.newExpirationDate,
-                        tradeItemId: vm.selectedOrderableGroup[0].orderable.identifiers.tradeItem,
-                        active: true
-                    }, true);
+                    .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.newLot, true);
             } else {
+            // AO-384: ends here
                 selectedItem = orderableGroupService
                     .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
             }
@@ -125,7 +199,209 @@
             previousAdded = vm.addedLineItems[0];
 
             vm.search();
-        };
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name remove
+         *
+         * @description
+         * Remove a line item from added products.
+         *
+         * @param {Object} lineItem line item to be removed.
+         */
+        function remove(lineItem) {
+            var index = vm.addedLineItems.indexOf(lineItem);
+            vm.addedLineItems.splice(index, 1);
+
+            vm.search();
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name removeDisplayItems
+         *
+         * @description
+         * Remove all displayed line items.
+         */
+        function removeDisplayItems() {
+            confirmService.confirmDestroy(vm.key('clearAll'), vm.key('clear'))
+                .then(function() {
+                    vm.addedLineItems = _.difference(vm.addedLineItems, vm.displayItems);
+                    vm.displayItems = [];
+                });
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name validateQuantity
+         *
+         * @description
+         * Validate line item quantity and returns self.
+         *
+         * @param {Object} lineItem line item to be validated.
+         */
+        function validateQuantity(lineItem) {
+            if (lineItem.quantity > MAX_INTEGER_VALUE) {
+                lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
+            } else if (lineItem.quantity >= 1) {
+                lineItem.$errors.quantityInvalid = false;
+            } else {
+                lineItem.$errors.quantityInvalid = messageService.get(vm.key('positiveInteger'));
+            }
+            return lineItem;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name validateAssignment
+         *
+         * @description
+         * Validate line item assignment and returns self.
+         *
+         * @param {Object} lineItem line item to be validated.
+         */
+        function validateAssignment(lineItem) {
+            if (adjustmentType.state !== ADJUSTMENT_TYPE.ADJUSTMENT.state &&
+                adjustmentType.state !== ADJUSTMENT_TYPE.KIT_UNPACK.state) {
+                lineItem.$errors.assignmentInvalid = isEmpty(lineItem.assignment);
+            }
+            return lineItem;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name validateReason
+         *
+         * @description
+         * Validate line item reason and returns self.
+         *
+         * @param {Object} lineItem line item to be validated.
+         */
+        function validateReason(lineItem) {
+            if (adjustmentType.state === 'adjustment') {
+                lineItem.$errors.reasonInvalid = isEmpty(lineItem.reason);
+            }
+            return lineItem;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name validateDate
+         *
+         * @description
+         * Validate line item occurred date and returns self.
+         *
+         * @param {Object} lineItem line item to be validated.
+         */
+        function validateDate(lineItem) {
+            lineItem.$errors.occurredDateInvalid = isEmpty(lineItem.occurredDate);
+            return lineItem;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name clearFreeText
+         *
+         * @description
+         * remove free text from given object.
+         *
+         * @param {Object} obj      given target to be changed.
+         * @param {String} property given property to be cleared.
+         */
+        function clearFreeText(obj, property) {
+            obj[property] = null;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name submit
+         *
+         * @description
+         * Submit all added items.
+         */
+        function submit() {
+            $scope.$broadcast('openlmis-form-submit');
+            if (validateAllAddedItems()) {
+                var confirmMessage = messageService.get(vm.key('confirmInfo'), {
+                    username: user.username,
+                    number: vm.addedLineItems.length
+                });
+                confirmService.confirm(confirmMessage, vm.key('confirm')).then(confirmSubmit);
+            } else {
+                vm.keyword = null;
+                reorderItems();
+                alertService.error('stockAdjustmentCreation.submitInvalid');
+            }
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name orderableSelectionChanged
+         *
+         * @description
+         * Reset form status and change content inside lots drop down list.
+         */
+        function orderableSelectionChanged() {
+            //reset selected lot, so that lot field has no default value
+            vm.selectedLot = null;
+
+            // AO-384: cleared new lot object and disabled adding new lot
+            initiateNewLotObject();
+            vm.canAddNewLot = false;
+            // AO-384: ends here
+
+            //same as above
+            $scope.productForm.$setUntouched();
+
+            //make form good as new, so errors won't persist
+            $scope.productForm.$setPristine();
+
+            // AO-384: added newLot that holds new lot info
+            vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup, vm.hasPermissionToAddNewLot);
+            // AO-384: ends here
+            vm.selectedOrderableHasLots = vm.lots.length > 0;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name getStatusDisplay
+         *
+         * @description
+         * Returns VVM status display.
+         *
+         * @param  {String} status VVM status
+         * @return {String}        VVM status display name
+         */
+        function getStatusDisplay(status) {
+            return messageService.get(VVM_STATUS.$getDisplayName(status));
+        }
+
+        // AO-384: when lot selection is changed
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name lotChanged
+         *
+         * @description
+         * Allows inputs to add missing lot to be displayed.
+         */
+        function lotChanged() {
+            vm.canAddNewLot = vm.selectedLot
+                && vm.selectedLot.lotCode === messageService.get('orderableGroupService.addMissingLot');
+            initiateNewLotObject();
+        }
+        // AO-384: ends here
 
         function copyDefaultValue() {
             var defaultDate;
@@ -143,208 +419,6 @@
                 occurredDate: defaultDate
             };
         }
-
-        /**
-         * @ngdoc method
-         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-         * @name remove
-         *
-         * @description
-         * Remove a line item from added products.
-         *
-         * @param {Object} lineItem line item to be removed.
-         */
-        vm.remove = function(lineItem) {
-            var index = vm.addedLineItems.indexOf(lineItem);
-            vm.addedLineItems.splice(index, 1);
-
-            vm.search();
-        };
-
-        /**
-         * @ngdoc method
-         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-         * @name removeDisplayItems
-         *
-         * @description
-         * Remove all displayed line items.
-         */
-        vm.removeDisplayItems = function() {
-            confirmService.confirmDestroy(vm.key('clearAll'), vm.key('clear'))
-                .then(function() {
-                    vm.addedLineItems = _.difference(vm.addedLineItems, vm.displayItems);
-                    vm.displayItems = [];
-                });
-        };
-
-        /**
-         * @ngdoc method
-         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-         * @name validateQuantity
-         *
-         * @description
-         * Validate line item quantity and returns self.
-         *
-         * @param {Object} lineItem line item to be validated.
-         */
-        vm.validateQuantity = function(lineItem) {
-            if (lineItem.quantity > MAX_INTEGER_VALUE) {
-                lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
-            } else if (lineItem.quantity >= 1) {
-                lineItem.$errors.quantityInvalid = false;
-            } else {
-                lineItem.$errors.quantityInvalid = messageService.get(vm.key('positiveInteger'));
-            }
-            return lineItem;
-        };
-
-        /**
-         * @ngdoc method
-         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-         * @name validateAssignment
-         *
-         * @description
-         * Validate line item assignment and returns self.
-         *
-         * @param {Object} lineItem line item to be validated.
-         */
-        vm.validateAssignment = function(lineItem) {
-            if (adjustmentType.state !== ADJUSTMENT_TYPE.ADJUSTMENT.state &&
-                adjustmentType.state !== ADJUSTMENT_TYPE.KIT_UNPACK.state) {
-                lineItem.$errors.assignmentInvalid = isEmpty(lineItem.assignment);
-            }
-            return lineItem;
-        };
-
-        /**
-         * @ngdoc method
-         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-         * @name validateReason
-         *
-         * @description
-         * Validate line item reason and returns self.
-         *
-         * @param {Object} lineItem line item to be validated.
-         */
-        vm.validateReason = function(lineItem) {
-            if (adjustmentType.state === 'adjustment') {
-                lineItem.$errors.reasonInvalid = isEmpty(lineItem.reason);
-            }
-            return lineItem;
-        };
-
-        /**
-         * @ngdoc method
-         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-         * @name validateDate
-         *
-         * @description
-         * Validate line item occurred date and returns self.
-         *
-         * @param {Object} lineItem line item to be validated.
-         */
-        vm.validateDate = function(lineItem) {
-            lineItem.$errors.occurredDateInvalid = isEmpty(lineItem.occurredDate);
-            return lineItem;
-        };
-
-        /**
-         * @ngdoc method
-         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-         * @name clearFreeText
-         *
-         * @description
-         * remove free text from given object.
-         *
-         * @param {Object} obj      given target to be changed.
-         * @param {String} property given property to be cleared.
-         */
-        vm.clearFreeText = function(obj, property) {
-            obj[property] = null;
-        };
-
-        /**
-         * @ngdoc method
-         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-         * @name submit
-         *
-         * @description
-         * Submit all added items.
-         */
-        vm.submit = function() {
-            $scope.$broadcast('openlmis-form-submit');
-            if (validateAllAddedItems()) {
-                var confirmMessage = messageService.get(vm.key('confirmInfo'), {
-                    username: user.username,
-                    number: vm.addedLineItems.length
-                });
-                confirmService.confirm(confirmMessage, vm.key('confirm')).then(confirmSubmit);
-            } else {
-                vm.keyword = null;
-                reorderItems();
-                alertService.error('stockAdjustmentCreation.submitInvalid');
-            }
-        };
-
-        /**
-         * @ngdoc method
-         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-         * @name orderableSelectionChanged
-         *
-         * @description
-         * Reset form status and change content inside lots drop down list.
-         */
-        vm.orderableSelectionChanged = function() {
-            //reset selected lot, so that lot field has no default value
-            vm.selectedLot = null;
-            vm.newLotCode = null;
-            vm.newExpirationDate = null;
-            vm.canAddNewLot = false;
-
-            //same as above
-            $scope.productForm.$setUntouched();
-
-            //make form good as new, so errors won't persist
-            $scope.productForm.$setPristine();
-
-            vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup, vm.addMissingLotAllowed);
-            vm.selectedOrderableHasLots = vm.lots.length > 0;
-        };
-
-        /**
-         * @ngdoc method
-         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-         * @name getStatusDisplay
-         *
-         * @description
-         * Returns VVM status display.
-         *
-         * @param  {String} status VVM status
-         * @return {String}        VVM status display name
-         */
-        vm.getStatusDisplay = function(status) {
-            return messageService.get(VVM_STATUS.$getDisplayName(status));
-        };
-
-        /**
-         * @ngdoc method
-         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-         * @name lotChanged
-         *
-         * @description
-         * Allows inputs to add missing lot to be displayed.
-         */
-        vm.lotChanged = function() {
-            var missingLot =  messageService.get('orderableGroupService.addMissingLot');
-            if (vm.selectedLot && vm.selectedLot.lotCode === missingLot) {
-                vm.canAddNewLot = true;
-            } else {
-                vm.canAddNewLot = false;
-            }
-
-            vm.newLotCode = null;
-            vm.newExpirationDate = null;
-        };
 
         function isEmpty(value) {
             return _.isUndefined(value) || _.isNull(value);
@@ -397,6 +471,7 @@
 
             generateKitConstituentLineItem(addedLineItems);
 
+            // AO-384: included creating new lots after submitting form
             var lotPromises = [];
             addedLineItems.forEach(function(lineItem) {
                 if (lineItem.lot && _.isUndefined(lineItem.lot.id)) {
@@ -432,6 +507,7 @@
                     alertService.error(errorResponse.data.message);
                     loadingModalService.close();
                 });
+            // AO-384: ends here
         }
 
         function generateKitConstituentLineItem(addedLineItems) {
@@ -460,29 +536,11 @@
             addedLineItems.push.apply(addedLineItems, constituentLineItems);
         }
 
-        function onInit() {
-            $state.current.label = messageService.get(vm.key('title'), {
-                facilityCode: facility.code,
-                facilityName: facility.name,
-                program: program.name
-            });
-
-            initViewModel();
-            initStateParams();
-
-            $scope.$watch(function() {
-                return vm.addedLineItems;
-            }, function(newValue) {
-                $scope.needToConfirm = newValue.length > 0;
-            }, true);
-            confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
-
-            $scope.$on('$stateChangeStart', function() {
-                angular.element('.popover').popover('destroy');
-            });
-        }
-
         function initViewModel() {
+
+            vm.vvmStatuses = VVM_STATUS;
+            vm.showVVMStatusColumn = false;
+
             //Set the max-date of date picker to the end of the current day.
             vm.maxDate = new Date();
             vm.maxDate.setHours(23, 59, 59, 999);
@@ -499,11 +557,24 @@
             vm.orderableGroups = orderableGroups;
             vm.hasLot = false;
             vm.orderableGroups.forEach(function(group) {
-                vm.hasLot = vm.hasLot || orderableGroupService.lotsOf(group, addMissingLotAllowed).length > 0;
+                // AO-384: added hasPermissionToAddNewLot to lotsOf method 
+                vm.hasLot = vm.hasLot || orderableGroupService.lotsOf(group, hasPermissionToAddNewLot).length > 0;
+                // AO-384: ends here
             });
             vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(vm.orderableGroups);
-            vm.addMissingLotAllowed = addMissingLotAllowed;
+            // AO-384: added newLot that holds new lot info
+            vm.hasPermissionToAddNewLot = hasPermissionToAddNewLot;
+            vm.canAddNewLot = false;
+            initiateNewLotObject();
         }
+
+        function initiateNewLotObject() {
+            vm.newLot = {
+                active: true
+            };
+        }
+        // AO-384: ends here
+
         function initStateParams() {
             $stateParams.page = getPageNumber();
             $stateParams.program = program;
@@ -521,7 +592,5 @@
             }
             return pageNumber;
         }
-
-        onInit();
     }
 })();

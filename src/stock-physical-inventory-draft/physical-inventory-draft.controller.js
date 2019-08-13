@@ -34,7 +34,9 @@
         'displayLineItemsGroup', 'confirmService', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
         'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter',
+        // AO-384: added LotResource and $q
         'LotResource', '$q'];
+    // AO-384: ends here
 
     function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                         physicalInventoryFactory, notificationService, alertService, confirmDiscardService,
@@ -42,7 +44,9 @@
                         confirmService, physicalInventoryService, MAX_INTEGER_VALUE, VVM_STATUS,
                         reasons, stockReasonsCalculations, loadingModalService, $window,
                         stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter,
+                        // AO-384: added LotResource and $q
                         LotResource, $q) {
+        // AO-384: ends here
         var vm = this;
 
         vm.$onInit = onInit;
@@ -239,44 +243,27 @@
         vm.saveDraft = function() {
             loadingModalService.open();
 
-            var lotPromises = [];
-            draft.lineItems.forEach(function(lineItem) {
-                if (lineItem.lot && _.isUndefined(lineItem.lot.id)) {
-                    lotPromises.push(new LotResource().create(lineItem.lot));
-                }
-            });
+            // AO-384: called saving new lots
+            return saveLots(draft, function() {
+            // AO-384: ends here
+                return physicalInventoryFactory.saveDraft(draft).then(function() {
+                    notificationService.success('stockPhysicalInventoryDraft.saved');
+                    resetWatchItems();
 
-            return $q.all(lotPromises)
-                .then(function(responses) {
-                    responses.forEach(function(lot) {
-                        draft.lineItems.forEach(function(lineItem) {
-                            if (lineItem.lot && lineItem.lot.lotCode === lot.lotCode) {
-                                lineItem.lot = lot;
-                            }
-                        });
-                        return draft.lineItems;
+                    $stateParams.isAddProduct = false;
+
+                    $stateParams.program = vm.program;
+                    $stateParams.facility = vm.facility;
+                    $stateParams.draft = draft;
+                    //Reload parent state and current state to keep data consistency.
+                    $state.go($state.current.name, $stateParams, {
+                        reload: true
                     });
-                    return physicalInventoryFactory.saveDraft(draft).then(function() {
-                        notificationService.success('stockPhysicalInventoryDraft.saved');
-                        resetWatchItems();
-
-                        $stateParams.isAddProduct = false;
-
-                        $stateParams.program = vm.program;
-                        $stateParams.facility = vm.facility;
-                        $stateParams.draft = draft;
-                        //Reload parent state and current state to keep data consistency.
-                        $state.go($state.current.name, $stateParams, {
-                            reload: true
-                        });
-                    }, function() {
-                        loadingModalService.close();
-                        alertService.error('stockPhysicalInventoryDraft.saveFailed');
-                    });
-                }, function(errorResponse) {
+                }, function() {
                     loadingModalService.close();
-                    alertService.error(errorResponse.data.message);
+                    alertService.error('stockPhysicalInventoryDraft.saveFailed');
                 });
+            });
         };
 
         /**
@@ -324,24 +311,11 @@
                     draft.occurredDate = resolvedData.occurredDate;
                     draft.signature = resolvedData.signature;
 
-                    var lotPromises = [];
-                    draft.lineItems.forEach(function(lineItem) {
-                        if (lineItem.lot && _.isUndefined(lineItem.lot.id)) {
-                            lotPromises.push(new LotResource().create(lineItem.lot));
-                        }
-                    });
-
-                    return $q.all(lotPromises)
-                        .then(function(responses) {
-                            responses.forEach(function(lot) {
-                                draft.lineItems.forEach(function(lineItem) {
-                                    if (lineItem.lot && lineItem.lot.lotCode === lot.lotCode) {
-                                        lineItem.lot = lot;
-                                    }
-                                });
-                                return draft.lineItems;
-                            });
-                            physicalInventoryService.submitPhysicalInventory(draft).then(function() {
+                    // AO-384: called saving new lots
+                    return saveLots(draft, function() {
+                    // AO-384: ends here
+                        return physicalInventoryService.submitPhysicalInventory(draft)
+                            .then(function() {
                                 notificationService.success('stockPhysicalInventoryDraft.submitted');
                                 confirmService.confirm('stockPhysicalInventoryDraft.printModal.label',
                                     'stockPhysicalInventoryDraft.printModal.yes',
@@ -361,10 +335,7 @@
                                 loadingModalService.close();
                                 alertService.error('stockPhysicalInventoryDraft.submitFailed');
                             });
-                        }, function(errorResponse) {
-                            loadingModalService.close();
-                            alertService.error(errorResponse.data.message);
-                        });
+                    });
                 });
             }
         };
@@ -389,6 +360,36 @@
             }
             return lineItem.quantityInvalid;
         };
+
+        // AO-384: method that saves new lots separately, after calls physical inventory endpoint
+        function saveLots(draft, submitMethod) {
+            var lotPromises = [],
+                lotResource = new LotResource();
+
+            draft.lineItems.forEach(function(lineItem) {
+                if (lineItem.lot && !lineItem.lot.id) {
+                    lotPromises.push(lotResource.create(lineItem.lot));
+                }
+            });
+
+            return $q.all(lotPromises)
+                .then(function(responses) {
+                    responses.forEach(function(lot) {
+                        draft.lineItems.forEach(function(lineItem) {
+                            if (lineItem.lot && lineItem.lot.lotCode === lot.lotCode) {
+                                lineItem.lot = lot;
+                            }
+                        });
+                        return draft.lineItems;
+                    });
+                    return submitMethod();
+                })
+                .catch(function(errorResponse) {
+                    loadingModalService.close();
+                    alertService.error(errorResponse.data.message);
+                });
+        }
+        // AO-384: ends here
 
         function isEmpty(value) {
             return value === '' || value === undefined || value === null;

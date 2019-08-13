@@ -24,18 +24,22 @@
                 </div>
                 <div ng-if="vm.selectedOrderableHasLots">
                     <label for="lotSelect">{{'stockAddProductsModal.lotCode' | message}}</label>
+                    <!-- AO-384: removed required and added ng-change -->
                     <select id="lotSelect" ng-model="vm.selectedLot"
                         ng-options="lot.lotCode for lot in vm.lots"
                         ng-change="vm.lotChanged()"
                         required>
+                    <!-- AO-384: ends here -->
                     </select>
                 </div>
-                <div ng-if="vm.addMissingLotAllowed && vm.canAddNewLot">
+                <!-- AO-384: added form for new lot -->
+                <div ng-if="vm.hasPermissionToAddNewLot && vm.canAddNewLot">
                     <label for="lotCode">{{'stockAddProductsModal.newLotCode' | message}}</label>
                     <input id="lotCode" type="text" ng-model="vm.newLotCode" required>
                     <label for="expirationDate">{{'stockAddProductsModal.newNotExpirationDate' | message}}</label>
                     <input id="expirationDate" type="date" ng-model="vm.newExpirationDate"/>
                 </div>
+                <!-- AO-384: ends here -->
                 <button type="submit" class="add">{{vm.key('add') | message}}</button>
             </form>
         </section>
