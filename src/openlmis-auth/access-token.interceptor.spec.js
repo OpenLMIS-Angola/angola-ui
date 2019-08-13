@@ -96,6 +96,13 @@ describe('accessTokenInterceptor', function() {
             expect(this.openlmisUrlService.check).toHaveBeenCalledWith('some.url');
         });
 
+        it('should not override existing Authorization header', function() {
+            this.config.headers.Authorization = 'Basic auth-en-ti-cation';
+
+            this.accessTokenInterceptor.request(this.config);
+
+            expect(this.config.headers.Authorization).toEqual('Basic auth-en-ti-cation');
+        });
     });
 
     describe('responseError', function() {

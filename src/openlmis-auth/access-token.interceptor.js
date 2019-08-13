@@ -63,7 +63,9 @@
             if (openlmisUrlService.check(config.url) && authorizationService.isAuthenticated()
                     && !config.ignoreAuthModule
                     // we don't want to add the token to template requests
-                    && !isHtml(config.url)) {
+                    && !isHtml(config.url)
+                    // we don't want to override the basic authorization when login in
+                    && !config.headers.Authorization) {
                 config.headers.Authorization = accessTokenFactory.authHeader();
             }
             return config;
