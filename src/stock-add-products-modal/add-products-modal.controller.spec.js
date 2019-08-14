@@ -116,7 +116,8 @@ describe('AddProductsModalController', function() {
         expect(that.vm.addedItems).toEqual([{
             orderable: that.vm.selectedOrderableGroup[0].orderable,
             lot: newLot,
-            displayLotMessage: 'NewLot001'
+            displayLotMessage: 'NewLot001',
+            stockOnHand: 0
         }]);
     });
 
