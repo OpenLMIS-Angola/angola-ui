@@ -24,7 +24,7 @@
                 </div>
                 <div ng-if="vm.selectedOrderableHasLots">
                     <label for="lotSelect">{{'stockAddProductsModal.lotCode' | message}}</label>
-                    <!-- AO-384: removed required and added ng-change -->
+                    <!-- AO-384: added ng-change -->
                     <select id="lotSelect" ng-model="vm.selectedLot"
                         ng-options="lot.lotCode for lot in vm.lots"
                         ng-change="vm.lotChanged()"

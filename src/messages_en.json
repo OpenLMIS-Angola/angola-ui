@@ -32,5 +32,12 @@
     "orderableGroupService.noLotDefined": "No lot defined",
     "stockReceiveCreation.noLotDefined": "No lot defined",
     "stockReceiveCreation.productHasNoLots": "No lot defined",
-    "report.dueDaysInfo": "Insert number of days past the period end date the requisitions are due by. Default is 15 days."
+    "report.dueDaysInfo": "Insert number of days past the period end date the requisitions are due by. Default is 15 days.",
+
+    "stockAddProductsModal.newNotExpirationDate": "Expiration Date",
+    "stockAddProductsModal.newLotCode": "Lot Code",
+    "stockAdjustmentCreation.newNotExpirationDate": "Expiration Date",
+    "stockAdjustmentCreation.newLotCode": "Lot Code",
+    "orderableGroupService.addMissingLot": "Add missing lot",
+    "stockPhysicalInventoryDraft.addLotFailed": "Failed to add missing lot"
 }
