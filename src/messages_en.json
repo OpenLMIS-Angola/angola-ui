@@ -38,6 +38,6 @@
     "stockAddProductsModal.newLotCode": "Lot Code",
     "stockAdjustmentCreation.newNotExpirationDate": "Expiration Date",
     "stockAdjustmentCreation.newLotCode": "Lot Code",
-    "orderableGroupService.addMissingLot": "Add missing lot",
-    "stockPhysicalInventoryDraft.addLotFailed": "Failed to add missing lot"
+    "orderableGroupService.addMissingLot": "Add lot",
+    "stockPhysicalInventoryDraft.addLotFailed": "Failed to add lot."
 }
