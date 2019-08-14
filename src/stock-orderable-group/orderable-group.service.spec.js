@@ -102,6 +102,16 @@ describe('orderableGroupService', function() {
         it('should find item in group by NULL lot', function() {
             expect(that.orderableGroupService.findByLotInOrderableGroup(that.items, null)).toBe(that.item2);
         });
+
+        it('should find item with new lot', function() {
+            var newLot = new that.LotDataBuilder().build(),
+                newItem = that.item2;
+
+            newItem.lot = newLot;
+            newItem.stockOnHand = 0;
+
+            expect(that.orderableGroupService.findByLotInOrderableGroup(that.items, newLot)).toBe(newItem);
+        });
     });
 
     describe('lotsOf', function() {
