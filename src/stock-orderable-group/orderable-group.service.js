@@ -74,11 +74,11 @@
                 });
 
             if (someHasLot && someHasNoLot) {
+                //add no lot defined as option
+                lots.unshift(noLotDefined);
+            }
             // AO-384: added missing lot message to lot list
-                //add no lot defined and add missing lot (if is allowed) as options
-                addMissingLotAllowed ? lots.unshift(addMissingLot, noLotDefined) : lots.unshift(noLotDefined);
-
-            } else if (someHasLot && !someHasNoLot && addMissingLotAllowed) {
+            if (addMissingLotAllowed) {
                 lots.unshift(addMissingLot);
             }
             // AO-384: ends here
