@@ -154,6 +154,40 @@ describe('SupersetOAuthLoginController', function() {
             expect(loadingModalService.close).toHaveBeenCalled();
         });
 
+        it('should send check credentials request with authorization header to OpenLMIS', function() {
+            $httpBackend.expectPOST(authUrl('/api/oauth/token?grant_type=password'),
+                function(data) {
+                    return isString(data) && data.indexOf('username') !== -1 && data.indexOf('password') !== -1;
+                },
+                function(headers) {
+                    var authorizationHeader = headers['Authorization'];
+                    return isString(authorizationHeader) && authorizationHeader.startsWith('Basic');
+                });
+
+            vm.doLogin();
+            $httpBackend.flush();
+        });
+
+        it('should not send OAuth request and modal should not close if credentials are not correct', function() {
+            var state = isNotAuthorizedResponse.state;
+            var oauthRequestUrl = supersetUrlFactory.buildSupersetOAuthRequestUrl(state);
+            var forbiddenCallTriggered = false;
+
+            checkCredentialsEndpointMock.respond(400);
+            $httpBackend.whenGET(oauthRequestUrl).respond(function() {
+                forbiddenCallTriggered = true;
+                return [400, ''];
+            });
+
+            vm.doLogin();
+            $httpBackend.flush();
+
+            expect(forbiddenCallTriggered).toBe(false);
+            expect(vm.loginError.length).not.toEqual(0);
+            expect(modalDeferred.resolve).not.toHaveBeenCalled();
+            expect(modalDeferred.reject).not.toHaveBeenCalled();
+        });
+
         it('should send OAuth request with authorization header to OpenLMIS', function() {
             var state = isNotAuthorizedResponse.state;
             var oauthRequestUrl = supersetUrlFactory.buildSupersetOAuthRequestUrl(state);

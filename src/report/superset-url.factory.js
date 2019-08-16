@@ -28,9 +28,9 @@
         .module('report')
         .factory('supersetUrlFactory', supersetUrlFactory);
 
-    supersetUrlFactory.$inject = ['openlmisUrlFactory'];
+    supersetUrlFactory.$inject = ['openlmisUrlFactory', 'authUrl'];
 
-    function supersetUrlFactory(openlmisUrlFactory) {
+    function supersetUrlFactory(openlmisUrlFactory, authUrl) {
         var redirectUrl = '${SUPERSET_URL}/oauth-authorized/openlmis',
             factory = {
                 buildSupersetOAuthRequestUrl: buildSupersetOAuthRequestUrl,
@@ -54,7 +54,7 @@
             var url = '/api/oauth/authorize?response_type=code&client_id=superset'
                     + '&redirect_uri=' + redirectUrl
                     + '&scope=read+write&state=' + supersetOAuthState;
-            return openlmisUrlFactory(url);
+            return authUrl(url);
         }
 
         /**
