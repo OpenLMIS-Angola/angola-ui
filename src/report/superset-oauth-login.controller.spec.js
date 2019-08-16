@@ -15,7 +15,7 @@
 
 describe('SupersetOAuthLoginController', function() {
 
-    var vm, $controller, $q, $httpBackend, modalDeferred,
+    var vm, $controller, $q, $httpBackend, modalDeferred, authUrl,
         supersetUrlFactory, authorizationService, loadingModalService,
         CHECK_SUPERSET_AUTORIZATION_URL, MODAL_CANCELLED,
         user, isAuthorizedResponse, isNotAuthorizedResponse;
@@ -28,6 +28,7 @@ describe('SupersetOAuthLoginController', function() {
             $q = $injector.get('$q');
             $httpBackend = $injector.get('$httpBackend');
 
+            authUrl = $injector.get('authUrl');
             supersetUrlFactory = $injector.get('supersetUrlFactory');
             authorizationService = $injector.get('authorizationService');
             loadingModalService = $injector.get('loadingModalService');
@@ -123,9 +124,14 @@ describe('SupersetOAuthLoginController', function() {
 
     describe('doLogin', function() {
 
+        var checkCredentialsEndpointMock;
         var checkAuthorizationEndpointMock;
 
         beforeEach(function() {
+            checkCredentialsEndpointMock = $httpBackend
+                .whenPOST(authUrl('/api/oauth/token?grant_type=password'))
+                .respond(200);
+
             checkAuthorizationEndpointMock = $httpBackend
                 .whenGET(CHECK_SUPERSET_AUTORIZATION_URL)
                 .respond(200, isNotAuthorizedResponse);
@@ -136,12 +142,14 @@ describe('SupersetOAuthLoginController', function() {
 
         it('should open loading modal', function() {
             vm.doLogin();
+            $httpBackend.flush();
 
             expect(loadingModalService.open).toHaveBeenCalled();
         });
 
         it('should close loading modal after processing', function() {
             vm.doLogin();
+            $httpBackend.flush();
 
             expect(loadingModalService.close).toHaveBeenCalled();
         });
@@ -152,10 +160,11 @@ describe('SupersetOAuthLoginController', function() {
 
             $httpBackend.expectGET(oauthRequestUrl, function(headers) {
                 var authorizationHeader = headers['Authorization'];
-                return isString(headers['Authorization']) && authorizationHeader.startsWith('Basic');
+                return isString(authorizationHeader) && authorizationHeader.startsWith('Basic');
             });
 
             vm.doLogin();
+            $httpBackend.flush();
         });
 
         it('should check whatever the user is already approved after OAuth request', function() {

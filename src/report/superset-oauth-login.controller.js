@@ -28,12 +28,12 @@
 
     SupersetOAuthLoginController.$inject = [
         'modalDeferred', 'authorizationService', 'loadingModalService',
-        'supersetUrlFactory', '$q', '$http', '$httpParamSerializer',
+        'supersetUrlFactory', '$q', '$http', '$httpParamSerializer', 'authUrl',
         'MODAL_CANCELLED', 'CHECK_SUPERSET_AUTORIZATION_URL'
     ];
 
     function SupersetOAuthLoginController(modalDeferred, authorizationService, loadingModalService,
-                                          supersetUrlFactory, $q, $http, $httpParamSerializer,
+                                          supersetUrlFactory, $q, $http, $httpParamSerializer, authUrl,
                                           MODAL_CANCELLED, CHECK_SUPERSET_AUTORIZATION_URL) {
         var vm = this;
         vm.$onInit = onInit;
@@ -74,6 +74,7 @@
          */
         function onInit() {
             loadingModalService.open();
+            vm.loginError = '';
             checkAuthorizationInSuperset()
                 .then(function(data) {
                     vm.supersetOAuthState = data.state;
@@ -110,16 +111,40 @@
          */
         function doLogin() {
             loadingModalService.open();
-
-            sendOAuthRequest()
+            vm.loginError = '';
+            checkCredentials()
+                .then(function() {
+                    return sendOAuthRequest();
+                })
                 .then(function() {
                     return approveSupersetIfNeeded();
                 })
                 .then(function() {
-                    vm.loginError = '';
                     modalDeferred.resolve();
                 })
                 .finally(loadingModalService.close);
+        }
+
+        function checkCredentials() {
+            return $http({
+                method: 'POST',
+                url: authUrl('/api/oauth/token?grant_type=password'),
+                data: 'username=' + vm.username + '&password=' + vm.password,
+                headers: {
+                    Authorization: uiAuthorizationHeader(),
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+                .catch(function(response) {
+                    if (response.status === 400) {
+                        vm.loginError = 'openlmisLogin.invalidCredentials';
+                    } else if (response.status === -1) {
+                        vm.loginError = 'openlmisLogin.cannotConnectToServer';
+                    } else {
+                        vm.loginError = 'openlmisLogin.unknownServerError';
+                    }
+                    return $q.reject();
+                });
         }
 
         function checkAuthorizationInSuperset() {
@@ -193,6 +218,11 @@
 
         function authorizationHeader() {
             var data = btoa(vm.username + ':' + vm.password);
+            return 'Basic ' + data;
+        }
+
+        function uiAuthorizationHeader() {
+            var data = btoa('@@AUTH_SERVER_CLIENT_ID' + ':' + '@@AUTH_SERVER_CLIENT_SECRET');
             return 'Basic ' + data;
         }
     }
