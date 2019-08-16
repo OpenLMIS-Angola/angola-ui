@@ -60,24 +60,16 @@
          * @return {Array}                        array with lots
          */
         function lotsOf(orderableGroup, addMissingLotAllowed) {
-            // AO-384: added message for missing lot
-            var addMissingLot = {
-                    lotCode: messageService.get('orderableGroupService.addMissingLot')
-                },
-                // AO-384: ends here
-                lots = _.chain(orderableGroup).pluck('lot')
+            var lots = _.chain(orderableGroup).pluck('lot')
                     .compact()
                     .value(),
-                someHasLot = lots.length > 0,
-                someHasNoLot = _.any(orderableGroup, function(item) {
-                    return !item.lot;
-                });
+                // AO-384: added missing lot option to lot list, 
+                // made no lot defined option always available
+                addMissingLot = {
+                    lotCode: messageService.get('orderableGroupService.addMissingLot')
+                };
 
-            if (someHasLot && someHasNoLot) {
-                //add no lot defined as option
-                lots.unshift(noLotDefined);
-            }
-            // AO-384: added missing lot message to lot list
+            lots.unshift(noLotDefined);
             if (addMissingLotAllowed) {
                 lots.unshift(addMissingLot);
             }
