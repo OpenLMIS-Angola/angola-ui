@@ -47,8 +47,10 @@
             <tr>
               <th>{{'stockAddProductsModal.productCode' | message}}</th>
               <th>{{'stockAddProductsModal.product' | message}}</th>
-              <th ng-if="vm.hasLot">{{'stockAddProductsModal.lotCode' | message}}</th>
-              <th ng-if="vm.hasLot">{{'stockAddProductsModal.expiryDate' | message}}</th>
+              <!-- AO-384: removed hasLot flag -->
+              <th>{{'stockAddProductsModal.lotCode' | message}}</th>
+              <th>{{'stockAddProductsModal.expiryDate' | message}}</th>
+              <!-- AO-384: ends here -->
               <th>{{'stockAddProductsModal.currentStock' | message}}</th>
               <th>{{'stockAddProductsModal.actions' | message}}</th>
             </tr>
@@ -57,8 +59,10 @@
             <tr ng-repeat="item in vm.addedItems">
               <td>{{item.orderable.productCode}}</td>
               <td>{{item.orderable.fullProductName}}</td>
-              <td ng-if="vm.hasLot">{{item.displayLotMessage}}</td>
-              <td ng-if="vm.hasLot">{{item.lot.expirationDate | openlmisDate}}</td>
+              <!-- AO-384: removed hasLot flag -->
+              <td>{{item.displayLotMessage}}</td>
+              <td>{{item.lot.expirationDate | openlmisDate}}</td>
+              <!-- AO-384: ends here -->
               <td openlmis-invalid="{{item.quantityInvalid}}" class="digit-cell">
                 <input positive-integer
                        ng-class="{'error': item.quantityInvalid}"

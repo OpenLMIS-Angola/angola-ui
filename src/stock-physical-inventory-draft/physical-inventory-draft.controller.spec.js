@@ -204,15 +204,32 @@ describe('PhysicalInventoryDraftController', function() {
         });
     });
 
-    it('should only pass items not added yet to add products modal', function() {
+    it('should pass all available orderables to add products modal', function() {
         var deferred = $q.defer();
         deferred.resolve();
         addProductsModalService.show.andReturn(deferred.promise);
 
         vm.addProducts();
 
-        expect(addProductsModalService.show).toHaveBeenCalledWith([lineItem2, lineItem4], true);
+        expect(addProductsModalService.show).toHaveBeenCalledWith([
+            lineItem2,
+            lineItem4,
+            asd(lineItem1.orderable),
+            asd(lineItem3.orderable)
+        ], [lineItem1, lineItem2, lineItem3, lineItem4]);
     });
+
+    function asd(orderable) {
+        return {
+            lot: null,
+            orderable: orderable,
+            quantity: null,
+            stockAdjustments: [],
+            stockOnHand: null,
+            vvmStatus: null,
+            $allLotsAdded: true
+        };
+    }
 
     describe('saveDraft', function() {
 

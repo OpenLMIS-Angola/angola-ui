@@ -45,13 +45,24 @@ describe('addProductsModalService', function() {
                 lot: new that.LotDataBuilder().build()
             }
         ];
+
+        that.lineItems = [
+            {
+                orderable: new that.OrderableDataBuilder().build(),
+                lot: new that.LotDataBuilder().build()
+            },
+            {
+                orderable: new that.OrderableDataBuilder().build(),
+                lot: new that.LotDataBuilder().build()
+            }
+        ];
     });
 
     describe('show', function() {
 
         it('should call createDialog function', function() {
 
-            that.addProductsModalService.show(that.items, true);
+            that.addProductsModalService.show(that.items, that.lineItems);
 
             expect(that.openlmisModalService.createDialog).toHaveBeenCalled();
 
@@ -59,8 +70,8 @@ describe('addProductsModalService', function() {
             expect(that.config.controllerAs).toBe('vm');
             expect(that.config.templateUrl).toBe('stock-add-products-modal/add-products-modal.html');
             expect(that.config.show).toBeTruthy();
-            expect(angular.isFunction(that.config.resolve.items)).toBeTruthy();
-            expect(angular.isFunction(that.config.resolve.hasLot)).toBeTruthy();
+            expect(angular.isFunction(that.config.resolve.availableItems)).toBeTruthy();
+            expect(angular.isFunction(that.config.resolve.selectedItems)).toBeTruthy();
             expect(angular.isFunction(that.config.resolve.hasPermissionToAddNewLot)).toBeTruthy();
         });
     });

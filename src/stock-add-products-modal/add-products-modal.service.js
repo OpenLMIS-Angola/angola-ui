@@ -42,11 +42,11 @@
          * @description
          * Shows modal that allows users to choose products.
          *
-         * @param  {Array}   items  orderable + lot items
-         * @param  {boolean} hasLot true if at least some items have lot info
-         * @return {Promise}        resolved with selected products.
+         * @param  {Array}   availableItems orderable + lot items that can be selected
+         * @param  {Array}   selectedItems  orderable + lot items that were added already
+         * @return {Promise}                resolved with selected products.
          */
-        function show(items, hasLot) {
+        function show(availableItems, selectedItems) {
             return openlmisModalService.createDialog(
                 {
                     controller: 'AddProductsModalController',
@@ -54,14 +54,16 @@
                     templateUrl: 'stock-add-products-modal/add-products-modal.html',
                     show: true,
                     resolve: {
-                        items: function() {
-                            return items;
-                        },
-                        hasLot: function() {
-                            return hasLot;
+                        availableItems: function() {
+                            return availableItems;
                         // AO-384: added checking user rights, 
                         // should be changed to LOTS_MANAGE after moving to core project, 
                         // ORDERABLES_MANAGE used as a workaround
+                        // removed hasLot as it is obsolete,
+                        // added selectedItems to pass physical inventory line items
+                        },
+                        selectedItems: function() {
+                            return selectedItems;
                         },
                         hasPermissionToAddNewLot: function(permissionService, ADMINISTRATION_RIGHTS,
                             authorizationService) {

@@ -28,12 +28,12 @@
         .module('stock-add-products-modal')
         .controller('AddProductsModalController', controller);
 
-    // AO-384: added hasPermissionToAddNewLot
-    controller.$inject = ['items', 'hasLot', 'messageService', 'modalDeferred', 'orderableGroupService',
-        '$scope', 'MAX_INTEGER_VALUE', 'hasPermissionToAddNewLot'];
+    // AO-384: added hasPermissionToAddNewLot and selectedItems
+    controller.$inject = ['availableItems', 'messageService', 'modalDeferred', 'orderableGroupService',
+        '$scope', 'MAX_INTEGER_VALUE', 'hasPermissionToAddNewLot', 'selectedItems'];
 
-    function controller(items, hasLot, messageService, modalDeferred, orderableGroupService,
-                        $scope, MAX_INTEGER_VALUE, hasPermissionToAddNewLot) {
+    function controller(availableItems, messageService, modalDeferred, orderableGroupService,
+                        $scope, MAX_INTEGER_VALUE, hasPermissionToAddNewLot, selectedItems) {
     // AO-384: ends here
 
         var vm = this;
@@ -46,28 +46,18 @@
         vm.confirm = confirm;
         vm.lotChanged = lotChanged;
 
+        // AO-384: changed name from items to availableItems, removed hasLot
         /**
          * @ngdoc property
          * @propertyOf stock-add-products-modal.controller:AddProductsModalController
-         * @name items
+         * @name availableItems
          * @type {Array}
          *
          * @description
          * All products available for users to choose from.
          */
-        vm.items = undefined;
-
-        /**
-         * @ngdoc property
-         * @propertyOf stock-add-products-modal.controller:AddProductsModalController
-         * @name hasLot
-         * @type {boolean}
-         *
-         * @description
-         * Indicates if any line item has lot. If all line items have not lot, page will not display
-         * any lot related information.
-         */
-        vm.hasLot = undefined;
+        vm.availableItems = undefined;
+        // AO-384: ends here
 
         /**
          * @ngdoc property
@@ -124,9 +114,10 @@
          * Initialization method of the AddProductsModalController.
          */
         function onInit() {
-            vm.orderableGroups = orderableGroupService.groupByOrderableId(items);
-            vm.items = items;
-            vm.hasLot = hasLot;
+            // AO-384: renamed to availableItems, removed hasLot
+            vm.orderableGroups = orderableGroupService.groupByOrderableId(availableItems);
+            vm.availableItems = availableItems;
+            // AO-384: ends here
             vm.addedItems = [];
             vm.selectedOrderableHasLots = false;
 
@@ -191,7 +182,7 @@
 
             if (vm.newLot.lotCode) {
                 selectedItem = orderableGroupService
-                    .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.newLot, true);
+                    .addItemWithNewLot(vm.newLot, vm.selectedOrderableGroup[0]);
             } else {
             // AO-384: ends here
                 selectedItem = orderableGroupService
@@ -242,7 +233,7 @@
          * @name confirm
          *
          * @description
-         * Confirm added products and close modal. Will not close modal if any quanity not filled in.
+         * Confirm added products and close modal. Will not close modal if any quantity not filled in.
          */
         function confirm() {
             //some items may not have been validated yet, so validate all here.
@@ -256,6 +247,12 @@
                 return !item.quantityInvalid;
             });
             if (noErrors) {
+                // AO-384: adding new lot items to physical inventory items
+                vm.addedItems.forEach(function(item) {
+                    if (item.$isNewItem) {
+                        selectedItems.push(item);
+                    }
+                });
                 modalDeferred.resolve();
             }
         }

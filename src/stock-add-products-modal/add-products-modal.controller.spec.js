@@ -15,12 +15,11 @@
 
 describe('AddProductsModalController', function() {
 
-    var that;
+    var that = this;
 
     beforeEach(function() {
-        module('stock-add-products-modal');
 
-        that = this;
+        module('stock-add-products-modal');
 
         inject(function($injector) {
             that.$controller = $injector.get('$controller');
@@ -28,6 +27,7 @@ describe('AddProductsModalController', function() {
             that.$q = $injector.get('$q');
             that.LotDataBuilder = $injector.get('LotDataBuilder');
             that.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
+            that.orderableGroupService = $injector.get('orderableGroupService');
         });
 
         that.deferred = that.$q.defer();
@@ -47,193 +47,182 @@ describe('AddProductsModalController', function() {
             lot: that.lot
         };
 
+        spyOn(that.orderableGroupService, 'lotsOf').andReturn([that.lot]);
+
         that.scope.productForm = jasmine.createSpyObj('productForm', ['$setUntouched', '$setPristine']);
 
+        that.selectedItems = [];
+
         that.vm = that.$controller('AddProductsModalController', {
-            items: [that.item1],
+            availableItems: [that.item1],
             hasLot: true,
             modalDeferred: that.deferred,
             $scope: that.scope,
-            hasPermissionToAddNewLot: true
+            hasPermissionToAddNewLot: true,
+            selectedItems: that.selectedItems
         });
         that.vm.$onInit();
     });
 
-    it('should NOT add if select box is empty', function() {
-        //given
-        //do nothing here, to simulate that select box is empty
+    describe('addOneProduct', function() {
 
-        //when
-        that.vm.addOneProduct();
+        it('should NOT add if select box is empty', function() {
+            that.vm.addOneProduct();
 
-        //then
-        expect(that.vm.addedItems).toEqual([]);
+            expect(that.vm.addedItems).toEqual([]);
+        });
+
+        it('should NOT add twice if selected item already added', function() {
+            that.vm.selectedOrderableGroup = [that.item1];
+            that.vm.selectedLot = that.item1.lot;
+
+            that.vm.addedItems = [that.item1];
+            that.vm.addOneProduct();
+
+            expect(that.vm.addedItems).toEqual([that.item1]);
+        });
+
+        it('should add if selected item not added yet', function() {
+            that.vm.selectedOrderableGroup = [that.item1];
+            that.vm.selectedLot = that.item1.lot;
+            that.vm.addedItems = [];
+
+            that.vm.addOneProduct();
+
+            expect(that.vm.addedItems).toEqual([that.item1]);
+        });
+
+        it('should add if missing lot provided', function() {
+            that.vm.selectedOrderableGroup = [that.item1];
+            that.vm.newLot.lotCode = 'NewLot001';
+
+            that.vm.addedItems = [];
+
+            var newLot = {
+                lotCode: that.vm.newLot.lotCode,
+                expirationDate: that.vm.newLot.expirationDate,
+                tradeItemId: that.vm.selectedOrderableGroup[0].orderable.identifiers.tradeItem,
+                active: true
+            };
+
+            that.vm.addOneProduct();
+
+            expect(that.vm.addedItems).toEqual([{
+                orderable: that.vm.selectedOrderableGroup[0].orderable,
+                lot: newLot,
+                id: undefined,
+                displayLotMessage: 'NewLot001',
+                stockOnHand: 0,
+                $isNewItem: true
+            }]);
+        });
     });
 
-    it('should NOT add twice if selected item already added', function() {
-        //given
-        that.vm.selectedOrderableGroup = [that.item1];
-        that.vm.selectedLot = that.item1.lot;
+    describe('removeAddedProduct', function() {
 
-        that.vm.addedItems = [that.item1];
-        //when
-        that.vm.addOneProduct();
+        it('should remove added product and reset its quantity value', function() {
+            var item = {
+                quantity: 123
+            };
+            that.vm.addedItems = [item];
 
-        //then
-        //only appear once, not twice
-        expect(that.vm.addedItems).toEqual([that.item1]);
+            that.vm.removeAddedProduct(item);
+
+            expect(item.quantity).not.toBeDefined();
+            expect(that.vm.addedItems).toEqual([]);
+        });
     });
 
-    it('should add if selected item not added yet', function() {
-        //given
-        that.vm.selectedOrderableGroup = [that.item1];
-        that.vm.selectedLot = that.item1.lot;
+    describe('modal close', function() {
 
-        that.vm.addedItems = [];
+        it('should reset all item quantities and error messages when cancel', function() {
+            var item1 = {
+                quantity: 123,
+                quantityInvalid: 'blah'
+            };
+            var item2 = {
+                quantity: 456
+            };
+            that.vm.addedItems = [item1, item2];
 
-        //when
-        that.vm.addOneProduct();
+            that.deferred.reject();
+            that.$rootScope.$apply();
 
-        //then
-        expect(that.vm.addedItems).toEqual([that.item1]);
+            expect(item1.quantity).not.toBeDefined();
+            expect(item1.quantityInvalid).not.toBeDefined();
+            expect(item2.quantity).not.toBeDefined();
+        });
     });
 
-    it('should add if missing lot provided', function() {
-        that.vm.selectedOrderableGroup = [that.item1];
-        that.vm.newLot.lotCode = 'NewLot001';
+    describe('validate', function() {
 
-        that.vm.addedItems = [];
+        it('should assign error message when quantity missing', function() {
+            var item1 = {
+                quantity: undefined
+            };
 
-        var newLot = {
-            lotCode: that.vm.newLot.lotCode,
-            expirationDate: that.vm.newLot.expirationDate,
-            tradeItemId: that.vm.selectedOrderableGroup[0].orderable.identifiers.tradeItem,
-            active: true
-        };
+            that.vm.validate(item1);
 
-        that.vm.addOneProduct();
+            expect(item1.quantityInvalid).toBeDefined();
+        });
 
-        expect(that.vm.addedItems).toEqual([{
-            orderable: that.vm.selectedOrderableGroup[0].orderable,
-            lot: newLot,
-            displayLotMessage: 'NewLot001',
-            stockOnHand: 0
-        }]);
+        it('should remove error message when quantity filled in', function() {
+            var item1 = {
+                quantityInvalid: 'blah'
+            };
+
+            item1.quantity = 123;
+            that.vm.validate(item1);
+
+            expect(item1.quantityInvalid).not.toBeDefined();
+        });
     });
 
-    it('should remove added product and reset its quantity value', function() {
-        //given
-        var item = {
-            quantity: 123
-        };
-        that.vm.addedItems = [item];
+    describe('confirm', function() {
 
-        //when
-        that.vm.removeAddedProduct(item);
+        it('should broadcast form submit when confirming', function() {
+            that.vm.confirm();
 
-        //then
-        expect(item.quantity).not.toBeDefined();
-        expect(that.vm.addedItems).toEqual([]);
-    });
+            expect(that.scope.$broadcast).toHaveBeenCalledWith('openlmis-form-submit');
+        });
 
-    it('should reset all item quantities and error messages when cancel', function() {
-        //given
-        var item1 = {
-            quantity: 123,
-            quantityInvalid: 'blah'
-        };
-        var item2 = {
-            quantity: 456
-        };
-        that.vm.addedItems = [item1, item2];
+        it('should confirm add products if all items have quantities', function() {
+            var item1 = {
+                    quantity: 1
+                },
+                item2 = {
+                    quantity: 2
+                };
+            that.vm.addedItems = [item1, item2];
 
-        //when
-        //pretend modal was closed by user
-        that.deferred.reject();
-        that.$rootScope.$apply();
+            spyOn(that.deferred, 'resolve');
 
-        //then
-        expect(item1.quantity).not.toBeDefined();
-        expect(item1.quantityInvalid).not.toBeDefined();
+            that.vm.confirm();
 
-        expect(item2.quantity).not.toBeDefined();
-    });
+            expect(that.deferred.resolve).toHaveBeenCalled();
+        });
 
-    it('should assign error message when quantity missing', function() {
-        //given
-        var item1 = {
-            quantity: undefined
-        };
+        it('should NOT confirm add products if some items have no quantity', function() {
+            var item1 = {
+                quantity: 1
+            };
+            var item2 = {
+                quantity: undefined
+            };
+            that.vm.addedItems = [item1, item2];
 
-        //when
-        that.vm.validate(item1);
+            spyOn(that.deferred, 'resolve');
 
-        //then
-        expect(item1.quantityInvalid).toBeDefined();
-    });
+            that.vm.confirm();
 
-    it('should remove error message when quantity filled in', function() {
-        //given
-        var item1 = {
-            quantityInvalid: 'blah'
-        };
-
-        //when
-        item1.quantity = 123;
-        that.vm.validate(item1);
-
-        //then
-        expect(item1.quantityInvalid).not.toBeDefined();
-    });
-
-    it('should broadcast form submit when confirming', function() {
-        that.vm.confirm();
-
-        expect(that.scope.$broadcast).toHaveBeenCalledWith('openlmis-form-submit');
-    });
-
-    it('should confirm add products if all items have quantities', function() {
-        //given
-        var item1 = {
-            quantity: 1
-        };
-        var item2 = {
-            quantity: 2
-        };
-        that.vm.addedItems = [item1, item2];
-
-        spyOn(that.deferred, 'resolve');
-
-        //when
-        that.vm.confirm();
-
-        //then
-        expect(that.deferred.resolve).toHaveBeenCalled();
-    });
-
-    it('should NOT confirm add products if some items have no quantity', function() {
-        //given
-        var item1 = {
-            quantity: 1
-        };
-        var item2 = {
-            quantity: undefined
-        };
-        that.vm.addedItems = [item1, item2];
-
-        spyOn(that.deferred, 'resolve');
-
-        //when
-        that.vm.confirm();
-
-        //then
-        expect(that.deferred.resolve).not.toHaveBeenCalled();
+            expect(that.deferred.resolve).not.toHaveBeenCalled();
+        });
     });
 
     describe('orderableSelectionChanged', function() {
 
         it('should unselect lot', function() {
-            that.vm.selectedLot = that.vm.items[0].lot;
+            that.vm.selectedLot = that.vm.availableItems[0].lot;
 
             that.vm.orderableSelectionChanged();
 
@@ -262,7 +251,7 @@ describe('AddProductsModalController', function() {
         });
 
         it('should clear form', function() {
-            that.vm.selectedLot = that.vm.items[0].lot;
+            that.vm.selectedLot = that.vm.availableItems[0].lot;
 
             that.vm.orderableSelectionChanged();
 
@@ -288,7 +277,7 @@ describe('AddProductsModalController', function() {
         });
 
         it('should set canAddNewLot as true', function() {
-            that.vm.selectedLot = that.vm.items[0].lot;
+            that.vm.selectedLot = that.vm.availableItems[0].lot;
             that.vm.selectedLot.lotCode = 'orderableGroupService.addMissingLot';
             that.vm.lotChanged();
 
@@ -296,7 +285,7 @@ describe('AddProductsModalController', function() {
         });
 
         it('should set canAddNewLot as false', function() {
-            that.vm.selectedLot = that.vm.items[0].lot;
+            that.vm.selectedLot = that.vm.availableItems[0].lot;
             that.vm.lotChanged();
 
             expect(that.vm.canAddNewLot).toBeFalsy();

@@ -161,11 +161,7 @@ describe('orderableGroupService', function() {
                 lotCode: 'orderableGroupService.addMissingLot'
             });
 
-            expect(lots[1]).toEqual({
-                lotCode: 'orderableGroupService.noLotDefined'
-            });
-
-            expect(lots[2]).toEqual(that.lot1);
+            expect(lots[1]).toEqual(that.lot1);
         });
     });
 

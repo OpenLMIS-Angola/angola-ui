@@ -164,10 +164,38 @@
          */
         vm.addProducts = function() {
             var notYetAddedItems = _.chain(draft.lineItems)
-                .difference(_.flatten(vm.displayLineItemsGroup))
-                .value();
+                    .difference(_.flatten(vm.displayLineItemsGroup))
+                    .value(),
+                // AO-384: added orderables without available lots to add product modal
+                // passed draft lineItems to add product modal
+                orderablesWithoutAvailableLots = draft.lineItems.map(function(item) {
+                    return item.orderable;
+                }).filter(function(orderable) {
+                    return !notYetAddedItems.find(function(item) {
+                        return orderable.id === item.orderable.id;
+                    });
+                })
+                    .filter(function(orderable, index, filtered) {
+                        return filtered.indexOf(orderable) === index;
+                    })
+                    .map(function(uniqueOrderable) {
+                        return {
+                            lot: null,
+                            orderable: uniqueOrderable,
+                            quantity: null,
+                            stockAdjustments: [],
+                            stockOnHand: null,
+                            vvmStatus: null,
+                            $allLotsAdded: true
+                        };
+                    });
 
-            addProductsModalService.show(notYetAddedItems, vm.hasLot).then(function() {
+            orderablesWithoutAvailableLots.forEach(function(item) {
+                notYetAddedItems.push(item);
+            });
+
+            addProductsModalService.show(notYetAddedItems, draft.lineItems).then(function() {
+                // AO-384: ends here
                 $stateParams.program = vm.program;
                 $stateParams.facility = vm.facility;
                 $stateParams.draft = draft;
@@ -425,9 +453,8 @@
             $stateParams.facility = undefined;
             $stateParams.draft = undefined;
 
-            vm.hasLot = _.any(draft.lineItems, function(item) {
-                return item.lot;
-            });
+            // AO-384: removed hasLot
+            // AO-384: ends here
 
             vm.updateProgress();
             resetWatchItems();

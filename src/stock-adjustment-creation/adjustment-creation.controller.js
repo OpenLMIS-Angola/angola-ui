@@ -136,7 +136,7 @@
          * @description
          * Returns generated message key for screen title.
          * 
-         * @returns {stirng} screen  title message key
+         * @returns {string} screen title message key
          */
         function key(secondaryKey) {
             return adjustmentType.prefix + 'Creation.' + secondaryKey;

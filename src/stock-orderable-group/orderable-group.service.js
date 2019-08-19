@@ -45,6 +45,9 @@
         this.findByLotInOrderableGroup = findByLotInOrderableGroup;
         this.areOrderablesUseVvm = areOrderablesUseVvm;
         this.getKitOnlyOrderablegroup = getKitOnlyOrderablegroup;
+        // AO-384: exposed addItemWithNewLot method
+        this.addItemWithNewLot = addItemWithNewLot;
+        // AO-384: ends here
 
         /**
          * @ngdoc method
@@ -60,21 +63,33 @@
          * @return {Array}                        array with lots
          */
         function lotsOf(orderableGroup, addMissingLotAllowed) {
-            var lots = _.chain(orderableGroup).pluck('lot')
-                    .compact()
-                    .value(),
-                // AO-384: added missing lot option to lot list, 
-                // made no lot defined option always available
-                addMissingLot = {
+            // AO-384: refactored lotsOf method
+            var addMissingLot = {
                     lotCode: messageService.get('orderableGroupService.addMissingLot')
-                };
+                },
+                lots;
 
-            lots.unshift(noLotDefined);
+            if (orderableGroup && orderableGroup.length > 0 && orderableGroup[0].$allLotsAdded) {
+                lots = [];
+            } else {
+                lots = _.chain(orderableGroup).pluck('lot')
+                    .compact()
+                    .value();
+                var someHasLot = lots.length > 0,
+                    someHasNoLot = _.any(orderableGroup, function(item) {
+                        return !item.lot;
+                    });
+
+                if ((addMissingLotAllowed || someHasLot) && someHasNoLot) {
+                    lots.unshift(noLotDefined);
+                }
+            }
+
             if (addMissingLotAllowed) {
                 lots.unshift(addMissingLot);
             }
-            // AO-384: ends here
             return lots;
+            // AO-384: ends here
         }
 
         /**
@@ -193,6 +208,32 @@
             }
             return selectedItem;
         }
+
+        // AO-384: added method for creating new item for created lot
+        /**
+         * @ngdoc method
+         * @methodOf stock-orderable-group.orderableGroupService
+         * @name addItemWithNewLot
+         *
+         * @description
+         * Creates new item from similar orderable + lot item and newly created lot.
+         *
+         * @param  {Object} newLot      newly created lot
+         * @param  {Object} similarItem object with orderable field to be used
+         * @return {Object}             item created from passed parameters
+         */
+        function addItemWithNewLot(newLot, similarItem) {
+            var newItem = angular.copy(similarItem);
+
+            newItem.id = undefined;
+            newItem.lot = angular.copy(newLot);
+            newItem.stockOnHand = 0;
+            newItem.$isNewItem = true;
+            determineLotMessage(newItem);
+
+            return newItem;
+        }
+        // AO-384: ends here
 
         /**
          * @ngdoc method
