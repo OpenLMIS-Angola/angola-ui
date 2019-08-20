@@ -9,7 +9,7 @@
     <label for="summary">{{'serviceDesk.summary' | message}}</label>
     <input id="summary" type="text" ng-model="vm.issue.summary" required/>
     <label for="description">{{'serviceDesk.description' | message}}</label>
-    <input id="description" type="text" ng-model="vm.issue.description" required/>
+    <textarea rows="6" id="description" type="text" ng-model="vm.issue.description" required/>
     <label for="attachment">{{'serviceDesk.attachment' | message}}</label>
     <input type="file" id="attachment" multiple ng-model="vm.attachments"
            accept="image/x-png,image/pdf,image/jpeg,.doc,.docx,.xls,.xlsx,.csv,.txt"/>
