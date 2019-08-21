@@ -26,7 +26,7 @@ describe('ServiceDeskController', function() {
             $q = $injector.get('$q');
             this.$state = $injector.get('$state');
             this.$rootScope = $injector.get('$rootScope');
-
+            this.$location = $injector.get('$location');
             this.ServiceDeskResource = $injector.get('ServiceDeskResource');
 
             this.ISSUE_TYPE = $injector.get('ISSUE_TYPE');

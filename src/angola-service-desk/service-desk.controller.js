@@ -29,12 +29,12 @@
         .controller('ServiceDeskController', controller);
 
     controller.$inject = [
-        '$q', '$state', 'issueTypes', 'priorities', 'impactTypes', 'ServiceDeskResource', 'notificationService',
-        'user', 'messageService', 'loadingModalService'
+        '$q', '$state', '$location', 'issueTypes', 'priorities', 'impactTypes', 'ServiceDeskResource',
+        'notificationService', 'user', 'messageService', 'loadingModalService'
     ];
 
-    function controller($q, $state, issueTypes, priorities, impactTypes, ServiceDeskResource, notificationService,
-                        user, messageService, loadingModalService) {
+    function controller($q, $state, $location, issueTypes, priorities, impactTypes, ServiceDeskResource,
+                        notificationService, user, messageService, loadingModalService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -110,6 +110,8 @@
             vm.impactTypes = impactTypes;
             vm.issue = {
                 email: user.email,
+                username: user.username,
+                url: $location.absUrl(),
                 displayName: user.firstName + ' ' + user.lastName
             };
             vm.attachments = [];
