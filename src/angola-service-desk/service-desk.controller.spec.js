@@ -93,7 +93,7 @@ describe('ServiceDeskController', function() {
                 email: this.user.email,
                 displayName: this.user.firstName + ' ' + this.user.lastName,
                 username: this.user.username,
-                url: this.$location.absUrl(),
+                url: this.$location.absUrl()
             });
         });
 
