@@ -33,7 +33,7 @@ describe('SupersetOAuthLoginController', function() {
             authorizationService = $injector.get('authorizationService');
             loadingModalService = $injector.get('loadingModalService');
 
-            CHECK_SUPERSET_AUTORIZATION_URL = $injector.get('CHECK_SUPERSET_AUTORIZATION_URL');
+            CHECK_SUPERSET_AUTORIZATION_URL = supersetUrlFactory.buildCheckSupersetAuthorizationUrl();
             MODAL_CANCELLED = $injector.get('MODAL_CANCELLED');
 
             var UserDataBuilder = $injector.get('UserDataBuilder');

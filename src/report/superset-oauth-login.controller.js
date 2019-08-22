@@ -29,12 +29,12 @@
     SupersetOAuthLoginController.$inject = [
         'modalDeferred', 'authorizationService', 'loadingModalService',
         'supersetUrlFactory', '$q', '$http', '$httpParamSerializer', 'authUrl',
-        'MODAL_CANCELLED', 'CHECK_SUPERSET_AUTORIZATION_URL'
+        'MODAL_CANCELLED'
     ];
 
     function SupersetOAuthLoginController(modalDeferred, authorizationService, loadingModalService,
                                           supersetUrlFactory, $q, $http, $httpParamSerializer, authUrl,
-                                          MODAL_CANCELLED, CHECK_SUPERSET_AUTORIZATION_URL) {
+                                          MODAL_CANCELLED) {
         var vm = this;
         vm.$onInit = onInit;
 
@@ -151,7 +151,7 @@
             var deferred = $q.defer();
             var httpPromise = $http({
                 method: 'GET',
-                url: CHECK_SUPERSET_AUTORIZATION_URL,
+                url: supersetUrlFactory.buildCheckSupersetAuthorizationUrl(),
                 withCredentials: true
             });
             httpPromise.then(function(response) {

@@ -14,16 +14,17 @@
  */
 
 (function() {
-
     'use strict';
 
+    /**
+    * @ngdoc object
+    * @name report.MODAL_CANCELLED
+    *
+    * @description
+    * This is the constant describing the rejection of promise in case of cancellation of a modal.
+   */
     angular
         .module('report')
-        .config(config);
+        .constant('MODAL_CANCELLED', 'MODAL_CANCELLED');
 
-    config.$inject = ['$stateProvider', 'supersetReportsProvider'];
-
-    function config($stateProvider, supersetReportsProvider) {
-        supersetReportsProvider.$get().addReporingPages($stateProvider);
-    }
 })();

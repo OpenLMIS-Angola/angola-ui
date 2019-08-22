@@ -28,13 +28,14 @@
         .module('report')
         .factory('supersetUrlFactory', supersetUrlFactory);
 
-    supersetUrlFactory.$inject = ['openlmisUrlFactory', 'authUrl'];
+    supersetUrlFactory.$inject = ['authUrl', 'SUPERSET_URL'];
 
-    function supersetUrlFactory(openlmisUrlFactory, authUrl) {
-        var redirectUrl = '${SUPERSET_URL}/oauth-authorized/openlmis',
+    function supersetUrlFactory(authUrl, SUPERSET_URL) {
+        var redirectUrl = SUPERSET_URL + '/oauth-authorized/openlmis',
             factory = {
                 buildSupersetOAuthRequestUrl: buildSupersetOAuthRequestUrl,
-                buildApproveSupersetUrl: buildApproveSupersetUrl
+                buildApproveSupersetUrl: buildApproveSupersetUrl,
+                buildCheckSupersetAuthorizationUrl: buildCheckSupersetAuthorizationUrl
             };
 
         return factory;
@@ -68,10 +69,25 @@
          * @return  {String}    url that is directed towards the OpenLMIS Auth
          */
         function buildApproveSupersetUrl() {
-            var redirectUrl = '${SUPERSET_URL}/oauth-authorized/openlmis';
+            var redirectUrl = SUPERSET_URL + '/oauth-authorized/openlmis';
             var url = '/api/oauth/authorize?response_type=code&client_id=superset'
                     + '&redirect_uri=' + redirectUrl;
-            return openlmisUrlFactory(url);
+            return authUrl(url);
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf report.supersetUrlFactory
+         * @name buildCheckSupersetAuthorizationUrl
+         *
+         * @description
+         * Prepares URL which allows to check user authorization and init OAuth Request in Superset.
+
+         * @return  {String}    url that is directed towards Superset
+         */
+        function buildCheckSupersetAuthorizationUrl() {
+            var redirectUrl = SUPERSET_URL + '/oauth-authorized/openlmis';
+            return SUPERSET_URL + '/oauth-init/openlmis?redirect_url=' + redirectUrl;
         }
     }
 

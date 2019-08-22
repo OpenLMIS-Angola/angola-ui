@@ -14,16 +14,17 @@
  */
 
 (function() {
-
     'use strict';
 
+    /**
+    * @ngdoc object
+    * @name report.SUPERSET_URL
+    *
+    * @description
+    * This is constant defining superset URL.
+    */
     angular
         .module('report')
-        .config(config);
+        .constant('SUPERSET_URL', '${SUPERSET_URL}');
 
-    config.$inject = ['$stateProvider', 'supersetReportsProvider'];
-
-    function config($stateProvider, supersetReportsProvider) {
-        supersetReportsProvider.$get().addReporingPages($stateProvider);
-    }
 })();
