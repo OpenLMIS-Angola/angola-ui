@@ -274,7 +274,10 @@
                 loadingPromise.then(function() {
                     notificationService.success('requisitionView.sync.success');
                 });
-                reloadState();
+                // AO-422: moved reloading state to separate method
+                // can be removed after next release
+                reloadAfterSync();
+                // AO-422: ends here
             }, function(response) {
                 handleSaveError(response.status);
             });
@@ -303,7 +306,10 @@
                         notificationService.success('requisitionView.sync.success');
                     });
                     popup.location.href = accessTokenFactory.addAccessToken(vm.getPrintUrl());
-                    reloadState();
+                    // AO-422: added reloading state with proper parameters
+                    // can be removed after next release
+                    reloadAfterSync();
+                    // AO-422: ends here
                 }, function(response) {
                     handleSaveError(response.status);
                     popup.close();
@@ -611,6 +617,18 @@
         function reloadState() {
             $state.reload();
         }
+
+        // AO-422: moved reloading state after sync to separate method
+        // can be removed after next release
+        function reloadAfterSync() {
+            $state.go($state.current, {
+                rnr: vm.requisition.id,
+                requisition: undefined
+            }, {
+                reload: true
+            });
+        }
+        // AO-422: ends here
 
         function failWithMessage(message) {
             return function() {

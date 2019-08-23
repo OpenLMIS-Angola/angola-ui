@@ -686,6 +686,23 @@ describe('RequisitionViewController', function() {
 
             expect(loadingModalService.open.calls.length).toEqual(1);
         });
+
+        // AO-422: tests, can be removed after next release
+        it('should reload state with proper parameters', function() {
+            requisition.$save.andReturn($q.resolve(true));
+            spyOn($state, 'go').andCallThrough();
+
+            vm.syncRnrAndPrint();
+            $scope.$apply();
+
+            expect($state.go).toHaveBeenCalledWith($state.current, {
+                rnr: vm.requisition.id,
+                requisition: undefined
+            }, {
+                reload: true
+            });
+        });
+        // AO-422: ends here
     });
 
     describe('update requisition', function() {
