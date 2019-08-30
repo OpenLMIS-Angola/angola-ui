@@ -325,13 +325,15 @@ describe('PhysicalInventoryDraftController', function() {
             confirmService.confirm.andReturn($q.when());
             accessTokenFactory.addAccessToken.andReturn('url');
 
-            draft.id = 1;
+            draft.programId = 2;
+            draft.facilityId = 3;
             vm.submit();
             $rootScope.$apply();
 
             expect($window.open).toHaveBeenCalledWith('url', '_blank');
             expect(accessTokenFactory.addAccessToken)
-                .toHaveBeenCalledWith('http://some.url/api/physicalInventories/1?format=pdf');
+                .toHaveBeenCalledWith('http://some.url/api/reports/templates/angola/'
+                    + '1e0221c4-58f4-40b6-9cde-4b3781cea6a1/pdf?programId=2&facilityId=3');
 
             expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries',
                 {
