@@ -350,7 +350,9 @@
                                     'stockPhysicalInventoryDraft.printModal.no')
                                     .then(function() {
                                         $window.open(
-                                            accessTokenFactory.addAccessToken(getPrintUrl(draft.id)), '_blank'
+                                            //AO-457 parameter draft.id is changed to draft
+                                            accessTokenFactory.addAccessToken(getPrintUrl(draft)), '_blank'
+                                            //AO-457 ends here
                                         );
                                     })
                                     .finally(function() {
@@ -516,8 +518,12 @@
          *
          * @return {String} the prepared URL
          */
-        function getPrintUrl(id) {
-            return stockmanagementUrlFactory('/api/physicalInventories/' + id + '?format=pdf');
+        //AO-457
+        function getPrintUrl(draft) {
+            var reportTemplateId = '1e0221c4-58f4-40b6-9cde-4b3781cea6a1';
+            return stockmanagementUrlFactory('/api/reports/templates/angola/' + reportTemplateId
+                + '/pdf?programId=' + draft.programId + '&facilityId=' + draft.facilityId);
+        //AO-457 ends here
         }
     }
 })();
