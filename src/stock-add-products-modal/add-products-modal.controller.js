@@ -30,10 +30,10 @@
 
     // AO-384: added hasPermissionToAddNewLot and selectedItems
     controller.$inject = ['availableItems', 'messageService', 'modalDeferred', 'orderableGroupService',
-        '$scope', 'MAX_INTEGER_VALUE', 'hasPermissionToAddNewLot', 'selectedItems'];
+        '$scope', 'MAX_INTEGER_VALUE', 'hasPermissionToAddNewLot', 'selectedItems', 'alertService'];
 
     function controller(availableItems, messageService, modalDeferred, orderableGroupService,
-                        $scope, MAX_INTEGER_VALUE, hasPermissionToAddNewLot, selectedItems) {
+                        $scope, MAX_INTEGER_VALUE, hasPermissionToAddNewLot, selectedItems, alertService) {
     // AO-384: ends here
 
         var vm = this;
@@ -173,6 +173,12 @@
          * Add the currently selected product into the table beneath it for users to do further actions.
          */
         function addOneProduct() {
+            //AO-474: Displaying error message when user is not allowed to add the lot
+            if (!vm.hasPermissionToAddNewLot) {
+                alertService.error(messageService.get('stockManagement.addingLotNotAllowed'));
+            }
+            //AO-474 ends here
+
             var selectedItem;
 
             // AO-384: saving new lot
