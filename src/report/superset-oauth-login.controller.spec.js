@@ -15,10 +15,9 @@
 
 describe('SupersetOAuthLoginController', function() {
 
-    var vm, $controller, $q, $httpBackend, modalDeferred, authUrl,
-        supersetUrlFactory, authorizationService, loadingModalService,
-        CHECK_SUPERSET_AUTORIZATION_URL, MODAL_CANCELLED,
-        user, isAuthorizedResponse, isNotAuthorizedResponse;
+    var vm, $controller, $q, $rootScope, modalDeferred,
+        authorizationService, loadingModalService, supersetOAuthService,
+        MODAL_CANCELLED, user, isAuthorizedResponse, isNotAuthorizedResponse;
 
     beforeEach(function() {
         module('report');
@@ -26,14 +25,12 @@ describe('SupersetOAuthLoginController', function() {
         inject(function($injector) {
             $controller = $injector.get('$controller');
             $q = $injector.get('$q');
-            $httpBackend = $injector.get('$httpBackend');
+            $rootScope = $injector.get('$rootScope');
 
-            authUrl = $injector.get('authUrl');
-            supersetUrlFactory = $injector.get('supersetUrlFactory');
             authorizationService = $injector.get('authorizationService');
             loadingModalService = $injector.get('loadingModalService');
+            supersetOAuthService = $injector.get('supersetOAuthService');
 
-            CHECK_SUPERSET_AUTORIZATION_URL = supersetUrlFactory.buildCheckSupersetAuthorizationUrl();
             MODAL_CANCELLED = $injector.get('MODAL_CANCELLED');
 
             var UserDataBuilder = $injector.get('UserDataBuilder');
@@ -42,6 +39,9 @@ describe('SupersetOAuthLoginController', function() {
             spyOn(authorizationService, 'getUser').andReturn(user);
             spyOn(loadingModalService, 'open');
             spyOn(loadingModalService, 'close');
+            spyOn(supersetOAuthService, 'authorizeInSuperset').andReturn($q.resolve());
+            spyOn(supersetOAuthService, 'checkAuthorizationInSuperset')
+                .andReturn($q.resolve(isNotAuthorizedResponse));
         });
 
         modalDeferred = $q.defer();
@@ -88,25 +88,32 @@ describe('SupersetOAuthLoginController', function() {
         });
 
         it('should skip modal if the user is already authorized', function() {
-            $httpBackend.expectGET(CHECK_SUPERSET_AUTORIZATION_URL)
-                .respond(200, isAuthorizedResponse);
+            supersetOAuthService.checkAuthorizationInSuperset
+                .andReturn($q.resolve(isAuthorizedResponse));
 
             vm.$onInit();
-            $httpBackend.flush();
+            $rootScope.$apply();
 
             expect(modalDeferred.resolve).toHaveBeenCalled();
         });
 
         it('should not skip modal and set state if the user is not authorized', function() {
-            $httpBackend.whenGET(CHECK_SUPERSET_AUTORIZATION_URL)
-                .respond(200, isNotAuthorizedResponse);
-
             vm.$onInit();
-            $httpBackend.flush();
+            $rootScope.$apply();
 
             expect(vm.supersetOAuthState).toEqual(isNotAuthorizedResponse.state);
             expect(modalDeferred.resolve).not.toHaveBeenCalled();
             expect(modalDeferred.reject).not.toHaveBeenCalled();
+        });
+
+        it('should reject modal if cannot fetch response from Supserset', function() {
+            supersetOAuthService.checkAuthorizationInSuperset
+                .andReturn($q.reject());
+
+            vm.$onInit();
+            $rootScope.$apply();
+
+            expect(modalDeferred.reject).toHaveBeenCalled();
         });
     });
 
@@ -124,154 +131,51 @@ describe('SupersetOAuthLoginController', function() {
 
     describe('doLogin', function() {
 
-        var checkCredentialsEndpointMock;
-        var checkAuthorizationEndpointMock;
-
         beforeEach(function() {
-            checkCredentialsEndpointMock = $httpBackend
-                .whenPOST(authUrl('/api/oauth/token?grant_type=password'))
-                .respond(200);
-
-            checkAuthorizationEndpointMock = $httpBackend
-                .whenGET(CHECK_SUPERSET_AUTORIZATION_URL)
-                .respond(200, isNotAuthorizedResponse);
+            vm.username = 'test_username';
+            vm.password = 'test_password';
+            vm.supersetOAuthState = isNotAuthorizedResponse.state;
 
             vm.$onInit();
-            $httpBackend.flush();
+            $rootScope.$apply();
         });
 
         it('should open loading modal', function() {
             vm.doLogin();
-            $httpBackend.flush();
 
             expect(loadingModalService.open).toHaveBeenCalled();
         });
 
         it('should close loading modal after processing', function() {
             vm.doLogin();
-            $httpBackend.flush();
+            $rootScope.$apply();
 
             expect(loadingModalService.close).toHaveBeenCalled();
         });
 
-        it('should send check credentials request with authorization header to OpenLMIS', function() {
-            $httpBackend.expectPOST(authUrl('/api/oauth/token?grant_type=password'),
-                function(data) {
-                    return isString(data) && data.indexOf('username') !== -1 && data.indexOf('password') !== -1;
-                },
-                function(headers) {
-                    var authorizationHeader = headers['Authorization'];
-                    return isString(authorizationHeader) && authorizationHeader.startsWith('Basic');
-                });
-
+        it('should call authorizeInSuperset with modal properties', function() {
             vm.doLogin();
-            $httpBackend.flush();
+
+            expect(supersetOAuthService.authorizeInSuperset)
+                .toHaveBeenCalledWith(vm.username, vm.password, vm.supersetOAuthState);
         });
 
-        it('should not send OAuth request and modal should not close if credentials are not correct', function() {
-            var state = isNotAuthorizedResponse.state;
-            var oauthRequestUrl = supersetUrlFactory.buildSupersetOAuthRequestUrl(state);
-            var forbiddenCallTriggered = false;
-
-            checkCredentialsEndpointMock.respond(400);
-            $httpBackend.whenGET(oauthRequestUrl).respond(function() {
-                forbiddenCallTriggered = true;
-                return [400, ''];
-            });
+        it('should not close the modal if credentials are not correct', function() {
+            supersetOAuthService.authorizeInSuperset.andReturn($q.reject('openlmisLogin.invalidCredentials'));
 
             vm.doLogin();
-            $httpBackend.flush();
+            $rootScope.$apply();
 
-            expect(forbiddenCallTriggered).toBe(false);
-            expect(vm.loginError.length).not.toEqual(0);
+            expect(vm.loginError).toEqual('openlmisLogin.invalidCredentials');
             expect(modalDeferred.resolve).not.toHaveBeenCalled();
             expect(modalDeferred.reject).not.toHaveBeenCalled();
         });
 
-        it('should send OAuth request with authorization header to OpenLMIS', function() {
-            var state = isNotAuthorizedResponse.state;
-            var oauthRequestUrl = supersetUrlFactory.buildSupersetOAuthRequestUrl(state);
-
-            $httpBackend.expectGET(oauthRequestUrl, function(headers) {
-                var authorizationHeader = headers['Authorization'];
-                return isString(authorizationHeader) && authorizationHeader.startsWith('Basic');
-            });
-
-            vm.doLogin();
-            $httpBackend.flush();
-        });
-
-        it('should check whatever the user is already approved after OAuth request', function() {
-            var state = isNotAuthorizedResponse.state;
-            var oauthRequestUrl = supersetUrlFactory.buildSupersetOAuthRequestUrl(state);
-
-            $httpBackend.whenGET(oauthRequestUrl).respond(200);
-            $httpBackend.expectGET(CHECK_SUPERSET_AUTORIZATION_URL);
-
-            vm.doLogin();
-            $httpBackend.flush();
-        });
-
-        it('should not approve OAuth request if the application is already approved', function() {
-            var state = isNotAuthorizedResponse.state;
-            var oauthRequestUrl = supersetUrlFactory.buildSupersetOAuthRequestUrl(state);
-            var approveOAuthRequestUrl = supersetUrlFactory.buildApproveSupersetUrl();
-            var forbiddenCallTriggered = false;
-
-            $httpBackend.whenGET(oauthRequestUrl).respond(200);
-            checkAuthorizationEndpointMock.respond(200, isAuthorizedResponse);
-            $httpBackend.whenPOST(approveOAuthRequestUrl).respond(function() {
-                forbiddenCallTriggered = true;
-                return [400, ''];
-            });
-
-            vm.doLogin();
-            $httpBackend.flush();
-
-            expect(forbiddenCallTriggered).toBe(false);
-            expect(modalDeferred.resolve).toHaveBeenCalled();
-        });
-
-        it('should send proper approve OAuth request if the application is not approved', function() {
-            var state = isNotAuthorizedResponse.state;
-            var oauthRequestUrl = supersetUrlFactory.buildSupersetOAuthRequestUrl(state);
-            var approveOAuthRequestUrl = supersetUrlFactory.buildApproveSupersetUrl();
-
-            $httpBackend.whenGET(oauthRequestUrl).respond(200);
-            checkAuthorizationEndpointMock.respond(200, isNotAuthorizedResponse);
-            $httpBackend.expectPOST(approveOAuthRequestUrl,
-                'authorize=Authorize&scope.read=true&scope.write=true&user_oauth_approval=true',
-                function(headers) {
-                    var authorizationHeader = headers['Authorization'];
-                    return isString(headers['Authorization']) && authorizationHeader.startsWith('Basic');
-                });
-
-            vm.doLogin();
-            $httpBackend.flush();
-        });
-
         it('should resolve the modal after approving', function() {
-            var state = isNotAuthorizedResponse.state;
-            var oauthRequestUrl = supersetUrlFactory.buildSupersetOAuthRequestUrl(state);
-            var approveOAuthRequestUrl = supersetUrlFactory.buildApproveSupersetUrl();
-
-            $httpBackend.whenGET(oauthRequestUrl).respond(200);
-            checkAuthorizationEndpointMock.respond(200, isNotAuthorizedResponse);
-            $httpBackend.whenPOST(approveOAuthRequestUrl).respond(200);
-
             vm.doLogin();
-            $httpBackend.flush();
+            $rootScope.$apply();
 
             expect(modalDeferred.resolve).toHaveBeenCalled();
-        });
-
-        afterEach(function() {
-            $httpBackend.verifyNoOutstandingExpectation();
-            $httpBackend.verifyNoOutstandingRequest();
         });
     });
-
-    function isString(value) {
-        return value && (typeof value === 'string' || value instanceof String);
-    }
 });

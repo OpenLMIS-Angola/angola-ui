@@ -28,13 +28,11 @@
 
     SupersetOAuthLoginController.$inject = [
         'modalDeferred', 'authorizationService', 'loadingModalService',
-        'supersetUrlFactory', '$q', '$http', '$httpParamSerializer', 'authUrl',
-        'MODAL_CANCELLED'
+        'supersetOAuthService', 'MODAL_CANCELLED'
     ];
 
     function SupersetOAuthLoginController(modalDeferred, authorizationService, loadingModalService,
-                                          supersetUrlFactory, $q, $http, $httpParamSerializer, authUrl,
-                                          MODAL_CANCELLED) {
+                                          supersetOAuthService, MODAL_CANCELLED) {
         var vm = this;
         vm.$onInit = onInit;
 
@@ -50,7 +48,7 @@
          * @description
          * The username of the currently signed-in user.
          */
-        vm.username = authorizationService.getUser().username;
+        vm.username = undefined;
 
         /**
          * @ngdoc property
@@ -64,6 +62,17 @@
         vm.supersetOAuthState = undefined;
 
         /**
+         * @ngdoc property
+         * @propertyOf report:SupersetOAuthLoginController
+         * @name loginError
+         * @type {String}
+         *
+         * @description
+         * The message key of an error. If error not occurs, it should be set to undefined.
+         */
+        vm.loginError = undefined;
+
+        /**
          * @ngdoc method
          * @methodOf report:SupersetOAuthLoginController
          * @name $onInit
@@ -74,8 +83,9 @@
          */
         function onInit() {
             loadingModalService.open();
-            vm.loginError = '';
-            checkAuthorizationInSuperset()
+            vm.username = authorizationService.getUser().username;
+
+            supersetOAuthService.checkAuthorizationInSuperset()
                 .then(function(data) {
                     vm.supersetOAuthState = data.state;
                     if (data.isAuthorized === true) {
@@ -107,123 +117,19 @@
          *
          * @description
          * The method that is invoked when the user clicks the authorize button.
-         * It starts the authorization process to Superset via OpenLMIS OAuth.
+         * It starts the authorization process to Superset via Superset OAuth service.
          */
         function doLogin() {
             loadingModalService.open();
-            vm.loginError = '';
-            checkCredentials()
-                .then(function() {
-                    return sendOAuthRequest();
-                })
-                .then(function() {
-                    return approveSupersetIfNeeded();
-                })
+            vm.loginError = undefined;
+            supersetOAuthService.authorizeInSuperset(vm.username, vm.password, vm.supersetOAuthState)
                 .then(function() {
                     modalDeferred.resolve();
                 })
+                .catch(function(errorMessage) {
+                    vm.loginError = errorMessage;
+                })
                 .finally(loadingModalService.close);
-        }
-
-        function checkCredentials() {
-            return $http({
-                method: 'POST',
-                url: authUrl('/api/oauth/token?grant_type=password'),
-                data: 'username=' + vm.username + '&password=' + vm.password,
-                headers: {
-                    Authorization: uiAuthorizationHeader(),
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            })
-                .catch(function(response) {
-                    if (response.status === 400) {
-                        vm.loginError = 'openlmisLogin.invalidCredentials';
-                    } else if (response.status === -1) {
-                        vm.loginError = 'openlmisLogin.cannotConnectToServer';
-                    } else {
-                        vm.loginError = 'openlmisLogin.unknownServerError';
-                    }
-                    return $q.reject();
-                });
-        }
-
-        function checkAuthorizationInSuperset() {
-            var deferred = $q.defer();
-            var httpPromise = $http({
-                method: 'GET',
-                url: supersetUrlFactory.buildCheckSupersetAuthorizationUrl(),
-                withCredentials: true
-            });
-            httpPromise.then(function(response) {
-                deferred.resolve(response.data);
-            });
-            httpPromise.catch(function() {
-                deferred.reject();
-            });
-
-            return deferred.promise;
-        }
-
-        function sendOAuthRequest() {
-            var httpPromise = $http({
-                method: 'GET',
-                headers: {
-                    'Access-Control-Allow-Credentials': 'false',
-                    Authorization: authorizationHeader()
-                },
-                url: supersetUrlFactory.buildSupersetOAuthRequestUrl(vm.supersetOAuthState),
-                withCredentials: true,
-                ignoreAuthModule: true
-            });
-            httpPromise.catch(function() {
-                vm.loginError = 'report.superset.oAuthLogin.invalidCredentialsOrOAuthRequest';
-                return $q.reject();
-            });
-            return httpPromise;
-        }
-
-        function approveSupersetIfNeeded() {
-            return checkAuthorizationInSuperset()
-                .then(function(data) {
-                    if (data.isAuthorized !== true) {
-                        return approveSuperset();
-                    }
-                });
-        }
-
-        function approveSuperset() {
-            var httpPromise = $http({
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    Authorization: authorizationHeader()
-                },
-                url: supersetUrlFactory.buildApproveSupersetUrl(),
-                data: $httpParamSerializer({
-                    authorize: 'Authorize',
-                    // eslint-disable-next-line camelcase
-                    user_oauth_approval: 'true',
-                    'scope.read': 'true',
-                    'scope.write': 'true'
-                }),
-                withCredentials: true,
-                ignoreAuthModule: true
-            });
-            httpPromise.catch(function() {
-                vm.loginError = 'report.superset.oAuthLogin.unsuccessfulApprovingPermissions';
-                return $q.reject();
-            });
-            return httpPromise;
-        }
-
-        function authorizationHeader() {
-            var data = btoa(vm.username + ':' + vm.password);
-            return 'Basic ' + data;
-        }
-
-        function uiAuthorizationHeader() {
-            var data = btoa('@@AUTH_SERVER_CLIENT_ID' + ':' + '@@AUTH_SERVER_CLIENT_SECRET');
-            return 'Basic ' + data;
         }
     }
 }());
