@@ -1,40 +1,16 @@
 .superset-oauth-login-modal {
+    background-color: transparent !important;
+
     .modal-content {
-        background-image: linear-gradient(to bottom, $white 0%, $white 75%, $light-gray 100%);
+        background-image: linear-gradient(to bottom, $white 0%, $white 75%, $light-gray 100%) !important;
     }
-
-    .modal-dialog {
-        margin-top: 15%;
-        width: 700px;
-    }
-
-    .modal-header {
-        align-items: center;
-        background-image: linear-gradient(to bottom, $white 30%, $light-gray 100%);
-        border-bottom: 1px solid $light-gray;
-        border-radius: $border-radius $border-radius 0 0;
-        display: flex;
-        padding: 0.5em 1em !important;
-
-        & > h1 {
-            margin-right: auto;
-        }
-    }
-
     .modal-body {
-        background-image: url("report/green-lock.png");
-        background-size: 30% auto;
-        background-position: 1.5em 35%;
-        background-repeat: no-repeat;
+        background-image: url("report/green-lock.png") !important;
+        background-size: 30% auto !important;
+        background-position: 1.5em 35% !important;
+        background-repeat: no-repeat !important;
         padding: 1.5em 4em 1em 35% !important;
 
-        & > .form-desc,
-        & > form > fieldset {
-            width: 100%;
-        }
-
-        & > form > .alert {
-            flex: initial;
-        }
+        min-height: 0 !important;
     }
 }
