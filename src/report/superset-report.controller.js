@@ -28,9 +28,11 @@
         .module('report')
         .controller('SupersetReportController', SupersetReportController);
 
-    SupersetReportController.inject = ['reportCode', 'reportUrl'];
+    SupersetReportController.inject = ['reportCode', 'reportUrl', 'loadingModalService', 'messageService',
+                                       'supersetLocaleService', 'SUPERSET_URL'];
 
-    function SupersetReportController(reportCode, reportUrl) {
+    function SupersetReportController(reportCode, reportUrl, loadingModalService, messageService,
+                                      supersetLocaleService, SUPERSET_URL) {
         var vm = this;
         vm.$onInit = onInit;
 
@@ -67,12 +69,37 @@
          */
         vm.authUrl = undefined;
 
+        /**
+         * @ngdoc property
+         * @propertyOf report.controller:SupersetReportController
+         * @name isReady
+         * @type {boolean}
+         *
+         * @description
+         * Indicates if the controller is ready for displaying the Superset iframe.
+         */
+        vm.isReady = false;
+
         function onInit() {
             vm.reportCode = reportCode;
             vm.reportUrl = reportUrl;
-            vm.authUrl = '${SUPERSET_URL}/login/openlmis';
+            vm.authUrl = SUPERSET_URL + '/login/openlmis';
+
+            adjustSupersetLanguage();
         }
 
+        function adjustSupersetLanguage() {
+            loadingModalService.open();
+
+            var locale = messageService.getCurrentLocale();
+            supersetLocaleService.changeLocale(locale)
+                .then(function() {
+                    vm.isReady = true;
+                })
+                .finally(function() {
+                    loadingModalService.close();
+                });
+        }
     }
 
 })();

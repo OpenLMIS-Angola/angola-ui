@@ -3,4 +3,4 @@
     {{ 'report.superset.auth.pageRequiresAuthorization' | message }}
     <a href="{{vm.authUrl}}">{{ 'report.superset.auth.clickingHere' | message }}</a>
 </p>
-<iframe seamless frameBorder="0" scrolling="auto" ng-src="{{vm.reportUrl}}"></iframe>
+<iframe ng-if='vm.isReady' seamless frameBorder="0" scrolling="auto" ng-src="{{vm.reportUrl}}"></iframe>
