@@ -29,7 +29,7 @@
         .controller('SupersetReportController', SupersetReportController);
 
     SupersetReportController.inject = ['reportCode', 'reportUrl', 'loadingModalService', 'messageService',
-                                       'supersetLocaleService', 'SUPERSET_URL'];
+        'supersetLocaleService', 'SUPERSET_URL'];
 
     function SupersetReportController(reportCode, reportUrl, loadingModalService, messageService,
                                       supersetLocaleService, SUPERSET_URL) {
