@@ -8,6 +8,14 @@
     "proofOfDeliveryManage.orderDate": "Order date",
     "proofOfDeliveryManage.orderNumber": "Order no.",
     "proofOfDeliveryManage.supplyingFacility": "Supplying Facility",
+    "proofOfDeliveryManage.noPodsFound": "No proofs of delivery found.",
+    "proofOfDeliveryManage.podHasBeenPrinted": "Proof of Delivery has been printed",
+    "proofOfDeliveryView.failedToSaveProofOfDelivery": "Failed to save Proof of Delivery",
+    "proofOfDeliveryView.proofOfDeliveryHasBeenSaved": "Proof of Delivery has been saved",
+    "proofOfDeliveryView.failedToConfirmProofOfDelivery": "Failed to confirm Proof of Delivery",
+    "proofOfDeliveryView.proofOfDeliveryHasBeenConfirmed": "Proof of Delivery has been confirmed",
+    "proofOfDeliveryView.confirm.message": "Are you sure you want to confirm this Proof of Delivery?",
+    "proofOfDeliveryView.viewProofOfDelivery": "View Proof of Delivery",
     "proofOfDeliveryView.orderingFacility": "Ordering Facility",
     "proofOfDeliveryView.invalidPod": "Proof of Delivery is invalid!",
     "proofOfDeliveryView.orderDate": "Order Date",
@@ -44,5 +52,9 @@
     "digestConfiguration.requisition-convertToOrder": "Requisition - Convert To Order",
     "digestConfiguration.requisition-statusUpdate": "Requisition - Status Update",
     "stockManagement.addingLotNotAllowed": "Permission denied. Please ask your supervisor to add the lot.",
-    "openlmisTableFilter.filter": "Filter"
+    "openlmisTableFilter.filter": "Filter",
+    "adminRoleForm.podsManage": "Manage proofs of delivery",
+    "adminRoleForm.podsView": "View proofs of delivery",
+    "adminRoleForm.orderFulfillmentDescription": "Provides rights for viewing, transferring, editing orders and managing proof of deliveries.",
+    "shipmentView.confirmShipment.question": "By confirming this shipment, the order will be fulfilled and the ordering facility will be notified of pending shipment with an electronic Proof of Delivery (POD)."
 }
