@@ -4,6 +4,7 @@
     "openlmisServerErrorHandler.badCredentials": "Authentication error",
     "openlmisLogin.appHeader": "Logistics Management Information System",
     "openlmisSupport.title": "Contact support",
+    "proofOfDelivery.preparingProofOfDelivery": "Preparing Proof of Delivery...",
     "proofOfDeliveryManage.managePods": "Manage Proof of Delivery",
     "proofOfDeliveryManage.orderDate": "Order date",
     "proofOfDeliveryManage.orderNumber": "Order no.",
