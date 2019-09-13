@@ -2,6 +2,7 @@
     "openlmisHome.welcome": "Welcome to \n Logistics Management Information System",
     "openlmisServerErrorHandler.serverResponse.error": "There was an error with this request, please contact the server administrator.",
     "openlmisServerErrorHandler.badCredentials": "Authentication error",
+    "openlmisServerErrorHandler.badRequest": "Bad Request",
     "openlmisLogin.appHeader": "Logistics Management Information System",
     "openlmisSupport.title": "Contact support",
     "proofOfDelivery.preparingProofOfDelivery": "Preparing Proof of Delivery...",
