@@ -31,10 +31,6 @@
     function types() {
 
         var typesConstant = {
-            URGENT: {
-                value: 'URGENT',
-                label: 'serviceDesk.urgent'
-            },
             HIGH: {
                 value: 'HIGH',
                 label: 'serviceDesk.high'
