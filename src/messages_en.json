@@ -3,6 +3,7 @@
     "openlmisServerErrorHandler.serverResponse.error": "There was an error with this request, please contact the server administrator.",
     "openlmisServerErrorHandler.badCredentials": "Authentication error",
     "openlmisServerErrorHandler.badRequest": "Bad Request",
+    "openlmisServerErrorHandler.gatewayTimeoutError": "Gateway timeout error",
     "openlmisLogin.appHeader": "Logistics Management Information System",
     "openlmisSupport.title": "Contact support",
     "proofOfDelivery.preparingProofOfDelivery": "Preparing Proof of Delivery...",

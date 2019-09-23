@@ -50,7 +50,12 @@
          * @return {Promise}          Rejected promise
          */
         function responseError(response) {
-            if (response.status === 400 && response.status < 600 && response.status !== 401) {
+            // AO-442: Added translation for gateway timeout error
+            if (response.status === 504) {
+                $injector.get('alertService')
+                    .error('openlmisServerErrorHandler.gatewayTimeoutError');
+            //  AO-442: ends here
+            } else if (response.status >= 400 && response.status < 600 && response.status !== 401) {
                 $timeout(function() {
                     $injector.get('alertService').error(getTitle(response.statusText),
                         getMessage(response.data));
