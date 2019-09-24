@@ -1,0 +1,56 @@
+.auth-modal {
+    background-color: $dark-gray;
+
+    .modal-content {
+        background-image: linear-gradient(to bottom, $white 0%, $white 48%, $light-gray 100%);
+    }
+
+    .modal-dialog {
+        margin-top: 15%;
+        width: 700px;
+    }
+
+    .modal-header {
+        align-items: center;
+        background-image: linear-gradient(to bottom, $white 30%, $light-gray 100%);
+        border-bottom: 1px solid $light-gray;
+        border-radius: $border-radius $border-radius 0 0;
+        display: flex;
+        padding: 0.5em 1em !important;
+
+        & > h1 {
+            margin-right: auto;
+            // AO-510: Wrapped text on header 
+            word-break: normal !important;
+            // AO-510: ends here
+        }
+    }
+
+    .modal-body {
+        background-image: url("common/openlmis-logo-stacked.svg");
+        background-size: 40% auto;
+        background-position: 2em 45%;
+        background-repeat: no-repeat;
+        padding: 1em 1em 1em 50% !important;
+
+        & > .form-desc,
+        & > form > fieldset {
+            width: 100%;
+        }
+
+        & > form > .alert {
+            flex: initial;
+        }
+    }
+
+    .modal-footer {
+        border-top: none;
+        text-align: right;
+        padding: 0 !important;
+        margin: 0;
+        display: flex;
+        justify-content: flex-end;
+
+        color: $gray;
+    }
+}
