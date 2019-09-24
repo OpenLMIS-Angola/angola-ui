@@ -52,8 +52,10 @@
         function responseError(response) {
             // AO-442: Added translation for gateway timeout error
             if (response.status === 504) {
-                $injector.get('alertService')
-                    .error('openlmisServerErrorHandler.gatewayTimeoutError');
+                $timeout(function() {
+                    $injector.get('alertService')
+                        .error('openlmisServerErrorHandler.gatewayTimeoutError');
+                }, 200);
             //  AO-442: ends here
             } else if (response.status >= 400 && response.status < 600 && response.status !== 401) {
                 $timeout(function() {
