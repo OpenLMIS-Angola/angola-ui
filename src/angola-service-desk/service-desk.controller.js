@@ -108,12 +108,7 @@
             vm.issueTypes = issueTypes;
             vm.priorities = priorities;
             vm.impactTypes = impactTypes;
-            vm.issue = {
-                email: user.email,
-                username: user.username,
-                url: $location.absUrl(),
-                displayName: user.firstName + ' ' + user.lastName
-            };
+            vm.issue = {};
             vm.attachments = [];
         }
 

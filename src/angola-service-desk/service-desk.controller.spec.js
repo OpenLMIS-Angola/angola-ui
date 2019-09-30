@@ -89,12 +89,7 @@ describe('ServiceDeskController', function() {
         });
 
         it('should expose issue', function() {
-            expect(this.vm.issue).toEqual({
-                email: this.user.email,
-                displayName: this.user.firstName + ' ' + this.user.lastName,
-                username: this.user.username,
-                url: this.$location.absUrl()
-            });
+            expect(this.vm.issue).toEqual({});
         });
 
         it('should expose attachments', function() {
