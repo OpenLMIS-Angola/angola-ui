@@ -522,7 +522,10 @@
         function getPrintUrl(draft) {
             var reportTemplateId = '1e0221c4-58f4-40b6-9cde-4b3781cea6a1';
             return stockmanagementUrlFactory('/api/reports/templates/angola/' + reportTemplateId
-                + '/pdf?programId=' + draft.programId + '&facilityId=' + draft.facilityId);
+                + '/pdf?programId=' + draft.programId + '&facilityId=' + draft.facilityId
+            // AO-507: Added signature to inventory report
+                + '&signature=' + draft.signature);
+            // AO-507: ends here
         //AO-457 ends here
         }
     }

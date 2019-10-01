@@ -320,6 +320,11 @@ describe('PhysicalInventoryDraftController', function() {
         });
 
         it('and choose "print" should open report and change state', function() {
+            // AO-507: Added signature to inventory report
+            var resolvedData = {};
+            resolvedData.signature = 'test';
+            chooseDateModalService.show.andReturn($q.when(resolvedData));
+            // AO-507: ends here
             physicalInventoryService.submitPhysicalInventory
                 .andReturn($q.when());
             confirmService.confirm.andReturn($q.when());
@@ -327,13 +332,16 @@ describe('PhysicalInventoryDraftController', function() {
 
             draft.programId = 2;
             draft.facilityId = 3;
+
             vm.submit();
             $rootScope.$apply();
 
             expect($window.open).toHaveBeenCalledWith('url', '_blank');
             expect(accessTokenFactory.addAccessToken)
                 .toHaveBeenCalledWith('http://some.url/api/reports/templates/angola/'
-                    + '1e0221c4-58f4-40b6-9cde-4b3781cea6a1/pdf?programId=2&facilityId=3');
+                // AO-507: Added signature to inventory report
+                    + '1e0221c4-58f4-40b6-9cde-4b3781cea6a1/pdf?programId=2&facilityId=3&signature=test');
+            // AO-507: ends here
 
             expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries',
                 {
