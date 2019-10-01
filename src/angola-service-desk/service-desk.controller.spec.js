@@ -18,12 +18,12 @@ describe('ServiceDeskController', function() {
     beforeEach(function() {
         module('angola-service-desk');
 
-        var $q, $controller, UserDataBuilder;
+        var $controller, UserDataBuilder;
         inject(function($injector) {
             UserDataBuilder = $injector.get('UserDataBuilder');
 
             $controller = $injector.get('$controller');
-            $q = $injector.get('$q');
+            this.$q = $injector.get('$q');
             this.$state = $injector.get('$state');
             this.$rootScope = $injector.get('$rootScope');
             this.$location = $injector.get('$location');
@@ -39,7 +39,7 @@ describe('ServiceDeskController', function() {
         this.issueId = '1';
         this.message = 'test-message';
 
-        spyOn(this.ServiceDeskResource.prototype, 'create').andReturn($q.resolve({
+        spyOn(this.ServiceDeskResource.prototype, 'create').andReturn(this.$q.resolve({
             issueKey: this.issueKey,
             issueId: this.issueId
         }));
@@ -47,7 +47,7 @@ describe('ServiceDeskController', function() {
 
         this.notificationService = jasmine.createSpyObj('notificationService', ['success']);
 
-        this.loadingModalService = jasmine.createSpyObj('loadingModalService', ['open']);
+        this.loadingModalService = jasmine.createSpyObj('loadingModalService', ['open', 'close']);
 
         this.messageService = jasmine.createSpyObj('messageService', ['get']);
         this.messageService.get.andReturn(this.message);
@@ -102,26 +102,30 @@ describe('ServiceDeskController', function() {
         beforeEach(function() {
             this.vm.attachments.push('attachment1');
             this.vm.attachments.push('attachment2');
-
-            this.vm.send();
-
-            this.$rootScope.$apply();
         });
 
         it('should open loading modal', function() {
+            send(this);
+
             expect(this.loadingModalService.open).toHaveBeenCalled();
         });
 
         it('should create issue', function() {
+            send(this);
+
             expect(this.ServiceDeskResource.prototype.create).toHaveBeenCalledWith(this.vm.issue);
         });
 
         it('should attach files', function() {
+            send(this);
+
             expect(this.ServiceDeskResource.prototype.addAttachment).toHaveBeenCalledWith('attachment1', this.issueId);
             expect(this.ServiceDeskResource.prototype.addAttachment).toHaveBeenCalledWith('attachment2', this.issueId);
         });
 
         it('should call message service', function() {
+            send(this);
+
             expect(this.messageService.get).toHaveBeenCalledWith('serviceDesk.sendSuccessfully', {
                 ticketNumber: this.issueKey,
                 userEmailAddress: this.user.email
@@ -129,12 +133,29 @@ describe('ServiceDeskController', function() {
         });
 
         it('should show notification', function() {
+            send(this);
+
             expect(this.notificationService.success).toHaveBeenCalledWith(this.message);
         });
 
         it('should call state go method', function() {
+            send(this);
+
             expect(this.$state.go).toHaveBeenCalledWith('openlmis.home');
         });
+
+        it('should close loading modal when request fails', function() {
+            this.ServiceDeskResource.prototype.create.andReturn(this.$q.reject());
+
+            send(this);
+
+            expect(this.loadingModalService.close).toHaveBeenCalled();
+        });
+
+        function send(that) {
+            that.vm.send();
+            that.$rootScope.$apply();
+        }
     });
 
     describe('redirectToHome', function() {

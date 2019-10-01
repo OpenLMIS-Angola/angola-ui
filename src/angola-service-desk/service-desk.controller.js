@@ -131,7 +131,7 @@
                         attachmentPromises.push(serviceDeskResource.addAttachment(attachment, response.issueId));
                     });
 
-                    $q.all(attachmentPromises)
+                    return $q.all(attachmentPromises)
                         .then(function() {
                             var successMessage = messageService.get('serviceDesk.sendSuccessfully', {
                                 ticketNumber: response.issueKey,
@@ -139,8 +139,10 @@
                             });
                             notificationService.success(successMessage);
                             redirectToHome();
-                        });
-                });
+                        })
+                        .catch(loadingModalService.close);
+                })
+                .catch(loadingModalService.close);
         }
 
         /**
