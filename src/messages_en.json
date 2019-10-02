@@ -59,5 +59,6 @@
     "adminRoleForm.podsManage": "Manage proofs of delivery",
     "adminRoleForm.podsView": "View proofs of delivery",
     "adminRoleForm.orderFulfillmentDescription": "Provides rights for viewing, transferring, editing orders and managing proof of deliveries.",
-    "shipmentView.confirmShipment.question": "By confirming this shipment, the order will be fulfilled and the ordering facility will be notified of pending shipment with an electronic Proof of Delivery (POD)."
+    "shipmentView.confirmShipment.question": "By confirming this shipment, the order will be fulfilled and the ordering facility will be notified of pending shipment with an electronic Proof of Delivery (POD).",
+    "stockAdjustmentCreation.quantityGreaterThanStockOnHand": "Quantity cannot be greater than stock on hand value."
 }

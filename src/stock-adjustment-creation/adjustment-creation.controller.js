@@ -245,7 +245,12 @@
          * @param {Object} lineItem line item to be validated.
          */
         function validateQuantity(lineItem) {
-            if (lineItem.quantity > MAX_INTEGER_VALUE) {
+            // AO-535: Added quantity validation for DEBIT reason type
+            if (lineItem.quantity > lineItem.$previewSOH && lineItem.reason && lineItem.reason.reasonType === 'DEBIT') {
+                lineItem.$errors.quantityInvalid = messageService
+                    .get('stockAdjustmentCreation.quantityGreaterThanStockOnHand');
+            // AO-535: ends here
+            } else if (lineItem.quantity > MAX_INTEGER_VALUE) {
                 lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
             } else if (lineItem.quantity >= 1) {
                 lineItem.$errors.quantityInvalid = false;
