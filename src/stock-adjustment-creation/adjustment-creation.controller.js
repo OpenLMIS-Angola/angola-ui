@@ -34,7 +34,8 @@
         'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
         // AO-384: added hasPermissionToAddNewLot, LotResource and $q
-        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'hasPermissionToAddNewLot', 'LotResource', '$q'
+        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'hasPermissionToAddNewLot', 'LotResource', '$q',
+        'REASON_TYPES'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -42,7 +43,7 @@
                         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, hasPermissionToAddNewLot,
-                        LotResource, $q) {
+                        LotResource, $q, REASON_TYPES) {
         // AO-384: ends here
         var vm = this,
             previousAdded = {};
@@ -246,7 +247,8 @@
          */
         function validateQuantity(lineItem) {
             // AO-535: Added quantity validation for DEBIT reason type
-            if (lineItem.quantity > lineItem.$previewSOH && lineItem.reason && lineItem.reason.reasonType === 'DEBIT') {
+            if (lineItem.quantity > lineItem.$previewSOH && lineItem.reason
+                && lineItem.reason.reasonType === REASON_TYPES.DEBIT) {
                 lineItem.$errors.quantityInvalid = messageService
                     .get('stockAdjustmentCreation.quantityGreaterThanStockOnHand');
             // AO-535: ends here
