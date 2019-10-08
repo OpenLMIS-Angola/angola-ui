@@ -46,6 +46,7 @@
         return directive;
 
         function link(scope, element, attrs, ngModelController) {
+
             if (element.attr('type') !== 'file') {
                 return;
             }
@@ -62,6 +63,9 @@
             scope.getFileName = getFileName;
             scope.getViewValue = getViewValue;
             scope.isMultipleSelectionEnabled = isMultipleSelectionEnabled;
+            // AO-484: Added condition to show selected file in div container
+            scope.showSelectedFile = false;
+            // AO-484: ends here
 
             $templateRequest('openlmis-file-upload/file-upload.html')
                 .then(function(html) {
@@ -113,6 +117,9 @@
                     element.val(undefined);
                 }
                 validate();
+                // AO-484: Added condition to show selected file in div container
+                scope.showSelectedFile = false;
+                // AO-484: ends here
             }
 
             function getFileName(index) {
@@ -136,22 +143,26 @@
                 ngModelController.$setValidity('openlmisFileUpload.fileEmpty', true);
 
                 var files = ngModelController.$viewValue;
-
-                for (var i = 0; i < files.length; i++) {
-                    var file = files[i];
-                    if (fileExtension) {
-                        var extensions = fileExtension.split(','),
-                            valid = false;
-                        extensions.forEach(function(extension) {
-                            var parsedExtension = parseExtension(extension);
-                            valid = valid || !file.name.endsWith(parsedExtension);
-                        });
-                        ngModelController.$setValidity('openlmisFileUpload.wrongFileExtension', valid);
-                    }
-                    if (file.size === 0) {
-                        ngModelController.$setValidity('openlmisFileUpload.fileEmpty', false);
+                // AO-484: Added condition to show selected file in div container
+                if (files) {
+                    for (var i = 0; i < files.length; i++) {
+                        var file = files[i];
+                        if (fileExtension) {
+                            var extensions = fileExtension.split(','),
+                                valid = false;
+                            extensions.forEach(function(extension) {
+                                var parsedExtension = parseExtension(extension);
+                                valid = valid || !file.name.endsWith(parsedExtension);
+                            });
+                            ngModelController.$setValidity('openlmisFileUpload.wrongFileExtension', valid);
+                        }
+                        if (file.size === 0) {
+                            ngModelController.$setValidity('openlmisFileUpload.fileEmpty', false);
+                        }
                     }
                 }
+                scope.showSelectedFile = true;
+                // AO-484: ends here
             }
 
             function parseExtension(extension) {
