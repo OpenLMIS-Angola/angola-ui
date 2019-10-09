@@ -45,32 +45,27 @@ describe('SupersetReportController', function() {
 
     describe('onInit', function() {
 
-        it('should expose reportCode', function() {
+        beforeEach(function() {
             vm.$onInit();
-
-            expect(vm.reportCode).toEqual(reportCode);
         });
 
-        it('should expose reportUrl', function() {
-            vm.$onInit();
-
+        it('should expose Superset iFrame src', function() {
             expect(vm.reportUrl).toEqual(reportUrl);
         });
 
-        it('should expose authUrl', function() {
-            vm.$onInit();
+        it('should expose report code', function() {
+            expect(vm.reportCode).toEqual(reportCode);
+        });
 
+        it('should expose authUrl', function() {
             expect(vm.authUrl).not.toBeUndefined();
         });
 
         it('should expose isReady', function() {
-            vm.$onInit();
-
             expect(vm.isReady).toEqual(false);
         });
 
         it('should adjust language in Superset and change isReady flag', function() {
-            vm.$onInit();
             $rootScope.$apply();
 
             expect(supersetLocaleService.changeLocale).toHaveBeenCalled();
