@@ -29,23 +29,20 @@
         .controller('RequisitionViewController', RequisitionViewController);
 
     RequisitionViewController.$inject = [
-        '$state', 'requisition', 'requisitionValidator', 'authorizationService',
-        'requisitionService', 'loadingModalService', 'alertService', 'notificationService',
-        'confirmService', 'offlineService', '$window',
-        'requisitionUrlFactory', '$filter', '$scope', 'RequisitionWatcher',
-        'accessTokenFactory', 'messageService', 'stateTrackerService', 'RequisitionStockCountDateModal',
-        'localStorageFactory', 'canSubmit', 'canAuthorize',
-        'canApproveAndReject', 'canDelete', 'canSkip', 'canSync'
+        '$state', 'requisition', 'requisitionValidator', 'requisitionService', 'loadingModalService', 'alertService',
+        'notificationService', 'confirmService', 'offlineService', '$window', 'requisitionUrlFactory', '$filter',
+        '$scope', 'RequisitionWatcher', 'accessTokenFactory', 'messageService', 'stateTrackerService',
+        'RequisitionStockCountDateModal', 'localStorageFactory', 'canSubmit', 'canAuthorize', 'canApproveAndReject',
+        'canDelete', 'canSkip', 'canSync', 'program', 'facility', 'processingPeriod'
     ];
 
-    function RequisitionViewController($state, requisition, requisitionValidator,
-                                       authorizationService, requisitionService,
-                                       loadingModalService, alertService, notificationService,
-                                       confirmService, offlineService, $window, requisitionUrlFactory, $filter,
-                                       $scope, RequisitionWatcher, accessTokenFactory,
-                                       messageService, stateTrackerService, RequisitionStockCountDateModal,
-                                       localStorageFactory, canSubmit, canAuthorize, canApproveAndReject,
-                                       canDelete, canSkip, canSync) {
+    function RequisitionViewController($state, requisition, requisitionValidator, requisitionService,
+                                       loadingModalService, alertService, notificationService, confirmService,
+                                       offlineService, $window, requisitionUrlFactory, $filter, $scope,
+                                       RequisitionWatcher, accessTokenFactory, messageService, stateTrackerService,
+                                       RequisitionStockCountDateModal, localStorageFactory, canSubmit, canAuthorize,
+                                       canApproveAndReject, canDelete, canSkip, canSync,
+                                       program, facility, processingPeriod) {
 
         var vm = this,
             watcher = new RequisitionWatcher($scope, requisition, localStorageFactory('requisitions'));
@@ -59,6 +56,39 @@
          * Holds requisition.
          */
         vm.requisition = requisition;
+
+        /**
+         * @ngdoc property
+         * @propertyOf requisition-view.controller:RequisitionViewController
+         * @name program
+         * @type {Object}
+         *
+         * @description
+         * Holds requisition program.
+         */
+        vm.program = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf requisition-view.controller:RequisitionViewController
+         * @name facility
+         * @type {Object}
+         *
+         * @description
+         * Holds requisition facility.
+         */
+        vm.facility = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf requisition-view.controller:RequisitionViewController
+         * @name processingPeriod
+         * @type {Object}
+         *
+         * @description
+         * Holds requisition processing period.
+         */
+        vm.processingPeriod = undefined;
 
         /**
          * @ngdoc property
@@ -207,8 +237,11 @@
          */
         function onInit() {
             setTypeAndClass();
-            vm.displaySubmitButton = canSubmit && !vm.requisition.program.skipAuthorization;
-            vm.displaySubmitAndAuthorizeButton = canSubmit && vm.requisition.program.skipAuthorization;
+            vm.program = program;
+            vm.facility = facility;
+            vm.processingPeriod = processingPeriod;
+            vm.displaySubmitButton = canSubmit && !vm.program.skipAuthorization;
+            vm.displaySubmitAndAuthorizeButton = canSubmit && vm.program.skipAuthorization;
             vm.displayAuthorizeButton = canAuthorize;
             vm.displayDeleteButton = canDelete;
             vm.displayApproveAndRejectButtons = canApproveAndReject;
@@ -274,10 +307,7 @@
                 loadingPromise.then(function() {
                     notificationService.success('requisitionView.sync.success');
                 });
-                // AO-422: moved reloading state to separate method
-                // can be removed after next release
                 reloadAfterSync();
-                // AO-422: ends here
             }, function(response) {
                 handleSaveError(response.status);
             });
@@ -306,10 +336,7 @@
                         notificationService.success('requisitionView.sync.success');
                     });
                     popup.location.href = accessTokenFactory.addAccessToken(vm.getPrintUrl());
-                    // AO-422: added reloading state with proper parameters
-                    // can be removed after next release
                     reloadAfterSync();
-                    // AO-422: ends here
                 }, function(response) {
                     handleSaveError(response.status);
                     popup.close();
@@ -340,7 +367,7 @@
                 if (requisitionValidator.validateRequisition(requisition)) {
                     if (requisitionValidator.areAllLineItemsSkipped(requisition.requisitionLineItems)) {
                         failWithMessage('requisitionView.allLineItemsSkipped')();
-                    } else if (vm.requisition.program.enableDatePhysicalStockCountCompleted) {
+                    } else if (vm.program.enableDatePhysicalStockCountCompleted) {
                         var modal = new RequisitionStockCountDateModal(vm.requisition);
                         modal.then(saveThenSubmit);
                     } else {
@@ -388,7 +415,7 @@
                 if (requisitionValidator.validateRequisition(requisition)) {
                     if (requisitionValidator.areAllLineItemsSkipped(requisition.requisitionLineItems)) {
                         failWithMessage('requisitionView.allLineItemsSkipped')();
-                    } else if (vm.requisition.program.enableDatePhysicalStockCountCompleted) {
+                    } else if (vm.program.enableDatePhysicalStockCountCompleted) {
                         var modal = new RequisitionStockCountDateModal(vm.requisition);
                         modal.then(saveThenAuthorize);
                     } else {
@@ -493,20 +520,16 @@
                 'requisitionView.reject.confirm',
                 'requisitionView.reject.label'
             ).then(function() {
-                var loadingPromise = loadingModalService.open();
-                vm.requisition.$save().then(function() {
-                    vm.requisition.$reject()
-                        .then(function() {
-                            watcher.disableWatcher();
-                            loadingPromise.then(function() {
-                                notificationService.success('requisitionView.reject.success');
-                            });
-                            stateTrackerService.goToPreviousState('openlmis.requisitions.approvalList');
-                        })
-                        .catch(function() {
-                            failWithMessage('requisitionView.reject.failure');
-                        });
-                })
+                loadingModalService.open();
+                vm.requisition.$save()
+                    .then(function() {
+                        return vm.requisition.$reject();
+                    })
+                    .then(function() {
+                        watcher.disableWatcher();
+                        notificationService.success('requisitionView.reject.success');
+                        stateTrackerService.goToPreviousState('openlmis.requisitions.approvalList');
+                    })
                     .catch(loadingModalService.close);
             });
         }
@@ -546,11 +569,11 @@
          *
          * @return {String} the prepared URL
          */
-        // Angola: link to the updated requisition printout
         function getPrintUrl() {
+            // Angola - changed print URL
             return requisitionUrlFactory('/api/reports/requisitions/' + vm.requisition.id + '/print');
+            // ends here
         }
-        // --- ends here ---
 
         /**
          * @ngdoc method
@@ -618,8 +641,6 @@
             $state.reload();
         }
 
-        // AO-422: moved reloading state after sync to separate method
-        // can be removed after next release
         function reloadAfterSync() {
             $state.go($state.current, {
                 rnr: vm.requisition.id,
@@ -628,7 +649,6 @@
                 reload: true
             });
         }
-        // AO-422: ends here
 
         function failWithMessage(message) {
             return function() {

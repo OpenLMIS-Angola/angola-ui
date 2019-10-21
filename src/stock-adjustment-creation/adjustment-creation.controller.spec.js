@@ -44,6 +44,7 @@ describe('StockAdjustmentCreationController', function() {
             that.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
             that.OrderableChildrenDataBuilder = $injector.get('OrderableChildrenDataBuilder');
             that.LotResource = $injector.get('LotResource');
+            that.UNPACK_REASONS = $injector.get('UNPACK_REASONS');
         });
 
         that.state = jasmine.createSpyObj('$state', ['go']);
@@ -429,8 +430,7 @@ describe('StockAdjustmentCreationController', function() {
 
             that.vm.addedLineItems = [{
                 reason: {
-                    id: '123',
-                    reasonType: 'DEBIT'
+                    id: that.UNPACK_REASONS.KIT_UNPACK_REASON_ID
                 },
                 orderable: that.kitOrderable,
                 occurredDate: new Date(),
@@ -446,8 +446,8 @@ describe('StockAdjustmentCreationController', function() {
                 .mostRecentCall.args[2];
 
             expect(unpackingLineItem.length).toEqual(2);
-            expect(unpackingLineItem[1].reason.reasonType).toEqual('CREDIT');
-            expect(unpackingLineItem[0].reason.reasonType).toEqual('DEBIT');
+            expect(unpackingLineItem[1].reason.id).toEqual(that.UNPACK_REASONS.UNPACKED_FROM_KIT_REASON_ID);
+            expect(unpackingLineItem[0].reason.id).toEqual(that.UNPACK_REASONS.KIT_UNPACK_REASON_ID);
             expect(unpackingLineItem[1].quantity).toEqual(60);
             expect(unpackingLineItem[0].quantity).toEqual(2);
         });

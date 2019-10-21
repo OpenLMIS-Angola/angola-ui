@@ -30,6 +30,7 @@
         // AO-384: added referencedata-lot dependency
         'referencedata-lot',
         // AO-384: ends here
+        'stock-unpack-kit',
         'stock-reasons-modal'
     ]);
 })();

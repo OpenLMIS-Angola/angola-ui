@@ -20,7 +20,7 @@
 
         & > h1 {
             margin-right: auto;
-            // AO-510: Wrapped text on header 
+            // AO-510: Wrapped text on header, can be removed after applying 3.8
             word-break: normal !important;
             // AO-510: ends here
         }

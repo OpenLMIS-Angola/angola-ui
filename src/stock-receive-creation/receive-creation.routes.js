@@ -79,16 +79,14 @@
                 },
                 srcDstAssignments: function($stateParams, facility, sourceDestinationService) {
                     if (_.isUndefined($stateParams.srcDstAssignments)) {
-                        return sourceDestinationService.getSourceAssignments($stateParams.programId, facility.type.id);
+                        return sourceDestinationService.getSourceAssignments($stateParams.programId, facility.id);
                     }
                     return $stateParams.srcDstAssignments;
-                // AO-384: added checking user rights, 
-                // should be changed to LOTS_MANAGE after moving to core project, 
-                // ORDERABLES_MANAGE used as a workaround
+                // AO-384: added checking user rights
                 },
                 hasPermissionToAddNewLot: function(permissionService, ADMINISTRATION_RIGHTS, user) {
                     return permissionService.hasPermissionWithAnyProgramAndAnyFacility(user.user_id, {
-                        right: ADMINISTRATION_RIGHTS.ORDERABLES_MANAGE
+                        right: ADMINISTRATION_RIGHTS.LOTS_MANAGE
                     })
                         .then(function() {
                             return true;

@@ -35,7 +35,7 @@
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
         // AO-384: added hasPermissionToAddNewLot, LotResource and $q
         'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'hasPermissionToAddNewLot', 'LotResource', '$q',
-        'REASON_TYPES'
+        'REASON_TYPES', 'UNPACK_REASONS'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -43,7 +43,7 @@
                         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, hasPermissionToAddNewLot,
-                        LotResource, $q, REASON_TYPES) {
+                        LotResource, $q, REASON_TYPES, UNPACK_REASONS) {
         // AO-384: ends here
         var vm = this,
             previousAdded = {};
@@ -74,6 +74,14 @@
          * Holds list of VVM statuses.
          */
         vm.vvmStatuses = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name showReasonDropdown
+         * @type {boolean}
+         */
+        vm.showReasonDropdown = true;
 
         /**
          * @ngdoc property
@@ -421,7 +429,10 @@
             return {
                 assignment: previousAdded.assignment,
                 srcDstFreeText: previousAdded.srcDstFreeText,
-                reason: previousAdded.reason,
+                reason: (adjustmentType.state === ADJUSTMENT_TYPE.KIT_UNPACK.state)
+                    ? {
+                        id: UNPACK_REASONS.KIT_UNPACK_REASON_ID
+                    } : previousAdded.reason,
                 reasonFreeText: previousAdded.reasonFreeText,
                 occurredDate: defaultDate
             };
@@ -523,11 +534,9 @@
             }
 
             //CREDIT reason ID
-            var creditReason = reasons
-                .filter(function(reason) {
-                    return reason.reasonType === 'CREDIT';
-                })
-                .pop();
+            var creditReason = {
+                id: UNPACK_REASONS.UNPACKED_FROM_KIT_REASON_ID
+            };
 
             var constituentLineItems = [];
 
@@ -555,6 +564,7 @@
             vm.program = program;
             vm.facility = facility;
             vm.reasons = reasons;
+            vm.showReasonDropdown = (adjustmentType.state !== ADJUSTMENT_TYPE.KIT_UNPACK.state);
             vm.srcDstAssignments = srcDstAssignments;
             vm.addedLineItems = $stateParams.addedLineItems || [];
             $stateParams.displayItems = displayItems;
