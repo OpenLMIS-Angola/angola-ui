@@ -1,21 +1,31 @@
 $image-height: 136px;
 
-.home-page {
-    @extend .page-hero;
-    padding-bottom: 4em;
-    &::after {
-        content:"";
-        width: 100%;
-        height: $image-height;
-        position: absolute;
-        bottom: 0.5em;
-        left: 0em;
-        background: url(openlmis-home/home-background.png) no-repeat right bottom;
-    }
+.home-page{
+  @extend .page-hero;
+  padding-bottom: 4em;
+  display: flex;
+  align-items: flex-start;
+  &::after{
+    content:"";
+    width: 100%;
+    height: $image-height;
+    position: absolute;
+    bottom: 0.5em;
+    left: 0em;
+    background: url(openlmis-home/home-background.png) no-repeat right bottom;
+  }
 }
 
-.home-page > h2 {
-    // AO-125: fixed wrapping text on home page
-    white-space: pre;
-    // AO-125: ends here
+.home-page > h2{
+  // AO-125: fixed wrapping text on home page
+  white-space: pre;
+  // AO-125: ends here
+}
+
+.scroll {
+  width: 100%;
+  float:left;
+  overflow-y: auto;
+  max-height: 60vh;
+  padding-bottom: 1em;
 }
