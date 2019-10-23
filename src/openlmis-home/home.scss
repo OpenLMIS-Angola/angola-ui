@@ -1,10 +1,17 @@
 $image-height: 136px;
 
-.home-page{
+.home-page {
   @extend .page-hero;
   padding-bottom: 4em;
   display: flex;
   align-items: flex-start;
+  // AO-556: moved system notifications below home page title
+  flex-direction: column;
+
+  .system-notification-list {
+    margin-top: 1em;
+  }
+  // AO-556: ends here
   &::after{
     content:"";
     width: 100%;
@@ -16,7 +23,7 @@ $image-height: 136px;
   }
 }
 
-.home-page > h2{
+.home-page > h2 {
   // AO-125: fixed wrapping text on home page
   white-space: pre;
   // AO-125: ends here
