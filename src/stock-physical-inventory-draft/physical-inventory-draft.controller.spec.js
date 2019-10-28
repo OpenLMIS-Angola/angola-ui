@@ -19,7 +19,10 @@ describe('PhysicalInventoryDraftController', function() {
         chooseDateModalService, facility, program, draft, lineItem, lineItem1, lineItem2, lineItem3,
         lineItem4, reasons, physicalInventoryService, stockmanagementUrlFactory, accessTokenFactory,
         $window, $controller, confirmService, PhysicalInventoryLineItemDataBuilder, OrderableDataBuilder,
-        ReasonDataBuilder, LotDataBuilder, PhysicalInventoryLineItemAdjustmentDataBuilder;
+        ReasonDataBuilder, LotDataBuilder, PhysicalInventoryLineItemAdjustmentDataBuilder,
+        // AO-522: Added ability to edit lots and remove specified row
+        editLotModalService;
+        // AO-522: ends here
 
     beforeEach(function() {
 
@@ -46,6 +49,10 @@ describe('PhysicalInventoryDraftController', function() {
             };
             addProductsModalService = $injector.get('addProductsModalService');
             spyOn(addProductsModalService, 'show');
+            // AO-522: Added ability to edit lots and remove specified row
+            editLotModalService = $injector.get('editLotModalService');
+            spyOn(editLotModalService, 'show');
+            // AO-522: ends here
             draftFactory = $injector.get('physicalInventoryFactory');
 
             physicalInventoryService = jasmine.createSpyObj('physicalInventoryService', [
@@ -528,6 +535,48 @@ describe('PhysicalInventoryDraftController', function() {
 
     });
 
+    // AO-522: Added ability to edit lots and remove specified row
+    describe('editLot', function() {
+
+        it('should reload current state after edit lot', function() {
+            editLotModalService.show.andReturn($q.resolve());
+
+            vm.editLot();
+            $rootScope.$apply();
+
+            expect(state.go).toHaveBeenCalledWith(state.current.name, stateParams, {
+                reload: state.current.name
+            });
+        });
+    });
+
+    describe('remove item from form', function() {
+        it('should open confirmation modal', function() {
+            confirmService.confirmDestroy.andReturn($q.resolve());
+
+            vm.removeLineItem(lineItem1);
+            $rootScope.$apply();
+
+            expect(confirmService.confirmDestroy).toHaveBeenCalledWith(
+                'stockPhysicalInventoryDraft.deleteItem',
+                'stockPhysicalInventoryDraft.yes'
+            );
+        });
+
+        it('should remove selected lineItem from displayLineItemsGroup', function() {
+            confirmService.confirmDestroy.andReturn($q.resolve());
+            vm.removeLineItem(lineItem1);
+            $rootScope.$apply();
+
+            expect(lineItem1.quantity).toEqual(null);
+            expect(lineItem1.stockOnHand).toEqual(null);
+            expect(vm.displayLineItemsGroup).toEqual([
+                [lineItem3]
+            ]);
+        });
+    });
+    // AO-522: ends here
+
     function initController() {
         return $controller('PhysicalInventoryDraftController', {
             facility: facility,
@@ -541,6 +590,9 @@ describe('PhysicalInventoryDraftController', function() {
             ],
             draft: draft,
             addProductsModalService: addProductsModalService,
+            // AO-522: Added ability to edit lots and remove specified row
+            editLotModalService: editLotModalService,
+            // AO-522: ends here
             chooseDateModalService: chooseDateModalService,
             reasons: reasons,
             physicalInventoryService: physicalInventoryService,

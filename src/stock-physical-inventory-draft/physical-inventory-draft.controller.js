@@ -35,8 +35,11 @@
         'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
         'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter',
         // AO-384: added LotResource and $q
-        'LotResource', '$q'];
-    // AO-384: ends here
+        'LotResource', '$q',
+        // AO-384: ends here
+        // AO-522: Added ability to edit lots and remove specified row
+        'editLotModalService'];
+    // AO-522: ends here
 
     function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                         physicalInventoryFactory, notificationService, alertService, confirmDiscardService,
@@ -45,8 +48,11 @@
                         reasons, stockReasonsCalculations, loadingModalService, $window,
                         stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter,
                         // AO-384: added LotResource and $q
-                        LotResource, $q) {
+                        LotResource, $q,
         // AO-384: ends here
+        // AO-522: Added ability to edit lots and remove specified row
+                        editLotModalService) {
+        // AO-522: ends here
         var vm = this;
 
         vm.$onInit = onInit;
@@ -209,6 +215,18 @@
             });
         };
 
+        // AO-522: Added ability to edit lots and remove specified row
+        vm.editLot = function(lineItem) {
+            editLotModalService.show(lineItem).then(function() {
+                $stateParams.draft = draft;
+
+                $state.go($state.current.name, $stateParams, {
+                    reload: $state.current.name
+                });
+            });
+        };
+        // AO-522: ends here
+
         /**
          * @ngdoc method
          * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
@@ -282,6 +300,13 @@
 
                     $stateParams.program = vm.program;
                     $stateParams.facility = vm.facility;
+                    // AO-522: Added ability to edit lots and remove specified row
+                    draft.lineItems.forEach(function(lineItem) {
+                        if (lineItem.$isNewItem) {
+                            lineItem.$isNewItem = false;
+                        }
+                    });
+                    // AO-522: ends here
                     $stateParams.draft = draft;
                     //Reload parent state and current state to keep data consistency.
                     $state.go($state.current.name, $stateParams, {
@@ -528,5 +553,44 @@
             // AO-507: ends here
         //AO-457 ends here
         }
+
+        // AO-522: Added ability to edit lots and remove specified row
+        vm.removeLineItem = function(lineItem) {
+            confirmService.confirmDestroy(
+                'stockPhysicalInventoryDraft.deleteItem',
+                'stockPhysicalInventoryDraft.yes'
+            ).then(function() {
+                loadingModalService.open();
+                vm.displayLineItemsGroup.forEach(function(array) {
+                    if (array.length === 1 && angular.equals(array[0], lineItem)) {
+                        array[0].isAdded = false;
+                        array[0].quantity = null;
+                        array[0].stockOnHand = null;
+                        var index1 = vm.displayLineItemsGroup.indexOf(array);
+                        vm.displayLineItemsGroup.splice(index1, 1);
+                    } else {
+                        array.forEach(function(item) {
+                            if (angular.equals(item, lineItem)) {
+                                item.isAdded = false;
+                                item.quantity = null;
+                                item.stockOnHand = null;
+                                var index2 = array.indexOf(item);
+                                array.splice(index2, 1);
+                            }
+                        });
+                    }
+                });
+                if (lineItem.$isNewItem) {
+                    var indexOfLineItem = draft.lineItems.indexOf(lineItem);
+                    draft.lineItems.splice(indexOfLineItem, 1);
+                }
+                vm.search();
+            });
+        };
+
+        vm.canEditLot = function(lineItem) {
+            return lineItem.lot && lineItem.$isNewItem;
+        };
+        // AO-522: ends here
     }
 })();

@@ -64,5 +64,13 @@
     "adminRoleForm.reportedAndOrderedProducts": "View Reported and Ordered Products Report",
     "adminRoleForm.submissionOfMonthlyReports": "View Submission of Monthly Reports",
     "adminRoleForm.aggregateConsumption": "View Aggregate Consumption Report",
-    "adminRoleForm.occurrenceOfAdjustments": "View Occurrence of Adjustments Report"
+    "adminRoleForm.occurrenceOfAdjustments": "View Occurrence of Adjustments Report",
+    "stockPhysicalInventoryDraft.deleteItem": "If to confirm deletion of this row, please click Yes",
+    "stockPhysicalInventoryDraft.yes": "Yes",
+    "stockEditLotModal.cancel": "Cancel",
+    "stockEditLotModal.save": "Save",
+    "stockEditLotModal.title": "Please specify a new lot ID",
+    "stockEditLotModal.lotCode": "Lot code",
+    "stockEditLotModal.expirationDate": "Expiration date",
+    "stockEditLotModal.expirationDateInvalid": "Please specify a current or future lot-expiration date."
 }
