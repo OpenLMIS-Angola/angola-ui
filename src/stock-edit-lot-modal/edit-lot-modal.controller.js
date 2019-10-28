@@ -36,6 +36,7 @@
         vm.$onInit = onInit;
         vm.validateDate = validateDate;
         vm.confirm = confirm;
+        vm.expirationDateChanged = expirationDateChanged;
 
         function onInit() {
             vm.selectedItem = angular.copy(selectedItem);
@@ -59,6 +60,10 @@
             if (vm.newLot.expirationDate && vm.newLot.expirationDate < currentDate) {
                 vm.newLot.expirationDateInvalid = messageService.get('stockEditLotModal.expirationDateInvalid');
             }
+        }
+
+        function expirationDateChanged() {
+            vm.newLot.expirationDateInvalid = undefined;
         }
     }
 })();
