@@ -30,10 +30,16 @@
 
     // AO-384: added hasPermissionToAddNewLot and selectedItems
     controller.$inject = ['availableItems', 'messageService', 'modalDeferred', 'orderableGroupService',
-        '$scope', 'MAX_INTEGER_VALUE', 'hasPermissionToAddNewLot', 'selectedItems', 'alertService'];
+        '$scope', 'MAX_INTEGER_VALUE', 'hasPermissionToAddNewLot', 'selectedItems', 'alertService',
+        // AO-551: Added validation to lot expiration date on physical inventory screen
+        'moment'];
+    // AO-551: ends here
 
     function controller(availableItems, messageService, modalDeferred, orderableGroupService,
-                        $scope, MAX_INTEGER_VALUE, hasPermissionToAddNewLot, selectedItems, alertService) {
+                        $scope, MAX_INTEGER_VALUE, hasPermissionToAddNewLot, selectedItems, alertService,
+                        // AO-551: Added validation to lot expiration date on physical inventory screen
+                        moment) {
+    // AO-551: ends here
     // AO-384: ends here
 
         var vm = this;
@@ -45,6 +51,10 @@
         vm.validate = validate;
         vm.confirm = confirm;
         vm.lotChanged = lotChanged;
+        // AO-551: Added validation to lot expiration date on physical inventory screen
+        vm.expirationDateChanged = expirationDateChanged;
+        vm.validateDate = validateDate;
+        // AO-551: ends here
 
         // AO-384: changed name from items to availableItems, removed hasLot
         /**
@@ -195,10 +205,29 @@
                     .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
             }
 
-            if (selectedItem && !vm.addedItems.includes(selectedItem)) {
+            // AO-551: Added validation to lot expiration date on physical inventory screen
+            vm.validateDate();
+            var noErrors = !vm.newLot.expirationDateInvalid;
+
+            if (selectedItem && !vm.addedItems.includes(selectedItem) && noErrors) {
+            // AO-551: ends here
                 vm.addedItems.push(selectedItem);
             }
         }
+
+        // AO-551: Added validation to lot expiration date on physical inventory screen
+        function validateDate() {
+            var currentDate = moment(new Date()).format('YYYY-MM-DD');
+
+            if (vm.newLot.expirationDate && vm.newLot.expirationDate < currentDate) {
+                vm.newLot.expirationDateInvalid = messageService.get('stockEditLotModal.expirationDateInvalid');
+            }
+        }
+
+        function expirationDateChanged() {
+            vm.newLot.expirationDateInvalid = undefined;
+        }
+        // AO-551: ends here
 
         /**
          * @ngdoc method

@@ -82,6 +82,15 @@ describe('AddProductsModalController', function() {
             expect(that.vm.addedItems).toEqual([that.item1]);
         });
 
+        // AO-551: Added validation to lot expiration date on physical inventory screen
+        it('should NOT add if expirationDate is invalid', function() {
+            that.item1.lot.expirationDate = '2019-09-09';
+            that.vm.addOneProduct();
+
+            expect(that.vm.addedItems).toEqual([]);
+        });
+        // AO-551: ends here
+
         it('should add if selected item not added yet', function() {
             that.vm.selectedOrderableGroup = [that.item1];
             that.vm.selectedLot = that.item1.lot;
