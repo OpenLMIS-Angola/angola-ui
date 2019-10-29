@@ -578,22 +578,17 @@
             ).then(function() {
                 loadingModalService.open();
                 vm.displayLineItemsGroup.forEach(function(array) {
-                    if (array.length === 1 && angular.equals(array[0], lineItem)) {
-                        array[0].isAdded = false;
-                        array[0].quantity = null;
-                        array[0].stockOnHand = null;
-                        var index1 = vm.displayLineItemsGroup.indexOf(array);
-                        vm.displayLineItemsGroup.splice(index1, 1);
-                    } else {
-                        array.forEach(function(item) {
-                            if (angular.equals(item, lineItem)) {
-                                item.isAdded = false;
-                                item.quantity = null;
-                                item.stockOnHand = null;
-                                var index2 = array.indexOf(item);
-                                array.splice(index2, 1);
-                            }
-                        });
+                    var indexOfItem = array.indexOf(lineItem);
+                    if (indexOfItem > -1) {
+                        array[indexOfItem].isAdded = false;
+                        array[indexOfItem].quantity = null;
+                        array[indexOfItem].stockOnHand = null;
+                        if (array.length === 1 && angular.equals(array[0], lineItem)) {
+                            indexOfItem = vm.displayLineItemsGroup.indexOf(array);
+                            vm.displayLineItemsGroup.splice(indexOfItem, 1);
+                        } else {
+                            array.splice(indexOfItem, 1);
+                        }
                     }
                 });
                 if (lineItem.$isNewItem) {
