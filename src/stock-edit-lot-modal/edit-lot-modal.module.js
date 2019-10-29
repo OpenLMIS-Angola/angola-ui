@@ -18,10 +18,10 @@
     'use strict';
 
     /**
-     * @module edit-lot-modal
+     * @module stock-edit-lot-modal
      *
      * @description
-     * Provides editLotModal directive, factory and service.
+     * Provides modal to editing lot.
      */
     angular.module('stock-edit-lot-modal', [
         'openlmis-modal',

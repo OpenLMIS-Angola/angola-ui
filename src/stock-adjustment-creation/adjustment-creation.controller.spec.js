@@ -45,6 +45,10 @@ describe('StockAdjustmentCreationController', function() {
             that.OrderableChildrenDataBuilder = $injector.get('OrderableChildrenDataBuilder');
             that.LotResource = $injector.get('LotResource');
             that.UNPACK_REASONS = $injector.get('UNPACK_REASONS');
+            // AO-522: Added ability to edit lots and remove specified row
+            that.editLotModalService = $injector.get('editLotModalService');
+            spyOn(that.editLotModalService, 'show');
+            // AO-522: ends here
         });
 
         that.state = jasmine.createSpyObj('$state', ['go']);
@@ -542,7 +546,10 @@ describe('StockAdjustmentCreationController', function() {
             reasons: that.reasons,
             orderableGroups: orderableGroups,
             displayItems: [],
-            hasPermissionToAddNewLot: true
+            hasPermissionToAddNewLot: true,
+            // AO-522: Added ability to edit lots and remove specified row
+            editLotModalService: that.editLotModalService
+            // AO-522: ends here
         });
     }
 

@@ -536,20 +536,6 @@ describe('PhysicalInventoryDraftController', function() {
     });
 
     // AO-522: Added ability to edit lots and remove specified row
-    describe('editLot', function() {
-
-        it('should reload current state after edit lot', function() {
-            editLotModalService.show.andReturn($q.resolve());
-
-            vm.editLot();
-            $rootScope.$apply();
-
-            expect(state.go).toHaveBeenCalledWith(state.current.name, stateParams, {
-                reload: state.current.name
-            });
-        });
-    });
-
     describe('remove item from form', function() {
         it('should open confirmation modal', function() {
             confirmService.confirmDestroy.andReturn($q.resolve());

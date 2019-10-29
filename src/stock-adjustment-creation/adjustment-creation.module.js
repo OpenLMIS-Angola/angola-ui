@@ -31,6 +31,9 @@
         'referencedata-lot',
         // AO-384: ends here
         'stock-unpack-kit',
-        'stock-reasons-modal'
+        'stock-reasons-modal',
+        // AO-522: Added ability to edit lots and remove specified row
+        'stock-edit-lot-modal'
+        // AO-522: ends here
     ]);
 })();

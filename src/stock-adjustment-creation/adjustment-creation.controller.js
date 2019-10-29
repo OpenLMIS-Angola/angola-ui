@@ -35,15 +35,21 @@
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
         // AO-384: added hasPermissionToAddNewLot, LotResource and $q
         'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'hasPermissionToAddNewLot', 'LotResource', '$q',
-        'REASON_TYPES', 'UNPACK_REASONS'
+        'REASON_TYPES', 'UNPACK_REASONS',
+        // AO-522: Added ability to edit lots and remove specified row
+        'editLotModalService', 'moment'
     ];
+    // AO-522: ends here
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
                         facility, orderableGroups, reasons, confirmService, messageService, user,
                         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, hasPermissionToAddNewLot,
-                        LotResource, $q, REASON_TYPES, UNPACK_REASONS) {
+                        LotResource, $q, REASON_TYPES, UNPACK_REASONS,
+                        // AO-522: Added ability to edit lots and remove specified row
+                        editLotModalService, moment) {
+        // AO-522: ends here
         // AO-384: ends here
         var vm = this,
             previousAdded = {};
@@ -63,6 +69,10 @@
         vm.orderableSelectionChanged = orderableSelectionChanged;
         vm.getStatusDisplay = getStatusDisplay;
         vm.lotChanged = lotChanged;
+        // AO-522: Added ability to edit lots and remove specified row
+        vm.expirationDateChanged = expirationDateChanged;
+        vm.validateExpirationDate = validateExpirationDate;
+        // AO-522: ends here
 
         /**
          * @ngdoc property
@@ -193,21 +203,32 @@
             if (vm.newLot.lotCode) {
                 selectedItem = orderableGroupService
                     .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.newLot, true);
+                // AO-522: Added ability to edit lots and remove specified row
+                selectedItem.$isNewItem = true;
+                // AO-522: ends here
             } else {
             // AO-384: ends here
                 selectedItem = orderableGroupService
                     .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
             }
 
-            vm.addedLineItems.unshift(_.extend({
-                $errors: {},
-                $previewSOH: selectedItem.stockOnHand
-            },
-            selectedItem, copyDefaultValue()));
+            // AO-522: Added ability to edit lots and remove specified row
+            vm.newLot.expirationDateInvalid = undefined;
+            validateExpirationDate();
+            var noErrors = !vm.newLot.expirationDateInvalid;
 
-            previousAdded = vm.addedLineItems[0];
+            if (noErrors) {
+                vm.addedLineItems.unshift(_.extend({
+                    $errors: {},
+                    $previewSOH: selectedItem.stockOnHand
+                },
+                selectedItem, copyDefaultValue()));
 
-            vm.search();
+                previousAdded = vm.addedLineItems[0];
+
+                vm.search();
+            }
+            // AO-522: ends here
         }
 
         /**
@@ -609,5 +630,65 @@
             }
             return pageNumber;
         }
+
+        // AO-522: Added ability to edit lots and remove specified row
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name editLot
+         *
+         * @description
+         * Pops up a modal for users to edit lot for selected line item.
+         *
+         * @param {Object} lineItem line items to be edited.
+         */
+        vm.editLot = function(lineItem) {
+            editLotModalService.show(lineItem).then(function() {
+                $stateParams.displayItems = vm.displayItems;
+            });
+        };
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name canEditLot
+         *
+         * @description
+         * Checks if user can edit lot.
+         *
+         * @param {Object} lineItem line item to edit
+         */
+        vm.canEditLot = function(lineItem) {
+            return vm.hasPermissionToAddNewLot && lineItem.lot && lineItem.$isNewItem;
+        };
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name validateExpirationDate
+         *
+         * @description
+         * Validate if expirationDate is a future date.
+         */
+        function validateExpirationDate() {
+            var currentDate = moment(new Date()).format('YYYY-MM-DD');
+
+            if (vm.newLot.expirationDate && vm.newLot.expirationDate < currentDate) {
+                vm.newLot.expirationDateInvalid = messageService.get('stockEditLotModal.expirationDateInvalid');
+            }
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name expirationDateChanged
+         *
+         * @description
+         * Hides the error message if exists after changed expiration date.
+         */
+        function expirationDateChanged() {
+            vm.newLot.expirationDateInvalid = undefined;
+        }
+        // AO-522: ends here
     }
 })();

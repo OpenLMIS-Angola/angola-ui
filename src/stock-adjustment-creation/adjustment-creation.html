@@ -37,7 +37,11 @@
                     <label for="lotCode">{{'stockAddProductsModal.newLotCode' | message}}</label>
                     <input id="lotCode" type="text" ng-model="vm.newLot.lotCode" required>
                     <label for="expirationDate">{{'stockAddProductsModal.newNotExpirationDate' | message}}</label>
-                    <input id="expirationDate" type="date" ng-model="vm.newLot.expirationDate"/>
+                    <!-- AO-522: Added ability to edit lots and remove specified row -->
+                    <input id="expirationDate" type="date" ng-model="vm.newLot.expirationDate"
+                    ng-change="vm.expirationDateChanged()" 
+                    openlmis-invalid="{{vm.newLot.expirationDateInvalid | message}}"/>
+                    <!-- AO-522: ends here -->
                 </div>
                 <!-- AO-384: ends here -->
                 <button type="submit" class="add">{{vm.key('add') | message}}</button>
@@ -66,7 +70,16 @@
                 <tr ng-repeat="lineItem in vm.items">
                     <td>{{lineItem.orderable.productCode}}</td>
                     <td>{{lineItem.orderable | productName}}</td>
-                    <td ng-show="vm.hasLot">{{lineItem.displayLotMessage}}</td>
+                    <!-- AO-522: Added ability to edit lots and remove specified row -->
+                    <td ng-if="vm.canEditLot(lineItem)">
+                        <button class="edit" ng-click="vm.editLot(lineItem)">
+                            {{lineItem.displayLotMessage}}
+                        </button>
+                    </td>
+                    <td ng-if="!vm.canEditLot(lineItem)">
+                        {{lineItem.displayLotMessage}}
+                    </td>
+                    <!-- AO-522: ends here -->
                     <td ng-show="vm.hasLot">{{lineItem.lot.expirationDate | openlmisDate}}</td>
                     <td align="right">{{lineItem.$previewSOH}}</td>
                     <td ng-show="vm.srcDstAssignments" openlmis-invalid="{{lineItem.$errors.assignmentInvalid ? 'openlmisForm.required' : '' | message}}">

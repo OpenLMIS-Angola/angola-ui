@@ -10,7 +10,7 @@
                 </h4>
             </div>
             <div class="modal-body">
-                <form id="edit-lot-form" ng-submit="vm.confirm()">
+                <form id="edit-lot-form" ng-submit="vm.updateItem()">
                     <div>
                         <label for="lotCode">{{'stockEditLotModal.lotCode' | message}}</label>
                         <input id="lotCode" type="text" ng-model="vm.newLot.lotCode" required>

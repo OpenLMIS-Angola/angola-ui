@@ -70,7 +70,7 @@
                             return permissionService.hasPermissionWithAnyProgramAndAnyFacility(
                                 authorizationService.getUser().user_id,
                                 {
-                                    right: ADMINISTRATION_RIGHTS.ORDERABLES_MANAGE
+                                    right: ADMINISTRATION_RIGHTS.LOTS_MANAGE
                                 }
                             )
                                 .then(function() {

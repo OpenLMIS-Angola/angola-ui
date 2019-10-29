@@ -216,13 +216,19 @@
         };
 
         // AO-522: Added ability to edit lots and remove specified row
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name editLot
+         *
+         * @description
+         * Pops up a modal for users to edit lot for selected line item.
+         *
+         * @param {Object} lineItem line items to be edited.
+         */
         vm.editLot = function(lineItem) {
             editLotModalService.show(lineItem).then(function() {
                 $stateParams.draft = draft;
-
-                $state.go($state.current.name, $stateParams, {
-                    reload: $state.current.name
-                });
             });
         };
         // AO-522: ends here
@@ -555,6 +561,16 @@
         }
 
         // AO-522: Added ability to edit lots and remove specified row
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name removeLineItem
+         *
+         * @description
+         * Removes selected line item
+         *
+         * @param {Object} lineItem line item to remove
+         */
         vm.removeLineItem = function(lineItem) {
             confirmService.confirmDestroy(
                 'stockPhysicalInventoryDraft.deleteItem',
@@ -588,6 +604,16 @@
             });
         };
 
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name canEditLot
+         *
+         * @description
+         * Checks if user can edit lot if it was created during inventory
+         *
+         * @param {Object} lineItem line item to edit
+         */
         vm.canEditLot = function(lineItem) {
             return lineItem.lot && lineItem.$isNewItem;
         };

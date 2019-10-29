@@ -63,14 +63,14 @@ describe('EditLotModalController', function() {
         });
     });
 
-    describe('confirm', function() {
+    describe('updateItem', function() {
 
         it('should assign values from newLot to selectedItem', function() {
             that.vm.newLot.lotCode = 'test123';
             that.vm.newLot.expirationDate = new Date();
 
             spyOn(that.deferred, 'resolve');
-            that.vm.confirm();
+            that.vm.updateItem();
 
             expect(that.selectedItem.lot.lotCode).toEqual(that.vm.newLot.lotCode);
             expect(that.selectedItem.lot.expirationDate).toEqual(that.vm.newLot.expirationDate);

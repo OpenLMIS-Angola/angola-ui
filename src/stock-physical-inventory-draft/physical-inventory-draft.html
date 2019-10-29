@@ -64,7 +64,7 @@
                 <!-- AO-384: removed hasLot flag -->
                 <!-- AO-522: Added ability to edit lots and remove specified row -->
                 <td ng-if="vm.canEditLot(lineItem)">
-                    <button class="pull-right" ng-click="vm.editLot(lineItem)">
+                    <button class="edit" ng-click="vm.editLot(lineItem)">
                         {{lineItem.displayLotMessage}}
                     </button>
                 </td>

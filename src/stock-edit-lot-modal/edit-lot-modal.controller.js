@@ -19,7 +19,7 @@
 
     /**
      * @ngdoc controller
-     * @name edit-lot-modal.controller:EditLotModalController
+     * @name stock-edit-lot-modal.controller:EditLotModalController
      *
      * @description
      * Controller for managing stock lot edit.
@@ -35,25 +35,72 @@
         var vm = this;
         vm.$onInit = onInit;
         vm.validateDate = validateDate;
-        vm.confirm = confirm;
+        vm.updateItem = updateItem;
         vm.expirationDateChanged = expirationDateChanged;
 
+        /**
+         * @ngdoc property
+         * @propertyOf stock-edit-lot-modal.controller:EditLotModalController
+         * @name selectedItem
+         * @type {Object}
+         *
+         * @description
+         * Selected item on form.
+         */
+        vm.selectedItem = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-edit-lot-modal.controller:EditLotModalController
+         * @name newLot
+         * @type {Object}
+         *
+         * @description
+         * Holds new lot object.
+         */
+        vm.newLot = undefined;
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-edit-lot-modal.controller:EditLotModalController
+         * @name $onInit
+         *
+         * @description
+         * Initialization method of the EditLotModalController.
+         */
         function onInit() {
             vm.selectedItem = angular.copy(selectedItem);
             vm.newLot = vm.selectedItem.lot;
         }
 
-        function confirm() {
+        /**
+         * @ngdoc method
+         * @methodOf stock-edit-lot-modal.controller:EditLotModalController
+         * @name updateItem
+         *
+         * @description
+         * Update lot of item on form if there are no errors.
+         */
+        function updateItem() {
             vm.newLot.expirationDateInvalid = undefined;
             validateDate();
             var noErrors = !vm.newLot.expirationDateInvalid;
 
             if (noErrors) {
                 selectedItem.lot = vm.newLot;
+                selectedItem.displayLotMessage = vm.newLot.lotCode;
                 modalDeferred.resolve();
             }
         }
 
+        /**
+         * @ngdoc method
+         * @methodOf stock-edit-lot-modal.controller:EditLotModalController
+         * @name validateDate
+         *
+         * @description
+         * Validate if expirationDate is a future date.
+         */
         function validateDate() {
             var currentDate = moment(new Date()).format('YYYY-MM-DD');
 
@@ -62,6 +109,14 @@
             }
         }
 
+        /**
+         * @ngdoc method
+         * @methodOf stock-edit-lot-modal.controller:EditLotModalController
+         * @name expirationDateChanged
+         *
+         * @description
+         * Hides the error message if exists after changed expiration date.
+         */
         function expirationDateChanged() {
             vm.newLot.expirationDateInvalid = undefined;
         }

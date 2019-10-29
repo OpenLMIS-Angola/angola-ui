@@ -22,7 +22,7 @@
      * @name stock-edit-lot-modal.editLotModalService
      *
      * @description
-     * This service will pop up a modal window for user to select products.
+     * This service will pop up a modal window for user to edit lot.
      */
     angular
         .module('stock-edit-lot-modal')
@@ -42,7 +42,7 @@
          * @description
          * Shows modal that allows users to edit lot.
          *
-         * @param  {Object}   selectedItem  orderable + lot item that was selected
+         * @param  {Object}   selectedItem  item that was selected on form
          * @return {Promise}                resolved with edited lot
          */
         function show(selectedItem) {
