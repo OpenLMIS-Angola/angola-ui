@@ -48,6 +48,9 @@
         // AO-384: exposed addItemWithNewLot method
         this.addItemWithNewLot = addItemWithNewLot;
         // AO-384: ends here
+        // AO-553: Sorted lots order by expiry date
+        this.sortByFieldName = sortByFieldName;
+        // AO-553: ends here
 
         /**
          * @ngdoc method
@@ -83,6 +86,9 @@
                 if ((addMissingLotAllowed || someHasLot) && someHasNoLot) {
                     lots.unshift(noLotDefined);
                 }
+                // AO-553: Sorted lots order by expiry date
+                sortByFieldName(lots, 'expirationDate');
+                // AO-553: ends here
             }
 
             if (addMissingLotAllowed) {
@@ -91,6 +97,30 @@
             return lots;
             // AO-384: ends here
         }
+
+        // AO-553: Sorted lots order by expiry date
+        /**
+         * @ngdoc method
+         * @methodOf stock-orderable-group.orderableGroupService
+         * @name sortByFieldName
+         *
+         * @description
+         * Sorts array by field name
+         *
+         * @param {Object} array         array to sort
+         * @param {Object} fieldName     name of the field by which the array is sorted
+         */
+        function sortByFieldName(array, fieldName) {
+            array.sort(function(a, b) {
+                if (a[fieldName] < b[fieldName]) {
+                    return -1;
+                } else if (a[fieldName] > b[fieldName]) {
+                    return 1;
+                }
+                return 0;
+            });
+        }
+        // AO-553: ends here
 
         /**
          * @ngdoc method

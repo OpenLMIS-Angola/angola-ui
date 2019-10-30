@@ -165,6 +165,30 @@ describe('orderableGroupService', function() {
         });
     });
 
+    // AO-553: Sorted lots order by expiry date
+    describe('sortByFieldName', function() {
+        it('should sort array by filed expirationDate', function() {
+            var lot2 = {
+                id: 'lot id 2',
+                expirationDate: '2020-05-08'
+            };
+            var lot3 = {
+                id: 'lot id 3',
+                expirationDate: '2018-04-03'
+            };
+            var lot4 = {
+                id: 'lot id 4',
+                expirationDate: '2019-01-20'
+            };
+
+            var arrayLots = [lot2, lot3, lot4];
+            that.orderableGroupService.sortByFieldName(arrayLots, 'expirationDate');
+
+            expect(arrayLots).toEqual([lot3, lot4, lot2]);
+        });
+    });
+    // AO-553: ends here
+
     describe('getKitOnlyOrderablegroup', function() {
 
         it('should return kit only orderableGroups', function() {
