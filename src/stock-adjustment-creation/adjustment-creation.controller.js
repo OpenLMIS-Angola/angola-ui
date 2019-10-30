@@ -201,9 +201,10 @@
             }
 
             if (vm.newLot.lotCode) {
-                selectedItem = orderableGroupService
-                    .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.newLot, true);
                 // AO-522: Added ability to edit lots and remove specified row
+                var createdLot = angular.copy(vm.newLot);
+                selectedItem = orderableGroupService
+                    .findByLotInOrderableGroup(vm.selectedOrderableGroup, createdLot, true);
                 selectedItem.$isNewItem = true;
                 // AO-522: ends here
             } else {
