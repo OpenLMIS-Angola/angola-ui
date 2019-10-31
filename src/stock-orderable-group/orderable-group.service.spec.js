@@ -41,7 +41,16 @@ describe('orderableGroupService', function() {
         });
 
         that.lot1 = {
-            id: 'lot id 1'
+            id: 'lot id 1',
+            expirationDate: '2022-05-08'
+        };
+        that.lot2 = {
+            id: 'lot id 2',
+            expirationDate: '2019-01-20'
+        };
+        that.lot3 = {
+            id: 'lot id 3',
+            expirationDate: '2018-04-03'
         };
 
         that.item1 = {
@@ -59,6 +68,18 @@ describe('orderableGroupService', function() {
             orderable: {
                 id: 'b'
             }
+        };
+        that.item4 = {
+            orderable: {
+                id: 'a'
+            },
+            lot: that.lot2
+        };
+        that.item5 = {
+            orderable: {
+                id: 'a'
+            },
+            lot: that.lot3
         };
 
         that.items = [that.item1, that.item2, that.item3];
@@ -163,31 +184,18 @@ describe('orderableGroupService', function() {
 
             expect(lots[1]).toEqual(that.lot1);
         });
-    });
 
-    // AO-553: Sorted lots order by expiry date
-    describe('sortByFieldName', function() {
-        it('should sort array by filed expirationDate', function() {
-            var lot2 = {
-                id: 'lot id 2',
-                expirationDate: '2020-05-08'
-            };
-            var lot3 = {
-                id: 'lot id 3',
-                expirationDate: '2018-04-03'
-            };
-            var lot4 = {
-                id: 'lot id 4',
-                expirationDate: '2019-01-20'
-            };
+        // AO-553: Sorted lots order by expiry date
+        it('should sort lots by filed expirationDate', function() {
+            var group = [that.item1, that.item4, that.item5],
+                lots = that.orderableGroupService.lotsOf(group, true);
 
-            var arrayLots = [lot2, lot3, lot4];
-            that.orderableGroupService.sortByFieldName(arrayLots, 'expirationDate');
-
-            expect(arrayLots).toEqual([lot3, lot4, lot2]);
+            expect(lots).toEqual([{
+                lotCode: 'orderableGroupService.addMissingLot'
+            }, that.lot3, that.lot2, that.lot1]);
         });
+        // AO-553: ends here
     });
-    // AO-553: ends here
 
     describe('getKitOnlyOrderablegroup', function() {
 

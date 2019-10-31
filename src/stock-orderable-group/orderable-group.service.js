@@ -48,9 +48,6 @@
         // AO-384: exposed addItemWithNewLot method
         this.addItemWithNewLot = addItemWithNewLot;
         // AO-384: ends here
-        // AO-553: Sorted lots order by expiry date
-        this.sortByFieldName = sortByFieldName;
-        // AO-553: ends here
 
         /**
          * @ngdoc method
