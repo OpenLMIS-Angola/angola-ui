@@ -239,8 +239,27 @@ describe('PhysicalInventoryDraftController', function() {
     }
 
     describe('saveDraft', function() {
+        // AO-522: Added confirmation window before save draft
+        it('should open confirmation modal', function() {
+            confirmService.confirmDestroy.andReturn($q.resolve());
+            spyOn(draftFactory, 'saveDraft');
+
+            draftFactory.saveDraft.andReturn($q.resolve());
+
+            vm.saveDraft();
+            $rootScope.$apply();
+
+            expect(confirmService.confirmDestroy).toHaveBeenCalledWith(
+                'stockPhysicalInventoryDraft.saveDraft',
+                'stockPhysicalInventoryDraft.save'
+            );
+        });
+        // AO-522: ends here
 
         it('should not save lots if all exists', function() {
+            // AO-522: Added confirmation window before save draft
+            confirmService.confirmDestroy.andReturn($q.resolve());
+            // AO-522: ends here
             spyOn(draftFactory, 'saveDraft');
             spyOn(this.LotResource.prototype, 'create');
 
@@ -253,6 +272,9 @@ describe('PhysicalInventoryDraftController', function() {
         });
 
         it('should save lots if any missing lots were added', function() {
+            // AO-522: Added confirmation window before save draft
+            confirmService.confirmDestroy.andReturn($q.resolve());
+            // AO-522: ends here
             spyOn(draftFactory, 'saveDraft');
 
             lineItem3.lot.id = undefined;
@@ -271,6 +293,7 @@ describe('PhysicalInventoryDraftController', function() {
         });
 
         it('should save draft', function() {
+            confirmService.confirmDestroy.andReturn($q.resolve());
             spyOn(draftFactory, 'saveDraft');
 
             draftFactory.saveDraft.andReturn($q.resolve());

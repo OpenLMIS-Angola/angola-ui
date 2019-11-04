@@ -47,7 +47,7 @@ describe('editLotModalService', function() {
 
         it('should call createDialog function', function() {
 
-            that.editLotModalService.show(that.selectedItem);
+            that.editLotModalService.show(that.selectedItem, that.addedLineItems);
 
             expect(that.openlmisModalService.createDialog).toHaveBeenCalled();
 
@@ -56,6 +56,7 @@ describe('editLotModalService', function() {
             expect(that.config.templateUrl).toBe('stock-edit-lot-modal/edit-lot-modal.html');
             expect(that.config.show).toBeTruthy();
             expect(angular.isFunction(that.config.resolve.selectedItem)).toBeTruthy();
+            expect(angular.isFunction(that.config.resolve.addedLineItems)).toBeTruthy();
         });
     });
 });

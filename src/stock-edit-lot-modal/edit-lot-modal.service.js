@@ -42,10 +42,11 @@
          * @description
          * Shows modal that allows users to edit lot.
          *
-         * @param  {Object}   selectedItem  item that was selected on form
-         * @return {Promise}                resolved with edited lot
+         * @param  {Object}   selectedItem          item that was selected on form
+         * @param  {Array}    addedLineItems        line items added to form
+         * @return {Promise}                        resolved with edited lot
          */
-        function show(selectedItem) {
+        function show(selectedItem, addedLineItems) {
             return openlmisModalService.createDialog(
                 {
                     controller: 'EditLotModalController',
@@ -55,6 +56,9 @@
                     resolve: {
                         selectedItem: function() {
                             return selectedItem;
+                        },
+                        addedLineItems: function() {
+                            return addedLineItems;
                         }
                     }
                 }

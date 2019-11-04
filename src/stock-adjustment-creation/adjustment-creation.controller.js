@@ -71,6 +71,7 @@
         vm.lotChanged = lotChanged;
         // AO-522: Added ability to edit lots and remove specified row
         vm.expirationDateChanged = expirationDateChanged;
+        vm.newLotCodeChanged = newLotCodeChanged;
         vm.validateExpirationDate = validateExpirationDate;
         // AO-522: ends here
 
@@ -215,8 +216,10 @@
 
             // AO-522: Added ability to edit lots and remove specified row
             vm.newLot.expirationDateInvalid = undefined;
+            vm.newLot.lotCodeInvalid = undefined;
             validateExpirationDate();
-            var noErrors = !vm.newLot.expirationDateInvalid;
+            validateLotCode(selectedItem);
+            var noErrors = !vm.newLot.expirationDateInvalid && !vm.newLot.lotCodeInvalid;
 
             if (noErrors) {
                 vm.addedLineItems.unshift(_.extend({
@@ -644,7 +647,7 @@
          * @param {Object} lineItem line items to be edited.
          */
         vm.editLot = function(lineItem) {
-            editLotModalService.show(lineItem).then(function() {
+            editLotModalService.show(lineItem, vm.addedLineItems).then(function() {
                 $stateParams.displayItems = vm.displayItems;
             });
         };
@@ -689,6 +692,35 @@
          */
         function expirationDateChanged() {
             vm.newLot.expirationDateInvalid = undefined;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name newLotCodeChanged
+         *
+         * @description
+         * Hides the error message if exists after changed new lot code.
+         */
+        function newLotCodeChanged() {
+            vm.newLot.lotCodeInvalid = undefined;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name validateLotCode
+         *
+         * @description
+         * Validate if on line item list exists the same orderable with the same lot code
+         */
+        function validateLotCode(selectedItem) {
+            vm.addedLineItems.forEach(function(lineItem) {
+                if (lineItem.orderable.productCode === selectedItem.orderable.productCode
+                    && lineItem.lot && selectedItem.lot.lotCode === lineItem.lot.lotCode) {
+                    vm.newLot.lotCodeInvalid = messageService.get('stockEditLotModal.lotCodeInvalid');
+                }
+            });
         }
         // AO-522: ends here
     }

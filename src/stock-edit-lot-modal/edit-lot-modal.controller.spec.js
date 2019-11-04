@@ -36,14 +36,25 @@ describe('EditLotModalController', function() {
                 tradeItem: 'trade-item-id-1'
             })
             .build();
-        that.lot = new that.LotDataBuilder().build();
+        that.lot1 = new that.LotDataBuilder().build();
+        that.lot2 = new that.LotDataBuilder()
+            .withCode('1234')
+            .build();
 
         that.selectedItem = {
+            isAdded: true,
             orderable: that.orderable,
-            lot: that.lot
+            lot: that.lot1
+        };
+
+        that.item = {
+            isAdded: true,
+            orderable: that.orderable,
+            lot: that.lot2
         };
 
         that.vm = that.$controller('EditLotModalController', {
+            addedLineItems: [that.item, that.selectedItem],
             selectedItem: that.selectedItem,
             newLot: that.selectedItem.lot,
             modalDeferred: that.deferred
@@ -82,7 +93,7 @@ describe('EditLotModalController', function() {
         it('should assign error message when expirationDate smaller than current date', function() {
             that.vm.newLot.expirationDate = '2019-09-09';
 
-            that.vm.validateDate();
+            that.vm.updateItem();
 
             expect(that.vm.newLot.expirationDateInvalid).toBeDefined();
         });
@@ -90,9 +101,25 @@ describe('EditLotModalController', function() {
         it('should not assign error message when expirationDate equals current date', function() {
             that.vm.newLot.expirationDate = new Date();
 
-            that.vm.validateDate();
+            that.vm.updateItem();
 
             expect(that.vm.newLot.expirationDateInvalid).not.toBeDefined();
+        });
+
+        it('should assign error message when new lot code exist in addedLineItems', function() {
+            that.vm.newLot.lotCode = '1234';
+
+            that.vm.updateItem();
+
+            expect(that.vm.newLot.lotCodeInvalid).toBeDefined();
+        });
+
+        it('should not assign error message when new lot code not exist in addedLineItems', function() {
+            that.vm.newLot.lotCode = '2233';
+
+            that.vm.updateItem();
+
+            expect(that.vm.newLot.lotCodeInvalid).not.toBeDefined();
         });
     });
 });

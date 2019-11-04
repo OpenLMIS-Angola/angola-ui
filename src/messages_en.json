@@ -72,5 +72,8 @@
     "stockEditLotModal.title": "Edit lot",
     "stockEditLotModal.lotCode": "Lot code",
     "stockEditLotModal.expirationDate": "Expiration date",
-    "stockEditLotModal.expirationDateInvalid": "Lot expiration date should be a future date."
+    "stockEditLotModal.expirationDateInvalid": "Lot expiration date should be a future date.",
+    "stockEditLotModal.lotCodeInvalid": "This lot code already exists.",
+    "stockPhysicalInventoryDraft.saveDraft": "Warning: Saving will make all newly added lots unmodifiable, but removing physical inventory row will still be possible.",
+    "stockPhysicalInventoryDraft.save": "Save"
 }

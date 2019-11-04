@@ -227,7 +227,8 @@
          * @param {Object} lineItem line items to be edited.
          */
         vm.editLot = function(lineItem) {
-            editLotModalService.show(lineItem).then(function() {
+            var addedLineItems = _.flatten(vm.displayLineItemsGroup);
+            editLotModalService.show(lineItem, addedLineItems).then(function() {
                 $stateParams.draft = draft;
             });
         };
@@ -284,6 +285,7 @@
             });
         };
 
+        // AO-522: Added confirmation window before save draft
         /**
          * @ngdoc method
          * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
@@ -293,37 +295,43 @@
          * Save physical inventory draft.
          */
         vm.saveDraft = function() {
-            loadingModalService.open();
+            confirmService.confirmDestroy(
+                'stockPhysicalInventoryDraft.saveDraft',
+                'stockPhysicalInventoryDraft.save'
+            ).then(function() {
+                loadingModalService.open();
 
-            // AO-384: called saving new lots
-            return saveLots(draft, function() {
-            // AO-384: ends here
-                return physicalInventoryFactory.saveDraft(draft).then(function() {
-                    notificationService.success('stockPhysicalInventoryDraft.saved');
-                    resetWatchItems();
+                // AO-384: called saving new lots
+                return saveLots(draft, function() {
+                // AO-384: ends here
+                    return physicalInventoryFactory.saveDraft(draft).then(function() {
+                        notificationService.success('stockPhysicalInventoryDraft.saved');
+                        resetWatchItems();
 
-                    $stateParams.isAddProduct = false;
+                        $stateParams.isAddProduct = false;
 
-                    $stateParams.program = vm.program;
-                    $stateParams.facility = vm.facility;
-                    // AO-522: Added ability to edit lots and remove specified row
-                    draft.lineItems.forEach(function(lineItem) {
-                        if (lineItem.$isNewItem) {
-                            lineItem.$isNewItem = false;
-                        }
+                        $stateParams.program = vm.program;
+                        $stateParams.facility = vm.facility;
+                        // AO-522: Added ability to edit lots and remove specified row
+                        draft.lineItems.forEach(function(lineItem) {
+                            if (lineItem.$isNewItem) {
+                                lineItem.$isNewItem = false;
+                            }
+                        });
+                        // AO-522: ends here
+                        $stateParams.draft = draft;
+                        //Reload parent state and current state to keep data consistency.
+                        $state.go($state.current.name, $stateParams, {
+                            reload: true
+                        });
+                    }, function() {
+                        loadingModalService.close();
+                        alertService.error('stockPhysicalInventoryDraft.saveFailed');
                     });
-                    // AO-522: ends here
-                    $stateParams.draft = draft;
-                    //Reload parent state and current state to keep data consistency.
-                    $state.go($state.current.name, $stateParams, {
-                        reload: true
-                    });
-                }, function() {
-                    loadingModalService.close();
-                    alertService.error('stockPhysicalInventoryDraft.saveFailed');
                 });
             });
         };
+        // AO-522: ends here
 
         /**
          * @ngdoc method

@@ -13,7 +13,10 @@
                 <form id="edit-lot-form" ng-submit="vm.updateItem()">
                     <div>
                         <label for="lotCode">{{'stockEditLotModal.lotCode' | message}}</label>
-                        <input id="lotCode" type="text" ng-model="vm.newLot.lotCode" required>
+                        <input id="lotCode" type="text" ng-model="vm.newLot.lotCode"
+                        ng-change="vm.lotCodeChanged()"
+                        openlmis-invalid="{{vm.newLot.lotCodeInvalid | message}}"
+                        required>
                     </div>
                     <div>
                         <label for="expirationDate">{{'stockEditLotModal.expirationDate' | message}}</label>

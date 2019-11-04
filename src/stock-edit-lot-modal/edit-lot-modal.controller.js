@@ -28,15 +28,15 @@
         .module('stock-edit-lot-modal')
         .controller('EditLotModalController', controller);
 
-    controller.$inject = ['selectedItem', 'modalDeferred', 'messageService', 'moment'];
+    controller.$inject = ['selectedItem', 'modalDeferred', 'messageService', 'moment', 'addedLineItems'];
 
-    function controller(selectedItem, modalDeferred, messageService, moment) {
+    function controller(selectedItem, modalDeferred, messageService, moment, addedLineItems) {
 
         var vm = this;
         vm.$onInit = onInit;
-        vm.validateDate = validateDate;
         vm.updateItem = updateItem;
         vm.expirationDateChanged = expirationDateChanged;
+        vm.lotCodeChanged = lotCodeChanged;
 
         /**
          * @ngdoc property
@@ -48,6 +48,17 @@
          * Selected item on form.
          */
         vm.selectedItem = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-edit-lot-modal.controller:EditLotModalController
+         * @name addedLineItems
+         * @type {Array}
+         *
+         * @description
+         * Line items added to form
+         */
+        vm.addedLineItems = undefined;
 
         /**
          * @ngdoc property
@@ -70,6 +81,7 @@
          */
         function onInit() {
             vm.selectedItem = angular.copy(selectedItem);
+            vm.addedLineItems = addedLineItems;
             vm.newLot = vm.selectedItem.lot;
         }
 
@@ -83,8 +95,12 @@
          */
         function updateItem() {
             vm.newLot.expirationDateInvalid = undefined;
+            vm.newLot.lotCodeInvalid = undefined;
+
             validateDate();
-            var noErrors = !vm.newLot.expirationDateInvalid;
+            validateLotCode();
+
+            var noErrors = !vm.newLot.expirationDateInvalid && !vm.newLot.lotCodeInvalid;
 
             if (noErrors) {
                 selectedItem.lot = vm.newLot;
@@ -112,6 +128,23 @@
         /**
          * @ngdoc method
          * @methodOf stock-edit-lot-modal.controller:EditLotModalController
+         * @name validateLotCode
+         *
+         * @description
+         * Validate if on line item list exists the same orderable with the same lot code
+         */
+        function validateLotCode() {
+            vm.addedLineItems.forEach(function(lineItem) {
+                if (lineItem.orderable.productCode === vm.selectedItem.orderable.productCode
+                    && lineItem.lot && vm.selectedItem.lot.lotCode === lineItem.lot.lotCode) {
+                    vm.newLot.lotCodeInvalid = messageService.get('stockEditLotModal.lotCodeInvalid');
+                }
+            });
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-edit-lot-modal.controller:EditLotModalController
          * @name expirationDateChanged
          *
          * @description
@@ -119,6 +152,18 @@
          */
         function expirationDateChanged() {
             vm.newLot.expirationDateInvalid = undefined;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-edit-lot-modal.controller:EditLotModalController
+         * @name lotCodeChanged
+         *
+         * @description
+         * Hides the error message if exists after changed lot code.
+         */
+        function lotCodeChanged() {
+            vm.newLot.lotCodeInvalid = undefined;
         }
     }
 })();

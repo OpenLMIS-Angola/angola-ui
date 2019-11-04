@@ -41,17 +41,32 @@ describe('AddProductsModalController', function() {
             })
             .build();
         that.lot = new that.LotDataBuilder().build();
+        // AO-522: Added validation to lot code
+        that.lot2 = new that.LotDataBuilder()
+            .withCode('1234')
+            .build();
+        // AO-522: ends here
 
         that.item1 = {
             orderable: that.orderable,
             lot: that.lot
         };
 
+        // AO-522: Added validation to lot code
+        that.item2 = {
+            isAdded: true,
+            orderable: that.orderable,
+            lot: that.lot2
+        };
+        // AO-522: ends here
+
         spyOn(that.orderableGroupService, 'lotsOf').andReturn([that.lot]);
 
         that.scope.productForm = jasmine.createSpyObj('productForm', ['$setUntouched', '$setPristine']);
 
-        that.selectedItems = [];
+        // AO-522: Added validation to lot code
+        that.selectedItems = [that.item1, that.item2];
+        // AO-522: ends here
 
         that.vm = that.$controller('AddProductsModalController', {
             availableItems: [that.item1],
@@ -88,6 +103,27 @@ describe('AddProductsModalController', function() {
             that.vm.addOneProduct();
 
             expect(that.vm.addedItems).toEqual([]);
+        });
+
+        it('should NOT add if the same lot code has already been added', function() {
+            that.vm.selectedOrderableGroup = [that.item1];
+            that.vm.selectedLot = that.item1.lot;
+            that.vm.selectedLot.lotCode = '1234';
+            that.vm.addedItems = [];
+
+            that.vm.addOneProduct();
+
+            expect(that.vm.addedItems).toEqual([]);
+        });
+
+        it('should add when new lot code no added yet', function() {
+            that.vm.selectedOrderableGroup = [that.item1];
+            that.vm.selectedLot = that.item1.lot;
+            that.vm.selectedLot.lotCode = '2233';
+            that.vm.addedItems = [];
+            that.vm.addOneProduct();
+
+            expect(that.vm.addedItems).toEqual([that.item1]);
         });
         // AO-551: ends here
 

@@ -53,8 +53,10 @@
         vm.lotChanged = lotChanged;
         // AO-551: Added validation to lot expiration date on physical inventory screen
         vm.expirationDateChanged = expirationDateChanged;
-        vm.validateDate = validateDate;
         // AO-551: ends here
+        // AO-522: Added validation to lot code
+        vm.newLotCodeChanged = newLotCodeChanged;
+        // AO-522: ends here
 
         // AO-384: changed name from items to availableItems, removed hasLot
         /**
@@ -206,8 +208,12 @@
             }
 
             // AO-551: Added validation to lot expiration date on physical inventory screen
-            vm.validateDate();
-            var noErrors = !vm.newLot.expirationDateInvalid;
+            validateDate();
+            // AO-522: Added validation to lot code
+            validateLotCode(selectedItem);
+
+            var noErrors = !vm.newLot.expirationDateInvalid && !vm.newLot.lotCodeInvalid;
+            // AO-522: ends here
 
             if (selectedItem && !vm.addedItems.includes(selectedItem) && noErrors) {
             // AO-551: ends here
@@ -216,6 +222,14 @@
         }
 
         // AO-551: Added validation to lot expiration date on physical inventory screen
+        /**
+         * @ngdoc method
+         * @methodOf stock-add-products-modal.controller:AddProductsModalController
+         * @name validateDate
+         *
+         * @description
+         * Validate if expirationDate is a future date.
+         */
         function validateDate() {
             var currentDate = moment(new Date()).format('YYYY-MM-DD');
 
@@ -224,6 +238,64 @@
             }
         }
 
+        // AO-522: Added validation to lot code
+        /**
+         * @ngdoc method
+         * @methodOf stock-add-products-modal.controller:AddProductsModalController
+         * @name validateLotCode
+         *
+         * @description
+         * Validate if on line item list exists the same orderable with the same lot code
+         * 
+         * @param {Object} selectedItem   item to add to form
+         */
+        function validateLotCode(selectedItem) {
+            if (selectedItem && (selectedItems.filter(function(item) {
+                return item.isAdded && isIdenticalOrderableAndLotCode(item, selectedItem);
+            }).length > 0 ||  vm.addedItems && vm.addedItems.filter(function(item) {
+                return isIdenticalOrderableAndLotCode(item, selectedItem);
+            }).length > 0)) {
+                vm.newLot.lotCodeInvalid = messageService.get('stockEditLotModal.lotCodeInvalid');
+            }
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-add-products-modal.controller:AddProductsModalController
+         * @name isIdenticalOrderableAndLotCode
+         *
+         * @description
+         * Compare product code and lot code in two objects
+         * 
+         * @param {Object} item             item to compare
+         * @param {Object} itemToCompare    item to compare
+         */
+        function isIdenticalOrderableAndLotCode(item, itemToCompare) {
+            return itemToCompare.orderable.productCode === item.orderable.productCode
+            && itemToCompare.lot.lotCode === item.lot.lotCode;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-add-products-modal.controller:AddProductsModalController
+         * @name newLotCodeChanged
+         *
+         * @description
+         * Hides the error message if exists after changed lot code.
+         */
+        function newLotCodeChanged() {
+            vm.newLot.lotCodeInvalid = undefined;
+        }
+        // AO-522: ends here
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-add-products-modal.controller:AddProductsModalController
+         * @name expirationDateChanged
+         *
+         * @description
+         * Hides the error message if exists after changed expiration date.
+         */
         function expirationDateChanged() {
             vm.newLot.expirationDateInvalid = undefined;
         }
