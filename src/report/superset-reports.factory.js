@@ -77,6 +77,9 @@
                 COMPARISON_OF_CONSUMPTION_BY_REGION: createReport('comparisonOfConsumptionByRegion',
                     SUPERSET_URL + '/superset/dashboard/comparacao-de-consumos-por-regiao/',
                     'COMPARISON_OF_CONSUMPTION_BY_REGION'),
+                EXPIRY_DATES: createReport('expiryDates',
+                    SUPERSET_URL + '/superset/dashboard/datas-de-expiracao/',
+                    'EXPIRY_DATES_REPORT_VIEW'),
                 STOCKOUTS_IN_US: createReport('stockoutsInUS',
                     SUPERSET_URL + '/superset/dashboard/rupturas-de-stock-nas-us/',
                     'STOCKOUTS_IN_US_REPORT_VIEW')

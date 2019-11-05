@@ -14,5 +14,6 @@
   "report.superset.oAuthLogin.password": "Password",
   "report.superset.oAuthLogin.invalidCredentialsOrOAuthRequest": "Invalid credentials or unsuccessful OAuth request",
   "report.superset.oAuthLogin.unsuccessfulApprovingPermissions": "Unsuccessful approving permissions for Superset",
-  "report.superset.stockoutsInUS": "Stockouts in US"
+  "report.superset.stockoutsInUS": "Stockouts in US",
+  "report.superset.expiryDates": "Expiry Dates"
 }
