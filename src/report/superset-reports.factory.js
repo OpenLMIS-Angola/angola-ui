@@ -82,7 +82,10 @@
                     'EXPIRY_DATES_REPORT_VIEW'),
                 STOCKOUTS_IN_US: createReport('stockoutsInUS',
                     SUPERSET_URL + '/superset/dashboard/rupturas-de-stock-nas-us/',
-                    'STOCKOUTS_IN_US_REPORT_VIEW')
+                    'STOCKOUTS_IN_US_REPORT_VIEW'),
+                RAPTURAS_DE_STOCK_POR_PRODUTO_REPORT_VIEW: createReport('rupturasDeStockPorProduto',
+                    SUPERSET_URL + '/superset/dashboard/rupturas-de-stock-por-produto/',
+                    'RAPTURAS_DE_STOCK_POR_PRODUTO_REPORT_VIEW')
             };
         }
 

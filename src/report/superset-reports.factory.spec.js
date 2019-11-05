@@ -113,6 +113,10 @@ describe('reportService', function() {
             expect(this.$stateProvider.state).toHaveBeenCalledWith(
                 'openlmis.reports.list.superset.stockoutsInUS', jasmine.any(Object)
             );
+
+            expect(this.$stateProvider.state).toHaveBeenCalledWith(
+                'openlmis.reports.list.superset.rupturasDeStockPorProduto', jasmine.any(Object)
+            );
         });
 
     });
