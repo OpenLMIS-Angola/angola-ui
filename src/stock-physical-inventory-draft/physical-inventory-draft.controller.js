@@ -227,7 +227,7 @@
          * @param {Object} lineItem line items to be edited.
          */
         vm.editLot = function(lineItem) {
-            var addedLineItems = _.flatten(vm.displayLineItemsGroup);
+            var addedLineItems = _.flatten(draft.lineItems);
             editLotModalService.show(lineItem, addedLineItems).then(function() {
                 $stateParams.draft = draft;
             });

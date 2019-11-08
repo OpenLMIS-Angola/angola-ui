@@ -251,7 +251,7 @@
          */
         function validateLotCode(selectedItem) {
             if (selectedItem && (selectedItems.filter(function(item) {
-                return item.isAdded && isIdenticalOrderableAndLotCode(item, selectedItem);
+                return (item.isAdded || selectedItem.$isNewItem) && isIdenticalOrderableAndLotCode(item, selectedItem);
             }).length > 0 ||  vm.addedItems && vm.addedItems.filter(function(item) {
                 return isIdenticalOrderableAndLotCode(item, selectedItem);
             }).length > 0)) {
@@ -272,7 +272,7 @@
          */
         function isIdenticalOrderableAndLotCode(item, itemToCompare) {
             return itemToCompare.orderable.productCode === item.orderable.productCode
-            && itemToCompare.lot.lotCode === item.lot.lotCode;
+            && item.lot && itemToCompare.lot.lotCode === item.lot.lotCode;
         }
 
         /**

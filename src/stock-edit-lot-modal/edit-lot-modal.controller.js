@@ -136,7 +136,8 @@
         function validateLotCode() {
             vm.addedLineItems.forEach(function(lineItem) {
                 if (lineItem.orderable.productCode === vm.selectedItem.orderable.productCode
-                    && lineItem.lot && vm.selectedItem.lot.lotCode === lineItem.lot.lotCode) {
+                    && lineItem.lot && vm.selectedItem.lot.lotCode === lineItem.lot.lotCode
+                    && !(vm.selectedItem.lot.lotCode === selectedItem.lot.lotCode)) {
                     vm.newLot.lotCodeInvalid = messageService.get('stockEditLotModal.lotCodeInvalid');
                 }
             });

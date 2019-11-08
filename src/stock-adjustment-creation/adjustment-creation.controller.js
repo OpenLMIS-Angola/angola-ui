@@ -647,7 +647,8 @@
          * @param {Object} lineItem line items to be edited.
          */
         vm.editLot = function(lineItem) {
-            editLotModalService.show(lineItem, vm.addedLineItems).then(function() {
+            var allItems = _.flatten(vm.orderableGroups);
+            editLotModalService.show(lineItem, allItems).then(function() {
                 $stateParams.displayItems = vm.displayItems;
             });
         };
@@ -721,6 +722,16 @@
                     vm.newLot.lotCodeInvalid = messageService.get('stockEditLotModal.lotCodeInvalid');
                 }
             });
+            if (!vm.newLot.lotCodeInvalid && selectedItem.$isNewItem) {
+                var allItems = _.flatten(vm.orderableGroups);
+                allItems.forEach(function(lineItem) {
+                    if (lineItem.orderable && lineItem.orderable.productCode === selectedItem.orderable.productCode
+                        && lineItem.lot && !lineItem.$isNewItem &&
+                        selectedItem.lot.lotCode === lineItem.lot.lotCode) {
+                        vm.newLot.lotCodeInvalid = messageService.get('stockEditLotModal.lotCodeInvalid');
+                    }
+                });
+            }
         }
         // AO-522: ends here
     }
