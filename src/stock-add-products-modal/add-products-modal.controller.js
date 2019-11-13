@@ -272,7 +272,7 @@
          */
         function isIdenticalOrderableAndLotCode(item, itemToCompare) {
             return itemToCompare.orderable.productCode === item.orderable.productCode
-            && item.lot && itemToCompare.lot.lotCode === item.lot.lotCode;
+            && item.lot && itemToCompare.lot && itemToCompare.lot.lotCode === item.lot.lotCode;
         }
 
         /**
