@@ -46,7 +46,7 @@
          * @param  {Array}    addedLineItems        line items added to form
          * @return {Promise}                        resolved with edited lot
          */
-        function show(selectedItem, addedLineItems) {
+        function show(selectedItem, allLineItems, addedLineItems) {
             return openlmisModalService.createDialog(
                 {
                     controller: 'EditLotModalController',
@@ -56,6 +56,9 @@
                     resolve: {
                         selectedItem: function() {
                             return selectedItem;
+                        },
+                        allLineItems: function() {
+                            return allLineItems;
                         },
                         addedLineItems: function() {
                             return addedLineItems;

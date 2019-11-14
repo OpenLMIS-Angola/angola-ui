@@ -127,6 +127,11 @@
          * Initialization method of the StockAdjustmentCreationController.
          */
         function onInit() {
+            //AO-572: Extra validation for lots
+            var copiedOrderableGroups = angular.copy(orderableGroups);
+            vm.allItems = _.flatten(copiedOrderableGroups);
+            //AO-572: ends here
+
             $state.current.label = messageService.get(vm.key('title'), {
                 facilityCode: facility.code,
                 facilityName: facility.name,
@@ -218,7 +223,8 @@
             vm.newLot.expirationDateInvalid = undefined;
             vm.newLot.lotCodeInvalid = undefined;
             validateExpirationDate();
-            validateLotCode(selectedItem);
+            validateLotCode(vm.addedLineItems, selectedItem);
+            validateLotCode(vm.allItems, selectedItem);
             var noErrors = !vm.newLot.expirationDateInvalid && !vm.newLot.lotCodeInvalid;
 
             if (noErrors) {
@@ -516,11 +522,18 @@
 
             // AO-384: included creating new lots after submitting form
             var lotPromises = [];
+            //AO-572: Avoiding sending lots duplicates
+            var distinctLots = [];
             addedLineItems.forEach(function(lineItem) {
-                if (lineItem.lot && _.isUndefined(lineItem.lot.id)) {
-                    lotPromises.push(new LotResource().create(lineItem.lot));
+                if (lineItem.lot && _.isUndefined(lineItem.lot.id) &&
+                !listContainsTheSameLot(distinctLots, lineItem.lot)) {
+                    distinctLots.push(lineItem.lot);
                 }
             });
+            distinctLots.forEach(function(lineItem) {
+                lotPromises.push(new LotResource().create(lineItem));
+            });
+            //AO-572: ends here
 
             return $q.all(lotPromises)
                 .then(function(responses) {
@@ -552,6 +565,19 @@
                 });
             // AO-384: ends here
         }
+
+        //AO-572: Avoiding sending lots duplicates
+        function listContainsTheSameLot(list, lot) {
+            var itemExistsOnList = false;
+            list.forEach(function(item) {
+                if (item.lotCode === lot.lotCode &&
+                    item.tradeItemId === lot.tradeItemId) {
+                    itemExistsOnList = true;
+                }
+            });
+            return itemExistsOnList;
+        }
+        //AO-572: ends here
 
         function generateKitConstituentLineItem(addedLineItems) {
             if (adjustmentType.state !== ADJUSTMENT_TYPE.KIT_UNPACK.state) {
@@ -647,9 +673,19 @@
          * @param {Object} lineItem line items to be edited.
          */
         vm.editLot = function(lineItem) {
-            var allItems = _.flatten(vm.orderableGroups);
-            editLotModalService.show(lineItem, allItems).then(function() {
+            var oldLotCode = lineItem.lot.lotCode;
+            var oldLotExpirationDate = lineItem.lot.expirationDate;
+            editLotModalService.show(lineItem, vm.allItems, vm.addedLineItems).then(function() {
                 $stateParams.displayItems = vm.displayItems;
+                if (oldLotCode === lineItem.lot.lotCode
+                    && oldLotExpirationDate !== lineItem.lot.expirationDate) {
+                    vm.addedLineItems.forEach(function(item) {
+                        if (item.lot && item.lot.lotCode === oldLotCode &&
+                            oldLotExpirationDate === item.lot.expirationDate) {
+                            item.lot.expirationDate = lineItem.lot.expirationDate;
+                        }
+                    });
+                }
             });
         };
 
@@ -715,19 +751,14 @@
          * @description
          * Validate if on line item list exists the same orderable with the same lot code
          */
-        function validateLotCode(selectedItem) {
-            vm.addedLineItems.forEach(function(lineItem) {
-                if (lineItem.orderable.productCode === selectedItem.orderable.productCode
-                    && lineItem.lot && selectedItem.lot.lotCode === lineItem.lot.lotCode) {
-                    vm.newLot.lotCodeInvalid = messageService.get('stockEditLotModal.lotCodeInvalid');
-                }
-            });
-            if (!vm.newLot.lotCodeInvalid && selectedItem.$isNewItem) {
-                var allItems = _.flatten(vm.orderableGroups);
-                allItems.forEach(function(lineItem) {
-                    if (lineItem.orderable && lineItem.orderable.productCode === selectedItem.orderable.productCode
-                        && lineItem.lot && !lineItem.$isNewItem &&
-                        selectedItem.lot.lotCode === lineItem.lot.lotCode) {
+        function validateLotCode(listItems, selectedItem) {
+            if (selectedItem && selectedItem.$isNewItem) {
+                listItems.forEach(function(lineItem) {
+                    if (lineItem.orderable && lineItem.lot && selectedItem.lot &&
+                        lineItem.orderable.productCode === selectedItem.orderable.productCode &&
+                        selectedItem.lot.lotCode === lineItem.lot.lotCode &&
+                        ((!lineItem.$isNewItem) || (lineItem.$isNewItem &&
+                        selectedItem.lot.expirationDate !== lineItem.lot.expirationDate))) {
                         vm.newLot.lotCodeInvalid = messageService.get('stockEditLotModal.lotCodeInvalid');
                     }
                 });

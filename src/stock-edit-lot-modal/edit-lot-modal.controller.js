@@ -28,9 +28,10 @@
         .module('stock-edit-lot-modal')
         .controller('EditLotModalController', controller);
 
-    controller.$inject = ['selectedItem', 'modalDeferred', 'messageService', 'moment', 'addedLineItems'];
+    controller.$inject = ['selectedItem', 'modalDeferred', 'messageService', 'moment', 'allLineItems',
+        'addedLineItems'];
 
-    function controller(selectedItem, modalDeferred, messageService, moment, addedLineItems) {
+    function controller(selectedItem, modalDeferred, messageService, moment, allLineItems, addedLineItems) {
 
         var vm = this;
         vm.$onInit = onInit;
@@ -48,6 +49,17 @@
          * Selected item on form.
          */
         vm.selectedItem = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-edit-lot-modal.controller:EditLotModalController
+         * @name allLineItems
+         * @type {Array}
+         *
+         * @description
+         * All line items
+         */
+        vm.allLineItems = undefined;
 
         /**
          * @ngdoc property
@@ -81,6 +93,7 @@
          */
         function onInit() {
             vm.selectedItem = angular.copy(selectedItem);
+            vm.allLineItems = allLineItems;
             vm.addedLineItems = addedLineItems;
             vm.newLot = vm.selectedItem.lot;
         }
@@ -122,6 +135,17 @@
 
             if (vm.newLot.expirationDate && vm.newLot.expirationDate < currentDate) {
                 vm.newLot.expirationDateInvalid = messageService.get('stockEditLotModal.expirationDateInvalid');
+            } else if (vm.addedLineItems) {
+                vm.addedLineItems.forEach(function(lineItem) {
+                    if (lineItem.$isNewItem && lineItem.orderable.productCode === vm.selectedItem.orderable.productCode
+                        && lineItem.lot && vm.selectedItem.lot &&
+                        vm.selectedItem.lot.lotCode === lineItem.lot.lotCode
+                        && vm.selectedItem.lot.expirationDate !== lineItem.lot.expirationDate
+                        && (vm.selectedItem.lot.lotCode !== selectedItem.lot.lotCode)) {
+                        vm.newLot.expirationDateInvalid =
+                        messageService.get('stockEditLotModal.expirationDateInvalidForLotCode');
+                    }
+                });
             }
         }
 
@@ -134,9 +158,9 @@
          * Validate if on line item list exists the same orderable with the same lot code
          */
         function validateLotCode() {
-            vm.addedLineItems.forEach(function(lineItem) {
+            vm.allLineItems.forEach(function(lineItem) {
                 if (lineItem.orderable.productCode === vm.selectedItem.orderable.productCode
-                    && lineItem.lot && vm.selectedItem.lot.lotCode === lineItem.lot.lotCode
+                    && lineItem.lot && vm.selectedItem.lot && vm.selectedItem.lot.lotCode === lineItem.lot.lotCode
                     && !(vm.selectedItem.lot.lotCode === selectedItem.lot.lotCode)) {
                     vm.newLot.lotCodeInvalid = messageService.get('stockEditLotModal.lotCodeInvalid');
                 }

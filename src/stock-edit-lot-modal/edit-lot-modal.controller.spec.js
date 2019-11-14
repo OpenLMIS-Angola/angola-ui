@@ -54,7 +54,8 @@ describe('EditLotModalController', function() {
         };
 
         that.vm = that.$controller('EditLotModalController', {
-            addedLineItems: [that.item, that.selectedItem],
+            allLineItems: [that.item, that.selectedItem],
+            addedLineItems: [that.item],
             selectedItem: that.selectedItem,
             newLot: that.selectedItem.lot,
             modalDeferred: that.deferred
@@ -106,7 +107,7 @@ describe('EditLotModalController', function() {
             expect(that.vm.newLot.expirationDateInvalid).not.toBeDefined();
         });
 
-        it('should assign error message when new lot code exist in addedLineItems', function() {
+        it('should assign error message when new lot code exist in allLineItems', function() {
             that.vm.newLot.lotCode = '1234';
 
             that.vm.updateItem();
@@ -114,7 +115,7 @@ describe('EditLotModalController', function() {
             expect(that.vm.newLot.lotCodeInvalid).toBeDefined();
         });
 
-        it('should not assign error message when new lot code not exist in addedLineItems', function() {
+        it('should not assign error message when new lot code not exist in allLineItems', function() {
             that.vm.newLot.lotCode = '2233';
 
             that.vm.updateItem();

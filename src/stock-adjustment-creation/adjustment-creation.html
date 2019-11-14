@@ -74,12 +74,12 @@
                     <td>{{lineItem.orderable.productCode}}</td>
                     <td>{{lineItem.orderable | productName}}</td>
                     <!-- AO-522: Added ability to edit lots and remove specified row -->
-                    <td ng-if="vm.canEditLot(lineItem)">
+                    <td ng-show="vm.hasLot && vm.canEditLot(lineItem)">
                         <button class="edit" ng-click="vm.editLot(lineItem)">
                             {{lineItem.displayLotMessage}}
                         </button>
                     </td>
-                    <td ng-if="!vm.canEditLot(lineItem)">
+                    <td ng-show="vm.hasLot && !vm.canEditLot(lineItem)">
                         {{lineItem.displayLotMessage}}
                     </td>
                     <!-- AO-522: ends here -->
