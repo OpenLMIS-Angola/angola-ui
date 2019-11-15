@@ -20,5 +20,6 @@
     "serviceDesk.extensive": "Extensive",
     "serviceDesk.significant": "Significant",
     "serviceDesk.moderate": "Moderate",
-    "serviceDesk.local": "Local"
+    "serviceDesk.local": "Local",
+    "serviceDesk.attachmentTooLarge": "Your attachment is too large."
 }

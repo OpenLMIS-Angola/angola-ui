@@ -30,11 +30,11 @@
 
     controller.$inject = [
         '$q', '$state', '$location', 'issueTypes', 'priorities', 'impactTypes', 'ServiceDeskResource',
-        'notificationService', 'user', 'messageService', 'loadingModalService'
+        'notificationService', 'user', 'messageService', 'loadingModalService', 'alertService'
     ];
 
     function controller($q, $state, $location, issueTypes, priorities, impactTypes, ServiceDeskResource,
-                        notificationService, user, messageService, loadingModalService) {
+                        notificationService, user, messageService, loadingModalService, alertService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -140,7 +140,10 @@
                             notificationService.success(successMessage);
                             redirectToHome();
                         })
-                        .catch(loadingModalService.close);
+                        .catch(function() {
+                            alertService.error('serviceDesk.attachmentTooLarge');
+                            loadingModalService.close();
+                        });
                 })
                 .catch(loadingModalService.close);
         }
