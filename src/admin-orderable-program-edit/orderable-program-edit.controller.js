@@ -161,7 +161,7 @@
          * Takes the user to the add program orderables page.
          */
         function goToProgramOrderablePage() {
-            // AO-585: Refreshed state after save program orderable: Refreshed state after save program orderable
+            // AO-585: Refreshed state after save program orderable
             $state.go('openlmis.administration.orderables.edit.programs', {}, {
                 reload: true
             });
