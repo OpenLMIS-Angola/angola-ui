@@ -1,12 +1,12 @@
 <!-- AO-484: Added condition to show selected file in div container -->
-<div ng-if="isMultipleSelectionEnabled() && showSelectedFile" ng-repeat="file in getViewValue()">
+<div ng-if="isMultipleSelectionEnabled()" ng-repeat="file in getViewValue()">
 <!-- AO-484: ends here -->
     <span class="file-icon"></span>
     <p>{{getFileName($index)}}</p>
     <span class="clear" ng-click="clear($index)"></span>
 </div>
 <!-- AO-484: Added condition to show selected file in div container -->
-<div ng-if="!isMultipleSelectionEnabled() && showSelectedFile">
+<div ng-if="!isMultipleSelectionEnabled()">
 <!-- AO-484: ends here -->
     <span class="file-icon"></span>
     <p>{{getFileName()}}</p>

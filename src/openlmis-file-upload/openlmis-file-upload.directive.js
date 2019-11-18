@@ -63,9 +63,6 @@
             scope.getFileName = getFileName;
             scope.getViewValue = getViewValue;
             scope.isMultipleSelectionEnabled = isMultipleSelectionEnabled;
-            // AO-484: Added condition to show selected file in div container
-            scope.showSelectedFile = false;
-            // AO-484: ends here
 
             $templateRequest('openlmis-file-upload/file-upload.html')
                 .then(function(html) {
@@ -114,12 +111,8 @@
                     var list = ngModelController.$viewValue;
                     list.splice(index, 1);
                     ngModelController.$setViewValue(list);
-                    element.val(list);
                 }
                 validate();
-                // AO-484: Added condition to show selected file in div container
-                scope.showSelectedFile = false;
-                // AO-484: ends here
             }
 
             function getFileName(index) {
@@ -161,7 +154,6 @@
                         }
                     }
                 }
-                scope.showSelectedFile = true;
                 // AO-484: ends here
             }
 
