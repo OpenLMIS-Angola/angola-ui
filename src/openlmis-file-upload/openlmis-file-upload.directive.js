@@ -114,7 +114,7 @@
                     var list = ngModelController.$viewValue;
                     list.splice(index, 1);
                     ngModelController.$setViewValue(list);
-                    element.val(undefined);
+                    element.val(list);
                 }
                 validate();
                 // AO-484: Added condition to show selected file in div container
