@@ -171,7 +171,7 @@
             $scope.productForm.$setPristine();
 
             // AO-384: added newLot that holds new lot info
-            vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup, true);
+            vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup, vm.hasPermissionToAddNewLot);
             // AO-384: ends here
             vm.selectedOrderableHasLots = vm.lots.length > 0;
         }
@@ -185,12 +185,6 @@
          * Add the currently selected product into the table beneath it for users to do further actions.
          */
         function addOneProduct() {
-            //AO-474: Displaying error message when user is not allowed to add the lot
-            if (!vm.hasPermissionToAddNewLot) {
-                alertService.error(messageService.get('stockManagement.addingLotNotAllowed'));
-            }
-            //AO-474 ends here
-
             var selectedItem;
 
             // AO-384: saving new lot

@@ -54,7 +54,6 @@
     "digestConfiguration.requisition-requisitionApproved": "Requisition - Requisition Approved",
     "digestConfiguration.requisition-convertToOrder": "Requisition - Convert To Order",
     "digestConfiguration.requisition-statusUpdate": "Requisition - Status Update",
-    "stockManagement.addingLotNotAllowed": "Permission denied. Please ask your supervisor to add the lot.",
     "openlmisTableFilter.filter": "Filter",
     "adminRoleForm.podsManage": "Manage proofs of delivery",
     "adminRoleForm.podsView": "View proofs of delivery",
