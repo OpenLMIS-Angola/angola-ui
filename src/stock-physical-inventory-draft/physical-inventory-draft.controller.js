@@ -433,13 +433,26 @@
         // AO-384: method that saves new lots separately, after calls physical inventory endpoint
         function saveLots(draft, submitMethod) {
             var lotPromises = [],
-                lotResource = new LotResource();
+                lotResource = new LotResource(),
+                // AO-570: Added error message when created lot already exists in database
+                errorLots = [];
 
             draft.lineItems.forEach(function(lineItem) {
-                if (lineItem.lot && !lineItem.lot.id) {
-                    lotPromises.push(lotResource.create(lineItem.lot));
+                if (lineItem.lot && lineItem.$isNewItem && !lineItem.lot.id) {
+                    lotPromises.push(lotResource.create(lineItem.lot)
+                        .then(function(response) {
+                            lineItem.$isNewItem = false;
+                            return response;
+                        })
+                        .catch(function(response) {
+                            if (response.data.messageKey ===
+                                'referenceData.error.lot.lotCode.mustBeUnique') {
+                                errorLots.push(lineItem.lot.lotCode);
+                            }
+                        }));
                 }
             });
+            // AO-570: ends here
 
             return $q.all(lotPromises)
                 .then(function(responses) {
@@ -455,6 +468,13 @@
                 })
                 .catch(function(errorResponse) {
                     loadingModalService.close();
+                    // AO-570: Added error message when created lot already exists in database
+                    if (errorLots) {
+                        alertService.error('stockPhysicalInventoryDraft.lotCodeMustBeUnique',
+                            errorLots.join());
+                        return $q.reject(errorResponse.data.message);
+                    }
+                    // AO-570: ends here
                     alertService.error(errorResponse.data.message);
                 });
         }

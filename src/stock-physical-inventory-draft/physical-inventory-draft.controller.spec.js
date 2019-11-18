@@ -278,7 +278,11 @@ describe('PhysicalInventoryDraftController', function() {
             spyOn(draftFactory, 'saveDraft');
 
             lineItem3.lot.id = undefined;
+            // AO-570: Added error message when created lot already exists in database
+            lineItem3.$isNewItem = true;
             lineItem4.lot.id = undefined;
+            lineItem4.$isNewItem = true;
+            // AO-570: ends here
             spyOn(this.LotResource.prototype, 'create').andCallFake(function(lot) {
                 return $q.resolve(lot);
             });
@@ -417,7 +421,11 @@ describe('PhysicalInventoryDraftController', function() {
             accessTokenFactory.addAccessToken.andReturn('url');
 
             lineItem3.lot.id = undefined;
+            // AO-570: Added error message when created lot already exists in database
+            lineItem3.$isNewItem = true;
             lineItem4.lot.id = undefined;
+            lineItem4.$isNewItem = true;
+            // AO-570: ends here
             spyOn(this.LotResource.prototype, 'create').andCallFake(function(lot) {
                 return $q.resolve(lot);
             });

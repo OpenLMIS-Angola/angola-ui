@@ -75,5 +75,6 @@
     "stockEditLotModal.expirationDateInvalidForLotCode": "There exists another expiration date for this code.",
     "stockEditLotModal.lotCodeInvalid": "This lot code already exists.",
     "stockPhysicalInventoryDraft.saveDraft": "Warning: Saving will make all newly added lots unmodifiable, but removing physical inventory row will still be possible.",
-    "stockPhysicalInventoryDraft.save": "Save"
+    "stockPhysicalInventoryDraft.save": "Save",
+    "stockPhysicalInventoryDraft.lotCodeMustBeUnique": "This lots codes already exist, please change the ones listed below:"
 }
