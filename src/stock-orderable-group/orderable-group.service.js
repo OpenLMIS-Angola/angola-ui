@@ -225,8 +225,11 @@
             // AO-384: adding new lot to selected item before saving,
             // cleared SOH because of new lot entry
             if (isNewLot) {
-                selectedItem.lot = selectedLot;
-                selectedItem.stockOnHand = 0;
+                var copiedSelectedItem = angular.copy(selectedItem);
+                copiedSelectedItem.lot = selectedLot;
+                copiedSelectedItem.stockOnHand = 0;
+                determineLotMessage(copiedSelectedItem, orderableGroup);
+                return copiedSelectedItem;
             }
             // AO-384: ends here
 
