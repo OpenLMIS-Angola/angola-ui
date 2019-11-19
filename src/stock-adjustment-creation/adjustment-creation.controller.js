@@ -582,7 +582,7 @@
                     loadingModalService.close();
                     if (errorLots) {
                         alertService.error('stockPhysicalInventoryDraft.lotCodeMustBeUnique',
-                            errorLots.join());
+                            errorLots.join(', '));
                         vm.selectedOrderableGroup = undefined;
                         vm.selectedLot = undefined;
                         vm.lotChanged();

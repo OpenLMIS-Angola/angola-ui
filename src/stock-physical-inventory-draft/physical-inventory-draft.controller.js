@@ -471,7 +471,7 @@
                     // AO-570: Added error message when created lot already exists in database
                     if (errorLots) {
                         alertService.error('stockPhysicalInventoryDraft.lotCodeMustBeUnique',
-                            errorLots.join());
+                            errorLots.join(', '));
                         return $q.reject(errorResponse.data.message);
                     }
                     // AO-570: ends here
