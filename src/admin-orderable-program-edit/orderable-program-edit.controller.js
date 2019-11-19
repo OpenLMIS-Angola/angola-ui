@@ -162,6 +162,7 @@
          */
         function goToProgramOrderablePage() {
             // AO-585: Refreshed state after save program orderable
+            // can be removed after incorporating 3.8 release
             $state.go('openlmis.administration.orderables.edit.programs', {}, {
                 reload: true
             });
