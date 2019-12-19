@@ -108,7 +108,9 @@
             </tr>
         </tbody>
     </table>
-    <openlmis-pagination list="vm.displayLineItemsGroup" paged-list="vm.pagedLineItems"></openlmis-pagination>
+    <!-- AO-589: Saving physical inventory draft on page change -->
+    <openlmis-pagination list="vm.displayLineItemsGroup" paged-list="vm.pagedLineItems" on-page-change="vm.saveDraftOnPageChange"></openlmis-pagination>
+    <!-- AO-589: ends here -->
 </section>
 
 <ng-include src="'stock-physical-inventory-draft/physical-inventory-draft-toolbar.html'"></ng-include>

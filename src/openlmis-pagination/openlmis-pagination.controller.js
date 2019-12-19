@@ -144,9 +144,11 @@
                 // AO-591: Updated pagination component to allow providing a function to call before changing page
                 // can be removed after incorporating 3.8 release
                 if (pagination.onPageChange instanceof Function) {
-                    return pagination.onPageChange().then(function() {
-                        $state.go($state.current.name, stateParams);
+                    // AO-589: Saving physical inventory draft on page change
+                    return pagination.onPageChange().then(function(params) {
+                        $state.go($state.current.name, Object.assign(stateParams, params));
                     });
+                    // AO-589: ends here
                 }
                 // AO-591: ends here
 

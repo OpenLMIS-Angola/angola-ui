@@ -641,5 +641,21 @@
             return lineItem.lot && lineItem.$isNewItem;
         };
         // AO-522: ends here
+
+        // AO-589: Saving physical inventory draft on page change
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name saveDraftOnPageChange
+         *
+         * @description
+         * Saves physical inventory draft on page change.
+         */
+        vm.saveDraftOnPageChange = function() {
+            var params = {};
+            params.draft = draft;
+            return $q.resolve(params);
+        };
+        // AO-589: ends here
     }
 })();
