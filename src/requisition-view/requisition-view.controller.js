@@ -307,7 +307,10 @@
                 loadingPromise.then(function() {
                     notificationService.success('requisitionView.sync.success');
                 });
-                reloadAfterSync();
+                // AO-593: Fixed issue with navigate to the next page on requisition screen
+                // can be removed after incorporating 3.8 release
+                reloadState();
+                // AO-593: ends here
             }, function(response) {
                 handleSaveError(response.status);
             });
@@ -336,7 +339,10 @@
                         notificationService.success('requisitionView.sync.success');
                     });
                     popup.location.href = accessTokenFactory.addAccessToken(vm.getPrintUrl());
-                    reloadAfterSync();
+                    // AO-593: Fixed issue with navigate to the next page on requisition screen
+                    // can be removed after incorporating 3.8 release
+                    reloadState();
+                    // AO-593: ends here
                 }, function(response) {
                     handleSaveError(response.status);
                     popup.close();
@@ -639,15 +645,6 @@
 
         function reloadState() {
             $state.reload();
-        }
-
-        function reloadAfterSync() {
-            $state.go($state.current, {
-                rnr: vm.requisition.id,
-                requisition: undefined
-            }, {
-                reload: true
-            });
         }
 
         function failWithMessage(message) {
