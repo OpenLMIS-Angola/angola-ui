@@ -426,6 +426,21 @@ describe('StockAdjustmentCreationController', function() {
             expect(that.notificationService.success).not.toHaveBeenCalled();
         });
 
+        // ANGOLASUP-330: Checking if the new lot code exists in the database before saving
+        it('should not submit if new lot code exists in the database', function() {
+            spyOn(this.LotResource.prototype, 'query').andCallFake(function(response) {
+                response.numberOfElements = 1;
+                return that.q.resolve(response);
+            });
+
+            that.vm.submit();
+            that.rootScope.$apply();
+
+            expect(that.state.go).not.toHaveBeenCalled();
+            expect(that.notificationService.success).not.toHaveBeenCalled();
+        });
+        // ANGOLASUP-330: ends here
+
         it('should generate kit constituent if the state is unpacking', function() {
             spyOn(that.stockAdjustmentCreationService, 'submitAdjustments');
             that.stockAdjustmentCreationService.submitAdjustments.andReturn(that.q.resolve());

@@ -526,34 +526,48 @@
                 errorLots = [];
             //AO-572: Avoiding sending lots duplicates
             var distinctLots = [];
+            var lotResource = new LotResource();
             addedLineItems.forEach(function(lineItem) {
                 if (lineItem.lot && lineItem.$isNewItem && _.isUndefined(lineItem.lot.id) &&
                 !listContainsTheSameLot(distinctLots, lineItem.lot)) {
                     distinctLots.push(lineItem.lot);
                 }
             });
+            // ANGOLASUP-330: Checking if the new lot code exists in the database before saving
             distinctLots.forEach(function(lot) {
-                lotPromises.push(new LotResource().create(lot)
-                    .then(function(response) {
-                        vm.addedLineItems.forEach(function(item) {
-                            if (item.lot.lotCode === lot.lotCode) {
-                                item.$isNewItem = false;
-                                addItemToOrderableGroups(item);
-                            }
-                        });
-                        return response;
-                    })
-                    .catch(function(response) {
-                        if (response.data.messageKey ===
-                            'referenceData.error.lot.lotCode.mustBeUnique') {
+                lotPromises.push(lotResource.query({
+                    lotCode: lot.lotCode
+                })
+                    .then(function(queryResponse) {
+                        if (queryResponse.numberOfElements > 0) {
                             errorLots.push(lot.lotCode);
+                            return queryResponse;
                         }
+                        lotResource.create(lot)
+                            .then(function(createResponse) {
+                                vm.addedLineItems.forEach(function(item) {
+                                    if (item.lot.lotCode === lot.lotCode) {
+                                        item.$isNewItem = false;
+                                        addItemToOrderableGroups(item);
+                                    }
+                                });
+                                return createResponse;
+                            });
                     }));
             });
             //AO-572, AO-570: ends here
 
             return $q.all(lotPromises)
                 .then(function(responses) {
+                    if (errorLots !== undefined && errorLots.length > 0) {
+                        loadingModalService.close();
+                        alertService.error('stockPhysicalInventoryDraft.lotCodeMustBeUnique',
+                            errorLots.join(', '));
+                        vm.selectedOrderableGroup = undefined;
+                        vm.selectedLot = undefined;
+                        vm.lotChanged();
+                        return $q.reject();
+                    }
                     responses.forEach(function(lot) {
                         addedLineItems.forEach(function(lineItem) {
                             if (lineItem.lot && lineItem.lot.lotCode === lot.lotCode) {
@@ -577,20 +591,11 @@
                             alertService.error(errorResponse.data.message);
                         });
                 })
-                // AO-570: Added error message when created lot already exists in database
                 .catch(function(errorResponse) {
                     loadingModalService.close();
-                    if (errorLots) {
-                        alertService.error('stockPhysicalInventoryDraft.lotCodeMustBeUnique',
-                            errorLots.join(', '));
-                        vm.selectedOrderableGroup = undefined;
-                        vm.selectedLot = undefined;
-                        vm.lotChanged();
-                        return $q.reject(errorResponse.data.message);
-                    }
                     alertService.error(errorResponse.data.message);
                 });
-            // AO-384, AO-570: ends here
+            // AO-384, ANGOLASUP-330: ends here
         }
 
         // AO-570: Added error message when created lot already exists in database

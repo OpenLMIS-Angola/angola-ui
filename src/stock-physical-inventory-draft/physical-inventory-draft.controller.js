@@ -436,19 +436,22 @@
                 lotResource = new LotResource(),
                 // AO-570: Added error message when created lot already exists in database
                 errorLots = [];
-
+            // ANGOLASUP-330: Checking if the new lot code exists in the database before saving
             draft.lineItems.forEach(function(lineItem) {
                 if (lineItem.lot && lineItem.$isNewItem && !lineItem.lot.id) {
-                    lotPromises.push(lotResource.create(lineItem.lot)
-                        .then(function(response) {
-                            lineItem.$isNewItem = false;
-                            return response;
-                        })
-                        .catch(function(response) {
-                            if (response.data.messageKey ===
-                                'referenceData.error.lot.lotCode.mustBeUnique') {
+                    lotPromises.push(lotResource.query({
+                        lotCode: lineItem.lot.lotCode
+                    })
+                        .then(function(queryResponse) {
+                            if (queryResponse.numberOfElements > 0) {
                                 errorLots.push(lineItem.lot.lotCode);
+                                return queryResponse;
                             }
+                            return lotResource.create(lineItem.lot)
+                                .then(function(createResponse) {
+                                    lineItem.$isNewItem = false;
+                                    return createResponse;
+                                });
                         }));
                 }
             });
@@ -456,6 +459,12 @@
 
             return $q.all(lotPromises)
                 .then(function(responses) {
+                    if (errorLots !== undefined && errorLots.length > 0) {
+                        loadingModalService.close();
+                        alertService.error('stockPhysicalInventoryDraft.lotCodeMustBeUnique',
+                            errorLots.join(', '));
+                        return $q.reject();
+                    }
                     responses.forEach(function(lot) {
                         draft.lineItems.forEach(function(lineItem) {
                             if (lineItem.lot && lineItem.lot.lotCode === lot.lotCode) {
@@ -468,17 +477,10 @@
                 })
                 .catch(function(errorResponse) {
                     loadingModalService.close();
-                    // AO-570: Added error message when created lot already exists in database
-                    if (errorLots) {
-                        alertService.error('stockPhysicalInventoryDraft.lotCodeMustBeUnique',
-                            errorLots.join(', '));
-                        return $q.reject(errorResponse.data.message);
-                    }
-                    // AO-570: ends here
                     alertService.error(errorResponse.data.message);
                 });
         }
-        // AO-384: ends here
+        // AO-384, ANGOLASUP-330: ends here
 
         function isEmpty(value) {
             return value === '' || value === undefined || value === null;

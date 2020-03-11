@@ -286,7 +286,12 @@ describe('PhysicalInventoryDraftController', function() {
             spyOn(this.LotResource.prototype, 'create').andCallFake(function(lot) {
                 return $q.resolve(lot);
             });
-
+            // ANGOLASUP-330: Checking if the new lot code exists in the database before saving
+            spyOn(this.LotResource.prototype, 'query').andCallFake(function(response) {
+                response.numberOfElements = 0;
+                return $q.resolve(response);
+            });
+            // ANGOLASUP-330: ends here
             draftFactory.saveDraft.andReturn($q.resolve());
 
             vm.saveDraft();
@@ -295,6 +300,31 @@ describe('PhysicalInventoryDraftController', function() {
             expect(this.LotResource.prototype.create.calls.length).toBe(2);
             expect(draftFactory.saveDraft).toHaveBeenCalledWith(draft);
         });
+
+        // ANGOLASUP-330: Checking if the new lot code exists in the database before saving
+        it('should not save lots if new lot already exist', function() {
+            confirmService.confirmDestroy.andReturn($q.resolve());
+            spyOn(draftFactory, 'saveDraft');
+
+            lineItem3.lot.id = undefined;
+            lineItem3.$isNewItem = true;
+            lineItem4.lot.id = undefined;
+            lineItem4.$isNewItem = true;
+
+            spyOn(this.LotResource.prototype, 'query').andCallFake(function(response) {
+                response.numberOfElements = 1;
+                return $q.resolve(response);
+            });
+
+            draftFactory.saveDraft.andReturn($q.resolve());
+
+            vm.saveDraft();
+            $rootScope.$apply();
+
+            expect(this.LotResource.prototype.query.calls.length).toBe(2);
+            expect(draftFactory.saveDraft).not.toHaveBeenCalled();
+        });
+        // ANGOLASUP-330: ends here
 
         it('should save draft', function() {
             confirmService.confirmDestroy.andReturn($q.resolve());
@@ -429,6 +459,12 @@ describe('PhysicalInventoryDraftController', function() {
             spyOn(this.LotResource.prototype, 'create').andCallFake(function(lot) {
                 return $q.resolve(lot);
             });
+            // ANGOLASUP-330: Checking if the new lot code exists in the database before saving
+            spyOn(this.LotResource.prototype, 'query').andCallFake(function(response) {
+                response.numberOfElements = 0;
+                return $q.resolve(response);
+            });
+            // ANGOLASUP-330: ends here
 
             vm.submit();
             $rootScope.$apply();
