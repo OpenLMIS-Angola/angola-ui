@@ -430,6 +430,16 @@
             return lineItem.quantityInvalid;
         };
 
+        function containsLotCode(lotsArray, lotCode) {
+            var containsCode = false;
+            lotsArray.forEach(function(lot) {
+                if (lot.lotCode === lotCode) {
+                    containsCode = true;
+                }
+            });
+            return containsCode;
+        }
+
         // AO-384: method that saves new lots separately, after calls physical inventory endpoint
         function saveLots(draft, submitMethod) {
             var lotPromises = [],
@@ -443,7 +453,8 @@
                         lotCode: lineItem.lot.lotCode
                     })
                         .then(function(queryResponse) {
-                            if (queryResponse.numberOfElements > 0) {
+                            if (queryResponse.numberOfElements > 0 &&
+                                containsLotCode(queryResponse.content, lineItem.lot.lotCode)) {
                                 errorLots.push(lineItem.lot.lotCode);
                                 return queryResponse;
                             }
@@ -451,6 +462,12 @@
                                 .then(function(createResponse) {
                                     lineItem.$isNewItem = false;
                                     return createResponse;
+                                })
+                                .catch(function(response) {
+                                    if (response.data.messageKey ===
+                                        'referenceData.error.lot.lotCode.mustBeUnique') {
+                                        errorLots.push(lineItem.lot.lotCode);
+                                    }
                                 });
                         }));
                 }
@@ -460,9 +477,6 @@
             return $q.all(lotPromises)
                 .then(function(responses) {
                     if (errorLots !== undefined && errorLots.length > 0) {
-                        loadingModalService.close();
-                        alertService.error('stockPhysicalInventoryDraft.lotCodeMustBeUnique',
-                            errorLots.join(', '));
                         return $q.reject();
                     }
                     responses.forEach(function(lot) {
@@ -477,6 +491,11 @@
                 })
                 .catch(function(errorResponse) {
                     loadingModalService.close();
+                    if (errorLots) {
+                        alertService.error('stockPhysicalInventoryDraft.lotCodeMustBeUnique',
+                            errorLots.join(', '));
+                        return $q.reject(errorResponse.data.message);
+                    }
                     alertService.error(errorResponse.data.message);
                 });
         }

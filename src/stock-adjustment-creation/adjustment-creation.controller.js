@@ -513,6 +513,16 @@
                 .value();
         }
 
+        function containsLotCode(lotsArray, lotCode) {
+            var containsCode = false;
+            lotsArray.forEach(function(lot) {
+                if (lot.lotCode === lotCode) {
+                    containsCode = true;
+                }
+            });
+            return containsCode;
+        }
+
         function confirmSubmit() {
             loadingModalService.open();
 
@@ -539,11 +549,11 @@
                     lotCode: lot.lotCode
                 })
                     .then(function(queryResponse) {
-                        if (queryResponse.numberOfElements > 0) {
+                        if (queryResponse.numberOfElements > 0 && containsLotCode(queryResponse.content, lot.lotCode)) {
                             errorLots.push(lot.lotCode);
                             return queryResponse;
                         }
-                        lotResource.create(lot)
+                        return lotResource.create(lot)
                             .then(function(createResponse) {
                                 vm.addedLineItems.forEach(function(item) {
                                     if (item.lot.lotCode === lot.lotCode) {
@@ -552,6 +562,12 @@
                                     }
                                 });
                                 return createResponse;
+                            })
+                            .catch(function(response) {
+                                if (response.data.messageKey ===
+                                    'referenceData.error.lot.lotCode.mustBeUnique') {
+                                    errorLots.push(lot.lotCode);
+                                }
                             });
                     }));
             });
@@ -560,12 +576,6 @@
             return $q.all(lotPromises)
                 .then(function(responses) {
                     if (errorLots !== undefined && errorLots.length > 0) {
-                        loadingModalService.close();
-                        alertService.error('stockPhysicalInventoryDraft.lotCodeMustBeUnique',
-                            errorLots.join(', '));
-                        vm.selectedOrderableGroup = undefined;
-                        vm.selectedLot = undefined;
-                        vm.lotChanged();
                         return $q.reject();
                     }
                     responses.forEach(function(lot) {
@@ -593,6 +603,14 @@
                 })
                 .catch(function(errorResponse) {
                     loadingModalService.close();
+                    if (errorLots) {
+                        alertService.error('stockPhysicalInventoryDraft.lotCodeMustBeUnique',
+                            errorLots.join(', '));
+                        vm.selectedOrderableGroup = undefined;
+                        vm.selectedLot = undefined;
+                        vm.lotChanged();
+                        return $q.reject(errorResponse.data.message);
+                    }
                     alertService.error(errorResponse.data.message);
                 });
             // AO-384, ANGOLASUP-330: ends here
