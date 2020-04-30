@@ -146,6 +146,8 @@ describe('orderableGroupService', function() {
             });
 
             expect(lots[1]).toEqual(that.lot1);
+            expect(lots[1].expirationDate.toString())
+                .toEqual('Sun May 08 2022 00:00:00 GMT+0000 (Coordinated Universal Time)');
         });
 
         it('should add option to add missing lot if is allowed', function() {

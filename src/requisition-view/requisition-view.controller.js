@@ -307,10 +307,7 @@
                 loadingPromise.then(function() {
                     notificationService.success('requisitionView.sync.success');
                 });
-                // AO-593: Fixed issue with navigate to the next page on requisition screen
-                // can be removed after incorporating 3.8 release
                 reloadState();
-                // AO-593: ends here
             }, function(response) {
                 handleSaveError(response.status);
             });
@@ -339,10 +336,7 @@
                         notificationService.success('requisitionView.sync.success');
                     });
                     popup.location.href = accessTokenFactory.addAccessToken(vm.getPrintUrl());
-                    // AO-593: Fixed issue with navigate to the next page on requisition screen
-                    // can be removed after incorporating 3.8 release
                     reloadState();
-                    // AO-593: ends here
                 }, function(response) {
                     handleSaveError(response.status);
                     popup.close();

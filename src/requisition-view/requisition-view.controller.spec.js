@@ -319,8 +319,6 @@ describe('RequisitionViewController', function() {
             expect(this.loadingModalService.open).toHaveBeenCalled();
         });
 
-        // AO-593: Fixed issue with navigate to the next page on requisition screen
-        // can be removed after incorporating 3.8 release
         it('should reload state', function() {
             this.requisition.$save.andReturn(this.$q.resolve(true));
             this.loadingModalService.open.andReturn(this.$q.resolve());
@@ -331,7 +329,6 @@ describe('RequisitionViewController', function() {
 
             expect(this.$state.reload).toHaveBeenCalled();
         });
-        // AO-593: ends here
 
     });
 
@@ -691,8 +688,6 @@ describe('RequisitionViewController', function() {
             expect(this.loadingModalService.open.callCount).toEqual(1);
         });
 
-        // AO-593: Fixed issue with navigate to the next page on requisition screen
-        // can be removed after incorporating 3.8 release
         it('should reload state', function() {
             this.requisition.$save.andReturn(this.$q.resolve(true));
 
@@ -701,7 +696,6 @@ describe('RequisitionViewController', function() {
 
             expect(this.$state.reload).toHaveBeenCalled();
         });
-        // AO-593 :ends here
     });
 
     describe('updateRequisition', function() {
