@@ -5,14 +5,30 @@
     <!-- AO-58: ends here -->
     <label for="{{parameter.name}}" ng-repeat-start="parameter in vm.report.templateParameters">{{parameter.displayName}}</label>
 
+    <!-- ANGOLASUP-442: Added the ability to select multiple options in the filter using checkboxes -->
+    <div>
+        <label ng-if="parameter.description == 'checkboxes' && (vm.paramsOptions[parameter.name].length > 0 || parameter.dependencies.length > 0)"
+                ng-repeat="param in vm.paramsOptions[parameter.name]"
+                style="font-weight: normal; display: block;">
+                <input
+                type="checkbox"
+                name="selectedParams[]"
+                value="{{param}}"
+                ng-checked="vm.selectedCheckboxes[parameter.name].indexOf(param) > -1"
+                ng-click="vm.toggleSelection(param, parameter.name)"
+                > {{param.value}}
+            </label>
+        </label>
+    </div>
     <select id="{{parameter.name}}"
-            ng-if="vm.paramsOptions[parameter.name].length > 0 || parameter.dependencies.length > 0"
+            ng-if="parameter.description != 'checkboxes' && (vm.paramsOptions[parameter.name].length > 0 || parameter.dependencies.length > 0)"
             ng-model="vm.selectedParamsOptions[parameter.name]"
             ng-disabled="vm.paramsOptions[parameter.name].length == 0"
             ng-options="option.value as option.name for option in vm.paramsOptions[parameter.name]"
             ng-required="{{parameter.required}}"
             aria-labelledby="infolabelForSelect">
     </select>
+    <!-- ANGOLASUP-442: ends here -->
 
     <span ng-if="vm.paramsOptions[parameter.name].length == 0 && parameter.dependencies.length == 0"
           ng-switch="parameter.dataType"

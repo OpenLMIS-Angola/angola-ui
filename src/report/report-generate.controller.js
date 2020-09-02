@@ -41,6 +41,10 @@
 
         vm.downloadReport = downloadReport;
 
+        // ANGOLASUP-442: Added the ability to select multiple options in the filter using checkboxes
+        vm.toggleSelection = toggleSelection;
+        // ANGOLASUP-442: ends here
+
         vm.paramsInfo = {
             GeographicZone: 'report.geographicZoneInfo',
             DueDays: 'report.dueDaysInfo'
@@ -102,6 +106,19 @@
          * The format selected for the report. Either 'pdf' (default), 'csv', 'xls' or 'html'.
          */
         vm.format = 'pdf';
+
+        // ANGOLASUP-442: Added the ability to select multiple options in the filter using checkboxes
+        /**
+         * @ngdoc property
+         * @propertyOf report.controller:ReportGenerateController
+         * @name selectedCheckboxes
+         * @type {Object}
+         *
+         * @description
+         * The collection of checkboxes parameters dependencies and their selected values.
+         */
+        vm.selectedCheckboxes = {};
+        // ANGOLASUP-442: ends here
 
         /**
          * @ngdoc method
@@ -165,7 +182,39 @@
                 angular.forEach(param.dependencies, function(dependency) {
                     watchDependency(param, dependency);
                 });
+                // ANGOLASUP-442: Added the ability to select multiple options in the filter using checkboxes
+                if (param.description === 'checkboxes') {
+                    vm.selectedCheckboxes[param.name] = [];
+                }
+                // ANGOLASUP-442: ends here
             });
         }
+
+        // ANGOLASUP-442: Added the ability to select multiple options in the filter using checkboxes
+        /**
+         * @ngdoc method
+         * @methodOf report.controller:ReportGenerateController
+         * @name toggleSelection
+         *
+         * @description
+         * Adds selected checkboxes values ​​to dynamically created arrays 
+         * and to the collection of selected options - selectedParamsOptions
+         */
+        function toggleSelection(selectedParamName, parameterName) {
+            var idx = vm.selectedCheckboxes[parameterName].indexOf(selectedParamName.name);
+
+            if (idx > -1) {
+                vm.selectedCheckboxes[parameterName].splice(idx, 1);
+            } else {
+                vm.selectedCheckboxes[parameterName].push(selectedParamName.value);
+            }
+            vm.selectedParamsOptions[parameterName] = changeCommasToSemicolons(vm.selectedCheckboxes[parameterName]);
+        }
+
+        function changeCommasToSemicolons(text) {
+            return text.toString().split(',')
+                .join(';');
+        }
+        // ANGOLASUP-442: ends here
     }
 })();
