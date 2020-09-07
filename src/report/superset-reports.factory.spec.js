@@ -111,7 +111,7 @@ describe('reportService', function() {
             );
 
             expect(this.$stateProvider.state).toHaveBeenCalledWith(
-                'openlmis.reports.list.superset.stockoutsInUS', jasmine.any(Object)
+                'openlmis.reports.list.superset.rupturasDeStockNasUS', jasmine.any(Object)
             );
 
             expect(this.$stateProvider.state).toHaveBeenCalledWith(

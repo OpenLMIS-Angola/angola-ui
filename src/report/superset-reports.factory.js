@@ -80,7 +80,7 @@
                 EXPIRY_DATES: createReport('expiryDates',
                     SUPERSET_URL + '/superset/dashboard/datas-de-expiracao/',
                     'EXPIRY_DATES_REPORT_VIEW'),
-                STOCKOUTS_IN_US: createReport('stockoutsInUS',
+                STOCKOUTS_IN_US: createReport('rupturasDeStockNasUS',
                     SUPERSET_URL + '/superset/dashboard/rupturas-de-stock-nas-us/',
                     'STOCKOUTS_IN_US_REPORT_VIEW'),
                 RAPTURAS_DE_STOCK_POR_PRODUTO_REPORT_VIEW: createReport('rupturasDeStockPorProduto',
