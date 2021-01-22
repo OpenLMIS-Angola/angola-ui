@@ -85,7 +85,10 @@
                     'STOCKOUTS_IN_US_REPORT_VIEW'),
                 RAPTURAS_DE_STOCK_POR_PRODUTO_REPORT_VIEW: createReport('rupturasDeStockPorProduto',
                     SUPERSET_URL + '/superset/dashboard/rupturas-de-stock-por-produto/',
-                    'RAPTURAS_DE_STOCK_POR_PRODUTO_REPORT_VIEW')
+                    'RAPTURAS_DE_STOCK_POR_PRODUTO_REPORT_VIEW'),
+                RANKING_REPORT: createReport('ranking',
+                    SUPERSET_URL + '/superset/dashboard/ranking/',
+                    'RANKING_REPORT_VIEW')
             };
         }
 
