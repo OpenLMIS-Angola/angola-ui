@@ -28,9 +28,9 @@
         .module('openlmis-home')
         .controller('HomeSystemNotificationsController', controller);
 
-    controller.$inject = ['homePageSystemNotifications', 'offlineService', 'SUPERSET_URL'];
+    controller.$inject = ['homePageSystemNotifications', 'offlineService', 'SUPERSET_URL', '$sce'];
 
-    function controller(homePageSystemNotifications, offlineService, SUPERSET_URL) {
+    function controller(homePageSystemNotifications, offlineService, SUPERSET_URL, $sce) {
 
         var vm = this;
 
@@ -80,7 +80,7 @@
         function onInit() {
             vm.isOffline = offlineService.isOffline();
             vm.homePageSystemNotifications = homePageSystemNotifications;
-            vm.dashboardUrl = SUPERSET_URL + '/superset/dashboard/ranking/?standalone=true';
+            vm.dashboardUrl = $sce.trustAsResourceUrl(SUPERSET_URL + '/superset/dashboard/ranking/?standalone=true');
         }
 
     }

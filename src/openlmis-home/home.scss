@@ -11,6 +11,7 @@ $image-height: 136px;
   .system-notification-list {
     margin-top: 1em;
   }
+  
   // AO-556: ends here
   &::after{
     content:"";
@@ -21,6 +22,21 @@ $image-height: 136px;
     left: 0em;
     background: url(openlmis-home/home-background.png) no-repeat right bottom;
   }
+}
+
+.home-page>* {
+  width: 100%;
+}
+
+.home-content {
+  display: flex;
+  width: 100%;
+  margin-top: 10px;
+ }
+
+.ranking-dashboard {
+  width: 60%;
+  margin-right: 30px;
 }
 
 .home-page > h2 {
