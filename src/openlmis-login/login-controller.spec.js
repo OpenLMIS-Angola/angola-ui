@@ -23,6 +23,7 @@ describe('LoginController', function() {
                 return {};
             });
         });
+        module('report');
 
         inject(function($injector) {
             this.$q = $injector.get('$q');

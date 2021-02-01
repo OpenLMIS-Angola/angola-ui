@@ -28,8 +28,7 @@
         'openlmis-offline',
         'openlmis-locale',
         'openlmis-modal',
-        'ui.router',
-        'report'
+        'ui.router'
     ]);
 
 })();
