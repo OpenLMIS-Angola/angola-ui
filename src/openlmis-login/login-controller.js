@@ -67,7 +67,10 @@
                 .then(function(data) {
                     vm.supersetOAuthState = data.state;
                     if (data.isAuthorized === false) {
-                        supersetOAuthService.authorizeInSuperset(vm.username, vm.password, vm.supersetOAuthState);
+                        supersetOAuthService.authorizeInSuperset(vm.username, vm.password, vm.supersetOAuthState)
+                            .then(function() {
+                                $rootScope.$emit('openlmis-auth.authorized-in-superset');
+                            });
                     }
                 });
         }

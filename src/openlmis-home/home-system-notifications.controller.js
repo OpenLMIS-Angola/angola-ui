@@ -29,9 +29,10 @@
         .controller('HomeSystemNotificationsController', controller);
 
     controller.$inject = ['homePageSystemNotifications', 'offlineService', 'SUPERSET_URL', '$sce',
-        'supersetOAuthService'];
+        'supersetOAuthService', '$rootScope'];
 
-    function controller(homePageSystemNotifications, offlineService, SUPERSET_URL, $sce, supersetOAuthService) {
+    function controller(homePageSystemNotifications, offlineService, SUPERSET_URL, $sce, supersetOAuthService,
+                        $rootScope) {
 
         var vm = this;
 
@@ -94,6 +95,14 @@
             vm.homePageSystemNotifications = homePageSystemNotifications;
             vm.dashboardUrl = $sce.trustAsResourceUrl(SUPERSET_URL + '/superset/dashboard/ranking/?standalone=true');
 
+            if (!vm.isOffline) {
+                checkAuthorizationInSuperset();
+            }
+        }
+
+        $rootScope.$on('openlmis-auth.authorized-in-superset', checkAuthorizationInSuperset());
+
+        function checkAuthorizationInSuperset() {
             supersetOAuthService.checkAuthorizationInSuperset()
                 .then(function(data) {
                     vm.supersetOAuthState = data.state;
