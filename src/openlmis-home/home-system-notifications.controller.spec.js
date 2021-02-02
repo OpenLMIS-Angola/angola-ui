@@ -21,10 +21,12 @@ describe('HomeSystemNotificationsController', function() {
         module('openlmis-home', function($provide) {
             $provide.constant('SUPERSET_URL', this.baseUrl);
         });
+        module('report');
 
         inject(function($injector) {
             this.$controller = $injector.get('$controller');
             this.SystemNotificationDataBuilder = $injector.get('SystemNotificationDataBuilder');
+            this.supersetOAuthService = $injector.get('supersetOAuthService');
         });
 
         this.systemNotifications = [

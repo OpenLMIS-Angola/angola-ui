@@ -28,9 +28,10 @@
         .module('openlmis-home')
         .controller('HomeSystemNotificationsController', controller);
 
-    controller.$inject = ['homePageSystemNotifications', 'offlineService', 'SUPERSET_URL', '$sce'];
+    controller.$inject = ['homePageSystemNotifications', 'offlineService', 'SUPERSET_URL', '$sce',
+        'supersetOAuthService'];
 
-    function controller(homePageSystemNotifications, offlineService, SUPERSET_URL, $sce) {
+    function controller(homePageSystemNotifications, offlineService, SUPERSET_URL, $sce, supersetOAuthService) {
 
         var vm = this;
 
@@ -70,6 +71,17 @@
         vm.dashboardUrl = undefined;
 
         /**
+         * @ngdoc property
+         * @propertyOf home-system-notifications.controller:HomeSystemNotificationsController
+         * @name isAuthorized
+         * @type {boolean}
+         *
+         * @description
+         * Indicates if the controller is ready for displaying the Superset iframe.
+         */
+        vm.isAuthorized = false;
+
+        /**
          * @ngdoc method
          * @methodOf home-system-notifications.controller:HomeSystemNotificationsController
          * @name $onInit
@@ -81,6 +93,14 @@
             vm.isOffline = offlineService.isOffline();
             vm.homePageSystemNotifications = homePageSystemNotifications;
             vm.dashboardUrl = $sce.trustAsResourceUrl(SUPERSET_URL + '/superset/dashboard/ranking/?standalone=true');
+
+            supersetOAuthService.checkAuthorizationInSuperset()
+                .then(function(data) {
+                    vm.supersetOAuthState = data.state;
+                    if (data.isAuthorized === true) {
+                        vm.isAuthorized = true;
+                    }
+                });
         }
 
     }

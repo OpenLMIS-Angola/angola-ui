@@ -2,7 +2,7 @@
     <h2>{{'openlmisHome.welcome' | message}}</h2>
     <div class="home-content">
         <div class="ranking-dashboard">
-            <iframe ng-if="!vm.isOffline" seamless="" frameborder="0" scrolling="auto" width="100%" height="800"
+            <iframe ng-if="!vm.isOffline && vm.isAuthorized" seamless="" frameborder="0" scrolling="auto" width="100%" height="800"
             ng-src="{{vm.dashboardUrl}}"
             class="ng-scope" >
             </iframe>

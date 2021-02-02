@@ -66,7 +66,9 @@
             supersetOAuthService.checkAuthorizationInSuperset()
                 .then(function(data) {
                     vm.supersetOAuthState = data.state;
-                    supersetOAuthService.authorizeInSuperset(vm.username, vm.password, vm.supersetOAuthState);
+                    if (data.isAuthorized === false) {
+                        supersetOAuthService.authorizeInSuperset(vm.username, vm.password, vm.supersetOAuthState);
+                    }
                 });
         }
 
