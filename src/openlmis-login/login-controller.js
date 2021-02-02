@@ -53,7 +53,9 @@
                 .then(function() {
                     $rootScope.$emit('openlmis-auth.login');
                     modalDeferred.resolve();
+                    // ANGOLASUP-510: Create Leaderboard
                     loginToSuperset();
+                    // ANGOLASUP-510: ends here
                 })
                 .catch(function(error) {
                     vm.loginError = error;
@@ -62,6 +64,7 @@
                 .finally(loadingModalService.close);
         }
 
+        // ANGOLASUP-510: Create Leaderboard
         function loginToSuperset() {
             supersetOAuthService.checkAuthorizationInSuperset()
                 .then(function(data) {
@@ -74,6 +77,6 @@
                     }
                 });
         }
-
+        // ANGOLASUP-510: ends here
     }
 }());

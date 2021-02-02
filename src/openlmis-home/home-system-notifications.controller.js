@@ -60,6 +60,7 @@
          */
         vm.isOffline = undefined;
 
+        // ANGOLASUP-510: Create Leaderboard
         /**
          * @ngdoc property
          * @propertyOf home-system-notifications.controller:HomeSystemNotificationsController
@@ -81,6 +82,7 @@
          * Indicates if the controller is ready for displaying the Superset iframe.
          */
         vm.isAuthorized = false;
+        // ANGOLASUP-510: ends here
 
         /**
          * @ngdoc method
@@ -93,6 +95,7 @@
         function onInit() {
             vm.isOffline = offlineService.isOffline();
             vm.homePageSystemNotifications = homePageSystemNotifications;
+            // ANGOLASUP-510: Create Leaderboard
             vm.dashboardUrl = $sce.trustAsResourceUrl(SUPERSET_URL + '/superset/dashboard/ranking/?standalone=true');
 
             if (!vm.isOffline) {
@@ -111,6 +114,7 @@
                     }
                 });
         }
+        // ANGOLASUP-510: ends here
 
     }
 

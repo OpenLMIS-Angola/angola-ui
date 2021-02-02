@@ -21,12 +21,20 @@ describe('HomeSystemNotificationsController', function() {
         module('openlmis-home', function($provide) {
             $provide.constant('SUPERSET_URL', this.baseUrl);
         });
+        // ANGOLASUP-510: Create Leaderboard
         module('report');
+        // ANGOLASUP-510: ends here
 
         inject(function($injector) {
             this.$controller = $injector.get('$controller');
             this.SystemNotificationDataBuilder = $injector.get('SystemNotificationDataBuilder');
+            // ANGOLASUP-510: Create Leaderboard
+            this.$q = $injector.get('$q');
             this.supersetOAuthService = $injector.get('supersetOAuthService');
+
+            spyOn(this.supersetOAuthService, 'checkAuthorizationInSuperset')
+                .andReturn(this.$q.resolve(this.isAuthorizedResponse));
+            // ANGOLASUP-510: ends here
         });
 
         this.systemNotifications = [
@@ -41,8 +49,14 @@ describe('HomeSystemNotificationsController', function() {
 
         this.vm = this.$controller('HomeSystemNotificationsController', {
             homePageSystemNotifications: this.systemNotifications,
-            rankingDashboard: this.rankingDashboard
+            isOffline: false
         });
+
+        // ANGOLASUP-510: Create Leaderboard
+        this.isAuthorizedResponse = {
+            isAuthorized: true
+        };
+        // ANGOLASUP-510: ends here
 
         this.vm.$onInit();
     });
@@ -52,6 +66,12 @@ describe('HomeSystemNotificationsController', function() {
         it('should expose system notifications', function() {
             expect(this.vm.homePageSystemNotifications).toEqual(this.systemNotifications);
         });
+
+        // ANGOLASUP-510: Create Leaderboard
+        it('should check authorization in Superset', function() {
+            expect(this.supersetOAuthService.checkAuthorizationInSuperset).toHaveBeenCalled();
+        });
+        // ANGOLASUP-510: ends here
     });
 
 });

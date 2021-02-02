@@ -117,10 +117,6 @@ describe('reportService', function() {
             expect(this.$stateProvider.state).toHaveBeenCalledWith(
                 'openlmis.reports.list.superset.rupturasDeStockPorProduto', jasmine.any(Object)
             );
-
-            expect(this.$stateProvider.state).toHaveBeenCalledWith(
-                'openlmis.reports.list.superset.ranking', jasmine.any(Object)
-            );
         });
 
     });
