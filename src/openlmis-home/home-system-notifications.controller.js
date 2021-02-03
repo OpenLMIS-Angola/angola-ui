@@ -29,10 +29,10 @@
         .controller('HomeSystemNotificationsController', controller);
 
     controller.$inject = ['homePageSystemNotifications', 'offlineService', 'SUPERSET_URL', '$sce',
-        'supersetOAuthService', '$rootScope'];
+        'supersetOAuthService', '$rootScope', '$state'];
 
     function controller(homePageSystemNotifications, offlineService, SUPERSET_URL, $sce, supersetOAuthService,
-                        $rootScope) {
+                        $rootScope, $state) {
 
         var vm = this;
 
@@ -103,7 +103,9 @@
             }
         }
 
-        $rootScope.$on('openlmis-auth.authorized-in-superset', checkAuthorizationInSuperset());
+        $rootScope.$on('openlmis-auth.authorized-in-superset', function() {
+            $state.reload();
+        });
 
         function checkAuthorizationInSuperset() {
             supersetOAuthService.checkAuthorizationInSuperset()
