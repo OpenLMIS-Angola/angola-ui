@@ -65,12 +65,23 @@
          * @ngdoc property
          * @propertyOf home-system-notifications.controller:HomeSystemNotificationsController
          * @type {string}
-         * @name dashboardUrl
+         * @name dashboardMostActive
          *
          * @description
-         * Ranking dashboard url.
+         * The most active ranking dashboard url.
          */
-        vm.dashboardUrl = undefined;
+        vm.dashboardMostActive = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf home-system-notifications.controller:HomeSystemNotificationsController
+         * @type {string}
+         * @name dashboardLeastActive
+         *
+         * @description
+         * Least active ranking dashboard url.
+         */
+        vm.dashboardLeastActive = undefined;
 
         /**
          * @ngdoc property
@@ -96,7 +107,10 @@
             vm.isOffline = offlineService.isOffline();
             vm.homePageSystemNotifications = homePageSystemNotifications;
             // ANGOLASUP-510: Create Leaderboard
-            vm.dashboardUrl = $sce.trustAsResourceUrl(SUPERSET_URL + '/superset/dashboard/ranking/?standalone=true');
+            vm.dashboardMostActive = $sce.trustAsResourceUrl(SUPERSET_URL
+                + '/superset/dashboard/ranking-most-active-facilities/?standalone=true');
+            vm.dashboardLeastActive = $sce.trustAsResourceUrl(SUPERSET_URL
+                + '/superset/dashboard/ranking-least-active-facilities/?standalone=true');
 
             if (!vm.isOffline) {
                 checkAuthorizationInSuperset();
