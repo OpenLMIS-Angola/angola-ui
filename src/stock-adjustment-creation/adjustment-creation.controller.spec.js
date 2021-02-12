@@ -37,6 +37,9 @@ describe('StockAdjustmentCreationController', function() {
             that.FacilityDataBuilder = $injector.get('FacilityDataBuilder');
             that.ReasonDataBuilder = $injector.get('ReasonDataBuilder');
             that.OrderableGroupDataBuilder = $injector.get('OrderableGroupDataBuilder');
+            // ANGOLASUP-516: Removed the 'No Lot Defined' option
+            that.LotDataBuilder = $injector.get('LotDataBuilder');
+            // ANGOLASUP-516: ends here
             that.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
             that.alertService = $injector.get('alertService');
             that.notificationService = $injector.get('notificationService');
@@ -292,6 +295,9 @@ describe('StockAdjustmentCreationController', function() {
                     .build())
                 .withStockOnHand(2)
                 .build();
+            // ANGOLASUP-516: Removed the 'No Lot Defined' option
+            that.vm.selectedLot = that.vm.selectedOrderableGroup[0].lot;
+            // ANGOLASUP-516: ends here
             that.vm.addProduct();
         });
 
@@ -309,6 +315,9 @@ describe('StockAdjustmentCreationController', function() {
                     .build())
                 .withStockOnHand(10)
                 .build();
+            // ANGOLASUP-516: Removed the 'No Lot Defined' option
+            that.vm.selectedLot = that.vm.selectedOrderableGroup[0].lot;
+            // ANGOLASUP-516: ends here
             that.vm.addProduct();
 
             var addedLineItem = that.vm.addedLineItems[0];
