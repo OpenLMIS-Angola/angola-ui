@@ -79,15 +79,7 @@
                 lots.forEach(function(lot) {
                     lot.expirationDate = dateUtils.toDate(lot.expirationDate);
                 });
-
-                var someHasLot = lots.length > 0,
-                    someHasNoLot = _.any(orderableGroup, function(item) {
-                        return !item.lot;
-                    });
-
-                if ((addMissingLotAllowed || someHasLot) && someHasNoLot) {
-                    lots.unshift(noLotDefined);
-                }
+                // ANGOLASUP-516: Removed the 'No Lot Defined' option
                 // AO-553: Sorted lots order by expiry date
                 sortByFieldName(lots, 'expirationDate');
                 // AO-553: ends here

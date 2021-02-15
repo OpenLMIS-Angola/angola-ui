@@ -137,16 +137,13 @@ describe('orderableGroupService', function() {
 
     describe('lotsOf', function() {
 
+        // ANGOLASUP-516: Removed the 'No Lot Defined' option
         it('should find lots in orderable group', function() {
             var group = [that.item1, that.item2],
                 lots = that.orderableGroupService.lotsOf(group);
 
-            expect(lots[0]).toEqual({
-                lotCode: 'orderableGroupService.noLotDefined'
-            });
-
-            expect(lots[1]).toEqual(that.lot1);
-            expect(lots[1].expirationDate.toString())
+            expect(lots[0]).toEqual(that.lot1);
+            expect(lots[0].expirationDate.toString())
                 .toEqual('Sun May 08 2022 00:00:00 GMT+0000 (Coordinated Universal Time)');
         });
 
@@ -158,23 +155,16 @@ describe('orderableGroupService', function() {
                 lotCode: 'orderableGroupService.addMissingLot'
             });
 
-            expect(lots[1]).toEqual({
-                lotCode: 'orderableGroupService.noLotDefined'
-            });
-
-            expect(lots[2]).toEqual(that.lot1);
+            expect(lots[1]).toEqual(that.lot1);
         });
 
         it('should not add option to add missing lot if is not allowed', function() {
             var group = [that.item1, that.item2],
                 lots = that.orderableGroupService.lotsOf(group, false);
 
-            expect(lots[0]).toEqual({
-                lotCode: 'orderableGroupService.noLotDefined'
-            });
-
-            expect(lots[1]).toEqual(that.lot1);
+            expect(lots[0]).toEqual(that.lot1);
         });
+        // ANGOLASUP-516: ends here
 
         it('should add option to add missing lot if all items has lots', function() {
             var group = [that.item1],
