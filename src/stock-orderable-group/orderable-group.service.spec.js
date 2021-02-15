@@ -120,11 +120,9 @@ describe('orderableGroupService', function() {
             expect(that.orderableGroupService.findByLotInOrderableGroup(that.items, that.lot1)).toBe(that.item1);
         });
 
-        // ANGOLASUP-516: Removed the 'No Lot Defined' option
-        it('should not find item in group by NULL lot', function() {
-            expect(that.orderableGroupService.findByLotInOrderableGroup(that.items, null)).not.toBe(that.item2);
+        it('should find item in group by NULL lot', function() {
+            expect(that.orderableGroupService.findByLotInOrderableGroup(that.items, null)).toBe(that.item2);
         });
-        // ANGOLASUP-516: ends here
 
         it('should find item with new lot', function() {
             var newLot = new that.LotDataBuilder().build(),
@@ -139,13 +137,16 @@ describe('orderableGroupService', function() {
 
     describe('lotsOf', function() {
 
-        // ANGOLASUP-516: Removed the 'No Lot Defined' option
-        it('should find lot in orderable group', function() {
+        it('should find lots in orderable group', function() {
             var group = [that.item1, that.item2],
                 lots = that.orderableGroupService.lotsOf(group);
 
-            expect(lots[0]).toEqual(that.lot1);
-            expect(lots[0].expirationDate.toString())
+            expect(lots[0]).toEqual({
+                lotCode: 'orderableGroupService.noLotDefined'
+            });
+
+            expect(lots[1]).toEqual(that.lot1);
+            expect(lots[1].expirationDate.toString())
                 .toEqual('Sun May 08 2022 00:00:00 GMT+0000 (Coordinated Universal Time)');
         });
 
@@ -157,16 +158,23 @@ describe('orderableGroupService', function() {
                 lotCode: 'orderableGroupService.addMissingLot'
             });
 
-            expect(lots[1]).toEqual(that.lot1);
+            expect(lots[1]).toEqual({
+                lotCode: 'orderableGroupService.noLotDefined'
+            });
+
+            expect(lots[2]).toEqual(that.lot1);
         });
 
         it('should not add option to add missing lot if is not allowed', function() {
             var group = [that.item1, that.item2],
                 lots = that.orderableGroupService.lotsOf(group, false);
 
-            expect(lots[0]).toEqual(that.lot1);
+            expect(lots[0]).toEqual({
+                lotCode: 'orderableGroupService.noLotDefined'
+            });
+
+            expect(lots[1]).toEqual(that.lot1);
         });
-        // ANGOLASUP-516: ends here
 
         it('should add option to add missing lot if all items has lots', function() {
             var group = [that.item1],

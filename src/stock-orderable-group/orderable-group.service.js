@@ -34,7 +34,10 @@
     function service(messageService, StockCardSummaryRepositoryImpl,
                      FullStockCardSummaryRepositoryImpl, StockCardSummaryRepository, dateUtils) {
 
-        // ANGOLASUP-516: Removed the 'No Lot Defined' option                
+        var noLotDefined = {
+            lotCode: messageService.get('orderableGroupService.noLotDefined')
+        };
+
         this.findAvailableProductsAndCreateOrderableGroups = findAvailableProductsAndCreateOrderableGroups;
         this.lotsOf = lotsOf;
         this.determineLotMessage = determineLotMessage;
@@ -76,7 +79,15 @@
                 lots.forEach(function(lot) {
                     lot.expirationDate = dateUtils.toDate(lot.expirationDate);
                 });
-                // ANGOLASUP-516: Removed the 'No Lot Defined' option
+
+                var someHasLot = lots.length > 0,
+                    someHasNoLot = _.any(orderableGroup, function(item) {
+                        return !item.lot;
+                    });
+
+                if ((addMissingLotAllowed || someHasLot) && someHasNoLot) {
+                    lots.unshift(noLotDefined);
+                }
                 // AO-553: Sorted lots order by expiry date
                 sortByFieldName(lots, 'expirationDate');
                 // AO-553: ends here
@@ -208,10 +219,10 @@
         // AO-384: ends here
             var selectedItem = _.chain(orderableGroup)
                 .find(function(groupItem) {
-                    var lotMatch = groupItem.lot && groupItem.lot === selectedLot;
-                    // ANGOLASUP-516: Removed the 'No Lot Defined' option
+                    var selectedNoLot = !groupItem.lot && (!selectedLot || selectedLot === noLotDefined),
+                        lotMatch = groupItem.lot && groupItem.lot === selectedLot;
                     // AO-384: added isNewLot to expression
-                    return lotMatch || isNewLot;
+                    return selectedNoLot || lotMatch || isNewLot;
                     // AO-384: ends here
                 })
                 .value();
