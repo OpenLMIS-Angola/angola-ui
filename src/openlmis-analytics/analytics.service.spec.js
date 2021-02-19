@@ -24,21 +24,19 @@ describe('analyticsService', function() {
         module('openlmis-analytics', function($provide) {
 
             var ga = jasmine.createSpy();
-            // ANGOLASUP-464: Fixed issue with Google Analytics dependency - can be removed after 3.10 release
+            // ANGOLASUP-526: Fixed issue with Google Analytics dependency - can be removed after 3.11 release
             ga.P = [{
                 model: {
                     data: {
-                        b: {
-                            values: {
-                                ':screenResolution': context.screenResolution,
-                                ':viewportSize': context.viewportSize,
-                                ':language': context.language
-                            }
+                        ea: {
+                            ':screenResolution': context.screenResolution,
+                            ':viewportSize': context.viewportSize,
+                            ':language': context.language
                         }
                     }
                 }
             }];
-            // ANGOLASUP-464: ends here
+            // ANGOLASUP-526: ends here
             ga.apply = jasmine.createSpy();
             context.$window = {
                 ga: ga

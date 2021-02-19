@@ -79,16 +79,16 @@
 
             setGAParameters(gaParameters);
         }
-        // ANGOLASUP-464: Fixed issue with Google Analytics dependency - can be removed after 3.10 release
+        // ANGOLASUP-526: Fixed issue with Google Analytics dependency - can be removed after 3.11 release
         function getGAParameters() {
             return {
-                screenResolution: ga.P[0].model.data.b.values[':screenResolution'],
-                viewportSize: ga.P[0].model.data.b.values[':viewportSize'],
-                language: ga.P[0].model.data.b.values[':language'],
+                screenResolution: ga.P[0].model.data.ea[':screenResolution'],
+                viewportSize: ga.P[0].model.data.ea[':viewportSize'],
+                language: ga.P[0].model.data.ea[':language'],
                 time: Date.now()
             };
         }
-        // ANGOLASUP-464: ends here
+        // ANGOLASUP-526: ends here
         function setGAParameters(parameters, setQueueTime) {
             ga('set', 'screenResolution', parameters.screenResolution);
             ga('set', 'viewportSize', parameters.viewportSize);
