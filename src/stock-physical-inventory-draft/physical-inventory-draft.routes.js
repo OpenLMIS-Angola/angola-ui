@@ -26,6 +26,7 @@
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.physicalInventory.draft', {
             url: '/:id?keyword&page&size',
+            isOffline: true,
             views: {
                 '@openlmis': {
                     controller: 'PhysicalInventoryDraftController',
@@ -34,17 +35,19 @@
                 }
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT],
+            parentResolves: ['drafts'],
             params: {
                 program: undefined,
                 facility: undefined,
-                draft: undefined
+                noReload: undefined
             },
             resolve: {
-                draft: function($stateParams, physicalInventoryFactory) {
-                    if (_.isUndefined($stateParams.draft)) {
-                        return physicalInventoryFactory.getPhysicalInventory($stateParams.id);
+                draft: function($stateParams, physicalInventoryFactory, offlineService,
+                    physicalInventoryDraftCacheService, drafts) {
+                    if (offlineService.isOffline() || $stateParams.noReload) {
+                        return physicalInventoryDraftCacheService.getDraft($stateParams.id);
                     }
-                    return $stateParams.draft;
+                    return physicalInventoryFactory.getPhysicalInventory(getDraftFromParent(drafts, $stateParams));
                 },
                 program: function($stateParams, programService, draft) {
                     if (_.isUndefined($stateParams.program)) {
@@ -108,5 +111,14 @@
                 }
             }
         });
+
+        function getDraftFromParent(drafts, $stateParams) {
+            return drafts.reduce(function(draft, physicalInventory) {
+                if (physicalInventory.id === $stateParams.id) {
+                    draft = physicalInventory;
+                }
+                return draft;
+            }, {});
+        }
     }
 })();

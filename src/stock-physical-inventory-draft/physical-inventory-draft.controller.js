@@ -30,25 +30,27 @@
 
     controller.$inject = ['$scope', '$state', '$stateParams', 'addProductsModalService',
         'messageService', 'physicalInventoryFactory', 'notificationService', 'alertService',
-        'confirmDiscardService', 'chooseDateModalService', 'program', 'facility', 'draft',
+        'chooseDateModalService', 'program', 'facility', 'draft',
         'displayLineItemsGroup', 'confirmService', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
-        'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter',
+        'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter', '$q',
+        'offlineService', 'localStorageFactory', 'physicalInventoryDraftCacheService',
         // AO-384: added LotResource and $q
-        'LotResource', '$q',
+        'LotResource',
         // AO-384: ends here
         // AO-522: Added ability to edit lots and remove specified row
         'editLotModalService'];
     // AO-522: ends here
 
     function controller($scope, $state, $stateParams, addProductsModalService, messageService,
-                        physicalInventoryFactory, notificationService, alertService, confirmDiscardService,
+                        physicalInventoryFactory, notificationService, alertService,
                         chooseDateModalService, program, facility, draft, displayLineItemsGroup,
                         confirmService, physicalInventoryService, MAX_INTEGER_VALUE, VVM_STATUS,
                         reasons, stockReasonsCalculations, loadingModalService, $window,
-                        stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter,
+                        stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter, $q,
+                        offlineService, localStorageFactory, physicalInventoryDraftCacheService,
                         // AO-384: added LotResource and $q
-                        LotResource, $q,
+                        LotResource,
         // AO-384: ends here
         // AO-522: Added ability to edit lots and remove specified row
                         editLotModalService) {
@@ -56,7 +58,7 @@
         var vm = this;
 
         vm.$onInit = onInit;
-
+        vm.cacheDraft = cacheDraft;
         vm.quantityChanged = quantityChanged;
         vm.checkUnaccountedStockAdjustments = checkUnaccountedStockAdjustments;
 
@@ -146,6 +148,39 @@
         vm.showVVMStatusColumn = false;
 
         /**
+         * @ngdoc property
+         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name offline
+         * @type {boolean}
+         *
+         * @description
+         * Holds information about internet connection
+         */
+        vm.offline = offlineService.isOffline;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name draft
+         * @type {Object}
+         *
+         * @description
+         * Holds physical inventory draft.
+         */
+        vm.draft = draft;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name dataChanged
+         * @type {boolean}
+         *
+         * @description
+         * A flag that changes its value when the data in the form is changed. Used by saving-indicator
+         */
+        vm.dataChanged = false;
+
+        /**
          * @ngdoc method
          * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
          * @name getStatusDisplay
@@ -204,9 +239,10 @@
                 // AO-384: ends here
                 $stateParams.program = vm.program;
                 $stateParams.facility = vm.facility;
-                $stateParams.draft = draft;
+                $stateParams.noReload = true;
 
-                $stateParams.isAddProduct = true;
+                draft.$modified = true;
+                vm.cacheDraft();
 
                 //Only reload current state and avoid reloading parent state
                 $state.go($state.current.name, $stateParams, {
@@ -277,7 +313,7 @@
             $stateParams.keyword = vm.keyword;
             $stateParams.program = vm.program;
             $stateParams.facility = vm.facility;
-            $stateParams.draft = draft;
+            $stateParams.noReload = true;
 
             //Only reload current state and avoid reloading parent state
             $state.go($state.current.name, $stateParams, {
@@ -306,9 +342,9 @@
                 // AO-384: ends here
                     return physicalInventoryFactory.saveDraft(draft).then(function() {
                         notificationService.success('stockPhysicalInventoryDraft.saved');
-                        resetWatchItems();
 
-                        $stateParams.isAddProduct = false;
+                        draft.$modified = undefined;
+                        vm.cacheDraft();
 
                         $stateParams.program = vm.program;
                         $stateParams.facility = vm.facility;
@@ -319,14 +355,14 @@
                             }
                         });
                         // AO-522: ends here
-                        $stateParams.draft = draft;
-                        //Reload parent state and current state to keep data consistency.
+                        $stateParams.noReload = true;
+
                         $state.go($state.current.name, $stateParams, {
-                            reload: true
+                            reload: $state.current.name
                         });
-                    }, function() {
+                    }, function(errorResponse) {
                         loadingModalService.close();
-                        alertService.error('stockPhysicalInventoryDraft.saveFailed');
+                        alertService.error(errorResponse.data.message);
                     });
                 });
             });
@@ -348,7 +384,6 @@
             ).then(function() {
                 loadingModalService.open();
                 physicalInventoryService.deleteDraft(draft.id).then(function() {
-                    $scope.needToConfirm = false;
                     $state.go('openlmis.stockmanagement.physicalInventory', $stateParams, {
                         reload: true
                     });
@@ -400,9 +435,10 @@
                                             facility: facility.id
                                         });
                                     });
-                            }, function() {
+                            }, function(errorResponse) {
                                 loadingModalService.close();
-                                alertService.error('stockPhysicalInventoryDraft.submitFailed');
+                                alertService.error(errorResponse.data.message);
+                                physicalInventoryDraftCacheService.removeById(draft.id);
                             });
                     });
                 });
@@ -515,13 +551,6 @@
             return anyError;
         }
 
-        var watchItems = [];
-
-        function resetWatchItems() {
-            $scope.needToConfirm = false;
-            watchItems = angular.copy(vm.displayLineItemsGroup);
-        }
-
         function onInit() {
             $state.current.label = messageService.get('stockPhysicalInventoryDraft.title', {
                 facilityCode: facility.code,
@@ -533,19 +562,11 @@
             vm.stateParams = $stateParams;
             $stateParams.program = undefined;
             $stateParams.facility = undefined;
-            $stateParams.draft = undefined;
 
             // AO-384: removed hasLot
             // AO-384: ends here
 
             vm.updateProgress();
-            resetWatchItems();
-            $scope.$watch(function() {
-                return vm.displayLineItemsGroup;
-            }, function(newValue) {
-                $scope.needToConfirm = ($stateParams.isAddProduct || !angular.equals(newValue, watchItems));
-            }, true);
-            confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
 
             var orderableGroups = orderableGroupService.groupByOrderableId(draft.lineItems);
             vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(orderableGroups);
@@ -555,6 +576,10 @@
             }, function(newList) {
                 vm.groupedCategories = $filter('groupByProgramProductCategory')(newList, vm.program.id);
             }, true);
+
+            if (!$stateParams.noReload) {
+                vm.cacheDraft();
+            }
         }
 
         /**
@@ -570,6 +595,8 @@
         function checkUnaccountedStockAdjustments(lineItem) {
             lineItem.unaccountedQuantity =
               stockReasonsCalculations.calculateUnaccounted(lineItem, lineItem.stockAdjustments);
+            draft.$modified = true;
+            vm.cacheDraft();
         }
 
         /**
@@ -586,6 +613,7 @@
             vm.updateProgress();
             vm.validateQuantity(lineItem);
             vm.checkUnaccountedStockAdjustments(lineItem);
+            vm.dataChanged = !vm.dataChanged;
         }
 
         /**
@@ -673,8 +701,20 @@
          */
         vm.saveOnPageChange = function() {
             var params = {};
-            params.draft = draft;
+            params.noReload = true;
             return $q.resolve(params);
         };
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name cacheDraft
+         *
+         * @description
+         * Cache draft of physical inventory.
+         */
+        function cacheDraft() {
+            physicalInventoryDraftCacheService.cacheDraft(draft);
+        }
     }
 })();
