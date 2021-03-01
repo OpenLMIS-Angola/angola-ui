@@ -433,7 +433,7 @@ describe('PhysicalInventoryDraftController', function() {
             this.vm.submit();
             this.$rootScope.$apply();
 
-            expect(this.$window.open).toHaveBeenCalledWith('/openlmisServer/api/reports/templates/angola/'
+            expect(this.$window.open).toHaveBeenCalledWith('/api/reports/templates/angola/'
             // AO-507: Added signature to inventory report
             + '1e0221c4-58f4-40b6-9cde-4b3781cea6a1/pdf?programId=2&facilityId=3&signature=test'
             // AO-507: ends here
