@@ -672,6 +672,7 @@
                     var indexOfLineItem = draft.lineItems.indexOf(lineItem);
                     draft.lineItems.splice(indexOfLineItem, 1);
                 }
+                vm.cacheDraft();
                 vm.search();
             });
         };
