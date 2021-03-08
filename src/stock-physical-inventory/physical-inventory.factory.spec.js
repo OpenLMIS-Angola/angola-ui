@@ -338,6 +338,32 @@ describe('physicalInventoryFactory', function() {
             });
         });
 
+        // ANGOLASUP-543: Added new line items to returned draft
+        it('should get proper response with new LineItem', function() {
+            var returnedDraft;
+            draft.lineItems.push({
+                $isNewItem: true,
+                isAdded: true,
+                lot: {
+                    lotCode: 'TEST',
+                    active: true
+                },
+                orderableId: 'orderable-1',
+                quantity: 100
+            });
+
+            physicalInventoryService.getPhysicalInventory.andReturn($q.when(draft));
+
+            physicalInventoryFactory.getPhysicalInventory(id).then(function(response) {
+                returnedDraft = response;
+            });
+            $rootScope.$apply();
+
+            expect(returnedDraft).toBeDefined();
+            expect(returnedDraft.lineItems.length).toEqual(3);
+        });
+        // ANGOLASUP-543: ends here
+
         it('should get proper response when draft was modified', function() {
             var returnedDraft;
 
