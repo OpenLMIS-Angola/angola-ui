@@ -372,6 +372,20 @@
         /**
          * @ngdoc method
          * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name saveOnPageChange
+         *
+         * @description
+         * Save physical inventory draft on page change.
+         */
+        vm.saveOnPageChange = function() {
+            var params = {};
+            params.noReload = true;
+            return $q.resolve(params);
+        };
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
          * @name delete
          *
          * @description

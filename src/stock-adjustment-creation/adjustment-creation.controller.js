@@ -31,7 +31,7 @@
     controller.$inject = [
         '$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
         'orderableGroups', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
-        'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
+        'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService', 'offlineService',
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
         // AO-384: added hasPermissionToAddNewLot, LotResource and $q
         'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'hasPermissionToAddNewLot', 'LotResource', '$q',
@@ -44,7 +44,7 @@
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
                         facility, orderableGroups, reasons, confirmService, messageService, user,
                         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
-                        orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
+                        offlineService, orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, hasPermissionToAddNewLot,
                         LotResource, $q, REASON_TYPES, UNPACK_REASONS,
                         // AO-522: Added ability to edit lots and remove specified row
@@ -54,21 +54,6 @@
         var vm = this,
             previousAdded = {};
 
-        vm.$onInit = onInit;
-        vm.key = key;
-        vm.search = search;
-        vm.addProduct = addProduct;
-        vm.remove = remove;
-        vm.removeDisplayItems = removeDisplayItems;
-        vm.validateQuantity = validateQuantity;
-        vm.validateAssignment = validateAssignment;
-        vm.validateReason = validateReason;
-        vm.validateDate = validateDate;
-        vm.clearFreeText = clearFreeText;
-        vm.submit = submit;
-        vm.orderableSelectionChanged = orderableSelectionChanged;
-        vm.getStatusDisplay = getStatusDisplay;
-        vm.lotChanged = lotChanged;
         // AO-522: Added ability to edit lots and remove specified row
         vm.expirationDateChanged = expirationDateChanged;
         vm.newLotCodeChanged = newLotCodeChanged;
@@ -84,7 +69,7 @@
          * @description
          * Holds list of VVM statuses.
          */
-        vm.vvmStatuses = undefined;
+        vm.vvmStatuses = VVM_STATUS;
 
         /**
          * @ngdoc property
@@ -103,7 +88,18 @@
          * @description
          * Indicates if VVM Status column should be visible.
          */
-        vm.showVVMStatusColumn = undefined;
+        vm.showVVMStatusColumn = false;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name offline
+         * @type {boolean}
+         *
+         * @description
+         * Holds information about internet connection
+         */
+        vm.offline = offlineService.isOffline;
 
         // AO-384: added newLot that holds new lot info
         /**
@@ -163,9 +159,9 @@
          * 
          * @returns {string} screen title message key
          */
-        function key(secondaryKey) {
+        vm.key = function(secondaryKey) {
             return adjustmentType.prefix + 'Creation.' + secondaryKey;
-        }
+        };
 
         /**
          * @ngdoc method
@@ -176,7 +172,7 @@
          * It searches from the total line items with given keyword. If keyword is empty then all line
          * items will be shown.
          */
-        function search() {
+        vm.search = function() {
             vm.displayItems = stockAdjustmentCreationService.search(vm.keyword, vm.addedLineItems, vm.hasLot);
 
             $stateParams.addedLineItems = vm.addedLineItems;
@@ -187,7 +183,7 @@
                 reload: true,
                 notify: false
             });
-        }
+        };
 
         /**
          * @ngdoc method
@@ -197,9 +193,10 @@
          * @description
          * Add a product for stock adjustment.
          */
-        function addProduct() {
+        vm.addProduct = function() {
 
-            var selectedItem;
+            var selectedItem = orderableGroupService
+                .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
 
             // AO-384: added creating new lot on adding product
             if (vm.selectedOrderableGroup && vm.selectedOrderableGroup.length) {
@@ -239,7 +236,7 @@
                 vm.search();
             }
             // AO-522: ends here
-        }
+        };
 
         /**
          * @ngdoc method
@@ -251,12 +248,12 @@
          *
          * @param {Object} lineItem line item to be removed.
          */
-        function remove(lineItem) {
+        vm.remove = function(lineItem) {
             var index = vm.addedLineItems.indexOf(lineItem);
             vm.addedLineItems.splice(index, 1);
 
             vm.search();
-        }
+        };
 
         /**
          * @ngdoc method
@@ -266,13 +263,13 @@
          * @description
          * Remove all displayed line items.
          */
-        function removeDisplayItems() {
+        vm.removeDisplayItems = function() {
             confirmService.confirmDestroy(vm.key('clearAll'), vm.key('clear'))
                 .then(function() {
                     vm.addedLineItems = _.difference(vm.addedLineItems, vm.displayItems);
                     vm.displayItems = [];
                 });
-        }
+        };
 
         /**
          * @ngdoc method
@@ -284,7 +281,7 @@
          *
          * @param {Object} lineItem line item to be validated.
          */
-        function validateQuantity(lineItem) {
+        vm.validateQuantity = function(lineItem) {
             // AO-535: Added quantity validation for DEBIT reason type
             if (lineItem.quantity > lineItem.$previewSOH && lineItem.reason
                 && lineItem.reason.reasonType === REASON_TYPES.DEBIT) {
@@ -299,7 +296,7 @@
                 lineItem.$errors.quantityInvalid = messageService.get(vm.key('positiveInteger'));
             }
             return lineItem;
-        }
+        };
 
         /**
          * @ngdoc method
@@ -311,13 +308,13 @@
          *
          * @param {Object} lineItem line item to be validated.
          */
-        function validateAssignment(lineItem) {
+        vm.validateAssignment = function(lineItem) {
             if (adjustmentType.state !== ADJUSTMENT_TYPE.ADJUSTMENT.state &&
                 adjustmentType.state !== ADJUSTMENT_TYPE.KIT_UNPACK.state) {
                 lineItem.$errors.assignmentInvalid = isEmpty(lineItem.assignment);
             }
             return lineItem;
-        }
+        };
 
         /**
          * @ngdoc method
@@ -329,12 +326,12 @@
          *
          * @param {Object} lineItem line item to be validated.
          */
-        function validateReason(lineItem) {
+        vm.validateReason = function(lineItem) {
             if (adjustmentType.state === 'adjustment') {
                 lineItem.$errors.reasonInvalid = isEmpty(lineItem.reason);
             }
             return lineItem;
-        }
+        };
 
         /**
          * @ngdoc method
@@ -346,10 +343,10 @@
          *
          * @param {Object} lineItem line item to be validated.
          */
-        function validateDate(lineItem) {
+        vm.validateDate = function(lineItem) {
             lineItem.$errors.occurredDateInvalid = isEmpty(lineItem.occurredDate);
             return lineItem;
-        }
+        };
 
         /**
          * @ngdoc method
@@ -362,9 +359,9 @@
          * @param {Object} obj      given target to be changed.
          * @param {String} property given property to be cleared.
          */
-        function clearFreeText(obj, property) {
+        vm.clearFreeText = function(obj, property) {
             obj[property] = null;
-        }
+        };
 
         /**
          * @ngdoc method
@@ -374,7 +371,7 @@
          * @description
          * Submit all added items.
          */
-        function submit() {
+        vm.submit = function() {
             $scope.$broadcast('openlmis-form-submit');
             if (validateAllAddedItems()) {
                 var confirmMessage = messageService.get(vm.key('confirmInfo'), {
@@ -387,7 +384,7 @@
                 reorderItems();
                 alertService.error('stockAdjustmentCreation.submitInvalid');
             }
-        }
+        };
 
         /**
          * @ngdoc method
@@ -397,7 +394,7 @@
          * @description
          * Reset form status and change content inside lots drop down list.
          */
-        function orderableSelectionChanged() {
+        vm.orderableSelectionChanged = function() {
             //reset selected lot, so that lot field has no default value
             vm.selectedLot = null;
 
@@ -416,7 +413,7 @@
             vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup, vm.hasPermissionToAddNewLot);
             // AO-384: ends here
             vm.selectedOrderableHasLots = vm.lots.length > 0;
-        }
+        };
 
         /**
          * @ngdoc method
@@ -429,9 +426,9 @@
          * @param  {String} status VVM status
          * @return {String}        VVM status display name
          */
-        function getStatusDisplay(status) {
+        vm.getStatusDisplay = function(status) {
             return messageService.get(VVM_STATUS.$getDisplayName(status));
-        }
+        };
 
         // AO-384: when lot selection is changed
         /**
@@ -442,11 +439,11 @@
          * @description
          * Allows inputs to add missing lot to be displayed.
          */
-        function lotChanged() {
+        vm.lotChanged = function() {
             vm.canAddNewLot = vm.selectedLot
                 && vm.selectedLot.lotCode === messageService.get('orderableGroupService.addMissingLot');
             initiateNewLotObject();
-        }
+        };
         // AO-384: ends here
 
         function copyDefaultValue() {
@@ -456,7 +453,6 @@
             } else {
                 defaultDate = dateUtils.toStringDate(new Date());
             }
-
             return {
                 assignment: previousAdded.assignment,
                 srcDstFreeText: previousAdded.srcDstFreeText,
@@ -586,11 +582,14 @@
                         });
                         return addedLineItems;
                     });
-                    stockAdjustmentCreationService.submitAdjustments(
-                        program.id, facility.id, addedLineItems, adjustmentType
-                    )
+                    stockAdjustmentCreationService.submitAdjustments(program.id, facility.id,
+                        addedLineItems, adjustmentType)
                         .then(function() {
-                            notificationService.success(vm.key('submitted'));
+                            if (offlineService.isOffline()) {
+                                notificationService.offline(vm.key('submittedOffline'));
+                            } else {
+                                notificationService.success(vm.key('submitted'));
+                            }
 
                             $state.go('openlmis.stockmanagement.stockCardSummaries', {
                                 facility: facility.id,
@@ -664,10 +663,6 @@
         }
 
         function initViewModel() {
-
-            vm.vvmStatuses = VVM_STATUS;
-            vm.showVVMStatusColumn = false;
-
             //Set the max-date of date picker to the end of the current day.
             vm.maxDate = new Date();
             vm.maxDate.setHours(23, 59, 59, 999);
@@ -825,5 +820,6 @@
             }
         }
         // AO-522: ends here
+        onInit();
     }
 })();

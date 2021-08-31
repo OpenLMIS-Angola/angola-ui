@@ -29,12 +29,14 @@
         .factory('StockCardSummaryRepositoryImpl', StockCardSummaryRepositoryImpl);
 
     StockCardSummaryRepositoryImpl.$inject = [
-        'stockmanagementUrlFactory', 'LotResource', 'OrderableResource', '$q', '$window',
-        'accessTokenFactory', 'StockCardSummaryResource', 'dateUtils'
+        'stockmanagementUrlFactory', 'lotService', 'OrderableResource', '$q', '$window',
+        'accessTokenFactory', 'StockCardSummaryResource', 'dateUtils', 'offlineService',
+        'currentUserService'
     ];
 
-    function StockCardSummaryRepositoryImpl(stockmanagementUrlFactory, LotResource, OrderableResource,
-                                            $q, $window, accessTokenFactory, StockCardSummaryResource, dateUtils) {
+    function StockCardSummaryRepositoryImpl(stockmanagementUrlFactory, lotService, OrderableResource,
+                                            $q, $window, accessTokenFactory, StockCardSummaryResource, dateUtils,
+                                            offlineService, currentUserService) {
 
         StockCardSummaryRepositoryImpl.prototype.query = query;
         StockCardSummaryRepositoryImpl.prototype.print = print;
@@ -51,9 +53,7 @@
          * Creates an instance of the StockCardSummaryRepositoryImpl class.
          */
         function StockCardSummaryRepositoryImpl() {
-            this.LotResource = new LotResource();
             this.orderableResource = new OrderableResource();
-
             this.resource = new StockCardSummaryResource();
         }
 
@@ -71,8 +71,7 @@
         function print(program, facility) {
         // Angola: link to the updated printout
             var sohPrintUrl = '/api/reports/templates/angola/1e0221c4-58f4-40b6-9cde-4b3781cea6a1/pdf',
-                params = 'programId=' + program + '&' + 'facilityId=' + facility;
-
+                params = 'program=' + program + '&' + 'facility=' + facility;
             $window.open(accessTokenFactory.addAccessToken(
                 stockmanagementUrlFactory(sohPrintUrl + '?' + params)
             ), '_blank');
@@ -91,27 +90,39 @@
          * @return {Promise}        page of stock card summaries
          */
         function query(params) {
-            var LotResource = this.LotResource,
-                orderableResource = this.orderableResource;
+            var orderableResource = this.orderableResource;
+            var resource = this.resource;
 
-            return this.resource.query(params)
-                .then(function(stockCardSummariesPage) {
-                    var lotIds = getLotIds(stockCardSummariesPage.content),
-                        orderableIds = getOrderableIds(stockCardSummariesPage.content);
+            return currentUserService.getUserInfo()
+                .then(function(user) {
+                    var docId = params['programId'] + '/' + params['facilityId'] + '/' + user.id;
 
-                    return $q.all([
-                        orderableResource.query({
-                            id: orderableIds
-                        }),
-                        LotResource.query({
-                            id: lotIds
-                        })
-                    ])
-                        .then(function(responses) {
-                            var orderablePage = responses[0],
-                                lotPage = responses[1];
+                    return resource.query(params, docId)
+                        .then(function(stockCardSummariesPage) {
+                            if (offlineService.isOffline()) {
+                                stockCardSummariesPage.content = filterNonEmptyStockCardSummaries(
+                                    stockCardSummariesPage
+                                );
+                            }
 
-                            return combineResponses(stockCardSummariesPage, orderablePage.content, lotPage.content);
+                            var lotIds = getLotIds(stockCardSummariesPage.content),
+                                orderableIds = getOrderableIds(stockCardSummariesPage.content);
+
+                            return $q.all([
+                                orderableResource.query({
+                                    id: orderableIds
+                                }),
+                                lotService.query({
+                                    id: lotIds
+                                })
+                            ])
+                                .then(function(responses) {
+                                    var orderablePage = responses[0],
+                                        lotPage = responses[1];
+
+                                    return combineResponses(stockCardSummariesPage, orderablePage.content,
+                                        lotPage.content);
+                                });
                         });
                 });
         }
@@ -170,6 +181,15 @@
                 })[0];
             }
             return null;
+        }
+
+        function filterNonEmptyStockCardSummaries(stockCardSummariesPage) {
+            return stockCardSummariesPage.content.reduce(function(items, summary) {
+                if (summary.stockOnHand !== null) {
+                    items.push(summary);
+                }
+                return items;
+            }, []);
         }
     }
 })();

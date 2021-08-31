@@ -15,113 +15,120 @@
 
 describe('StockAdjustmentCreationController', function() {
 
-    var that;
+    var vm, q, rootScope, state, stateParams, facility, program, confirmService, VVM_STATUS, messageService, scope,
+        stockAdjustmentCreationService, reasons, $controller, ADJUSTMENT_TYPE, ProgramDataBuilder, FacilityDataBuilder,
+        ReasonDataBuilder, OrderableGroupDataBuilder, OrderableDataBuilder, alertService, notificationService,
+        orderableGroups, LotDataBuilder, UNPACK_REASONS;
 
     beforeEach(function() {
 
-        that = this;
-
-        module('stock-adjustment-creation');
-
-        inject(function($injector) {
-            that.q = $injector.get('$q');
-            that.rootScope = $injector.get('$rootScope');
-            that.stateParams = $injector.get('$stateParams');
-            that.$controller = $injector.get('$controller');
-            that.VVM_STATUS = $injector.get('VVM_STATUS');
-            that.ADJUSTMENT_TYPE = $injector.get('ADJUSTMENT_TYPE');
-            that.messageService = $injector.get('messageService');
-            that.confirmService = $injector.get('confirmService');
-            that.stockAdjustmentCreationService = $injector.get('stockAdjustmentCreationService');
-            that.ProgramDataBuilder = $injector.get('ProgramDataBuilder');
-            that.FacilityDataBuilder = $injector.get('FacilityDataBuilder');
-            that.ReasonDataBuilder = $injector.get('ReasonDataBuilder');
-            that.OrderableGroupDataBuilder = $injector.get('OrderableGroupDataBuilder');
-            that.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
-            that.alertService = $injector.get('alertService');
-            that.notificationService = $injector.get('notificationService');
-            that.LotDataBuilder = $injector.get('LotDataBuilder');
-            that.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
-            that.OrderableChildrenDataBuilder = $injector.get('OrderableChildrenDataBuilder');
-            that.LotResource = $injector.get('LotResource');
-            that.UNPACK_REASONS = $injector.get('UNPACK_REASONS');
-            // AO-522: Added ability to edit lots and remove specified row
-            that.editLotModalService = $injector.get('editLotModalService');
-            spyOn(that.editLotModalService, 'show');
-            // AO-522: ends here
+        module('referencedata-lot');
+        module('stock-adjustment-creation', function($provide) {
+            var stockEventRepositoryMock = jasmine.createSpyObj('stockEventRepository', ['create']);
+            $provide.factory('StockEventRepository', function() {
+                return function() {
+                    return stockEventRepositoryMock;
+                };
+            });
         });
 
-        that.state = jasmine.createSpyObj('$state', ['go']);
-        that.state.current = {
-            name: '/a/b'
-        };
-        that.state.params = {
-            page: 0
-        };
+        inject(function($q, $rootScope, $injector) {
+            q = $injector.get('$q');
+            rootScope = $injector.get('$rootScope');
+            stateParams = $injector.get('$stateParams');
+            $controller = $injector.get('$controller');
+            VVM_STATUS = $injector.get('VVM_STATUS');
+            ADJUSTMENT_TYPE = $injector.get('ADJUSTMENT_TYPE');
+            messageService = $injector.get('messageService');
+            confirmService = $injector.get('confirmService');
+            stockAdjustmentCreationService = $injector.get('stockAdjustmentCreationService');
+            ProgramDataBuilder = $injector.get('ProgramDataBuilder');
+            FacilityDataBuilder = $injector.get('FacilityDataBuilder');
+            ReasonDataBuilder = $injector.get('ReasonDataBuilder');
+            OrderableGroupDataBuilder = $injector.get('OrderableGroupDataBuilder');
+            OrderableDataBuilder = $injector.get('OrderableDataBuilder');
+            alertService = $injector.get('alertService');
+            notificationService = $injector.get('notificationService');
+            LotDataBuilder = $injector.get('LotDataBuilder');
+            UNPACK_REASONS = $injector.get('UNPACK_REASONS');
+            this.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
+            this.OrderableChildrenDataBuilder = $injector.get('OrderableChildrenDataBuilder');
+            this.offlineService = $injector.get('offlineService');
+            this.LotResource = $injector.get('LotResource');
+            // AO-522: Added ability to edit lots and remove specified row
+            this.editLotModalService = $injector.get('editLotModalService');
+            spyOn(this.editLotModalService, 'show');
+            // AO-522: ends here
 
-        that.program = new that.ProgramDataBuilder().build();
-        that.facility = new that.FacilityDataBuilder().build();
+            state = jasmine.createSpyObj('$state', ['go']);
+            state.current = {
+                name: '/a/b'
+            };
+            state.params = {
+                page: 0
+            };
 
-        that.orderableGroups = [
-            new that.OrderableGroupDataBuilder().build()
-        ];
-        that.reasons = [
-            new that.ReasonDataBuilder().build()
-        ];
+            program = new ProgramDataBuilder().build();
+            facility = new FacilityDataBuilder().build();
 
-        that.kitConstituents = [
-            new this.OrderableChildrenDataBuilder().withId('child_product_1_id')
-                .withQuantity(30)
-                .buildJson()
-        ];
+            orderableGroups = [
+                new OrderableGroupDataBuilder().build()
+            ];
+            reasons = [
+                new ReasonDataBuilder().build()
+            ];
 
-        that.kitOrderable = new this.OrderableDataBuilder().withId('kit_product_id')
-            .withChildren(that.kitConstituents)
-            .buildJson();
+            this.kitConstituents = [
+                new this.OrderableChildrenDataBuilder().withId('child_product_1_id')
+                    .withQuantity(30)
+                    .buildJson()
+            ];
 
-        that.orderableGroup = new that.OrderableGroupDataBuilder()
-            .withOrderable(new that.OrderableDataBuilder().withExtraData({
-                useVVM: 'true'
-            })
-                .build())
-            .build();
+            this.kitOrderable = new this.OrderableDataBuilder().withId('kit_product_id')
+                .withChildren(this.kitConstituents)
+                .buildJson();
 
-        that.scope = that.rootScope.$new();
-        that.scope.productForm = jasmine.createSpyObj('productForm', ['$setUntouched', '$setPristine']);
+            this.orderableGroup = new OrderableGroupDataBuilder()
+                .withOrderable(new OrderableDataBuilder().withExtraData({
+                    useVVM: 'true'
+                })
+                    .build())
+                .build();
 
-        that.vm = initController(that.orderableGroups);
-        that.vm.$onInit();
+            scope = rootScope.$new();
+            scope.productForm = jasmine.createSpyObj('productForm', ['$setUntouched', '$setPristine']);
+
+            vm = initController(orderableGroups);
+        });
     });
 
     describe('onInit', function() {
 
         it('should init page properly', function() {
-            expect(that.stateParams.page).toEqual(0);
+            expect(stateParams.page).toEqual(0);
         });
 
         it('should set showVVMStatusColumn to true if any orderable use vvm', function() {
-            that.vm = initController([that.orderableGroup]);
-            that.vm.$onInit();
+            vm = initController([this.orderableGroup]);
 
-            expect(that.vm.showVVMStatusColumn).toBe(true);
+            expect(vm.showVVMStatusColumn).toBe(true);
         });
 
         it('should set hasPermissionToAddNewLot to true', function() {
-            expect(that.vm.hasPermissionToAddNewLot).toBe(true);
+            expect(vm.hasPermissionToAddNewLot).toBe(true);
         });
 
         it('should set showVVMStatusColumn to false if no orderable use vvm', function() {
-            var orderableGroup = new that.OrderableGroupDataBuilder()
-                .withOrderable(new that.OrderableDataBuilder().withExtraData({
+            var orderableGroup = new OrderableGroupDataBuilder()
+                .withOrderable(new OrderableDataBuilder().withExtraData({
                     useVVM: 'false'
                 })
                     .build())
                 .build();
 
-            that.vm = initController([orderableGroup]);
-            that.vm.$onInit();
+            vm = initController([orderableGroup]);
 
-            expect(that.vm.showVVMStatusColumn).toBe(false);
+            expect(vm.showVVMStatusColumn).toBe(false);
         });
     });
 
@@ -133,7 +140,7 @@ describe('StockAdjustmentCreationController', function() {
                 quantity: 1,
                 $errors: {}
             };
-            that.vm.validateQuantity(lineItem);
+            vm.validateQuantity(lineItem);
 
             expect(lineItem.$errors.quantityInvalid).toBeFalsy();
         });
@@ -144,7 +151,7 @@ describe('StockAdjustmentCreationController', function() {
                 quantity: 0,
                 $errors: {}
             };
-            that.vm.validateQuantity(lineItem);
+            vm.validateQuantity(lineItem);
 
             expect(lineItem.$errors.quantityInvalid).toEqual('stockAdjustmentCreation.positiveInteger');
         });
@@ -160,7 +167,7 @@ describe('StockAdjustmentCreationController', function() {
                 },
                 $errors: {}
             };
-            that.vm.validateQuantity(lineItem);
+            vm.validateQuantity(lineItem);
 
             expect(lineItem.$errors.quantityInvalid).toEqual('stockAdjustmentCreation.quantityGreaterThanStockOnHand');
         });
@@ -172,7 +179,7 @@ describe('StockAdjustmentCreationController', function() {
                 quantity: -1,
                 $errors: {}
             };
-            that.vm.validateQuantity(lineItem);
+            vm.validateQuantity(lineItem);
 
             expect(lineItem.$errors.quantityInvalid).toEqual('stockAdjustmentCreation.positiveInteger');
         });
@@ -233,13 +240,13 @@ describe('StockAdjustmentCreationController', function() {
             }
         };
 
-        that.vm.addedLineItems = [lineItem1, lineItem2, lineItem3, lineItem4];
+        vm.addedLineItems = [lineItem1, lineItem2, lineItem3, lineItem4];
 
-        that.vm.submit();
+        vm.submit();
 
         var expectItems = [lineItem3, lineItem1, lineItem4, lineItem2];
 
-        expect(that.vm.displayItems).toEqual(expectItems);
+        expect(vm.displayItems).toEqual(expectItems);
     });
 
     it('should remove all line items', function() {
@@ -251,21 +258,21 @@ describe('StockAdjustmentCreationController', function() {
             id: '2',
             quantity: 1
         };
-        that.vm.addedLineItems = [lineItem1, lineItem2];
-        that.vm.displayItems = [lineItem1];
-        spyOn(that.confirmService, 'confirmDestroy');
-        var deferred = that.q.defer();
+        vm.addedLineItems = [lineItem1, lineItem2];
+        vm.displayItems = [lineItem1];
+        spyOn(confirmService, 'confirmDestroy');
+        var deferred = q.defer();
         deferred.resolve();
-        that.confirmService.confirmDestroy.andReturn(deferred.promise);
+        confirmService.confirmDestroy.andReturn(deferred.promise);
 
-        that.vm.removeDisplayItems();
-        that.rootScope.$apply();
+        vm.removeDisplayItems();
+        rootScope.$apply();
 
-        expect(that.confirmService.confirmDestroy).toHaveBeenCalledWith('stockAdjustmentCreation.clearAll',
+        expect(confirmService.confirmDestroy).toHaveBeenCalledWith('stockAdjustmentCreation.clearAll',
             'stockAdjustmentCreation.clear');
 
-        expect(that.vm.addedLineItems).toEqual([lineItem2]);
-        expect(that.vm.displayItems).toEqual([]);
+        expect(vm.addedLineItems).toEqual([lineItem2]);
+        expect(vm.displayItems).toEqual([]);
     });
 
     it('should remove one line item from added line items', function() {
@@ -277,26 +284,26 @@ describe('StockAdjustmentCreationController', function() {
             id: '2',
             quantity: 1
         };
-        that.vm.addedLineItems = [lineItem1, lineItem2];
+        vm.addedLineItems = [lineItem1, lineItem2];
 
-        that.vm.remove(lineItem1);
+        vm.remove(lineItem1);
 
-        expect(that.vm.addedLineItems).toEqual([lineItem2]);
+        expect(vm.addedLineItems).toEqual([lineItem2]);
     });
 
     describe('addProduct', function() {
 
         beforeEach(function() {
-            that.vm.selectedOrderableGroup = new that.OrderableGroupDataBuilder()
-                .withOrderable(new that.OrderableDataBuilder().withFullProductName('Implanon')
+            vm.selectedOrderableGroup = new OrderableGroupDataBuilder()
+                .withOrderable(new OrderableDataBuilder().withFullProductName('Implanon')
                     .build())
                 .withStockOnHand(2)
                 .build();
-            that.vm.addProduct();
+            vm.addProduct();
         });
 
         it('should add one line item to addedLineItem array', function() {
-            var addedLineItem = that.vm.addedLineItems[0];
+            var addedLineItem = vm.addedLineItems[0];
 
             expect(addedLineItem.stockOnHand).toEqual(2);
             expect(addedLineItem.orderable.fullProductName).toEqual('Implanon');
@@ -304,36 +311,36 @@ describe('StockAdjustmentCreationController', function() {
         });
 
         it('should properly add another line item to addedLineItem array', function() {
-            that.vm.selectedOrderableGroup = new that.OrderableGroupDataBuilder()
-                .withOrderable(new that.OrderableDataBuilder().withFullProductName('Adsorbentia')
+            vm.selectedOrderableGroup = new OrderableGroupDataBuilder()
+                .withOrderable(new OrderableDataBuilder().withFullProductName('Adsorbentia')
                     .build())
                 .withStockOnHand(10)
                 .build();
-            that.vm.addProduct();
+            vm.addProduct();
 
-            var addedLineItem = that.vm.addedLineItems[0];
+            var addedLineItem = vm.addedLineItems[0];
 
             expect(addedLineItem.stockOnHand).toEqual(10);
             expect(addedLineItem.orderable.fullProductName).toEqual('Adsorbentia');
-            expect(addedLineItem.occurredDate).toEqual(that.vm.addedLineItems[1].occurredDate);
+            expect(addedLineItem.occurredDate).toEqual(vm.addedLineItems[1].occurredDate);
         });
 
         it('should add line item if missing lot provided', function() {
-            that.vm.newLot.lotCode = 'NewLot001';
-            that.vm.addedItems = [];
+            vm.newLot.lotCode = 'NewLot001';
+            vm.addedItems = [];
 
             var newLot = {
-                lotCode: that.vm.newLot.lotCode,
-                expirationDate: that.vm.newLot.expirationDate,
-                tradeItemId: that.vm.selectedOrderableGroup[0].orderable.identifiers.tradeItem,
+                lotCode: vm.newLot.lotCode,
+                expirationDate: vm.newLot.expirationDate,
+                tradeItemId: vm.selectedOrderableGroup[0].orderable.identifiers.tradeItem,
                 active: true
             };
 
-            that.vm.addProduct();
+            vm.addProduct();
 
-            var addedLineItem = that.vm.addedLineItems[0];
+            var addedLineItem = vm.addedLineItems[0];
 
-            expect(addedLineItem.orderable).toEqual(that.vm.selectedOrderableGroup[0].orderable);
+            expect(addedLineItem.orderable).toEqual(vm.selectedOrderableGroup[0].orderable);
             expect(addedLineItem.lot).toEqual(newLot);
             expect(addedLineItem.displayLotMessage).toEqual(newLot.lotCode);
         });
@@ -348,25 +355,25 @@ describe('StockAdjustmentCreationController', function() {
             id: '2',
             quantity: 1
         };
-        that.vm.addedLineItems = [lineItem1, lineItem2];
+        vm.addedLineItems = [lineItem1, lineItem2];
 
-        spyOn(that.stockAdjustmentCreationService, 'search');
-        that.stockAdjustmentCreationService.search.andReturn([lineItem1]);
+        spyOn(stockAdjustmentCreationService, 'search');
+        stockAdjustmentCreationService.search.andReturn([lineItem1]);
         var params = {
             page: 0,
-            program: that.program,
-            facility: that.facility,
-            reasons: that.reasons,
-            orderableGroups: that.orderableGroups,
+            program: program,
+            facility: facility,
+            reasons: reasons,
+            orderableGroups: orderableGroups,
             addedLineItems: [lineItem1, lineItem2],
             displayItems: [lineItem1],
             keyword: undefined
         };
 
-        that.vm.search();
+        vm.search();
 
-        expect(that.vm.displayItems).toEqual([lineItem1]);
-        expect(that.state.go).toHaveBeenCalledWith('/a/b', params, {
+        expect(vm.displayItems).toEqual([lineItem1]);
+        expect(state.go).toHaveBeenCalledWith('/a/b', params, {
             reload: true,
             notify: false
         });
@@ -374,142 +381,171 @@ describe('StockAdjustmentCreationController', function() {
 
     describe('getStatusDisplay', function() {
         it('should expose getStatusDisplay method', function() {
-            expect(angular.isFunction(that.vm.getStatusDisplay)).toBe(true);
+            expect(angular.isFunction(vm.getStatusDisplay)).toBe(true);
         });
 
         it('should call messageService', function() {
-            spyOn(that.messageService, 'get').andReturn(true);
-            that.vm.getStatusDisplay(that.VVM_STATUS.STAGE_1);
+            spyOn(messageService, 'get').andReturn(true);
+            vm.getStatusDisplay(VVM_STATUS.STAGE_1);
 
-            expect(that.messageService.get).toHaveBeenCalled();
+            expect(messageService.get).toHaveBeenCalled();
         });
     });
 
     describe('submit', function() {
         beforeEach(function() {
-            spyOn(that.alertService, 'error');
-            spyOn(that.confirmService, 'confirm');
-            spyOn(that.notificationService, 'success');
-            that.confirmService.confirm.andReturn(that.q.resolve());
+            spyOn(alertService, 'error');
+            spyOn(confirmService, 'confirm');
+            spyOn(notificationService, 'success');
+            spyOn(notificationService, 'offline');
+            spyOn(this.offlineService, 'isOffline').andReturn(false);
+            confirmService.confirm.andReturn(q.resolve());
+        });
+
+        it('should not show success message after success if offline', function() {
+            this.offlineService.isOffline.andReturn(true);
+            spyOn(stockAdjustmentCreationService, 'submitAdjustments');
+            stockAdjustmentCreationService.submitAdjustments.andReturn(q.resolve());
+            vm.submit();
+            rootScope.$apply();
+
+            expect(notificationService.success).not.toHaveBeenCalledWith('stockAdjustmentCreation.submitted');
         });
 
         it('should rediect with proper state params after success', function() {
-            spyOn(that.stockAdjustmentCreationService, 'submitAdjustments');
-            that.stockAdjustmentCreationService.submitAdjustments.andReturn(that.q.resolve());
+            spyOn(stockAdjustmentCreationService, 'submitAdjustments');
+            stockAdjustmentCreationService.submitAdjustments.andReturn(q.resolve());
 
-            that.vm.submit();
-            that.rootScope.$apply();
+            vm.submit();
+            rootScope.$apply();
 
-            expect(that.state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries', {
-                facility: that.facility.id,
-                program: that.program.id
+            expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries', {
+                facility: facility.id,
+                program: program.id
             });
 
-            expect(that.notificationService.success).toHaveBeenCalledWith('stockAdjustmentCreation.submitted');
-            expect(that.alertService.error).not.toHaveBeenCalled();
+            expect(notificationService.success).toHaveBeenCalledWith('stockAdjustmentCreation.submitted');
+            expect(alertService.error).not.toHaveBeenCalled();
         });
 
-        it('should not rediect after error', function() {
-            spyOn(that.stockAdjustmentCreationService, 'submitAdjustments');
-            that.stockAdjustmentCreationService.submitAdjustments
-                .andReturn(that.q.reject({
+        it('should not redirect after error', function() {
+            spyOn(stockAdjustmentCreationService, 'submitAdjustments');
+            stockAdjustmentCreationService.submitAdjustments
+                .andReturn(q.reject({
                     data: {
                         message: 'error occurred'
                     }
                 }));
 
-            that.vm.submit();
-            that.rootScope.$apply();
+            vm.submit();
+            rootScope.$apply();
 
-            expect(that.state.go).not.toHaveBeenCalled();
-            expect(that.alertService.error).toHaveBeenCalledWith('error occurred');
-            expect(that.notificationService.success).not.toHaveBeenCalled();
+            expect(state.go).not.toHaveBeenCalled();
+            expect(alertService.error).toHaveBeenCalledWith('error occurred');
+            expect(notificationService.success).not.toHaveBeenCalled();
         });
 
         // ANGOLASUP-330: Checking if the new lot code exists in the database before saving
         it('should not submit if new lot code exists in the database', function() {
             spyOn(this.LotResource.prototype, 'query').andCallFake(function(response) {
                 response.numberOfElements = 1;
-                return that.q.resolve(response);
+                return q.resolve(response);
             });
 
-            that.vm.submit();
-            that.rootScope.$apply();
+            vm.submit();
+            rootScope.$apply();
 
-            expect(that.state.go).not.toHaveBeenCalled();
-            expect(that.notificationService.success).not.toHaveBeenCalled();
+            expect(state.go).not.toHaveBeenCalled();
+            expect(notificationService.success).not.toHaveBeenCalled();
         });
         // ANGOLASUP-330: ends here
 
         it('should generate kit constituent if the state is unpacking', function() {
-            spyOn(that.stockAdjustmentCreationService, 'submitAdjustments');
-            that.stockAdjustmentCreationService.submitAdjustments.andReturn(that.q.resolve());
+            spyOn(stockAdjustmentCreationService, 'submitAdjustments');
+            stockAdjustmentCreationService.submitAdjustments.andReturn(q.resolve());
 
-            that.vm = initController([that.orderableGroup], that.ADJUSTMENT_TYPE.KIT_UNPACK);
+            vm = initController([this.orderableGroup], ADJUSTMENT_TYPE.KIT_UNPACK);
 
-            that.vm.addedLineItems = [{
+            vm.addedLineItems = [{
                 reason: {
-                    id: that.UNPACK_REASONS.KIT_UNPACK_REASON_ID
+                    id: UNPACK_REASONS.KIT_UNPACK_REASON_ID
                 },
-                orderable: that.kitOrderable,
+                orderable: this.kitOrderable,
                 occurredDate: new Date(),
                 quantity: 2,
                 $errors: {}
             }];
 
-            that.vm.submit();
+            vm.submit();
 
-            that.rootScope.$apply();
+            rootScope.$apply();
 
-            var unpackingLineItem = that.stockAdjustmentCreationService.submitAdjustments
+            var unpackingLineItem = stockAdjustmentCreationService.submitAdjustments
                 .mostRecentCall.args[2];
 
             expect(unpackingLineItem.length).toEqual(2);
-            expect(unpackingLineItem[1].reason.id).toEqual(that.UNPACK_REASONS.UNPACKED_FROM_KIT_REASON_ID);
-            expect(unpackingLineItem[0].reason.id).toEqual(that.UNPACK_REASONS.KIT_UNPACK_REASON_ID);
+            expect(unpackingLineItem[1].reason.id).toEqual(UNPACK_REASONS.UNPACKED_FROM_KIT_REASON_ID);
+            expect(unpackingLineItem[0].reason.id).toEqual(UNPACK_REASONS.KIT_UNPACK_REASON_ID);
             expect(unpackingLineItem[1].quantity).toEqual(60);
             expect(unpackingLineItem[0].quantity).toEqual(2);
+        });
+
+        it('should redirect with proper state params after success in offline mode', function() {
+            this.offlineService.isOffline.andReturn(true);
+            spyOn(stockAdjustmentCreationService, 'submitAdjustments');
+            stockAdjustmentCreationService.submitAdjustments.andReturn(q.resolve());
+            vm.submit();
+            rootScope.$apply();
+
+            expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries', {
+                facility: facility.id,
+                program: program.id
+            });
+
+            expect(notificationService.offline).toHaveBeenCalledWith('stockAdjustmentCreation.submittedOffline');
+            expect(notificationService.success).not.toHaveBeenCalled();
+            expect(alertService.error).not.toHaveBeenCalled();
         });
     });
 
     describe('orderableSelectionChanged', function() {
 
         it('should unselect lot', function() {
-            that.vm.selectedLot = new that.LotDataBuilder().build();
+            vm.selectedLot = new LotDataBuilder().build();
 
-            that.vm.orderableSelectionChanged();
+            vm.orderableSelectionChanged();
 
-            expect(that.vm.selectedLot).toBe(null);
+            expect(vm.selectedLot).toBe(null);
         });
 
         it('should clear new lot code', function() {
-            that.vm.newLot.lotCode = 'NewLot001';
-            that.vm.orderableSelectionChanged();
+            vm.newLot.lotCode = 'NewLot001';
+            vm.orderableSelectionChanged();
 
-            expect(that.vm.newLot.lotCode).not.toBeDefined();
+            expect(vm.newLot.lotCode).not.toBeDefined();
         });
 
         it('should clear new lot expiration date', function() {
-            that.vm.newLot.expirationDate = '2019-08-06';
-            that.vm.orderableSelectionChanged();
+            vm.newLot.expirationDate = '2019-08-06';
+            vm.orderableSelectionChanged();
 
-            expect(that.vm.newLot.expirationDate).not.toBeDefined();
+            expect(vm.newLot.expirationDate).not.toBeDefined();
         });
 
         it('should set canAddNewLot as false', function() {
-            that.vm.canAddNewLot = true;
-            that.vm.orderableSelectionChanged();
+            vm.canAddNewLot = true;
+            vm.orderableSelectionChanged();
 
-            expect(that.vm.canAddNewLot).toBeFalsy();
+            expect(vm.canAddNewLot).toBeFalsy();
         });
 
         it('should clear form', function() {
-            that.vm.selectedLot = new that.LotDataBuilder().build();
+            vm.selectedLot = new LotDataBuilder().build();
 
-            that.vm.orderableSelectionChanged();
+            vm.orderableSelectionChanged();
 
-            expect(that.scope.productForm.$setPristine).toHaveBeenCalled();
-            expect(that.scope.productForm.$setUntouched).toHaveBeenCalled();
+            expect(scope.productForm.$setPristine).toHaveBeenCalled();
+            expect(scope.productForm.$setUntouched).toHaveBeenCalled();
         });
 
     });
@@ -517,53 +553,53 @@ describe('StockAdjustmentCreationController', function() {
     describe('lotChanged', function() {
 
         it('should clear new lot code', function() {
-            that.vm.newLot.lotCode = 'NewLot001';
-            that.vm.lotChanged();
+            vm.newLot.lotCode = 'NewLot001';
+            vm.lotChanged();
 
-            expect(that.vm.newLot.lotCode).not.toBeDefined();
+            expect(vm.newLot.lotCode).not.toBeDefined();
         });
 
         it('should clear new lot expiration date', function() {
-            that.vm.newLot.expirationDate = '2019-08-06';
-            that.vm.lotChanged();
+            vm.newLot.expirationDate = '2019-08-06';
+            vm.lotChanged();
 
-            expect(that.vm.newLot.expirationDate).not.toBeDefined();
+            expect(vm.newLot.expirationDate).not.toBeDefined();
         });
 
         it('should set canAddNewLot as true', function() {
-            that.vm.selectedLot = new that.LotDataBuilder()
+            vm.selectedLot = new LotDataBuilder()
                 .withCode('orderableGroupService.addMissingLot')
                 .build();
-            that.vm.lotChanged();
+            vm.lotChanged();
 
-            expect(that.vm.canAddNewLot).toBeTruthy();
+            expect(vm.canAddNewLot).toBeTruthy();
         });
 
         it('should set canAddNewLot as false', function() {
-            that.vm.selectedLot = new that.LotDataBuilder().build();
-            that.vm.lotChanged();
+            vm.selectedLot = new LotDataBuilder().build();
+            vm.lotChanged();
 
-            expect(that.vm.canAddNewLot).toBeFalsy();
+            expect(vm.canAddNewLot).toBeFalsy();
         });
 
     });
 
     function initController(orderableGroups, adjustmentType) {
-        return that.$controller('StockAdjustmentCreationController', {
-            $scope: that.scope,
-            $state: that.state,
-            $stateParams: that.stateParams,
-            program: that.program,
-            facility: that.facility,
-            adjustmentType: adjustmentType ? adjustmentType : that.ADJUSTMENT_TYPE.ADJUSTMENT,
+        return $controller('StockAdjustmentCreationController', {
+            $scope: scope,
+            $state: state,
+            $stateParams: stateParams,
+            program: program,
+            facility: facility,
+            adjustmentType: adjustmentType ? adjustmentType : ADJUSTMENT_TYPE.ADJUSTMENT,
             srcDstAssignments: undefined,
             user: {},
-            reasons: that.reasons,
+            reasons: reasons,
             orderableGroups: orderableGroups,
             displayItems: [],
             hasPermissionToAddNewLot: true,
             // AO-522: Added ability to edit lots and remove specified row
-            editLotModalService: that.editLotModalService
+            editLotModalService: this.editLotModalService
             // AO-522: ends here
         });
     }

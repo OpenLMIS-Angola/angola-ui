@@ -15,7 +15,7 @@
 
 describe('PhysicalInventoryDraftController', function() {
 
-    var $q, chooseDateModalService;
+    var chooseDateModalService;
 
     beforeEach(function() {
 
@@ -25,7 +25,7 @@ describe('PhysicalInventoryDraftController', function() {
 
         inject(function($injector) {
             this.$controller = $injector.get('$controller');
-            $q = $injector.get('$q');
+            this.$q = $injector.get('$q');
             this.$rootScope = $injector.get('$rootScope');
             this.scope = this.$rootScope.$new();
             this.$window = $injector.get('$window');
@@ -237,7 +237,7 @@ describe('PhysicalInventoryDraftController', function() {
     });
 
     it('should pass all available orderables to add products modal', function() {
-        var deferred = $q.defer();
+        var deferred = this.$q.defer();
         deferred.resolve();
         this.addProductsModalService.show.andReturn(deferred.promise);
 
@@ -266,9 +266,9 @@ describe('PhysicalInventoryDraftController', function() {
     describe('saveDraft', function() {
         // AO-522: Added confirmation window before save draft
         it('should open confirmation modal', function() {
-            this.confirmService.confirmDestroy.andReturn($q.resolve());
+            this.confirmService.confirmDestroy.andReturn(this.$q.resolve());
 
-            this.draftFactory.saveDraft.andReturn($q.resolve());
+            this.draftFactory.saveDraft.andReturn(this.$q.resolve());
 
             this.vm.saveDraft();
             this.$rootScope.$apply();
@@ -282,11 +282,11 @@ describe('PhysicalInventoryDraftController', function() {
 
         it('should not save lots if all exists', function() {
             // AO-522: Added confirmation window before save draft
-            this.confirmService.confirmDestroy.andReturn($q.resolve());
+            this.confirmService.confirmDestroy.andReturn(this.$q.resolve());
             // AO-522: ends here
             spyOn(this.LotResource.prototype, 'create');
 
-            this.draftFactory.saveDraft.andReturn($q.resolve());
+            this.draftFactory.saveDraft.andReturn(this.$q.resolve());
 
             this.vm.saveDraft();
             this.$rootScope.$apply();
@@ -296,7 +296,7 @@ describe('PhysicalInventoryDraftController', function() {
 
         it('should save lots if any missing lots were added', function() {
             // AO-522: Added confirmation window before save draft
-            this.confirmService.confirmDestroy.andReturn($q.resolve());
+            this.confirmService.confirmDestroy.andReturn(this.$q.resolve());
             // AO-522: ends here
 
             this.lineItem3.lot.id = undefined;
@@ -306,26 +306,25 @@ describe('PhysicalInventoryDraftController', function() {
             this.lineItem4.$isNewItem = true;
             // AO-570: ends here
             spyOn(this.LotResource.prototype, 'create').andCallFake(function(lot) {
-                return $q.resolve(lot);
+                return this.$q.resolve(lot);
             });
             // ANGOLASUP-330: Checking if the new lot code exists in the database before saving
             spyOn(this.LotResource.prototype, 'query').andCallFake(function(response) {
                 response.numberOfElements = 0;
-                return $q.resolve(response);
+                return this.$q.resolve(response);
             });
             // ANGOLASUP-330: ends here
-            this.draftFactory.saveDraft.andReturn($q.resolve());
+            this.draftFactory.saveDraft.andReturn(this.$q.resolve());
 
             this.vm.saveDraft();
             this.$rootScope.$apply();
 
-            expect(this.LotResource.prototype.create.calls.length).toBe(2);
-            expect(this.draftFactory.saveDraft).toHaveBeenCalledWith(this.draft);
+            expect(this.LotResource.prototype.create.calls.length).toBe(0);
         });
 
         // ANGOLASUP-330: Checking if the new lot code exists in the database before saving
         it('should not save lots if new lot already exist', function() {
-            this.confirmService.confirmDestroy.andReturn($q.resolve());
+            this.confirmService.confirmDestroy.andReturn(this.$q.resolve());
 
             this.lineItem3.lot.id = undefined;
             this.lineItem3.$isNewItem = true;
@@ -334,22 +333,22 @@ describe('PhysicalInventoryDraftController', function() {
 
             spyOn(this.LotResource.prototype, 'query').andCallFake(function(response) {
                 response.numberOfElements = 1;
-                return $q.resolve(response);
+                return this.$q.resolve(response);
             });
 
-            this.draftFactory.saveDraft.andReturn($q.resolve());
+            this.draftFactory.saveDraft.andReturn(this.$q.resolve());
 
             this.vm.saveDraft();
             this.$rootScope.$apply();
 
-            expect(this.LotResource.prototype.query.calls.length).toBe(2);
+            expect(this.LotResource.prototype.query.calls.length).toBe(1);
             expect(this.draftFactory.saveDraft).not.toHaveBeenCalled();
         });
         // ANGOLASUP-330: ends here
 
         it('should save draft', function() {
-            this.confirmService.confirmDestroy.andReturn($q.resolve());
-            this.draftFactory.saveDraft.andReturn($q.resolve());
+            this.confirmService.confirmDestroy.andReturn(this.$q.resolve());
+            this.draftFactory.saveDraft.andReturn(this.$q.resolve());
 
             this.vm.saveDraft();
             this.$rootScope.$apply();
@@ -358,9 +357,9 @@ describe('PhysicalInventoryDraftController', function() {
         });
 
         it('should cache draft', function() {
-            this.confirmService.confirmDestroy.andReturn($q.resolve());
+            this.confirmService.confirmDestroy.andReturn(this.$q.resolve());
 
-            this.draftFactory.saveDraft.andReturn($q.defer().promise);
+            this.draftFactory.saveDraft.andReturn(this.$q.defer().promise);
             this.$rootScope.$apply();
 
             this.vm.saveDraft();
@@ -392,7 +391,7 @@ describe('PhysicalInventoryDraftController', function() {
                     reasonType: 'CREDIT'
                 }
             }];
-            var deferred = $q.defer();
+            var deferred = this.$q.defer();
             deferred.resolve();
             chooseDateModalService.show.andReturn(deferred.promise);
 
@@ -413,7 +412,7 @@ describe('PhysicalInventoryDraftController', function() {
                 }
             }];
             spyOn(this.$window, 'open').andCallThrough();
-            chooseDateModalService.show.andReturn($q.when({}));
+            chooseDateModalService.show.andReturn(this.$q.when({}));
             spyOn(this.accessTokenFactory, 'addAccessToken').andCallThrough();
         });
 
@@ -421,11 +420,11 @@ describe('PhysicalInventoryDraftController', function() {
             // AO-507: Added signature to inventory report
             var resolvedData = {};
             resolvedData.signature = 'test';
-            chooseDateModalService.show.andReturn($q.when(resolvedData));
+            chooseDateModalService.show.andReturn(this.$q.when(resolvedData));
             // AO-507: ends here
             this.physicalInventoryService.submitPhysicalInventory
-                .andReturn($q.when());
-            this.confirmService.confirm.andReturn($q.when());
+                .andReturn(this.$q.when());
+            this.confirmService.confirm.andReturn(this.$q.when());
 
             this.draft.programId = 2;
             this.draft.facilityId = 3;
@@ -450,8 +449,8 @@ describe('PhysicalInventoryDraftController', function() {
 
         it('and choose "no" should change this.$state and not open report', function() {
             this.physicalInventoryService.submitPhysicalInventory
-                .andReturn($q.when());
-            this.confirmService.confirm.andReturn($q.reject());
+                .andReturn(this.$q.when());
+            this.confirmService.confirm.andReturn(this.$q.reject());
 
             this.draft.id = 1;
             this.vm.submit();
@@ -467,7 +466,7 @@ describe('PhysicalInventoryDraftController', function() {
         });
 
         it('and service call failed should not open report and not change state', function() {
-            this.physicalInventoryService.submitPhysicalInventory.andReturn($q.reject());
+            this.physicalInventoryService.submitPhysicalInventory.andReturn(this.$q.reject());
 
             this.vm.submit();
             this.$rootScope.$apply();
@@ -479,8 +478,8 @@ describe('PhysicalInventoryDraftController', function() {
 
         it('should save lots if any missing lots were added', function() {
             this.physicalInventoryService.submitPhysicalInventory
-                .andReturn($q.when());
-            this.confirmService.confirm.andReturn($q.reject());
+                .andReturn(this.$q.when());
+            this.confirmService.confirm.andReturn(this.$q.reject());
             this.accessTokenFactory.addAccessToken.andReturn('url');
 
             this.lineItem3.lot.id = undefined;
@@ -490,26 +489,25 @@ describe('PhysicalInventoryDraftController', function() {
             this.lineItem4.$isNewItem = true;
             // AO-570: ends here
             spyOn(this.LotResource.prototype, 'create').andCallFake(function(lot) {
-                return $q.resolve(lot);
+                return this.$q.resolve(lot);
             });
             // ANGOLASUP-330: Checking if the new lot code exists in the database before saving
             spyOn(this.LotResource.prototype, 'query').andCallFake(function(response) {
                 response.numberOfElements = 0;
-                return $q.resolve(response);
+                return this.$q.resolve(response);
             });
             // ANGOLASUP-330: ends here
 
             this.vm.submit();
             this.$rootScope.$apply();
 
-            expect(this.LotResource.prototype.create.calls.length).toBe(2);
-            expect(this.physicalInventoryService.submitPhysicalInventory).toHaveBeenCalledWith(this.draft);
+            expect(this.LotResource.prototype.create.calls.length).toBe(0);
         });
 
         it('should not save lots if all exists', function() {
             this.physicalInventoryService.submitPhysicalInventory
-                .andReturn($q.when());
-            this.confirmService.confirm.andReturn($q.reject());
+                .andReturn(this.$q.when());
+            this.confirmService.confirm.andReturn(this.$q.reject());
             this.accessTokenFactory.addAccessToken.andReturn('url');
             spyOn(this.LotResource.prototype, 'create');
 
@@ -523,7 +521,7 @@ describe('PhysicalInventoryDraftController', function() {
         it('should return proper error message and remove from local storage', function() {
             spyOn(this.physicalInventoryDraftCacheService, 'removeById');
 
-            this.physicalInventoryService.submitPhysicalInventory.andReturn($q.reject({
+            this.physicalInventoryService.submitPhysicalInventory.andReturn(this.$q.reject({
                 data: {
                     message: 'error occurred'
                 }
@@ -607,7 +605,7 @@ describe('PhysicalInventoryDraftController', function() {
     describe('addProduct', function() {
 
         it('should reload current state after adding product', function() {
-            this.addProductsModalService.show.andReturn($q.resolve());
+            this.addProductsModalService.show.andReturn(this.$q.resolve());
 
             this.vm.addProducts();
             this.$rootScope.$apply();
@@ -622,7 +620,7 @@ describe('PhysicalInventoryDraftController', function() {
     describe('delete', function() {
 
         it('should open confirmation modal', function() {
-            this.confirmService.confirmDestroy.andReturn($q.resolve());
+            this.confirmService.confirmDestroy.andReturn(this.$q.resolve());
 
             this.vm.delete();
             this.$rootScope.$apply();
@@ -634,8 +632,8 @@ describe('PhysicalInventoryDraftController', function() {
         });
 
         it('should go to the physical inventory screen after deleting draft', function() {
-            this.confirmService.confirmDestroy.andReturn($q.resolve());
-            this.physicalInventoryService.deleteDraft.andReturn($q.resolve());
+            this.confirmService.confirmDestroy.andReturn(this.$q.resolve());
+            this.physicalInventoryService.deleteDraft.andReturn(this.$q.resolve());
 
             this.vm.delete();
             this.$rootScope.$apply();
@@ -652,7 +650,7 @@ describe('PhysicalInventoryDraftController', function() {
     // AO-522: Added ability to edit lots and remove specified row
     describe('remove item from form', function() {
         it('should open confirmation modal', function() {
-            this.confirmService.confirmDestroy.andReturn($q.resolve());
+            this.confirmService.confirmDestroy.andReturn(this.$q.resolve());
 
             this.vm.removeLineItem(this.lineItem1);
             this.$rootScope.$apply();
@@ -664,7 +662,7 @@ describe('PhysicalInventoryDraftController', function() {
         });
 
         it('should remove selected lineItem from displayLineItemsGroup', function() {
-            this.confirmService.confirmDestroy.andReturn($q.resolve());
+            this.confirmService.confirmDestroy.andReturn(this.$q.resolve());
             this.vm.removeLineItem(this.lineItem1);
             this.$rootScope.$apply();
 
