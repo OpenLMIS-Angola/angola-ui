@@ -28,10 +28,18 @@
         .controller('LoginController', LoginController);
 
     LoginController.$inject = [
-        'loginService', 'modalDeferred', 'loadingModalService', '$rootScope', 'supersetOAuthService'
+        'loginService', 'modalDeferred', 'loadingModalService',
+        // ANGOLASUP-601: Leaderboards deactivated temporarily
+        //, 'supersetOAuthService'
+        // ANGOLASUP-601: ends here
+        '$rootScope'
     ];
 
-    function LoginController(loginService, modalDeferred, loadingModalService, $rootScope, supersetOAuthService) {
+    function LoginController(loginService, modalDeferred, loadingModalService,
+        // ANGOLASUP-601: Leaderboards deactivated temporarily
+        // , supersetOAuthService
+        // ANGOLASUP-601: ends here
+                             $rootScope) {
 
         var vm = this;
 
@@ -54,7 +62,9 @@
                     $rootScope.$emit('openlmis-auth.login');
                     modalDeferred.resolve();
                     // ANGOLASUP-510: Create Leaderboard
-                    loginToSuperset();
+                    // ANGOLASUP-601: Leaderboards deactivated temporarily
+                    // loginToSuperset();
+                    // ANGOLASUP-601: ends here
                     // ANGOLASUP-510: ends here
                 })
                 .catch(function(error) {
@@ -65,18 +75,20 @@
         }
 
         // ANGOLASUP-510: Create Leaderboard
-        function loginToSuperset() {
-            supersetOAuthService.checkAuthorizationInSuperset()
-                .then(function(data) {
-                    vm.supersetOAuthState = data.state;
-                    if (data.isAuthorized === false) {
-                        supersetOAuthService.authorizeInSuperset(vm.username, vm.password, vm.supersetOAuthState)
-                            .then(function() {
-                                $rootScope.$emit('openlmis-auth.authorized-in-superset');
-                            });
-                    }
-                });
-        }
+        // ANGOLASUP-601: Leaderboards deactivated temporarily
+        // function loginToSuperset() {
+        //     supersetOAuthService.checkAuthorizationInSuperset()
+        //         .then(function(data) {
+        //             vm.supersetOAuthState = data.state;
+        //             if (data.isAuthorized === false) {
+        //                 supersetOAuthService.authorizeInSuperset(vm.username, vm.password, vm.supersetOAuthState)
+        //                     .then(function() {
+        //                         $rootScope.$emit('openlmis-auth.authorized-in-superset');
+        //                     });
+        //             }
+        //         });
+        // }
+        // ANGOLASUP-601: ends here
         // ANGOLASUP-510: ends here
     }
 }());

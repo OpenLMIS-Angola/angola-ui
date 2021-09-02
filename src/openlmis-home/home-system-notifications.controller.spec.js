@@ -16,46 +16,52 @@
 describe('HomeSystemNotificationsController', function() {
 
     beforeEach(function() {
-        this.baseUrl = 'http://localhost/superset';
-
-        module('openlmis-home', function($provide) {
-            $provide.constant('SUPERSET_URL', this.baseUrl);
-        });
+        module('openlmis-home');
+        // ANGOLASUP-601: Leaderboards deactivated temporarily
+        // this.baseUrl = 'http://localhost/superset';
+        // module('openlmis-home', function($provide) {
+        //     $provide.constant('SUPERSET_URL', this.baseUrl);
+        // });
         // ANGOLASUP-510: Create Leaderboard
-        module('report');
+        //module('report');
         // ANGOLASUP-510: ends here
+        // // ANGOLASUP-601: ends here
 
         inject(function($injector) {
             this.$controller = $injector.get('$controller');
             this.SystemNotificationDataBuilder = $injector.get('SystemNotificationDataBuilder');
+            // ANGOLASUP-601: Leaderboards deactivated temporarily
             // ANGOLASUP-510: Create Leaderboard
-            this.$q = $injector.get('$q');
-            this.supersetOAuthService = $injector.get('supersetOAuthService');
+            // this.$q = $injector.get('$q');
+            // this.supersetOAuthService = $injector.get('supersetOAuthService');
 
-            spyOn(this.supersetOAuthService, 'checkAuthorizationInSuperset')
-                .andReturn(this.$q.resolve(this.isAuthorizedResponse));
+            // spyOn(this.supersetOAuthService, 'checkAuthorizationInSuperset')
+            //     .andReturn(this.$q.resolve(this.isAuthorizedResponse));
             // ANGOLASUP-510: ends here
+            // ANGOLASUP-601: ends here
         });
 
         this.systemNotifications = [
             new this.SystemNotificationDataBuilder().build(),
             new this.SystemNotificationDataBuilder().build()
         ];
-
-        this.rankingDashboard = {
-            code: 'abc',
-            url: 'efg'
-        };
-
+        // ANGOLASUP-601: Leaderboards deactivated temporarily
+        // this.rankingDashboard = {
+        //     code: 'abc',
+        //     url: 'efg'
+        // };
+        // ANGOLASUP-601: ends here
         this.vm = this.$controller('HomeSystemNotificationsController', {
             homePageSystemNotifications: this.systemNotifications,
             isOffline: false
         });
 
         // ANGOLASUP-510: Create Leaderboard
-        this.isAuthorizedResponse = {
-            isAuthorized: true
-        };
+        // ANGOLASUP-601: Leaderboards deactivated temporarily
+        // this.isAuthorizedResponse = {
+        //     isAuthorized: true
+        // };
+        // ANGOLASUP-601: ends here
         // ANGOLASUP-510: ends here
 
         this.vm.$onInit();
@@ -68,9 +74,11 @@ describe('HomeSystemNotificationsController', function() {
         });
 
         // ANGOLASUP-510: Create Leaderboard
-        it('should check authorization in Superset', function() {
-            expect(this.supersetOAuthService.checkAuthorizationInSuperset).toHaveBeenCalled();
-        });
+        // ANGOLASUP-601: Leaderboards deactivated temporarily
+        // it('should check authorization in Superset', function() {
+        //     expect(this.supersetOAuthService.checkAuthorizationInSuperset).toHaveBeenCalled();
+        // });
+        // ANGOLASUP-601: ends here
         // ANGOLASUP-510: ends here
     });
 

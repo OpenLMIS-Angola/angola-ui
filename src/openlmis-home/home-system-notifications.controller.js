@@ -28,12 +28,18 @@
         .module('openlmis-home')
         .controller('HomeSystemNotificationsController', controller);
 
-    controller.$inject = ['homePageSystemNotifications', 'offlineService', 'SUPERSET_URL', '$sce',
-        'supersetOAuthService', '$rootScope', '$state'];
+    controller.$inject = ['homePageSystemNotifications',
+        // ANGOLASUP-601: Leaderboards deactivated temporarily
+        // ,'SUPERSET_URL', '$sce',
+        // 'supersetOAuthService', '$rootScope', '$state'
+        // ANGOLASUP-601: ends here
+        'offlineService'];
 
-    function controller(homePageSystemNotifications, offlineService, SUPERSET_URL, $sce, supersetOAuthService,
-                        $rootScope, $state) {
-
+    function controller(homePageSystemNotifications,
+        // ANGOLASUP-601: Leaderboards deactivated temporarily
+        // , SUPERSET_URL, $sce, supersetOAuthService, $rootScope, $state
+                        offlineService) {
+        // ANGOLASUP-601: ends here
         var vm = this;
 
         vm.$onInit = onInit;
@@ -70,7 +76,8 @@
          * @description
          * The most active ranking dashboard url.
          */
-        vm.dashboardMostActive = undefined;
+        // ANGOLASUP-601: Leaderboards deactivated temporarily
+        // vm.dashboardMostActive = undefined;
 
         /**
          * @ngdoc property
@@ -81,7 +88,7 @@
          * @description
          * Least active ranking dashboard url.
          */
-        vm.dashboardLeastActive = undefined;
+        // vm.dashboardLeastActive = undefined;
 
         /**
          * @ngdoc property
@@ -92,7 +99,8 @@
          * @description
          * Indicates if the controller is ready for displaying the Superset iframe.
          */
-        vm.isAuthorized = false;
+        // vm.isAuthorized = false;
+        // ANGOLASUP-601: ends here
         // ANGOLASUP-510: ends here
 
         /**
@@ -107,29 +115,31 @@
             vm.isOffline = offlineService.isOffline();
             vm.homePageSystemNotifications = homePageSystemNotifications;
             // ANGOLASUP-510: Create Leaderboard
-            vm.dashboardMostActive = $sce.trustAsResourceUrl(SUPERSET_URL
-                + '/superset/dashboard/ranking-most-active-facilities/?standalone=true');
-            vm.dashboardLeastActive = $sce.trustAsResourceUrl(SUPERSET_URL
-                + '/superset/dashboard/ranking-least-active-facilities/?standalone=true');
+            // ANGOLASUP-601: Leaderboards deactivated temporarily
+            // vm.dashboardMostActive = $sce.trustAsResourceUrl(SUPERSET_URL
+            //     + '/superset/dashboard/ranking-most-active-facilities/?standalone=true');
+            // vm.dashboardLeastActive = $sce.trustAsResourceUrl(SUPERSET_URL
+            //     + '/superset/dashboard/ranking-least-active-facilities/?standalone=true');
 
-            if (!vm.isOffline) {
-                checkAuthorizationInSuperset();
-            }
+            // if (!vm.isOffline) {
+            //     checkAuthorizationInSuperset();
+            // }
         }
 
-        $rootScope.$on('openlmis-auth.authorized-in-superset', function() {
-            $state.reload();
-        });
+        // $rootScope.$on('openlmis-auth.authorized-in-superset', function() {
+        //     $state.reload();
+        // });
 
-        function checkAuthorizationInSuperset() {
-            supersetOAuthService.checkAuthorizationInSuperset()
-                .then(function(data) {
-                    vm.supersetOAuthState = data.state;
-                    if (data.isAuthorized === true) {
-                        vm.isAuthorized = true;
-                    }
-                });
-        }
+        // function checkAuthorizationInSuperset() {
+        //     supersetOAuthService.checkAuthorizationInSuperset()
+        //         .then(function(data) {
+        //             vm.supersetOAuthState = data.state;
+        //             if (data.isAuthorized === true) {
+        //                 vm.isAuthorized = true;
+        //             }
+        //         });
+        // }
+        // // ANGOLASUP-601: ends here
         // ANGOLASUP-510: ends here
 
     }

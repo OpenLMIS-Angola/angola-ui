@@ -24,7 +24,9 @@ describe('LoginController', function() {
             });
         });
         // ANGOLASUP-510: Create Leaderboard
-        module('report');
+        // ANGOLASUP-601: Leaderboards deactivated temporarily
+        // module('report');
+        // ANGOLASUP-601: ends here
         // ANGOLASUP-510: ends here
 
         inject(function($injector) {
@@ -34,11 +36,13 @@ describe('LoginController', function() {
             this.loginService = $injector.get('loginService');
             this.loadingModalService = $injector.get('loadingModalService');
             // ANGOLASUP-510: Create Leaderboard
-            this.supersetOAuthService = $injector.get('supersetOAuthService');
+            // ANGOLASUP-601: Leaderboards deactivated temporarily
+            // this.supersetOAuthService = $injector.get('supersetOAuthService');
 
-            spyOn(this.supersetOAuthService, 'checkAuthorizationInSuperset')
-                .andReturn(this.$q.resolve(this.isAuthorizedResponse));
-            spyOn(this.supersetOAuthService, 'authorizeInSuperset').andReturn(this.$q.resolve());
+            // spyOn(this.supersetOAuthService, 'checkAuthorizationInSuperset')
+            //     .andReturn(this.$q.resolve(this.isAuthorizedResponse));
+            // spyOn(this.supersetOAuthService, 'authorizeInSuperset').andReturn(this.$q.resolve());
+            // ANGOLASUP-601: ends here
             // ANGOLASUP-510: ends here
         });
 
@@ -48,13 +52,15 @@ describe('LoginController', function() {
             modalDeferred: this.modalDeferred
         });
         // ANGOLASUP-510: Create Leaderboard
-        this.isAuthorizedResponse = {
-            isAuthorized: true
-        };
-        this.isNotAuthorizedResponse = {
-            isAuthorized: false,
-            state: 'test_state'
-        };
+        // ANGOLASUP-601: Leaderboards deactivated temporarily
+        // this.isAuthorizedResponse = {
+        //     isAuthorized: true
+        // };
+        // this.isNotAuthorizedResponse = {
+        //     isAuthorized: false,
+        //     state: 'test_state'
+        // };
+        // ANGOLASUP-601: ends here
         // ANGOLASUP-510: ends here
     });
 
@@ -130,50 +136,52 @@ describe('LoginController', function() {
         });
 
         // ANGOLASUP-510: Create Leaderboard
-        it('should check Superset authorization and not send authorize request after successful login', function() {
-            this.loginService.login.andReturn(this.$q.resolve());
-            this.supersetOAuthService.checkAuthorizationInSuperset
-                .andReturn(this.$q.resolve(this.isAuthorizedResponse));
+        // ANGOLASUP-601: Leaderboards deactivated temporarily
+        // it('should check Superset authorization and not send authorize request after successful login', function() {
+        //     this.loginService.login.andReturn(this.$q.resolve());
+        //     this.supersetOAuthService.checkAuthorizationInSuperset
+        //         .andReturn(this.$q.resolve(this.isAuthorizedResponse));
 
-            this.vm.doLogin();
-            this.$rootScope.$apply();
+        //     this.vm.doLogin();
+        //     this.$rootScope.$apply();
 
-            expect(this.supersetOAuthService.checkAuthorizationInSuperset).toHaveBeenCalled();
-            expect(this.supersetOAuthService.authorizeInSuperset).not.toHaveBeenCalled();
-        });
+        //     expect(this.supersetOAuthService.checkAuthorizationInSuperset).toHaveBeenCalled();
+        //     expect(this.supersetOAuthService.authorizeInSuperset).not.toHaveBeenCalled();
+        // });
 
-        it('should check Superset authorization and send authorize request after successful login', function() {
-            var success = false;
-            this.$rootScope.$on('openlmis-auth.authorized-in-superset', function() {
-                success = true;
-            });
+        // it('should check Superset authorization and send authorize request after successful login', function() {
+        //     var success = false;
+        //     this.$rootScope.$on('openlmis-auth.authorized-in-superset', function() {
+        //         success = true;
+        //     });
 
-            this.loginService.login.andReturn(this.$q.resolve());
-            this.supersetOAuthService.checkAuthorizationInSuperset
-                .andReturn(this.$q.resolve(this.isNotAuthorizedResponse));
+        //     this.loginService.login.andReturn(this.$q.resolve());
+        //     this.supersetOAuthService.checkAuthorizationInSuperset
+        //         .andReturn(this.$q.resolve(this.isNotAuthorizedResponse));
 
-            this.vm.doLogin();
-            this.$rootScope.$apply();
+        //     this.vm.doLogin();
+        //     this.$rootScope.$apply();
 
-            expect(this.supersetOAuthService.checkAuthorizationInSuperset).toHaveBeenCalled();
-            expect(this.supersetOAuthService.authorizeInSuperset).toHaveBeenCalled();
-            expect(success).toBe(true);
-        });
+        //     expect(this.supersetOAuthService.checkAuthorizationInSuperset).toHaveBeenCalled();
+        //     expect(this.supersetOAuthService.authorizeInSuperset).toHaveBeenCalled();
+        //     expect(success).toBe(true);
+        // });
 
-        it('should not check authorization in Superset after failed login', function() {
-            var success = false;
-            this.$rootScope.$on('openlmis-auth.authorized-in-superset', function() {
-                success = true;
-            });
-            this.loginService.login.andReturn(this.$q.reject());
+        // it('should not check authorization in Superset after failed login', function() {
+        //     var success = false;
+        //     this.$rootScope.$on('openlmis-auth.authorized-in-superset', function() {
+        //         success = true;
+        //     });
+        //     this.loginService.login.andReturn(this.$q.reject());
 
-            this.vm.doLogin();
-            this.$rootScope.$apply();
+        //     this.vm.doLogin();
+        //     this.$rootScope.$apply();
 
-            expect(this.supersetOAuthService.checkAuthorizationInSuperset).not.toHaveBeenCalled();
-            expect(this.supersetOAuthService.authorizeInSuperset).not.toHaveBeenCalled();
-            expect(success).toBe(false);
-        });
+        //     expect(this.supersetOAuthService.checkAuthorizationInSuperset).not.toHaveBeenCalled();
+        //     expect(this.supersetOAuthService.authorizeInSuperset).not.toHaveBeenCalled();
+        //     expect(success).toBe(false);
+        // });
+        // ANGOLASUP-601: ends here
         // ANGOLASUP-510: ends here
 
         it('should close loading modal after failed login', function() {
