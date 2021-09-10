@@ -71,7 +71,9 @@
         function print(program, facility) {
         // Angola: link to the updated printout
             var sohPrintUrl = '/api/reports/templates/angola/1e0221c4-58f4-40b6-9cde-4b3781cea6a1/pdf',
-                params = 'program=' + program + '&' + 'facility=' + facility;
+                // ANGOLASUP-611: Fixed SOH print
+                params = 'programId=' + program + '&' + 'facilityId=' + facility;
+                // ANGOLASUP-611: ends here
             $window.open(accessTokenFactory.addAccessToken(
                 stockmanagementUrlFactory(sohPrintUrl + '?' + params)
             ), '_blank');
