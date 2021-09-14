@@ -7,7 +7,8 @@
     "/openlmis-report-ui",
     "/openlmis-requisition-ui",
     "/openlmis-fulfillment-ui",
-    "/openlmis-stockmanagement-ui"
+    "/openlmis-stockmanagement-ui",
+    "/openlmis-offline-ui"
   ],
   "REPORTING_SERVICES": "angola",
   "applicationLoadingMessage": "Iniciando SIGLOFA",
