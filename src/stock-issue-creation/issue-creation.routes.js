@@ -41,7 +41,11 @@
                 stockCardSummaries: undefined,
                 reasons: undefined,
                 displayItems: undefined,
-                addedLineItems: undefined
+                addedLineItems: undefined,
+                // ANGOLASUP-614 Starts here
+                orderableGroups: undefined,
+                srcDstAssignments: undefined
+                // ANGOLASUP-614 Ends here
             },
             resolve: {
                 program: function($stateParams, programService) {
@@ -60,8 +64,14 @@
                     return authorizationService.getUser();
                 },
                 orderableGroups: function($stateParams, program, facility, existingStockOrderableGroupsFactory) {
-                    return existingStockOrderableGroupsFactory
-                        .getGroupsWithNotZeroSoh($stateParams, program, facility);
+                    // ANGOLASUP-614 Starts here
+                    if (!$stateParams.orderableGroups) {
+                        $stateParams.orderableGroups = existingStockOrderableGroupsFactory
+                            .getGroupsWithNotZeroSoh($stateParams, program, facility);
+                    }
+
+                    return $stateParams.orderableGroups;
+                    // ANGOLASUP-614 Ends here
                 },
                 displayItems: function($stateParams, registerDisplayItemsService) {
                     return registerDisplayItemsService($stateParams);

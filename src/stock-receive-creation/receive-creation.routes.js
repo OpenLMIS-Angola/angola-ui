@@ -40,7 +40,11 @@
                 stockCardSummaries: undefined,
                 reasons: undefined,
                 displayItems: undefined,
-                addedLineItems: undefined
+                addedLineItems: undefined,
+                // ANGOLASUP-614 Starts here
+                orderableGroups: undefined,
+                srcDstAssignments: undefined
+                // ANGOLASUP-614 Ends here
             },
             resolve: {
                 program: function($stateParams, programService) {
@@ -60,9 +64,10 @@
                 },
                 orderableGroups: function($stateParams, program, facility, orderableGroupService) {
                     if (!$stateParams.orderableGroups) {
-                        return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(
-                            program.id, facility.id, true
-                        );
+                        // ANGOLASUP-614 Starts here
+                        $stateParams.orderableGroups = orderableGroupService
+                            .findAvailableProductsAndCreateOrderableGroups(program.id, facility.id, true);
+                        // ANGOLASUP-614 Ends here
                     }
                     return $stateParams.orderableGroups;
                 },
@@ -80,7 +85,10 @@
                 },
                 srcDstAssignments: function($stateParams, facility, sourceDestinationService) {
                     if (_.isUndefined($stateParams.srcDstAssignments)) {
-                        return sourceDestinationService.getSourceAssignments($stateParams.programId, facility.id);
+                        // ANGOLASUP-614 Starts here
+                        $stateParams.srcDstAssignments = sourceDestinationService
+                            .getSourceAssignments($stateParams.programId, facility.id);
+                        // ANGOLASUP-614 Ends here
                     }
                     return $stateParams.srcDstAssignments;
                 // AO-384: added checking user rights
