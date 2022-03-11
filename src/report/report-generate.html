@@ -31,7 +31,7 @@
     </select>
     <input id="{{parameter.name}}"
         ng-if="parameter.description != 'checkboxes' && parameter.description == 'datepickers'"
-        type="date" ng-model="parameter.name"
+        type="date" ng-model="vm.selectedParamsOptions[parameter.name]"
         ng-required="{{parameter.required}}"/>
     <!-- ANGOLASUP-442: ends here -->
 
