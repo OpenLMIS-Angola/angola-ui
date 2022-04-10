@@ -156,7 +156,7 @@
          *
          * @description
          * Returns generated message key for screen title.
-         * 
+         *
          * @returns {string} screen title message key
          */
         vm.key = function(secondaryKey) {
@@ -583,7 +583,9 @@
                         return addedLineItems;
                     });
                     stockAdjustmentCreationService.submitAdjustments(program.id, facility.id,
-                        addedLineItems, adjustmentType)
+                        // AO-668: Use username as signature for Issue, Receive and Adjustment
+                        addedLineItems, adjustmentType, user)
+                        // AO-668: ends here
                         .then(function() {
                             if (offlineService.isOffline()) {
                                 notificationService.offline(vm.key('submittedOffline'));
@@ -680,7 +682,7 @@
             vm.orderableGroups = orderableGroups;
             vm.hasLot = false;
             vm.orderableGroups.forEach(function(group) {
-                // AO-384: added hasPermissionToAddNewLot to lotsOf method 
+                // AO-384: added hasPermissionToAddNewLot to lotsOf method
                 vm.hasLot = vm.hasLot || orderableGroupService.lotsOf(group, hasPermissionToAddNewLot).length > 0;
                 // AO-384: ends here
             });
