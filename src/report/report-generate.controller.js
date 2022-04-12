@@ -74,6 +74,28 @@
          */
         vm.paramsOptions = reportParamsOptions;
 
+        // AO-685: Implement stock movement type picker
+        /**
+         * @ngdoc property
+         * @propertyOf report.controller:ReportGenerateController
+         * @name stockMovementTypes
+         * @type {Array}
+         *
+         * @description
+         * The param options for parameters with 'movementtype' description
+         */
+        vm.stockMovementTypes = [
+            {
+                name: 'Saída',
+                value: 'Issue'
+            },
+            {
+                name: 'Entrada',
+                value: 'Receive'
+            }
+        ];
+        // AO-685: ends here
+
         /**
          * @ngdoc property
          * @propertyOf report.controller:ReportGenerateController

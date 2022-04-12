@@ -7,8 +7,9 @@
 
     <!-- ANGOLASUP-442: Added the ability to select multiple options in the filter using checkboxes -->
     <div>
+        <!-- AO-685: Implement stock movement type picker -->
         <!-- A0-674: Add datepicker -->
-        <label ng-if="parameter.description == 'checkboxes' && parameter.description != 'datepickers' && (vm.paramsOptions[parameter.name].length > 0 || parameter.dependencies.length > 0)"
+        <label ng-if="parameter.description == 'checkboxes' && parameter.description != 'datepickers' && (vm.paramsOptions[parameter.name].length > 0)"
                 ng-repeat="param in vm.paramsOptions[parameter.name]"
                 style="font-weight: normal; display: block;">
                 <input
@@ -22,23 +23,31 @@
         </label>
     </div>
     <select id="{{parameter.name}}"
-            ng-if="parameter.description != 'checkboxes' && parameter.description != 'datepickers' && (vm.paramsOptions[parameter.name].length > 0 || parameter.dependencies.length > 0)"
+            ng-if="parameter.description != 'checkboxes' && parameter.description != 'datepickers' && parameter.description != 'movementtype' && (vm.paramsOptions[parameter.name].length > 0 || parameter.dependencies.length > 0)"
             ng-model="vm.selectedParamsOptions[parameter.name]"
             ng-disabled="vm.paramsOptions[parameter.name].length == 0"
             ng-options="option.value as option.name for option in vm.paramsOptions[parameter.name]"
             ng-required="{{parameter.required}}"
             aria-labelledby="infolabelForSelect">
     </select>
+    <select id="{{parameter.name}}"
+            ng-if="parameter.description != 'checkboxes' && parameter.description != 'datepickers' && parameter.description == 'movementtype'"
+            ng-model="vm.selectedParamsOptions[parameter.name]"
+            ng-options="option.value as option.name for option in vm.stockMovementTypes"
+            ng-required="{{parameter.required}}"
+            aria-labelledby="infolabelForSelect">
+    </select>
     <input id="{{parameter.name}}"
-        ng-if="parameter.description != 'checkboxes' && parameter.description == 'datepickers'"
+        ng-if="parameter.description != 'checkboxes' && parameter.description == 'datepickers' && parameter.description != 'movementtype'"
         type="date" ng-model="vm.selectedParamsOptions[parameter.name]"
         ng-required="{{parameter.required}}"/>
     <!-- ANGOLASUP-442: ends here -->
 
-    <span ng-if="parameter.description != 'datepickers' && vm.paramsOptions[parameter.name].length == 0 && parameter.dependencies.length == 0"
+    <span ng-if="parameter.description != 'datepickers' && parameter.description != 'movementtype' && vm.paramsOptions[parameter.name].length == 0 && parameter.dependencies.length == 0"
           ng-switch="parameter.dataType"
           ng-repeat-end>
         <!-- A0-674: ends here -->
+        <!-- AO-685: ends here -->
         <input ng-switch-when="java.lang.Integer"
                ng-model="vm.selectedParamsOptions[parameter.name]"
                ng-required="{{parameter.required}}"
