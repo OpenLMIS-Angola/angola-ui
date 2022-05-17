@@ -5,12 +5,12 @@
  * This program is free software: you can redistribute it and/or modify it under the terms
  * of the GNU Affero General Public License as published by the Free Software Foundation, either
  * version 3 of the License, or (at your option) any later version.
- *  
+ *  
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  * See the GNU Affero General Public License for more details. You should have received a copy of
  * the GNU Affero General Public License along with this program. If not, see
- * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
+ * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
 (function() {
@@ -33,32 +33,25 @@
         'orderableGroups', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
         'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService', 'offlineService',
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
-        // AO-384: added hasPermissionToAddNewLot, LotResource and $q
-        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'hasPermissionToAddNewLot', 'LotResource', '$q',
-        'REASON_TYPES', 'UNPACK_REASONS',
-        // AO-522: Added ability to edit lots and remove specified row
-        'editLotModalService', 'moment'
+        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'UNPACK_REASONS', 'REASON_TYPES', 'STOCKCARD_STATUS',
+        'hasPermissionToAddNewLot', 'LotResource', '$q', 'editLotModalService', 'moment'
     ];
-    // AO-522: ends here
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
                         facility, orderableGroups, reasons, confirmService, messageService, user,
                         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         offlineService, orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
-                        alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, hasPermissionToAddNewLot,
-                        LotResource, $q, REASON_TYPES, UNPACK_REASONS,
-                        // AO-522: Added ability to edit lots and remove specified row
-                        editLotModalService, moment) {
-        // AO-522: ends here
-        // AO-384: ends here
+                        alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, UNPACK_REASONS, REASON_TYPES,
+                        STOCKCARD_STATUS, hasPermissionToAddNewLot, LotResource, $q, editLotModalService, moment) {
         var vm = this,
             previousAdded = {};
 
-        // AO-522: Added ability to edit lots and remove specified row
         vm.expirationDateChanged = expirationDateChanged;
         vm.newLotCodeChanged = newLotCodeChanged;
         vm.validateExpirationDate = validateExpirationDate;
-        // AO-522: ends here
+        vm.lotChanged = lotChanged;
+        vm.addProduct = addProduct;
+        vm.hasPermissionToAddNewLot = hasPermissionToAddNewLot;
 
         /**
          * @ngdoc property
@@ -101,7 +94,10 @@
          */
         vm.offline = offlineService.isOffline;
 
-        // AO-384: added newLot that holds new lot info
+        vm.key = function(secondaryKey) {
+            return adjustmentType.prefix + 'Creation.' + secondaryKey;
+        };
+
         /**
          * @ngdoc property
          * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
@@ -112,56 +108,6 @@
          * Holds new lot object.
          */
         vm.newLot = undefined;
-        // AO-384: ends here
-
-        /**
-         * @ngdoc method
-         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-         * @name $onInit
-         *
-         * @description
-         * Initialization method of the StockAdjustmentCreationController.
-         */
-        function onInit() {
-            //AO-572: Extra validation for lots
-            var copiedOrderableGroups = angular.copy(orderableGroups);
-            vm.allItems = _.flatten(copiedOrderableGroups);
-            //AO-572: ends here
-
-            $state.current.label = messageService.get(vm.key('title'), {
-                facilityCode: facility.code,
-                facilityName: facility.name,
-                program: program.name
-            });
-
-            initViewModel();
-            initStateParams();
-
-            $scope.$watch(function() {
-                return vm.addedLineItems;
-            }, function(newValue) {
-                $scope.needToConfirm = newValue.length > 0;
-            }, true);
-            confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
-
-            $scope.$on('$stateChangeStart', function() {
-                angular.element('.popover').popover('destroy');
-            });
-        }
-
-        /**
-         * @ngdoc method
-         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-         * @name key
-         *
-         * @description
-         * Returns generated message key for screen title.
-         *
-         * @returns {string} screen title message key
-         */
-        vm.key = function(secondaryKey) {
-            return adjustmentType.prefix + 'Creation.' + secondaryKey;
-        };
 
         /**
          * @ngdoc method
@@ -193,30 +139,23 @@
          * @description
          * Add a product for stock adjustment.
          */
-        vm.addProduct = function() {
+        function addProduct() {
+            var selectedItem;
 
-            var selectedItem = orderableGroupService
-                .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
-
-            // AO-384: added creating new lot on adding product
             if (vm.selectedOrderableGroup && vm.selectedOrderableGroup.length) {
                 vm.newLot.tradeItemId = vm.selectedOrderableGroup[0].orderable.identifiers.tradeItem;
             }
 
             if (vm.newLot.lotCode) {
-                // AO-522: Added ability to edit lots and remove specified row
                 var createdLot = angular.copy(vm.newLot);
                 selectedItem = orderableGroupService
                     .findByLotInOrderableGroup(vm.selectedOrderableGroup, createdLot, true);
                 selectedItem.$isNewItem = true;
-                // AO-522: ends here
             } else {
-            // AO-384: ends here
                 selectedItem = orderableGroupService
                     .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
             }
 
-            // AO-522: Added ability to edit lots and remove specified row
             vm.newLot.expirationDateInvalid = undefined;
             vm.newLot.lotCodeInvalid = undefined;
             validateExpirationDate();
@@ -235,8 +174,27 @@
 
                 vm.search();
             }
-            // AO-522: ends here
-        };
+        }
+
+        function copyDefaultValue() {
+            var defaultDate;
+            if (previousAdded.occurredDate) {
+                defaultDate = previousAdded.occurredDate;
+            } else {
+                defaultDate = dateUtils.toStringDate(new Date());
+            }
+
+            return {
+                assignment: previousAdded.assignment,
+                srcDstFreeText: previousAdded.srcDstFreeText,
+                reason: (adjustmentType.state === ADJUSTMENT_TYPE.KIT_UNPACK.state)
+                    ? {
+                        id: UNPACK_REASONS.KIT_UNPACK_REASON_ID
+                    } : previousAdded.reason,
+                reasonFreeText: previousAdded.reasonFreeText,
+                occurredDate: defaultDate
+            };
+        }
 
         /**
          * @ngdoc method
@@ -282,12 +240,10 @@
          * @param {Object} lineItem line item to be validated.
          */
         vm.validateQuantity = function(lineItem) {
-            // AO-535: Added quantity validation for DEBIT reason type
             if (lineItem.quantity > lineItem.$previewSOH && lineItem.reason
-                && lineItem.reason.reasonType === REASON_TYPES.DEBIT) {
+                    && lineItem.reason.reasonType === REASON_TYPES.DEBIT) {
                 lineItem.$errors.quantityInvalid = messageService
                     .get('stockAdjustmentCreation.quantityGreaterThanStockOnHand');
-            // AO-535: ends here
             } else if (lineItem.quantity > MAX_INTEGER_VALUE) {
                 lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
             } else if (lineItem.quantity >= 1) {
@@ -332,6 +288,20 @@
             }
             return lineItem;
         };
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name lotChanged
+         *
+         * @description
+         * Allows inputs to add missing lot to be displayed.
+         */
+        function lotChanged() {
+            vm.canAddNewLot = vm.selectedLot
+                && vm.selectedLot.lotCode === messageService.get('orderableGroupService.addMissingLot');
+            initiateNewLotObject();
+        }
 
         /**
          * @ngdoc method
@@ -398,10 +368,8 @@
             //reset selected lot, so that lot field has no default value
             vm.selectedLot = null;
 
-            // AO-384: cleared new lot object and disabled adding new lot
             initiateNewLotObject();
             vm.canAddNewLot = false;
-            // AO-384: ends here
 
             //same as above
             $scope.productForm.$setUntouched();
@@ -409,9 +377,7 @@
             //make form good as new, so errors won't persist
             $scope.productForm.$setPristine();
 
-            // AO-384: added newLot that holds new lot info
             vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup, vm.hasPermissionToAddNewLot);
-            // AO-384: ends here
             vm.selectedOrderableHasLots = vm.lots.length > 0;
         };
 
@@ -429,41 +395,6 @@
         vm.getStatusDisplay = function(status) {
             return messageService.get(VVM_STATUS.$getDisplayName(status));
         };
-
-        // AO-384: when lot selection is changed
-        /**
-         * @ngdoc method
-         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-         * @name lotChanged
-         *
-         * @description
-         * Allows inputs to add missing lot to be displayed.
-         */
-        vm.lotChanged = function() {
-            vm.canAddNewLot = vm.selectedLot
-                && vm.selectedLot.lotCode === messageService.get('orderableGroupService.addMissingLot');
-            initiateNewLotObject();
-        };
-        // AO-384: ends here
-
-        function copyDefaultValue() {
-            var defaultDate;
-            if (previousAdded.occurredDate) {
-                defaultDate = previousAdded.occurredDate;
-            } else {
-                defaultDate = dateUtils.toStringDate(new Date());
-            }
-            return {
-                assignment: previousAdded.assignment,
-                srcDstFreeText: previousAdded.srcDstFreeText,
-                reason: (adjustmentType.state === ADJUSTMENT_TYPE.KIT_UNPACK.state)
-                    ? {
-                        id: UNPACK_REASONS.KIT_UNPACK_REASON_ID
-                    } : previousAdded.reason,
-                reasonFreeText: previousAdded.reasonFreeText,
-                occurredDate: defaultDate
-            };
-        }
 
         function isEmpty(value) {
             return _.isUndefined(value) || _.isNull(value);
@@ -509,16 +440,6 @@
                 .value();
         }
 
-        function containsLotCode(lotsArray, lotCode) {
-            var containsCode = false;
-            lotsArray.forEach(function(lot) {
-                if (lot.lotCode === lotCode) {
-                    containsCode = true;
-                }
-            });
-            return containsCode;
-        }
-
         function confirmSubmit() {
             loadingModalService.open();
 
@@ -526,11 +447,8 @@
 
             generateKitConstituentLineItem(addedLineItems);
 
-            // AO-384: included creating new lots after submitting form
-            // AO-570: Added error message when created lot already exists in database
             var lotPromises = [],
                 errorLots = [];
-            //AO-572: Avoiding sending lots duplicates
             var distinctLots = [];
             var lotResource = new LotResource();
             addedLineItems.forEach(function(lineItem) {
@@ -539,35 +457,24 @@
                     distinctLots.push(lineItem.lot);
                 }
             });
-            // ANGOLASUP-330: Checking if the new lot code exists in the database before saving
             distinctLots.forEach(function(lot) {
-                lotPromises.push(lotResource.query({
-                    lotCode: lot.lotCode
-                })
-                    .then(function(queryResponse) {
-                        if (queryResponse.numberOfElements > 0 && containsLotCode(queryResponse.content, lot.lotCode)) {
+                lotPromises.push(lotResource.create(lot)
+                    .then(function(createResponse) {
+                        vm.addedLineItems.forEach(function(item) {
+                            if (item.lot.lotCode === lot.lotCode) {
+                                item.$isNewItem = false;
+                                addItemToOrderableGroups(item);
+                            }
+                        });
+                        return createResponse;
+                    })
+                    .catch(function(response) {
+                        if (response.data.messageKey ===
+                            'referenceData.error.lot.lotCode.mustBeUnique') {
                             errorLots.push(lot.lotCode);
-                            return queryResponse;
                         }
-                        return lotResource.create(lot)
-                            .then(function(createResponse) {
-                                vm.addedLineItems.forEach(function(item) {
-                                    if (item.lot.lotCode === lot.lotCode) {
-                                        item.$isNewItem = false;
-                                        addItemToOrderableGroups(item);
-                                    }
-                                });
-                                return createResponse;
-                            })
-                            .catch(function(response) {
-                                if (response.data.messageKey ===
-                                    'referenceData.error.lot.lotCode.mustBeUnique') {
-                                    errorLots.push(lot.lotCode);
-                                }
-                            });
                     }));
             });
-            //AO-572, AO-570: ends here
 
             return $q.all(lotPromises)
                 .then(function(responses) {
@@ -576,12 +483,14 @@
                     }
                     responses.forEach(function(lot) {
                         addedLineItems.forEach(function(lineItem) {
-                            if (lineItem.lot && lineItem.lot.lotCode === lot.lotCode) {
+                            if (lineItem.lot && lineItem.lot.lotCode === lot.lotCode
+                                && lineItem.lot.tradeItemId === lot.tradeItemId) {
                                 lineItem.lot = lot;
                             }
                         });
                         return addedLineItems;
                     });
+
                     stockAdjustmentCreationService.submitAdjustments(program.id, facility.id,
                         // AO-668: Use username as signature for Issue, Receive and Adjustment
                         addedLineItems, adjustmentType, user)
@@ -592,10 +501,10 @@
                             } else {
                                 notificationService.success(vm.key('submitted'));
                             }
-
                             $state.go('openlmis.stockmanagement.stockCardSummaries', {
                                 facility: facility.id,
-                                program: program.id
+                                program: program.id,
+                                active: STOCKCARD_STATUS.ACTIVE
                             });
                         }, function(errorResponse) {
                             loadingModalService.close();
@@ -614,10 +523,8 @@
                     }
                     alertService.error(errorResponse.data.message);
                 });
-            // AO-384, ANGOLASUP-330: ends here
         }
 
-        // AO-570: Added error message when created lot already exists in database
         function addItemToOrderableGroups(item) {
             vm.orderableGroups.forEach(function(array) {
                 if (array[0].orderable.id === item.orderable.id) {
@@ -625,9 +532,7 @@
                 }
             });
         }
-        // AO-570: ends here
 
-        //AO-572: Avoiding sending lots duplicates
         function listContainsTheSameLot(list, lot) {
             var itemExistsOnList = false;
             list.forEach(function(item) {
@@ -638,7 +543,6 @@
             });
             return itemExistsOnList;
         }
-        //AO-572: ends here
 
         function generateKitConstituentLineItem(addedLineItems) {
             if (adjustmentType.state !== ADJUSTMENT_TYPE.KIT_UNPACK.state) {
@@ -664,6 +568,41 @@
             addedLineItems.push.apply(addedLineItems, constituentLineItems);
         }
 
+        function onInit() {
+            var copiedOrderableGroups = angular.copy(orderableGroups);
+            vm.allItems = _.flatten(copiedOrderableGroups);
+
+            $state.current.label = messageService.get(vm.key('title'), {
+                facilityCode: facility.code,
+                facilityName: facility.name,
+                program: program.name
+            });
+
+            initViewModel();
+            initStateParams();
+
+            $scope.$watch(function() {
+                return vm.addedLineItems;
+            }, function(newValue) {
+                $scope.needToConfirm = newValue.length > 0;
+                if (!vm.keyword) {
+                    vm.addedLineItems = vm.displayItems;
+                }
+                $stateParams.addedLineItems = vm.addedLineItems;
+                $stateParams.displayItems = vm.displayItems;
+                $stateParams.keyword = vm.keyword;
+                $state.go($state.current.name, $stateParams, {
+                    reload: false,
+                    notify: false
+                });
+            }, true);
+            confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
+
+            $scope.$on('$stateChangeStart', function() {
+                angular.element('.popover').popover('destroy');
+            });
+        }
+
         function initViewModel() {
             //Set the max-date of date picker to the end of the current day.
             vm.maxDate = new Date();
@@ -682,12 +621,9 @@
             vm.orderableGroups = orderableGroups;
             vm.hasLot = false;
             vm.orderableGroups.forEach(function(group) {
-                // AO-384: added hasPermissionToAddNewLot to lotsOf method
                 vm.hasLot = vm.hasLot || orderableGroupService.lotsOf(group, hasPermissionToAddNewLot).length > 0;
-                // AO-384: ends here
             });
             vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(vm.orderableGroups);
-            // AO-384: added newLot that holds new lot info
             vm.hasPermissionToAddNewLot = hasPermissionToAddNewLot;
             vm.canAddNewLot = false;
             initiateNewLotObject();
@@ -698,7 +634,6 @@
                 active: true
             };
         }
-        // AO-384: ends here
 
         function initStateParams() {
             $stateParams.page = getPageNumber();
@@ -718,7 +653,6 @@
             return pageNumber;
         }
 
-        // AO-522: Added ability to edit lots and remove specified row
         /**
          * @ngdoc method
          * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
@@ -821,7 +755,7 @@
                 });
             }
         }
-        // AO-522: ends here
+
         onInit();
     }
 })();

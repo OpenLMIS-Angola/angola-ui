@@ -20,6 +20,20 @@
     <input type="submit" value="{{'stockCardSummaryList.search'|message}}"/>
 </form>
 <section class="openlmis-table-container">
+    <form ng-submit="vm.search()" openlmis-table-filter>
+        <fieldset class="form-group">
+            <label for="includeInactive">
+                <input id="includeInactive"
+                       type="checkbox"
+                       name="includeInactive"
+                       ng-true-value="'true'"
+                       ng-false-value="'false'"
+                       ng-model="vm.includeInactive"/>
+                {{'stockPhysicalInventoryDraft.includeInactiveItems' | message}}
+            </label>
+            <input type="submit" value="{{'stockCardSummaryList.search' | message}}"/>
+        </fieldset>
+    </form>
     <button class="primary" ng-disabled="!vm.displayStockCardSummaries.length" ng-click="vm.print()">{{'stockCardSummaryList.print' | message}}</button>
     <table>
         <caption ng-if="!vm.displayStockCardSummaries.length">
@@ -37,7 +51,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr class="is-secondary" ng-if="vm.displayStockCardSummaries.length > 1" ng-repeat-start="summary in vm.displayStockCardSummaries">
+            <tr class="is-secondary" ng-if="vm.displayStockCardSummaries.length > 0" ng-repeat-start="summary in vm.displayStockCardSummaries">
                 <td>{{summary.orderable.productCode}}</td>
                 <td>{{summary.orderable.fullProductName}}</td>
                 <td></td>
@@ -63,6 +77,6 @@
             </tr>
         </tbody>
     </table>
-    <openlmis-pagination ng-if="!vm.offline()" pagination-id="'stockCardList'"/>
+    <openlmis-pagination ng-if="!vm.offline()" list="vm.displayStockCardSummaries" paged-list="vm.pagedList" pagination-id="'stockCardSummaries'"/>
     <openlmis-pagination ng-if="vm.offline()" list="vm.stockCardSummaries" paged-list="vm.pagedList"></openlmis-pagination>
 </section>
