@@ -31,6 +31,18 @@
                        ng-model="vm.includeInactive"/>
                 {{'stockPhysicalInventoryDraft.includeInactiveItems' | message}}
             </label>
+
+            <!-- ANGOLASUP-685: Starts here -->
+            <label for="productCode">{{'stockCardSummaryList.productCode' | message}}</label>
+            <input id="productCode" type="text" ng-model="vm.productCode"/>
+
+            <label for="productName">{{'stockCardSummaryList.productName' | message}}</label>
+            <input id="productName" type="text" ng-model="vm.productName"/>
+
+            <label for="lotCode">{{'stockCardSummaryList.lotCode' | message}}</label>
+            <input id="lotCode" type="text" ng-model="vm.lotCode"/>
+            <!-- ANGOLASUP-685: Ends here -->
+
             <input type="submit" value="{{'stockCardSummaryList.search' | message}}"/>
         </fieldset>
     </form>
@@ -77,6 +89,5 @@
             </tr>
         </tbody>
     </table>
-    <openlmis-pagination ng-if="!vm.offline()" list="vm.displayStockCardSummaries" paged-list="vm.pagedList" pagination-id="'stockCardSummaries'"/>
-    <openlmis-pagination ng-if="vm.offline()" list="vm.stockCardSummaries" paged-list="vm.pagedList"></openlmis-pagination>
+    <openlmis-pagination list="displayStockCardSummaries" pagination-id="'stockCardList'"/>
 </section>
