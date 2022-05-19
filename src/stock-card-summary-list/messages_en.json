@@ -1,3 +1,5 @@
 {
-    "stockCardSummaryList.productName": "Product Name"
+    "stockCardSummaryList.productName": "Product Name (Produto)",
+    "stockCardSummaryList.lotCode": "Lot code (Lote)",
+    "stockCardSummaryList.productCode": "Product Code (Código)"
 }
