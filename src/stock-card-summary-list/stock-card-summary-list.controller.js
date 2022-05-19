@@ -198,6 +198,8 @@
             stateParams.productCode = vm.productCode;
             stateParams.productName = vm.productName;
             stateParams.lotCode = vm.lotCode;
+            stateParams.page = 0;
+            stateParams.size = 10;
             // ANGOLASUP-685: Ends here
 
             $state.go('openlmis.stockmanagement.stockCardSummaries', stateParams, {

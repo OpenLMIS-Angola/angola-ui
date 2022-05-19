@@ -78,19 +78,26 @@
                     params.page = 0;
                     params.size = 2147483647;
 
+                    // eslint-disable-next-line complexity
                     var itemFilterPredicateFromFilterParams = function(item) {
-                        if (params.productName !== null
+                        var isProductNameNullOrUndefined = params.productName !== null
+                            && params.productName !== undefined;
+                        if (isProductNameNullOrUndefined
                             && !item.orderable.fullProductName.toLocaleLowerCase()
                                 .includes(params.productName.toLocaleLowerCase())) {
                             return false;
                         }
 
-                        if (params.productCode !== null
+                        var isProductCodeNullOrUndefined = params.productCode !== null
+                            && params.productCode !== undefined;
+                        if (isProductCodeNullOrUndefined
                             && !item.orderable.productCode.includes(params.productCode)) {
                             return false;
                         }
 
-                        if (params.lotCode !== null
+                        var isLotCodeNullOrUndefined = params.lotCode !== null
+                            && params.lotCode !== undefined;
+                        if (isLotCodeNullOrUndefined
                             && (!item.orderable.lotCode || !item.orderable.lotCode.includes(params.lotCode))) {
                             return false;
                         }

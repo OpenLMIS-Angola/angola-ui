@@ -143,7 +143,11 @@ describe('StockCardSummaryListController', function() {
                     facility: 'facility',
                     program: 'program',
                     supervised: true,
-                    includeInactive: false
+                    includeInactive: false,
+                    // ANGOLASUP-685: Starts here
+                    page: 0,
+                    size: 10
+                    // ANGOLASUP-685: Starts here
                 },
                 {
                     reload: true
