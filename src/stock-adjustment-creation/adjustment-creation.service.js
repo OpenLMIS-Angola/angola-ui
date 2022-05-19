@@ -84,7 +84,6 @@
                 signature: user ? getFullSignature() : ''
                 // AO-695: ends here
             };
-            getFullSignature();
 
             event.lineItems = _.map(lineItems, function(item) {
                 return angular.merge({
