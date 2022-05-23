@@ -29,11 +29,17 @@
         .service('stockAdjustmentCreationService', service);
 
     service.$inject = [
-        '$filter', 'StockEventRepository', 'openlmisDateFilter', 'localStorageService',
+        '$filter', 'StockEventRepository', 'openlmisDateFilter',
+        // AO-695: Use first name + last name as a signature for Issue,Receive,Adjustment
+        'localStorageService',
+        //AO-695: Ends here
         'messageService', 'productNameFilter', 'dateUtils', '$rootScope'
     ];
 
-    function service($filter, StockEventRepository, openlmisDateFilter, localStorageService,
+    function service($filter, StockEventRepository, openlmisDateFilter,
+                     // AO-695: Use first name + last name as a signature for Issue,Receive,Adjustment
+                     localStorageService,
+                     // AO-695: Ends here
                      messageService, productNameFilter, dateUtils, $rootScope) {
         var repository = new StockEventRepository();
 

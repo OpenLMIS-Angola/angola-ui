@@ -18,7 +18,9 @@
 
     angular.module('stock-adjustment-creation', [
         'openlmis-date',
+        // AO-695: Use first name + last name as a signature for Issue,Receive,Adjustment
         'openlmis-local-storage',
+        // AO-695: Ends here
         'stock-adjustment',
         'stock-confirm-discard',
         'stock-orderable-group',
