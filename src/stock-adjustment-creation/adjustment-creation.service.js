@@ -30,10 +30,16 @@
 
     service.$inject = [
         '$filter', 'StockEventRepository', 'openlmisDateFilter',
+        // AO-695: Use first name + last name as a signature for Issue,Receive,Adjustment
+        'localStorageService',
+        //AO-695: Ends here
         'messageService', 'productNameFilter', 'dateUtils', '$rootScope'
     ];
 
     function service($filter, StockEventRepository, openlmisDateFilter,
+                     // AO-695: Use first name + last name as a signature for Issue,Receive,Adjustment
+                     localStorageService,
+                     // AO-695: Ends here
                      messageService, productNameFilter, dateUtils, $rootScope) {
         var repository = new StockEventRepository();
 
@@ -80,10 +86,11 @@
             var event = {
                 programId: programId,
                 facilityId: facilityId,
-                // AO-668: Use username as signature for Issue, Receive and Adjustment
-                signature: user ? user.username : ''
-                // AO-668: ends here
+                // AO-695: Use first name + last name as a signature for Issue,Receive,Adjustment
+                signature: user ? getFullSignature() : ''
+                // AO-695: ends here
             };
+
             event.lineItems = _.map(lineItems, function(item) {
                 return angular.merge({
                     orderableId: item.orderable.id,
@@ -124,5 +131,12 @@
                 item.lot.lotCode :
                 (hasLot ? messageService.get('orderableGroupService.noLotDefined') : '');
         }
+
+        // AO-695: Use first name + last name as a signature for Issue,Receive,Adjustment
+        function getFullSignature() {
+            var currentUserInfo = JSON.parse(localStorageService.get('currentUser'));
+            return currentUserInfo.firstName + ' ' + currentUserInfo.lastName;
+        }
+        // AO-695: Ends here
     }
 })();

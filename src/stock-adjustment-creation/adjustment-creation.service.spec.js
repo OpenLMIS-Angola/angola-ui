@@ -193,9 +193,9 @@ describe('stockAdjustmentCreationService', function() {
             var event = {
                 programId: programId,
                 facilityId: facilityId,
-                // AO-668: Use username as signature for Issue, Receive and Adjustment
-                signature: 'user',
-                // AO-668: ends here
+                // AO-695: Use first name and last name  as signature for Issue, Receive and Adjustment
+                signature: 'Jack Smith',
+                // AO-695: ends here
                 lineItems: [{
                     orderableId: orderableId,
                     lotId: null,
