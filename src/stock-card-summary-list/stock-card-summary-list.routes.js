@@ -79,34 +79,60 @@
                     params.size = 2147483647;
 
                     // eslint-disable-next-line complexity
-                    var itemFilterPredicateFromFilterParams = function(item) {
-                        var isProductNameNullOrUndefined = params.productName !== null
-                            && params.productName !== undefined;
-                        if (isProductNameNullOrUndefined
-                            && !item.orderable.fullProductName.toLocaleLowerCase()
-                                .includes(params.productName.toLocaleLowerCase())) {
-                            return false;
+                    var filterStockCardSummariesByParams = function(stockCardSummaries) {
+                        var result = [];
+
+                        for (var i = 0; i < stockCardSummaries.length; i++) {
+                            var stockCardSummary = stockCardSummaries[i];
+
+                            var isNotProductNameNullOrUndefined = params.productName !== null
+                                && params.productName !== undefined;
+                            if (isNotProductNameNullOrUndefined
+                                && !stockCardSummary.orderable.fullProductName.toLocaleLowerCase()
+                                    .includes(stockCardSummary.productName.toLocaleLowerCase())) {
+                                continue;
+                            }
+
+                            var isNotProductCodeNullOrUndefined = params.productCode !== null
+                                && params.productCode !== undefined;
+                            if (isNotProductCodeNullOrUndefined
+                                && !stockCardSummary.orderable.productCode.includes(params.productCode)) {
+                                continue;
+                            }
+
+                            var isNotLotCodeNullOrUndefined = params.lotCode !== null
+                                && params.lotCode !== undefined;
+
+                            if (isNotLotCodeNullOrUndefined) {
+                                if (stockCardSummary.canFulfillForMe.length) {
+
+                                    stockCardSummary.canFulfillForMe = stockCardSummary.canFulfillForMe
+                                        .filter(function(canFulfillForMe) {
+                                            return canFulfillForMe.lot
+                                                && canFulfillForMe.lot.lotCode.includes(params.lotCode);
+                                        });
+
+                                    if (!stockCardSummary.canFulfillForMe.length) {
+                                        continue;
+                                    }
+
+                                    stockCardSummary.stockOnHand = stockCardSummary
+                                        .canFulfillForMe
+                                        .reduce(function(prevValue, item) {
+                                            return prevValue + item.stockOnHand;
+                                        }, 0);
+
+                                }
+                            }
+
+                            result.push(stockCardSummary);
                         }
 
-                        var isProductCodeNullOrUndefined = params.productCode !== null
-                            && params.productCode !== undefined;
-                        if (isProductCodeNullOrUndefined
-                            && !item.orderable.productCode.includes(params.productCode)) {
-                            return false;
-                        }
-
-                        var isLotCodeNullOrUndefined = params.lotCode !== null
-                            && params.lotCode !== undefined;
-                        if (isLotCodeNullOrUndefined
-                            && (!item.orderable.lotCode || !item.orderable.lotCode.includes(params.lotCode))) {
-                            return false;
-                        }
-
-                        return true;
+                        return result;
                     };
 
                     var filterOutItemsByUserParamsFilter = function(itemsPageSpec, targetPage, targetPageSize) {
-                        var itemsPageContent = itemsPageSpec.content.filter(itemFilterPredicateFromFilterParams);
+                        var itemsPageContent = filterStockCardSummariesByParams(itemsPageSpec.content);
 
                         var start = targetPage * targetPageSize;
                         var end = Math.min(itemsPageContent.length, start + targetPageSize);
