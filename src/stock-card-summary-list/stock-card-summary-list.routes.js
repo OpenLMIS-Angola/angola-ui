@@ -89,7 +89,7 @@
                                 && params.productName !== undefined;
                             if (isNotProductNameNullOrUndefined
                                 && !stockCardSummary.orderable.fullProductName.toLocaleLowerCase()
-                                    .includes(stockCardSummary.productName.toLocaleLowerCase())) {
+                                    .includes(params.productName.toLocaleLowerCase())) {
                                 continue;
                             }
 
