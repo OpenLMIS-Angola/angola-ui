@@ -72,8 +72,16 @@
                 // ANGOLASUP-685: Starts here
                 stockCardSummaries: function(paginationService, StockCardSummaryRepository,
                     StockCardSummaryRepositoryImpl, $stateParams, offlineService, params) {
-                    var originalPage = parseInt(params.page);
-                    var originalPageSize = parseInt(params.size);
+
+                    //ANGOLASUP-701: Starts here
+                    var originalPage, originalPageSize;
+
+                    angular.isNumber(parseInt(params.page))  ? originalPage = parseInt(params.page)
+                        :  originalPage = 0;
+
+                    angular.isNumber(parseInt(params.size))  ? originalPageSize = parseInt(params.size)
+                        :  originalPageSize = 10;
+                    //ANGOLASUP-701: ends here
 
                     params.page = 0;
                     params.size = 2147483647;
