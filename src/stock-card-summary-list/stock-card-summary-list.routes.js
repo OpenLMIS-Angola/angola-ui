@@ -76,11 +76,11 @@
                     //ANGOLASUP-701: Starts here
                     var originalPage, originalPageSize;
 
-                    angular.isNumber(parseInt(params.page))  ? originalPage = parseInt(params.page)
-                        :  originalPage = 0;
+                    isNaN(parseInt(params.page))  ? originalPage = 0
+                        : originalPage = parseInt(params.page);
 
-                    angular.isNumber(parseInt(params.size))  ? originalPageSize = parseInt(params.size)
-                        :  originalPageSize = 10;
+                    isNaN(parseInt(params.size))  ? originalPageSize = 10
+                        : originalPageSize = parseInt(params.size);
                     //ANGOLASUP-701: ends here
 
                     params.page = 0;
