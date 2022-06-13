@@ -104,7 +104,10 @@
                             var isNotProductCodeNullOrUndefined = params.productCode !== null
                                 && params.productCode !== undefined;
                             if (isNotProductCodeNullOrUndefined
-                                && !stockCardSummary.orderable.productCode.includes(params.productCode)) {
+                                //ANGOLASUP-707 Starts here
+                                && !stockCardSummary.orderable.productCode.toLocaleLowerCase()
+                                    .includes(params.productCode.toLocaleLowerCase())) {
+                                //ANGOLASUP:707: ends here
                                 continue;
                             }
 
@@ -117,7 +120,10 @@
                                     stockCardSummary.canFulfillForMe = stockCardSummary.canFulfillForMe
                                         .filter(function(canFulfillForMe) {
                                             return canFulfillForMe.lot
-                                                && canFulfillForMe.lot.lotCode.includes(params.lotCode);
+                                                //ANGOLASUP-707: Starts here
+                                                && canFulfillForMe.lot.lotCode.toLocaleLowerCase()
+                                                    .includes(params.lotCode.toLocaleLowerCase());
+                                            //ANGOLASUP-707: ends here
                                         });
 
                                     if (!stockCardSummary.canFulfillForMe.length) {
