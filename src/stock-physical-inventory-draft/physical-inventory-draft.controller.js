@@ -485,8 +485,10 @@
                                 'stockPhysicalInventoryDraft.printModal.yes',
                                 'stockPhysicalInventoryDraft.printModal.no')
                                 .then(function() {
-                                    $window.open(accessTokenFactory.addAccessToken(getPrintUrl(draft.id)),
+                                    // ANGOLASUP-716: Fixed printing Inventory Report
+                                    $window.open(accessTokenFactory.addAccessToken(getPrintUrl(draft)),
                                         '_blank');
+                                    // ANGOLASUP-716: ends here
                                 })
                                 .finally(function() {
                                     $state.go('openlmis.stockmanagement.stockCardSummaries', {
