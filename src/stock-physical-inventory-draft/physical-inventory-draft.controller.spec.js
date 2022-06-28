@@ -381,7 +381,11 @@ describe('PhysicalInventoryDraftController', function() {
 
             expect(this.$window.open).toHaveBeenCalledWith('/api/reports/templates/angola/'
               // AO-507: Added signature to inventory report
-              + '1e0221c4-58f4-40b6-9cde-4b3781cea6a1/pdf?programId=undefined&facilityId=undefined&signature=undefined'
+              + '1e0221c4-58f4-40b6-9cde-4b3781cea6a1/pdf?programId='
+              // ANGOLASUP-716: Fixed printing Inventory Report
+              + this.program.id + '&facilityId=' + this.facility.id
+              + '&signature=undefined'
+              // ANGOLASUP-716: ends here
               // AO-507: ends here
                 , '_blank');
 
