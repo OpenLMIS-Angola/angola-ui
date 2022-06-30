@@ -104,10 +104,29 @@
                     reasonFreeText: item.reasonFreeText
                 }, buildSourceDestinationInfo(item, adjustmentType));
             });
+            // ANGOLASUP-717: Create New Issue Report
             return repository.create(event)
-                .then(function() {
+                .then(function(stockEventId) {
+                    // Stock event endpoint returns stock event id as String, because of an issue
+                    // in the $resource library the String values are changed into objects
+                    // this is a workaround to parse the returned value
+                    var idArray = _.chain(stockEventId)
+                        .keys()
+                        .filter(function(item) {
+                            return !item.startsWith('$');
+                        })
+                        .sortBy(function(item) {
+                            return parseInt(item);
+                        })
+                        .map(function(key) {
+                            return stockEventId[key];
+                        })
+                        .value();
+                    var id = idArray.join('');
                     $rootScope.$emit('openlmis-referencedata.offline-events-indicator');
+                    return id;
                 });
+            // ANGOLASUP-717: ends here
         }
 
         function buildSourceDestinationInfo(item, adjustmentType) {

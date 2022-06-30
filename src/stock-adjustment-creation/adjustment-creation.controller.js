@@ -34,7 +34,10 @@
         'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService', 'offlineService',
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
         'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'UNPACK_REASONS', 'REASON_TYPES', 'STOCKCARD_STATUS',
-        'hasPermissionToAddNewLot', 'LotResource', '$q', 'editLotModalService', 'moment'
+        'hasPermissionToAddNewLot', 'LotResource', '$q', 'editLotModalService', 'moment',
+        // ANGOLASUP-717: Create New Issue Report
+        'accessTokenFactory', '$window', 'stockmanagementUrlFactory'
+        // ANGOLASUP-717: ends here
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -42,7 +45,10 @@
                         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         offlineService, orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, UNPACK_REASONS, REASON_TYPES,
-                        STOCKCARD_STATUS, hasPermissionToAddNewLot, LotResource, $q, editLotModalService, moment) {
+                        STOCKCARD_STATUS, hasPermissionToAddNewLot, LotResource, $q, editLotModalService, moment,
+                        // ANGOLASUP-717: Create New Issue Report
+                        accessTokenFactory, $window, stockmanagementUrlFactory) {
+        // ANGOLASUP-717: ends here
         var vm = this,
             previousAdded = {};
 
@@ -495,17 +501,23 @@
                         // AO-668: Use username as signature for Issue, Receive and Adjustment
                         addedLineItems, adjustmentType, user)
                         // AO-668: ends here
-                        .then(function() {
-                            if (offlineService.isOffline()) {
-                                notificationService.offline(vm.key('submittedOffline'));
+                        // ANGOLASUP-717: Create New Issue Report
+                        .then(function(stockEventId) {
+                            if (adjustmentType.state === ADJUSTMENT_TYPE.ISSUE.state) {
+                                confirmService.confirm('adjustmentCreation.printModal.label',
+                                    'stockPhysicalInventoryDraft.printModal.yes',
+                                    'stockPhysicalInventoryDraft.printModal.no')
+                                    .then(function() {
+                                        $window.open(accessTokenFactory.addAccessToken(getPrintUrl(stockEventId)),
+                                            '_blank');
+                                    })
+                                    .finally(function() {
+                                        goToStockCardSummaries();
+                                    });
                             } else {
-                                notificationService.success(vm.key('submitted'));
+                                goToStockCardSummaries();
                             }
-                            $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                                facility: facility.id,
-                                program: program.id,
-                                active: STOCKCARD_STATUS.ACTIVE
-                            });
+                            // ANGOLASUP-717: ends here
                         }, function(errorResponse) {
                             loadingModalService.close();
                             alertService.error(errorResponse.data.message);
@@ -524,6 +536,27 @@
                     alertService.error(errorResponse.data.message);
                 });
         }
+
+        // ANGOLASUP-717: Create New Issue Report
+        function getPrintUrl(stockEventId) {
+            var reportTemplateId = '79301ebf-1198-4a35-9d00-18c9fe450807';
+            return stockmanagementUrlFactory('/api/reports/templates/angola/' + reportTemplateId
+                + '/pdf?stockEventId=' + stockEventId);
+        }
+
+        function goToStockCardSummaries() {
+            if (offlineService.isOffline()) {
+                notificationService.offline(vm.key('submittedOffline'));
+            } else {
+                notificationService.success(vm.key('submitted'));
+            }
+            $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                facility: facility.id,
+                program: program.id,
+                active: STOCKCARD_STATUS.ACTIVE
+            });
+        }
+        // ANGOLASUP-717: ends here
 
         function addItemToOrderableGroups(item) {
             vm.orderableGroups.forEach(function(array) {
