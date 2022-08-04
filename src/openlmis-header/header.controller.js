@@ -36,7 +36,7 @@
         // ANGOLASUP-686: Visually distinguish between Test and Production Servers
         var testDomain = 'test.siglofa.sisangola.org';
 
-        vm.isDomainTest = window.location.host.toString() === testDomain;
+        vm.isTestDomain = window.location.host.toString() === testDomain;
         // ANGOLASUP-686: ends here
 
         $scope.$watch(function() {
