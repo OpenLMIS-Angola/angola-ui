@@ -49,6 +49,7 @@
         var testDomain = 'test.siglofa.sisangola.org';
 
         vm.isTestDomain = window.location.host.toString() === testDomain;
+
         // ANGOLASUP-686: ends here
 
         /**
