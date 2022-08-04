@@ -45,6 +45,12 @@
 
         vm.doLogin = doLogin;
 
+        // ANGOLASUP-686: Visually distinguish between Test and Production Servers
+        var testDomain = 'test.siglofa.sisangola.org';
+
+        vm.isDomainTest = window.location.host.toString() === testDomain;
+        // ANGOLASUP-686: ends here
+
         /**
          * @ngdoc method
          * @methodOf openlmis-login.controller:LoginController
