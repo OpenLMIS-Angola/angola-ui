@@ -16,7 +16,7 @@
                     ng-options="o.id as o.fullProductName for o in vm.orderables">
             </select>
         </fieldset>
-        <!-- ANGOLASUP-715 filtering by lot code: Starts here -->
+        <!-- ANGOLASUP-715: Filtering by lot code -->
         <fieldset class="form-group">
             <label for="lotCode">{{'adminLotList.lotCode' | message}}</label>
             <select id="lotCode"
@@ -24,7 +24,7 @@
                     ng-options="o.lotCode as o.lotCode for o in vm.lotsList">
             </select>
         </fieldset>
-        <!-- ANGOLASUP-715 filtering by lot code: Ends here -->
+        <!-- ANGOLASUP-715: Ends here -->
         <input type="submit" value="{{'adminLotList.search' | message}}"/>
     </form>
     <table>

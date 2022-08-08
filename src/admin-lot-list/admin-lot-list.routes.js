@@ -26,19 +26,19 @@
         $stateProvider.state('openlmis.administration.lots', {
             showInNavigation: true,
             label: 'adminLotList.lots',
-            // ANGOLASUP-715 filtering by lot code: Starts here
+            // ANGOLASUP-715: Filtering by lot code
             url: '/lots?orderableId&expirationDateFrom&expirationDateTo&lotCode&page&size',
-            // ANGOLASUP-715 filtering by lot code: Ends here
+            // ANGOLASUP-715: Ends here
             controller: 'LotListController',
             templateUrl: 'admin-lot-list/lot-list.html',
             controllerAs: 'vm',
             accessRights: [ADMINISTRATION_RIGHTS.LOTS_MANAGE],
             resolve: {
-                // ANGOLASUP-715 filtering by lot code: Starts here
-                lotsList: function($q, lotService) {
+                // ANGOLASUP-715: Filtering by lot code
+                lotsList: function(lotService) {
                     return lotService.query();
                 },
-                // ANGOLASUP-715 filtering by lot code: Ends here
+                // ANGOLASUP-715: Ends here
                 paginatedLots: function($q, $stateParams, paginationService, lotService) {
                     return paginationService.registerUrl($stateParams, function(stateParams) {
                         var params = angular.copy(stateParams);

@@ -30,13 +30,13 @@ describe('LotListController', function() {
             new this.LotDataBuilder().build()
         ];
 
-        // ANGOLASUP-715 filtering by lot code: Starts here
+        // ANGOLASUP-715: Filtering by lot code
         this.lotsList = [
             new this.LotDataBuilder().build(),
             new this.LotDataBuilder().build(),
             new this.LotDataBuilder().build()
         ];
-        // ANGOLASUP-715 filtering by lot code: Ends here
+        // ANGOLASUP-715: Ends here
 
         this.orderables = [
             {
@@ -53,9 +53,9 @@ describe('LotListController', function() {
         this.vm = this.$controller('LotListController', {
             lots: this.lots,
             orderables: this.orderables,
-            // ANGOLASUP-715 filtering by lot code: Starts here
+            // ANGOLASUP-715: Filtering by lot code
             lotsList: this.lotsList,
-            // ANGOLASUP-715 filtering by lot code: Ends here
+            // ANGOLASUP-715: Ends here
             $stateParams: this.stateParams
         });
 
@@ -90,6 +90,20 @@ describe('LotListController', function() {
                 page: this.stateParams.page,
                 size: this.stateParams.size,
                 orderableId: 'abcd'
+            }, {
+                reload: true
+            });
+        });
+
+        it('should set lotCode param', function() {
+            this.vm.lotCode = 'abcd';
+
+            this.vm.search();
+
+            expect(this.$state.go).toHaveBeenCalledWith('openlmis.administration.lots', {
+                page: this.stateParams.page,
+                size: this.stateParams.size,
+                lotCode: 'abcd'
             }, {
                 reload: true
             });

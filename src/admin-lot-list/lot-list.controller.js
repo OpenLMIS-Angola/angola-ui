@@ -28,16 +28,16 @@
         .module('admin-lot-list')
         .controller('LotListController', controller);
 
-    // ANGOLASUP-715 filtering by lot code: Starts here
+    // ANGOLASUP-715: Filtering by lot code
     controller.$inject = ['$state', '$stateParams', 'lots', 'orderables', 'lotsList'];
-    // ANGOLASUP-715 filtering by lot code: Ends here
+    // ANGOLASUP-715: Ends here
 
-    function controller($state, $stateParams, lots,  orderables, lotsList) {
+    function controller($state, $stateParams, lots, orderables, lotsList) {
 
         var vm = this;
         vm.$onInit = onInit;
 
-        // ANGOLASUP-715 filtering by lot code: Starts here
+        // ANGOLASUP-715: Filtering by lot code
         /**
          * @ngdoc property
          * @propertyOf admin-lot-list.controller:LotListController
@@ -48,7 +48,7 @@
          * Contains all lots.
          */
         vm.lotsList = [];
-        // ANGOLASUP-715 filtering by lot code: Starts here
+        // ANGOLASUP-715: Ends here
 
         /**
          * @ngdoc property
@@ -102,7 +102,7 @@
          */
         vm.expirationDateTo = null;
 
-        // ANGOLASUP-715 filtering by lot code: Starts here
+        // ANGOLASUP-715: Filtering by lot code
         /**
          * @ngdoc property
          * @propertyOf admin-lot-list.controller:LotListController
@@ -110,7 +110,7 @@
          * @type {String}
          */
         vm.lotCode = null;
-        // ANGOLASUP-715 filtering by lot code: Ends here
+        // ANGOLASUP-715: Ends here
 
         /**
          * @ngdoc method
@@ -126,9 +126,9 @@
             stateParams.orderableId = vm.orderableId;
             stateParams.expirationDateFrom = vm.expirationDateFrom;
             stateParams.expirationDateTo = vm.expirationDateTo;
-            // ANGOLASUP-715 filtering by lot code: Starts here
+            // ANGOLASUP-715: Filtering by lot code
             stateParams.lotCode = vm.lotCode;
-            // ANGOLASUP-715 filtering by lot code: Ends here
+            // ANGOLASUP-715: Ends here
 
             $state.go('openlmis.administration.lots', stateParams, {
                 reload: true
@@ -144,18 +144,18 @@
          * Initializes controller
          */
         function onInit() {
-            // ANGOLASUP-715 filtering by lot code: Starts here            
+            // ANGOLASUP-715: Filtering by lot code            
             vm.lotsList = lotsList.content;
-            // ANGOLASUP-715 filtering by lot code: Ends here
+            // ANGOLASUP-715: Ends here
             vm.lots = lots;
             vm.orderables = orderables;
 
             vm.orderableId = $stateParams.orderableId;
             vm.expirationDateFrom = $stateParams.expirationDateFrom;
             vm.expirationDateTo = $stateParams.expirationDateTo;
-            // ANGOLASUP-715 filtering by lot code: Starts here
+            // ANGOLASUP-715: Filtering by lot code
             vm.lotCode = $stateParams.lotCode;
-            // ANGOLASUP-715 filtering by lot code: Ends here
+            // ANGOLASUP-715: Ends here
         }
     }
 
