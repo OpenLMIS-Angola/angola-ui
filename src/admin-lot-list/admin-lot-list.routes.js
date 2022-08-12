@@ -34,6 +34,11 @@
             controllerAs: 'vm',
             accessRights: [ADMINISTRATION_RIGHTS.LOTS_MANAGE],
             resolve: {
+                // ANGOLASUP-715: Filtering by lot code
+                lotsList: function(lotService) {
+                    return lotService.query();
+                },
+                // ANGOLASUP-715: Ends here
                 paginatedLots: function($q, $stateParams, paginationService, lotService) {
                     return paginationService.registerUrl($stateParams, function(stateParams) {
                         var params = angular.copy(stateParams);

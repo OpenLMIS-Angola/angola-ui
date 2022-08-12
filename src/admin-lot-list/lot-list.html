@@ -19,7 +19,10 @@
         <!-- ANGOLASUP-715: Filtering by lot code -->
         <fieldset class="form-group">
             <label for="lotCode">{{'adminLotList.lotCode' | message}}</label>
-            <input type="text" id="lotCode" ng-model="vm.lotCode"/>
+            <select id="lotCode"
+                    ng-model="vm.lotCode"
+                    ng-options="o.lotCode as o.lotCode for o in vm.lotsList">
+            </select>
         </fieldset>
         <!-- ANGOLASUP-715: Ends here -->
         <input type="submit" value="{{'adminLotList.search' | message}}"/>

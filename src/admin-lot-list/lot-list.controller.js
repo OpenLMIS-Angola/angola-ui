@@ -28,12 +28,27 @@
         .module('admin-lot-list')
         .controller('LotListController', controller);
 
-    controller.$inject = ['$state', '$stateParams', 'lots', 'orderables'];
+    // ANGOLASUP-715: Filtering by lot code
+    controller.$inject = ['$state', '$stateParams', 'lots', 'orderables', 'lotsList'];
+    // ANGOLASUP-715: Ends here
 
-    function controller($state, $stateParams, lots, orderables) {
+    function controller($state, $stateParams, lots, orderables, lotsList) {
 
         var vm = this;
         vm.$onInit = onInit;
+
+        // ANGOLASUP-715: Filtering by lot code
+        /**
+         * @ngdoc property
+         * @propertyOf admin-lot-list.controller:LotListController
+         * @name lots
+         * @type {Array}
+         *
+         * @description
+         * Contains all lots.
+         */
+        vm.lotsList = [];
+        // ANGOLASUP-715: Ends here
 
         /**
          * @ngdoc property
@@ -129,6 +144,9 @@
          * Initializes controller
          */
         function onInit() {
+            // ANGOLASUP-715: Filtering by lot code            
+            vm.lotsList = lotsList.content;
+            // ANGOLASUP-715: Ends here
             vm.lots = lots;
             vm.orderables = orderables;
 

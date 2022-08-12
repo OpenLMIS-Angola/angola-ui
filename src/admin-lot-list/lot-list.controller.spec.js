@@ -30,6 +30,14 @@ describe('LotListController', function() {
             new this.LotDataBuilder().build()
         ];
 
+        // ANGOLASUP-715: Filtering by lot code
+        this.lotsList = [
+            new this.LotDataBuilder().build(),
+            new this.LotDataBuilder().build(),
+            new this.LotDataBuilder().build()
+        ];
+        // ANGOLASUP-715: Ends here
+
         this.orderables = [
             {
                 id: '1',
@@ -45,6 +53,9 @@ describe('LotListController', function() {
         this.vm = this.$controller('LotListController', {
             lots: this.lots,
             orderables: this.orderables,
+            // ANGOLASUP-715: Filtering by lot code
+            lotsList: this.lotsList,
+            // ANGOLASUP-715: Ends here
             $stateParams: this.stateParams
         });
 
