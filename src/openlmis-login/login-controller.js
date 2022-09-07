@@ -46,9 +46,9 @@
         vm.doLogin = doLogin;
 
         // ANGOLASUP-686: Visually distinguish between Test and Production Servers
-        var testDomain = 'test.siglofa.sisangola.org';
+        var prodDomain = 'siglofa.sisangola.org';
 
-        vm.isTestDomain = window.location.host.toString() === testDomain;
+        vm.isProdDomain = window.location.host.toString() === prodDomain;
 
         // ANGOLASUP-686: ends here
 
