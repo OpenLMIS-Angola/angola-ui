@@ -6,7 +6,7 @@ fi
 if [ $PRODUCTION == true ]; then
   echo "building image for production instance"
   cp ./credentials/production_env/settings.env .env
-else if [ $TEST_PROD_COPY == true ]; then
+elif [ $TEST_PROD_COPY == true ]; then
   echo "building image for test production copy instance"
   cp ./credentials/test_prod_copy_env/settings.env .env
 else
@@ -24,7 +24,7 @@ if [ $PRODUCTION == true ]; then
   echo "pushing image for production instance"
   docker tag openlmisao/angola-ui:latest openlmisao/angola-production-ui:${version}
   docker push openlmisao/angola-production-ui:${version}
-else if [ $TEST_PROD_COPY == true ]; then
+elif [ $TEST_PROD_COPY == true ]; then
   echo "pushing image for test production copy instance"
   docker tag openlmisao/angola-ui:latest openlmisao/angola-test-prod-copy-ui:${version}
   docker push openlmisao/angola-test-prod-copy-ui:${version}
