@@ -283,7 +283,7 @@
                 });
             }
 
-            if (filtered.length === 1) {
+            if (filtered !== null && filtered.length === 1) {
                 return filtered[0].stockAdjustments;
             }
 

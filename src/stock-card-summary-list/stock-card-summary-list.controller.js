@@ -78,7 +78,6 @@
          */
         vm.includeInactive = $stateParams.includeInactive;
 
-        // ANGOLASUP-685: Starts here
         /**
          * @ngdoc property
          * @propertyOf stock-card-summary-list.controller:StockCardSummaryListController
@@ -105,7 +104,6 @@
          *
          */
         vm.lotCode = $stateParams.lotCode;
-        // ANGOLASUP-685: Ends here
 
         /**
          * @ngdoc method
@@ -124,6 +122,13 @@
             }, {
                 paginationId: 'stockCardSummaries'
             });
+            $scope.$watchCollection(function() {
+                return vm.pagedList;
+            }, function(newList) {
+                if (vm.offline()) {
+                    vm.displayStockCardSummaries = newList;
+                }
+            }, true);
         }
 
         /**
@@ -142,11 +147,9 @@
             stateParams.active = STOCKCARD_STATUS.ACTIVE;
             stateParams.supervised = vm.isSupervised;
 
-            // ANGOLASUP-685: Starts here
             stateParams.productName = vm.productName;
             stateParams.productCode = vm.productCode;
             stateParams.lotCode = vm.lotCode;
-            // ANGOLASUP-685: Ends here
 
             $state.go('openlmis.stockmanagement.stockCardSummaries', stateParams, {
                 reload: true
@@ -194,13 +197,11 @@
             stateParams.supervised = vm.isSupervised;
             stateParams.includeInactive = vm.includeInactive;
 
-            // ANGOLASUP-685: Starts here
             stateParams.productCode = vm.productCode;
             stateParams.productName = vm.productName;
             stateParams.lotCode = vm.lotCode;
             stateParams.page = 0;
             stateParams.size = 10;
-            // ANGOLASUP-685: Ends here
 
             $state.go('openlmis.stockmanagement.stockCardSummaries', stateParams, {
                 reload: true

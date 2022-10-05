@@ -26,10 +26,9 @@
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.stockCardSummaries', {
             isOffline: true,
-            // ANGOLASUP-685: Starts here
-            // eslint-disable-next-line max-len
-            url: '/stockCardSummaries?facility&program&supervised&page&size&includeInactive&productCode&productName&lotCode',
-            // ANGOLASUP-685: Ends here
+            url: '/stockCardSummaries'
+            + '?facility&program&supervised&page&size&includeInactive'
+            + '&productCode&productName&lotCode',
             label: 'stockCardSummaryList.stockOnHand',
             priority: 1,
             showInNavigation: true,
