@@ -133,10 +133,19 @@
 
                     return $q.all(attachmentPromises)
                         .then(function() {
-                            var successMessage = messageService.get('serviceDesk.sendSuccessfully', {
-                                ticketNumber: response.issueKey,
-                                userEmailAddress: user.email
-                            });
+                            var successMessage;
+                            if (user.email) {
+                                successMessage = messageService.get('serviceDesk.sendSuccessfully', {
+                                    ticketNumber: response.issueKey,
+                                    userEmailAddress: user.email
+                                });
+                            } else {
+                                successMessage = messageService.get(
+                                    'serviceDesk.sendSuccessfullyWithoutUserEmail', {
+                                        ticketNumber: response.issueKey
+                                    }
+                                );
+                            }
                             notificationService.success(successMessage);
                             redirectToHome();
                         })
