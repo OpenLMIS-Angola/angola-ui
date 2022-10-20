@@ -10,6 +10,7 @@
     "serviceDesk.send": "Send",
     "serviceDesk.cancel": "Cancel",
     "serviceDesk.sendSuccessfully": "Thank you! Your reference is ${ticketNumber}. Please check email ${userEmailAddress} for confirmation and updates.",
+    "serviceDesk.sendSuccessfullyWithoutUserEmail": "Thank you! Your reference is ${ticketNumber}.",
     "serviceDesk.support": "Technical support",
     "serviceDesk.bug": "Report a bug",
     "serviceDesk.improvement": "Suggest a improvement",
