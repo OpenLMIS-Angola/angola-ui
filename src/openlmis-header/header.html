@@ -10,6 +10,9 @@
             <span class="offline-status-indicator">{{'openlmisHeader.youAreOffline' | message}}</span>
             <a ng-click="vm.checkConnection()">{{'openlmisHeader.checkConnection' | message}}</a>
         </div>
+        <!-- ANGOLASUP-750: Display header containing pending offline events -->
+        <openlmis-offline-events-indicator/>
+        <!-- ANGOLASUP-750: Ends here -->
         <div ng-show="!!user">
             <ng-include src="'openlmis-header/user.html'"></ng-include>
         </div>
