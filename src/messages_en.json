@@ -81,5 +81,13 @@
     "stockEditLotModal.lotCodeInvalid": "This lot code already exists.",
     "stockPhysicalInventoryDraft.saveDraft": "Warning: Saving will make all newly added lots unmodifiable, but removing physical inventory row will still be possible.",
     "stockPhysicalInventoryDraft.save": "Save",
-    "stockPhysicalInventoryDraft.lotCodeMustBeUnique": "The lot code has to be unique, please change the one(s) listed below:"
+    "stockPhysicalInventoryDraft.lotCodeMustBeUnique": "The lot code has to be unique, please change the one(s) listed below:",
+    "openlmisOfflineEvents.pendingEventsCount": "Pending offline events (${count})",
+    "stockCardSummaryList.offline1": "You are offline. Information on this page",
+    "stockCardSummaryList.offline2": " may not be accurate",
+    "stockCardSummaryList.offline3": " at this moment.",
+    "stockCardSummaryList.pendingOfflineEvents": "Pending offline events",
+    "stockCardSummaryList.offline4": " will be synchronized when the internet connection returns.",
+    "stockReceiveCreation.submittedOffline": "Stock receive event has successfully been submitted offline"
+
 }
