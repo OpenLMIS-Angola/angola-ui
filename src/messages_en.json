@@ -88,6 +88,7 @@
     "stockCardSummaryList.offline3": " at this moment.",
     "stockCardSummaryList.pendingOfflineEvents": "Pending offline events",
     "stockCardSummaryList.offline4": " will be synchronized when the internet connection returns.",
-    "stockReceiveCreation.submittedOffline": "Stock receive event has successfully been submitted offline"
+    "stockReceiveCreation.submittedOffline": "Stock receive event has successfully been submitted offline",
+    "stockReceiveCreation.submitOffline": "Submit offline"
 
 }
