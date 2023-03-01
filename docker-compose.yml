@@ -1,7 +1,7 @@
 version: "2"
 services:
   angola-ui:
-    image: openlmis/dev-ui:9.0.4
+    image: openlmis/dev-ui:9.0.5-SNAPSHOT
     working_dir: /app
     volumes:
       - '.:/app'
