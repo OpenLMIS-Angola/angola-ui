@@ -40,6 +40,7 @@
         vm.$onInit = onInit;
         vm.print = print;
         vm.goToPreviousState = stateTrackerService.goToPreviousState;
+        vm.downloadOption = 'pdf';
 
         /**
          * @ngdoc method
@@ -56,9 +57,9 @@
         }
 
         function print() {
-            var code = vm.code ? vm.code : '';
-            var name =  vm.name ? vm.name : '';
-            var program = vm.program ? vm.program : '';
+            var code = $stateParams.code ? $stateParams.code : '';
+            var name =  $stateParams.name ? $stateParams.name : '';
+            var program = $stateParams.program ? $stateParams.program : '';
             var downloadOption = vm.downloadOption === 'excel' ? 'xlsx' : vm.downloadOption;
             var reportUrl = '/api/reports/templates/angola/571ee24d-df1b-4d57-ab5d-b88025116524' +
             '/' + downloadOption + '?name=' + name +
@@ -68,6 +69,7 @@
             );
             this.tab = $window.open('', '_blank');
             this.tab.location.href = url;
+            vm.goToPreviousState();
         }
     }
 })();

@@ -40,6 +40,7 @@
         vm.$onInit = onInit;
         vm.print = print;
         vm.goToPreviousState = stateTrackerService.goToPreviousState;
+        vm.downloadOption = 'pdf';
 
         /**
          * @ngdoc method
@@ -63,8 +64,8 @@
          * Print and generate report in chosen format.
          */
         function print() {
-            var facilityName = vm.facilityName ? vm.facilityName : '';
-            var geographicZone =  vm.geographicZone ? vm.geographicZone : '';
+            var facilityName = $stateParams.name ? $stateParams.name : '';
+            var geographicZone =  $stateParams.zoneId ? $stateParams.zoneId : '';
             var downloadOption = vm.downloadOption === 'excel' ? 'xlsx' : vm.downloadOption;
             var reportUrl = '/api/reports/templates/angola/4053ba54-02ad-4848-887a-67e769844088' +
             '/' + downloadOption + '?facility_name=' + facilityName +
@@ -74,6 +75,7 @@
             );
             this.tab = $window.open('', '_blank');
             this.tab.location.href = url;
+            vm.goToPreviousState();
         }
     }
 })();
