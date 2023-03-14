@@ -1,0 +1,17 @@
+<!-- AO-744: Extend Admin Products and Facilities pages with print option -->
+<div>
+  <label class="data-download" for="facilityPrint">{{'adminOrderablePrint.selectFormat' | message}}</label>
+  <div>
+    <input type="radio" id="pdf" name="print-type" value="pdf" ng-model="vm.downloadOption">
+    <label class="data-download" for="pdf">PDF</label>
+  </div>
+  <div>
+    <input type="radio" id="csv" name="print-type" value="csv" ng-model="vm.downloadOption">
+    <label class="data-download" for="csv">CSV</label>
+  </div>
+  <div>
+    <input type="radio" id="excel" name="print-type" value="excel" ng-model="vm.downloadOption">
+    <label class="data-download" for="excel">Excel</label>
+  </div>
+</div>
+<!-- AO-744: ends here -->

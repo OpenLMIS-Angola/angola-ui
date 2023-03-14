@@ -1,0 +1,20 @@
+<!-- AO-744: Extend Admin Products and Facilities pages with print option -->
+<div class="modal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1>{{'adminOrderablePrint.downloadOrderables' | message}}</h1>
+            </div>
+            <div class="modal-body">
+                <form id="print-orderable-form" ng-submit="vm.print()">
+                    <ng-include src="'admin-orderable-print/print-information.html'"></ng-include>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="cancel" ng-click="vm.goToPreviousState()">{{'adminOrderablePrint.cancel' | message}}</button>
+                <button class="primary" form="print-orderable-form" ng-disabled="!vm.downloadOption">{{'adminOrderablePrint.download' | message}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- AO-744: ends here -->
