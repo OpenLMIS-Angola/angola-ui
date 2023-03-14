@@ -1,13 +1,3 @@
 {
-    "adminOrderableList.products": "Products",
-    "adminOrderableList.code": "Code",
-    "adminOrderableList.name": "Name",
-    "adminOrderableList.description": "Description",
-    "adminOrderableList.program": "Program",
-    "adminOrderableList.search": "Search",
-    "adminOrderableList.products.error": "No products found",
-    "adminOrderableList.actions": "Actions",
-    "adminOrderableList.edit": "Edit",
-    "adminOrderableList.addProduct": "Add Product",
     "adminOrderableList.print": "Print"
 }
