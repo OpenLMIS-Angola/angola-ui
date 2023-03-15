@@ -34,7 +34,8 @@
     ];
 
     function FacilityPrintController($state, $stateParams, openlmisUrlFactory,
-                                     stateTrackerService, $window, accessTokenFactory) {
+                                     stateTrackerService, $window,
+                                     accessTokenFactory) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -73,8 +74,17 @@
             var url = accessTokenFactory.addAccessToken(
                 openlmisUrlFactory(reportUrl)
             );
-            this.tab = $window.open('', '_blank');
-            this.tab.location.href = url;
+            if (downloadOption === 'pdf') {
+                this.tab = $window.open('', '_blank');
+                this.tab.location.href = url;
+            } else {
+                var a = document.createElement('a');
+                a.href = url;
+                a.target = '_blank';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }
             vm.goToPreviousState();
         }
     }
