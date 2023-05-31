@@ -200,15 +200,17 @@
 
             physicalInventory.lineItems = [];
             angular.forEach(draft.lineItems, function(item) {
-                physicalInventory.lineItems.push({
-                    orderableId: item.orderable.id,
-                    lotId: (item.lot && item) ? item.lot.id : null,
-                    quantity: getQuantity(item),
-                    extraData: {
-                        vvmStatus: item.vvmStatus
-                    },
-                    stockAdjustments: item.stockAdjustments
-                });
+                if (!(item.lot && (item.lot.lotCode && !item.lot.id))) {
+                    physicalInventory.lineItems.push({
+                        orderableId: item.orderable.id,
+                        lotId: (item.lot && item) ? item.lot.id : null,
+                        quantity: getQuantity(item),
+                        extraData: {
+                            vvmStatus: item.vvmStatus
+                        },
+                        stockAdjustments: item.stockAdjustments
+                    });
+                }
             });
 
             return physicalInventoryService.saveDraft(physicalInventory);
