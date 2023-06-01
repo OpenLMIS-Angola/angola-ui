@@ -30,6 +30,7 @@
 
     supersetReports.$inject = ['SUPERSET_URL'];
 
+    // ANGOLASUP-797: Catalogue and organize reports
     function supersetReports(SUPERSET_URL) {
         var reports = {};
 
@@ -88,6 +89,7 @@
                     'RAPTURAS_DE_STOCK_POR_PRODUTO_REPORT_VIEW', 'STOCK')
             };
         }
+        // ANGOLASUP-797: Ends here
 
         return {
             getReports: getReports,
@@ -139,6 +141,7 @@
             return reports;
         }
 
+        // ANGOLASUP-797: Catalogue and organize reports
         function createReport(code, url, right, category) {
             return {
                 code: code,
@@ -147,7 +150,8 @@
                 category: category
             };
         }
-
+        // ANGOLASUP-797: Ends here
+        
         function authorizeInSuperset(loadingModalService, openlmisModalService, $q, $state, MODAL_CANCELLED) {
             loadingModalService.close();
             var dialog = openlmisModalService.createDialog({
