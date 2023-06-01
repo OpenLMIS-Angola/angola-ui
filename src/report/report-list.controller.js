@@ -48,64 +48,21 @@
         vm.reports = reports;
 
         // ANGOLASUP-797: Catalogue and organize reports
-        var reportsIds = {
-            jasper: {
-                stock: [
-                    '1e0221c4-58f4-40b6-9cde-4b3781cea6a1', '097e109a-96e2-40f5-908a-6e770bf660d5',
-                    'c7fbd171-2750-4fa4-a419-d72c03304c55', '06f75273-1964-4c7a-b06b-51dea8eb1109',
-                    '9ae61a33-ea92-4492-917b-034015a6f94b', '33f166c5-bd42-4b64-895e-eb84718a4ac1',
-                    '6c42a83b-a803-412e-a3ad-0e2ab97f03fd', 'b7249c89-8ba0-431b-8b75-052f84a77225',
-                    'a525bbec-240e-4782-9cb3-1694fb6c45ee', '5de8cfb1-2c15-43ae-b240-a251ca3830f2',
-                    'a565bb23-1d39-4a9a-8717-a7ff46706243', '2df95711-e025-414a-ba57-364831723764',
-                    '1f838522-5705-434b-85d0-0b494752cbff', '01abd9cd-6763-4ad0-9a16-442965b40566',
-                    '0e6d3515-e88e-4f1a-8e71-5b4613974954'
-                ],
-                requisition: [
-                    '3ae277e4-fe3e-42fa-ac97-d43868c2e9d8', 'e8c66178-81b6-4b43-b8b9-b3206285fdc2',
-                    '93d09638-4dc7-4c94-a9f2-e80b5c62408e', '3fafb1cb-659b-4182-8c84-6df209a0f8d5',
-                    '3ac08504-08e1-4b31-8929-f4bfb9112f69'
-                ],
-                orders: [
-                    'cdf0cc6c-52e7-485e-a375-60fd4a9951af'
-                ],
-                administration: [
-                    'e1a2f89c-fa5e-40a6-bd1a-b43fdd570eb1', '5308cb58-a5b7-4741-a3d3-13fb24871bac'
-                ]
-            },
-            superSet: {
-                stock: [
-                    'Stock Status', 'Stockouts', 'Consumption', 'Adjustments', 'Aggregate Consumption',
-                    'Occurence of Adjustments', 'Stocks Summary', 'Stock on Hand per Institution',
-                    'Comparison of Consumption by Region', 'Rupturas de Stock nas US',
-                    'Rupturas de Stock por Produto', 'Expiry Dates'
-                ],
-                requisition: [
-                    'Reporting Rate and Timeliness', 'Submission of Monthly Reports'
-                ],
-                orders: [
-                    'Orders', 'Reported and Ordered Products'
-                ],
-                administration: [
-                    'Administrative'
-                ]
-            }
-        };
-
         var stockReports = {
-            jasper: getJasperReports('stock'),
-            superSet: getSuperSetReports('stock')
+            jasper: getJasperReports('STOCK'),
+            superSet: getSuperSetReports('STOCK')
         };
         var requisitionReports = {
-            jasper: getJasperReports('requisition'),
-            superSet: getSuperSetReports('requisition')
+            jasper: getJasperReports('REQUISITION'),
+            superSet: getSuperSetReports('REQUISITION')
         };
         var orderReports = {
-            jasper: getJasperReports('orders'),
-            superSet: getSuperSetReports('orders')
+            jasper: getJasperReports('ORDER'),
+            superSet: getSuperSetReports('ORDER')
         };
         var administrationReports = {
-            jasper: getJasperReports('administration'),
-            superSet: getSuperSetReports('administration')
+            jasper: getJasperReports('ADMINISTRATION'),
+            superSet: getSuperSetReports('ADMINISTRATION')
         };
 
         /**
@@ -115,7 +72,7 @@
          * @type {Array}
          *
          * @description
-         * The list of all available Stock reports.
+         * The list of all available stock reports.
          */
         vm.stockReports = stockReports;
 
@@ -126,7 +83,7 @@
          * @type {Array}
          *
          * @description
-         * The list of all available Requisition reports.
+         * The list of all available requisition reports.
          */
         vm.requisitionReports = requisitionReports;
 
@@ -137,7 +94,7 @@
          * @type {Array}
          *
          * @description
-         * The list of all available Order reports.
+         * The list of all available order reports.
          */
         vm.orderReports = orderReports;
 
@@ -148,7 +105,7 @@
          * @type {Array}
          *
          * @description
-         * The list of all available Administration reports.
+         * The list of all available administration reports.
          */
         vm.administrationReports = administrationReports;
         // ANGOLASUP-797: Ends here
@@ -193,13 +150,14 @@
         // ANGOLASUP-797: Catalogue and organize reports
         function getJasperReports(category) {
             return reports.filter(function(report) {
-                return reportsIds.jasper[category].includes(report.id);
+                return report.category === category;
             });
         }
 
         function getSuperSetReports(category) {
-            return reports.filter(function(report) {
-                return reportsIds.superSet[category].includes(report.id);
+            var superSetReportsArray = Object.values(supersetReports);
+            return superSetReportsArray.filter(function(report) {
+                return report.category === category;
             });
         }
         // ANGOLASUP-797: Ends here

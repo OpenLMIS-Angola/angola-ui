@@ -37,55 +37,55 @@
             reports = {
                 REPORTING_RATE_AND_TIMELINESS: createReport('reportingRateAndTimeliness',
                     SUPERSET_URL + '/superset/dashboard/taxa-de-submissao-de-relatorios/',
-                    'REPORTING_RATE_AND_TIMELINESS_REPORT_VIEW'),
+                    'REPORTING_RATE_AND_TIMELINESS_REPORT_VIEW', 'REQUISITION'),
                 STOCK_STATUS: createReport('stockStatus',
                     SUPERSET_URL + '/superset/dashboard/estado-de-stocks/',
-                    'STOCK_STATUS_REPORT_VIEW'),
+                    'STOCK_STATUS_REPORT_VIEW', 'STOCK'),
                 STOCKOUTS: createReport('stockouts',
                     SUPERSET_URL + '/superset/dashboard/22/',
-                    'STOCKOUTS_REPORT_VIEW'),
+                    'STOCKOUTS_REPORT_VIEW', 'STOCK'),
                 CONSUMPTION: createReport('consumption',
                     SUPERSET_URL + '/superset/dashboard/consumo/',
-                    'CONSUMPTION_REPORT_VIEW'),
+                    'CONSUMPTION_REPORT_VIEW', 'STOCK'),
                 ORDERS: createReport('orders',
                     SUPERSET_URL + '/superset/dashboard/encomendas/',
-                    'ORDERS_REPORT_VIEW'),
+                    'ORDERS_REPORT_VIEW', 'ORDER'),
                 ADJUSTMENTS: createReport('adjustments',
                     SUPERSET_URL + '/superset/dashboard/ajustes/',
-                    'ADJUSTMENTS_REPORT_VIEW'),
+                    'ADJUSTMENTS_REPORT_VIEW', 'STOCK'),
                 ADMINISTRATIVE: createReport('administrative',
                     SUPERSET_URL + '/superset/dashboard/administrativo/',
-                    'ADMINISTRATIVE_REPORT_VIEW'),
+                    'ADMINISTRATIVE_REPORT_VIEW', 'ADMINISTRATION'),
                 AGGREGATE_CONSUMPTION: createReport('aggregateConsumption',
                     SUPERSET_URL + '/superset/dashboard/consumo-agregado/',
-                    'AGGREGATE_CONSUMPTION_REPORT_VIEW'),
+                    'AGGREGATE_CONSUMPTION_REPORT_VIEW', 'STOCK'),
                 REPORTED_AND_ORDERED_PRODUCTS: createReport('reportedAndOrderedProducts',
                     SUPERSET_URL + '/superset/dashboard/produtos-reportados-e-requisitados/',
-                    'REPORTED_AND_ORDERED_PRODUCTS_REPORT_VIEW'),
+                    'REPORTED_AND_ORDERED_PRODUCTS_REPORT_VIEW', 'ORDER'),
                 OCCURRENCE_OF_ADJUSTMENTS: createReport('occurrenceOfAdjustments',
                     SUPERSET_URL + '/superset/dashboard/ocorrencia-de-ajustes/',
-                    'OCCURRENCE_OF_ADJUSTMENTS_REPORT_VIEW'),
+                    'OCCURRENCE_OF_ADJUSTMENTS_REPORT_VIEW', 'STOCK'),
                 SUBMISSION_OF_MONTHLY_REPORTS: createReport('submissionOfMonthlyReports',
                     SUPERSET_URL + '/superset/dashboard/submissao-de-relatorios-mensais/',
-                    'SUBMISSION_OF_MONTHLY_REPORTS_REPORT_VIEW'),
+                    'SUBMISSION_OF_MONTHLY_REPORTS_REPORT_VIEW', 'REQUISITION'),
                 STOCKS_SUMMARY: createReport('stocksSummary',
                     SUPERSET_URL + '/superset/dashboard/resumo-de-stocks/',
-                    'STOCK_SUMMARY_REPORT_VIEW'),
+                    'STOCK_SUMMARY_REPORT_VIEW', 'STOCK'),
                 STOCK_ON_HAND_PER_INSTITUTION: createReport('stockOnHandPerInstitution',
                     SUPERSET_URL + '/superset/dashboard/21/',
-                    'STOCK_ON_HAND_PER_INSTITUTION_REPORT_VIEW'),
+                    'STOCK_ON_HAND_PER_INSTITUTION_REPORT_VIEW', 'STOCK'),
                 COMPARISON_OF_CONSUMPTION_BY_REGION: createReport('comparisonOfConsumptionByRegion',
                     SUPERSET_URL + '/superset/dashboard/comparacao-de-consumos-por-regiao/',
-                    'COMPARISON_OF_CONSUMPTION_BY_REGION'),
+                    'COMPARISON_OF_CONSUMPTION_BY_REGION', 'STOCK'),
                 EXPIRY_DATES: createReport('expiryDates',
                     SUPERSET_URL + '/superset/dashboard/datas-de-expiracao/',
-                    'EXPIRY_DATES_REPORT_VIEW'),
+                    'EXPIRY_DATES_REPORT_VIEW', 'STOCK'),
                 STOCKOUTS_IN_US: createReport('rupturasDeStockNasUS',
                     SUPERSET_URL + '/superset/dashboard/rupturas-de-stock-nas-us/',
-                    'STOCKOUTS_IN_US_REPORT_VIEW'),
+                    'STOCKOUTS_IN_US_REPORT_VIEW', 'STOCK'),
                 RAPTURAS_DE_STOCK_POR_PRODUTO_REPORT_VIEW: createReport('rupturasDeStockPorProduto',
                     SUPERSET_URL + '/superset/dashboard/rupturas-de-stock-por-produto/',
-                    'RAPTURAS_DE_STOCK_POR_PRODUTO_REPORT_VIEW')
+                    'RAPTURAS_DE_STOCK_POR_PRODUTO_REPORT_VIEW', 'STOCK')
             };
         }
 
@@ -139,11 +139,12 @@
             return reports;
         }
 
-        function createReport(code, url, right) {
+        function createReport(code, url, right, category) {
             return {
                 code: code,
                 url: url + '?standalone=true',
-                right: right
+                right: right,
+                category: category
             };
         }
 
