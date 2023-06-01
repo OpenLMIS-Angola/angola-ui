@@ -151,7 +151,6 @@
             };
         }
         // ANGOLASUP-797: Ends here
-        
         function authorizeInSuperset(loadingModalService, openlmisModalService, $q, $state, MODAL_CANCELLED) {
             loadingModalService.close();
             var dialog = openlmisModalService.createDialog({
