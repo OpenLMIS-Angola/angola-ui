@@ -245,12 +245,14 @@ describe('PhysicalInventoryDraftController', function() {
 
         this.vm.addProducts();
 
+        // ANGOLASUP-825: Changed expected parameter to draft
         expect(this.addProductsModalService.show).toHaveBeenCalledWith([
             this.lineItem2,
             this.lineItem4,
             asd(this.lineItem1.orderable),
             asd(this.lineItem3.orderable)
-        ], [this.lineItem1, this.lineItem2, this.lineItem3, this.lineItem4]);
+        ], this.draft);
+        // ANGOLASUP-825: Ends here
     });
 
     function asd(orderable) {

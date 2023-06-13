@@ -49,7 +49,9 @@
         var vm = this;
         vm.$onInit = onInit;
         vm.cacheDraft = cacheDraft;
+        // ANGOLASUP-825: Added cacheItemsWithNewLots function
         vm.cacheItemsWithNewLots = cacheItemsWithNewLots;
+        // ANGOLASUP-825: Ends here
         vm.quantityChanged = quantityChanged;
         vm.checkUnaccountedStockAdjustments = checkUnaccountedStockAdjustments;
 
@@ -258,7 +260,7 @@
                 notYetAddedItems.push(item);
             });
 
-            addProductsModalService.show(notYetAddedItems, draft.lineItems).then(function() {
+            addProductsModalService.show(notYetAddedItems, draft).then(function() {
                 $stateParams.program = vm.program;
                 $stateParams.facility = vm.facility;
                 $stateParams.noReload = true;
@@ -284,10 +286,11 @@
          * @param {Object} lineItem line items to be edited.
          */
         vm.editLot = function(lineItem) {
-            var addedLineItems = _.flatten(draft.lineItems);
-            editLotModalService.show(lineItem, addedLineItems).then(function() {
+            // ANGOLASUP-825: Changed params passed to show() function
+            editLotModalService.show(lineItem, draft).then(function() {
                 $stateParams.draft = draft;
             });
+            // ANGOLASUP-825: Ends here
         };
 
         /**
@@ -396,7 +399,9 @@
                     notificationService.success('stockPhysicalInventoryDraft.saved');
                 }
 
+                // ANGOLASUP-825: Added cacheItemsWithNewLots function call
                 vm.cacheItemsWithNewLots(draft);
+                // ANGOLASUP-825: Ends here
                 draft.$modified = undefined;
                 vm.cacheDraft();
 
@@ -481,6 +486,9 @@
                     $state.go('openlmis.stockmanagement.physicalInventory', $stateParams, {
                         reload: true
                     });
+                    // ANGOLASUP-825: Added cache clearing function
+                    physicalInventoryDraftCacheService.removeDraftItemsWithNewLots(draft);
+                    // ANGOLASUP-825: Ends here.
                 })
                     .catch(function() {
                         loadingModalService.close();
@@ -678,27 +686,32 @@
                 return item.lot;
             });
 
+            // ANGOLASUP-825: Added cache check and adding products with new ice code
             var draftWithNewLots = physicalInventoryDraftCacheService
                 .getPhysicalInventoryDraftItemsWithNewLots(facility.id, program.id);
-
             if (draftWithNewLots) {
                 var extendedLineItems = draft.lineItems;
-
                 draftWithNewLots.lineItems.forEach(function(lineItem) {
-                    extendedLineItems.push(lineItem);
-
-                    var productWithNewLotDisplayed = displayLineItemsGroup.filter(function(product) {
-                        return product[0].orderable.id === lineItem.orderable.id;
+                    var duplicate = draft.lineItems.some(function(item) {
+                        return ((item.orderable.id === lineItem.orderable.id) &&
+                        (item.lot && (item.lot.lotCode === lineItem.lot.lotCode)));
                     });
+                    if (!duplicate) {
+                        extendedLineItems.push(lineItem);
 
-                    if (productWithNewLotDisplayed.length > 0) {
-                        productWithNewLotDisplayed[0].push(lineItem);
+                        var productWithNewLotDisplayed = displayLineItemsGroup.filter(function(product) {
+                            return product[0].orderable.id === lineItem.orderable.id;
+                        });
+
+                        if (productWithNewLotDisplayed.length > 0) {
+                            productWithNewLotDisplayed[0].push(lineItem);
+                        }
                     }
                 });
 
                 draft.lineItems = extendedLineItems;
-
             }
+            // ANGOLASUP-825: Ends here
 
             draft.lineItems.forEach(function(item) {
                 item.unaccountedQuantity =

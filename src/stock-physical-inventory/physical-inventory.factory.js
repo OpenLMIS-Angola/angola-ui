@@ -200,6 +200,7 @@
 
             physicalInventory.lineItems = [];
             angular.forEach(draft.lineItems, function(item) {
+                // ANGOLASUP-825: Added condition to add only items with new lot code to array
                 if (!(item.lot && (item.lot.lotCode && !item.lot.id))) {
                     physicalInventory.lineItems.push({
                         orderableId: item.orderable.id,
@@ -211,6 +212,7 @@
                         stockAdjustments: item.stockAdjustments
                     });
                 }
+                // ANGOLASUP-825: Ends here
             });
 
             return physicalInventoryService.saveDraft(physicalInventory);
@@ -219,10 +221,18 @@
         function prepareLineItems(physicalInventory, summaries, draftToReturn) {
             var quantities = {},
                 extraData = {};
+            // ANGOLASUP-543: Added new line items to returned draft
+            var newLineItems = [];
+            // ANGOLASUP-543: ends here
 
             angular.forEach(physicalInventory.lineItems, function(lineItem) {
                 quantities[identityOf(lineItem)] = lineItem.quantity;
                 extraData[identityOf(lineItem)] = getExtraData(lineItem);
+                // ANGOLASUP-543: Added new line items to returned draft
+                if (lineItem.$isNewItem) {
+                    newLineItems.push(lineItem);
+                }
+                // ANGOLASUP-543: ends here
             });
 
             angular.forEach(summaries, function(summary) {
@@ -238,6 +248,11 @@
                         physicalInventory.$modified)
                 });
             });
+            // ANGOLASUP-543: Added new line items to returned draft
+            angular.forEach(newLineItems, function(newLineItem) {
+                draftToReturn.lineItems.push(newLineItem);
+            });
+            // ANGOLASUP-543: ends here
         }
 
         function identityOf(identifiable) {

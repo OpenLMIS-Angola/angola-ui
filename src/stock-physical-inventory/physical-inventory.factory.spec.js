@@ -346,6 +346,7 @@ describe('physicalInventoryFactory', function() {
             draft.lineItems.push({
                 $isNewItem: true,
                 isAdded: true,
+                lotId: 'lot-id-3',
                 lot: {
                     lotCode: 'TEST',
                     active: true
