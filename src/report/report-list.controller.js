@@ -83,6 +83,5 @@
         function hasRight(rightName) {
             return vm.permissions[rightName] || vm.permissions[REPORT_RIGHTS.REPORTS_VIEW];
         }
-        
     }
 })();

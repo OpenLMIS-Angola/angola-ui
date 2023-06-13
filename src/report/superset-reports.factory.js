@@ -30,7 +30,6 @@
 
     supersetReports.$inject = ['SUPERSET_URL'];
 
-    // ANGOLASUP-797: Catalogue and organize reports
     function supersetReports(SUPERSET_URL) {
         var reports = {};
 
@@ -89,7 +88,6 @@
                     'RAPTURAS_DE_STOCK_POR_PRODUTO_REPORT_VIEW')
             };
         }
-        // ANGOLASUP-797: Ends here
 
         return {
             getReports: getReports,
@@ -141,11 +139,11 @@
             return reports;
         }
 
-        function createReport(code, url, right, category) {
+        function createReport(code, url, right) {
             return {
                 code: code,
                 url: url + '?standalone=true',
-                right: right,
+                right: right
             };
         }
 
