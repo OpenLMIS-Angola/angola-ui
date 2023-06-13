@@ -30,11 +30,11 @@
 
     controller.$inject = ['availableItems', 'messageService', 'modalDeferred', 'orderableGroupService',
         '$scope', 'MAX_INTEGER_VALUE', 'hasPermissionToAddNewLot', 'selectedItems', 'alertService',
-        'moment'];
+        'moment', 'draft', 'physicalInventoryDraftCacheService'];
 
     function controller(availableItems, messageService, modalDeferred, orderableGroupService,
                         $scope, MAX_INTEGER_VALUE, hasPermissionToAddNewLot, selectedItems, alertService,
-                        moment) {
+                        moment, draft, physicalInventoryDraftCacheService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -313,9 +313,13 @@
             });
             if (noErrors) {
                 vm.addedItems.forEach(function(item) {
-                    if (item.$isNewItem) {
+                    // ANGOLASUP-825: Added caching function call for the condition when item has no id
+                    if (item.$isNewItem && item.id) {
                         selectedItems.push(item);
+                    } else if (!item.id) {
+                        physicalInventoryDraftCacheService.cacheSingleItemWithNewLot(draft, item);
                     }
+                    // ANGOLASUP-825: Ends here
                 });
                 modalDeferred.resolve();
             }
