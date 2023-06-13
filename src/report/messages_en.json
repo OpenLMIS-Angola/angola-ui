@@ -17,8 +17,4 @@
   "report.superset.rupturasDeStockNasUS": "Rupturas de Stock nas US",
   "report.superset.expiryDates": "Expiry Dates",
   "report.superset.rupturasDeStockPorProduto": "Rupturas de Stock por Produto",
-  "report.stockReports": "Stock",
-  "report.requisitionReports": "Requisitions",
-  "report.orderReports": "Orders",
-  "report.administrationReports": "Administration"
 }
