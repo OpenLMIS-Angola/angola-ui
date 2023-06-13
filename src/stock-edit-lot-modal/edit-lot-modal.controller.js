@@ -29,9 +29,10 @@
         .controller('EditLotModalController', controller);
 
     controller.$inject = ['selectedItem', 'modalDeferred', 'messageService', 'moment', 'allLineItems',
-        'addedLineItems'];
+        'addedLineItems', 'draft', 'physicalInventoryDraftCacheService'];
 
-    function controller(selectedItem, modalDeferred, messageService, moment, allLineItems, addedLineItems) {
+    function controller(selectedItem, modalDeferred, messageService, moment, allLineItems, addedLineItems, draft,
+                        physicalInventoryDraftCacheService) {
 
         var vm = this;
         vm.$onInit = onInit;
@@ -116,6 +117,9 @@
             var noErrors = !vm.newLot.expirationDateInvalid && !vm.newLot.lotCodeInvalid;
 
             if (noErrors) {
+                // ANGOLASUP-825: Added updating cache function call
+                physicalInventoryDraftCacheService.updateSingleItemWithNewLot(draft, selectedItem, vm.newLot);
+                // ANGOLASUP-825: Ends here
                 selectedItem.lot = vm.newLot;
                 selectedItem.displayLotMessage = vm.newLot.lotCode;
                 modalDeferred.resolve();
@@ -158,7 +162,7 @@
          * Validate if on line item list exists the same orderable with the same lot code
          */
         function validateLotCode() {
-            vm.allLineItems.forEach(function(lineItem) {
+            draft.lineItems.forEach(function(lineItem) {
                 if (lineItem.orderable.productCode === vm.selectedItem.orderable.productCode
                     && lineItem.lot && vm.selectedItem.lot && vm.selectedItem.lot.lotCode === lineItem.lot.lotCode
                     && !(vm.selectedItem.lot.lotCode === selectedItem.lot.lotCode)) {
