@@ -1,0 +1,11 @@
+<aside class="requisition-summary">
+    <dl>
+        <dt>{{'requisitionSummary.totalRequisitionCost' | message}}</dt>
+        <dd>{{vm.calculateTotalCost() | openlmisCurrency}}</dd>
+    </dl>
+    <!-- ANGOLASUP-826: Fix issues with new Chrome popover functionality -->
+    <button openlmis-popover popover-title="{{'requisitionSummary.requisitionCost' | message}}" popover-class="requisition-summary" popover-template="requisition-summary/requisition-summary-popover.html">
+        {{'requisitionSummary.showDetails' | message}}
+    </button>
+    <!-- ANGOLASUP-826: Ends here -->
+</aside>
