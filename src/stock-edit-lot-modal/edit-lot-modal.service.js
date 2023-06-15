@@ -34,7 +34,7 @@
 
         this.show = show;
 
-        // ANGOLASUP-825: Changed function parameters from item list to draft
+        // ANGOLASUP-825: Fixed inventory saving functionality
         /**
          * @ngdoc method
          * @methodOf stock-edit-lot-modal.editLotModalService
