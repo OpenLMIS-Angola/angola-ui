@@ -313,7 +313,7 @@
             });
             if (noErrors) {
                 vm.addedItems.forEach(function(item) {
-                    // ANGOLASUP-825: Added caching function call for the condition when item has no id
+                    // ANGOLASUP-825: Fixed inventory saving functionality
                     if (item.$isNewItem && item.id) {
                         selectedItems.push(item);
                     } else if (!item.id) {

@@ -20,7 +20,7 @@ describe('EditLotModalController', function() {
     beforeEach(function() {
 
         module('stock-edit-lot-modal');
-        // ANGOLASUP-825: Added stock physical inventory draft module
+        // ANGOLASUP-825: Fixed inventory saving functionality
         module('stock-physical-inventory-draft');
         // ANGOLASUP-825: Ends here
 
@@ -30,7 +30,7 @@ describe('EditLotModalController', function() {
             that.$q = $injector.get('$q');
             that.LotDataBuilder = $injector.get('LotDataBuilder');
             that.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
-            // ANGOLASUP-825: Added injection of caching service
+            // ANGOLASUP-825: Fixed inventory saving functionality
             that.physicalInventoryDraftCacheService = $injector.get('physicalInventoryDraftCacheService');
             // ANGOLASUP-825: Ends here
         });
@@ -65,7 +65,7 @@ describe('EditLotModalController', function() {
             selectedItem: that.selectedItem,
             newLot: that.selectedItem.lot,
             modalDeferred: that.deferred,
-            // ANGOLASUP-825: Added draft to controller
+            // ANGOLASUP-825: Fixed inventory saving functionality
             draft: {
                 lineItems: [that.item, that.selectedItem]
             }

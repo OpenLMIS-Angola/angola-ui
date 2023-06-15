@@ -22,7 +22,7 @@ describe('AddProductsModalController', function() {
     beforeEach(function() {
         module('stock-add-products-modal');
         module('referencedata');
-        // ANGOLASUP-825: Added stock physical inventory draft module
+        // ANGOLASUP-825: Fixed inventory saving functionality
         module('stock-physical-inventory-draft');
         // ANGOLASUP-825: Ends here
 
@@ -34,7 +34,7 @@ describe('AddProductsModalController', function() {
             orderableGroupService = $injector.get('orderableGroupService');
             LotDataBuilder = $injector.get('LotDataBuilder');
             messageService = $injector.get('messageService');
-            // ANGOLASUP-825: Added injection of caching service
+            // ANGOLASUP-825: Fixed inventory saving functionality
             physicalInventoryDraftCacheService = $injector.get('physicalInventoryDraftCacheService');
             // ANGOLASUP-825: Ends here
         });
@@ -77,7 +77,7 @@ describe('AddProductsModalController', function() {
             $scope: scope,
             hasPermissionToAddNewLot: true,
             selectedItems: selectedItems,
-            // ANGOLASUP-825: Added draft and physicalInventoryDraftCacheService to controller
+            // ANGOLASUP-825: Fixed inventory saving functionality
             draft: {
                 lineItems: []
             },

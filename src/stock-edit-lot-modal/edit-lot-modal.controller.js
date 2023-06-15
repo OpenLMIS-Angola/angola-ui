@@ -117,7 +117,7 @@
             var noErrors = !vm.newLot.expirationDateInvalid && !vm.newLot.lotCodeInvalid;
 
             if (noErrors) {
-                // ANGOLASUP-825: Added updating cache function call
+                // ANGOLASUP-825: Fixed inventory saving functionality
                 physicalInventoryDraftCacheService.updateSingleItemWithNewLot(draft, selectedItem, vm.newLot);
                 // ANGOLASUP-825: Ends here
                 selectedItem.lot = vm.newLot;

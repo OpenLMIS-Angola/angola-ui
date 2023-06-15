@@ -33,7 +33,7 @@
     function service(openlmisModalService) {
         this.show = show;
 
-        // ANGOLASUP-825: Changed function parameter from single item to draft
+        // ANGOLASUP-825: Fixed inventory saving functionality
         /**
          * @ngdoc method
          * @methodOf stock-add-products-modal.addProductModalService

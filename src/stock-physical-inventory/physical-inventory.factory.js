@@ -200,7 +200,7 @@
 
             physicalInventory.lineItems = [];
             angular.forEach(draft.lineItems, function(item) {
-                // ANGOLASUP-825: Added condition to add only items with new lot code to array
+                // ANGOLASUP-825: Fixed inventory saving functionality
                 if (!(item.lot && (item.lot.lotCode && !item.lot.id))) {
                     physicalInventory.lineItems.push({
                         orderableId: item.orderable.id,

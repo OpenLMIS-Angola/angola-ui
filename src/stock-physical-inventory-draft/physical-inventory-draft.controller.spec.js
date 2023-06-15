@@ -245,7 +245,7 @@ describe('PhysicalInventoryDraftController', function() {
 
         this.vm.addProducts();
 
-        // ANGOLASUP-825: Changed expected parameter to draft
+        // ANGOLASUP-825: Fixed inventory saving functionality
         expect(this.addProductsModalService.show).toHaveBeenCalledWith([
             this.lineItem2,
             this.lineItem4,

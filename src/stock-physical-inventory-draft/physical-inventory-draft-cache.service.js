@@ -35,12 +35,12 @@
     function physicalInventoryDraftCacheService(localStorageFactory, $q, OrderableResource) {
 
         var offlinePhysicalInventoryDrafts = localStorageFactory('physicalInventoryDrafts');
-        // ANGOLASUP-825: Added local storage item for products with new lots
+        // ANGOLASUP-825: Fixed inventory saving functionality
         var physicalInventoryDraftItemsWithNewLots = localStorageFactory('physicalInventoryDraftItemsWithNewLots');
         // ANGOLASUP-825: Ends here
 
         this.cacheDraft = cacheDraft;
-        // ANGOLASUP-825: Added caching functions
+        // ANGOLASUP-825: Fixed inventory saving functionality
         this.cacheItemsWithNewLots = cacheItemsWithNewLots;
         this.cacheSingleItemWithNewLot = cacheSingleItemWithNewLot;
         this.updateSingleItemWithNewLot = updateSingleItemWithNewLot;
@@ -69,7 +69,7 @@
             offlinePhysicalInventoryDrafts.put(draftToSave);
         }
 
-        // ANGOLASUP-825: Added cacheItemsWithNewLot function
+        // ANGOLASUP-825: Fixed inventory saving functionality
         /**
          * @ngdoc method
          * @methodOf stock-physical-inventory-draft.physicalInventoryDraftCacheService
@@ -104,7 +104,7 @@
         }
         // ANGOLASUP-825: Ends here
 
-        // ANGOLASUP-825: Added cacheSingleItemWithNewLot function
+        // ANGOLASUP-825: Fixed inventory saving functionality
         /**
          * @ngdoc method
          * @methodOf stock-physical-inventory-draft.physicalInventoryDraftCacheService
@@ -133,7 +133,7 @@
         }
         // ANGOLASUP-825: Ends here
 
-        // ANGOLASUP-825: Added updateSingleItemWithNewLot function
+        // ANGOLASUP-825: Fixed inventory saving functionality
         /**
          * @ngdoc method
          * @methodOf stock-physical-inventory-draft.physicalInventoryDraftCacheService
@@ -162,7 +162,7 @@
         }
         // ANGOLASUP-825: Ends here
 
-        // ANGOLASUP-825: Added removeDraftItemsWithNewLots function
+        // ANGOLASUP-825: Fixed inventory saving functionality
         /**
          * @ngdoc method
          * @methodOf stock-physical-inventory-draft.physicalInventoryDraftCacheService
@@ -216,7 +216,7 @@
                 });
         }
 
-        // ANGOLASUP-825: Added getPhysicalInventoryDraftItemsWithNewLots function
+        // ANGOLASUP-825: Fixed inventory saving functionality
         function getPhysicalInventoryDraftItemsWithNewLots(facilityId, programId) {
             return physicalInventoryDraftItemsWithNewLots.getAll().filter(function(draftWithNewLots) {
                 return draftWithNewLots.facilityId === facilityId &&

@@ -49,7 +49,7 @@
         var vm = this;
         vm.$onInit = onInit;
         vm.cacheDraft = cacheDraft;
-        // ANGOLASUP-825: Added cacheItemsWithNewLots function
+        // ANGOLASUP-825: Fixed inventory saving functionality
         vm.cacheItemsWithNewLots = cacheItemsWithNewLots;
         // ANGOLASUP-825: Ends here
         vm.quantityChanged = quantityChanged;
@@ -286,7 +286,7 @@
          * @param {Object} lineItem line items to be edited.
          */
         vm.editLot = function(lineItem) {
-            // ANGOLASUP-825: Changed params passed to show() function
+            // ANGOLASUP-825: Fixed inventory saving functionality
             editLotModalService.show(lineItem, draft).then(function() {
                 $stateParams.draft = draft;
             });
@@ -399,7 +399,7 @@
                     notificationService.success('stockPhysicalInventoryDraft.saved');
                 }
 
-                // ANGOLASUP-825: Added cacheItemsWithNewLots function call
+                // ANGOLASUP-825: Fixed inventory saving functionality
                 vm.cacheItemsWithNewLots(draft);
                 // ANGOLASUP-825: Ends here
                 draft.$modified = undefined;
@@ -486,7 +486,7 @@
                     $state.go('openlmis.stockmanagement.physicalInventory', $stateParams, {
                         reload: true
                     });
-                    // ANGOLASUP-825: Added cache clearing function
+                    // ANGOLASUP-825: Fixed inventory saving functionality
                     physicalInventoryDraftCacheService.removeDraftItemsWithNewLots(draft);
                     // ANGOLASUP-825: Ends here.
                 })
@@ -686,7 +686,7 @@
                 return item.lot;
             });
 
-            // ANGOLASUP-825: Added cache check and adding products with new ice code
+            // ANGOLASUP-825: Fixed inventory saving functionality
             var draftWithNewLots = physicalInventoryDraftCacheService
                 .getPhysicalInventoryDraftItemsWithNewLots(facility.id, program.id);
             if (draftWithNewLots) {
