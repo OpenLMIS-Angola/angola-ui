@@ -200,15 +200,19 @@
 
             physicalInventory.lineItems = [];
             angular.forEach(draft.lineItems, function(item) {
-                physicalInventory.lineItems.push({
-                    orderableId: item.orderable.id,
-                    lotId: item.lot ? item.lot.id : null,
-                    quantity: getQuantity(item),
-                    extraData: {
-                        vvmStatus: item.vvmStatus
-                    },
-                    stockAdjustments: item.stockAdjustments
-                });
+                // ANGOLASUP-825: Fixed inventory saving functionality
+                if (!(item.lot && (item.lot.lotCode && !item.lot.id))) {
+                    physicalInventory.lineItems.push({
+                        orderableId: item.orderable.id,
+                        lotId: (item.lot && item) ? item.lot.id : null,
+                        quantity: getQuantity(item),
+                        extraData: {
+                            vvmStatus: item.vvmStatus
+                        },
+                        stockAdjustments: item.stockAdjustments
+                    });
+                }
+                // ANGOLASUP-825: Ends here
             });
 
             return physicalInventoryService.saveDraft(physicalInventory);
@@ -242,7 +246,6 @@
                     vvmStatus: extraData[identityOf(summary)] ? extraData[identityOf(summary)].vvmStatus : null,
                     stockAdjustments: getStockAdjustments(physicalInventory.lineItems, summary,
                         physicalInventory.$modified)
-
                 });
             });
             // ANGOLASUP-543: Added new line items to returned draft
