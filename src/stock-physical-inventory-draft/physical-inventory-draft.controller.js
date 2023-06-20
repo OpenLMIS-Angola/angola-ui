@@ -49,6 +49,9 @@
         var vm = this;
         vm.$onInit = onInit;
         vm.cacheDraft = cacheDraft;
+        // ANGOLASUP-825: Fixed inventory saving functionality
+        vm.cacheItemsWithNewLots = cacheItemsWithNewLots;
+        // ANGOLASUP-825: Ends here
         vm.quantityChanged = quantityChanged;
         vm.checkUnaccountedStockAdjustments = checkUnaccountedStockAdjustments;
 
@@ -257,7 +260,7 @@
                 notYetAddedItems.push(item);
             });
 
-            addProductsModalService.show(notYetAddedItems, draft.lineItems).then(function() {
+            addProductsModalService.show(notYetAddedItems, draft).then(function() {
                 $stateParams.program = vm.program;
                 $stateParams.facility = vm.facility;
                 $stateParams.noReload = true;
@@ -283,10 +286,11 @@
          * @param {Object} lineItem line items to be edited.
          */
         vm.editLot = function(lineItem) {
-            var addedLineItems = _.flatten(draft.lineItems);
-            editLotModalService.show(lineItem, addedLineItems).then(function() {
+            // ANGOLASUP-825: Fixed inventory saving functionality
+            editLotModalService.show(lineItem, draft).then(function() {
                 $stateParams.draft = draft;
             });
+            // ANGOLASUP-825: Ends here
         };
 
         /**
@@ -395,6 +399,9 @@
                     notificationService.success('stockPhysicalInventoryDraft.saved');
                 }
 
+                // ANGOLASUP-825: Fixed inventory saving functionality
+                vm.cacheItemsWithNewLots(draft);
+                // ANGOLASUP-825: Ends here
                 draft.$modified = undefined;
                 vm.cacheDraft();
 
@@ -479,6 +486,9 @@
                     $state.go('openlmis.stockmanagement.physicalInventory', $stateParams, {
                         reload: true
                     });
+                    // ANGOLASUP-825: Fixed inventory saving functionality
+                    physicalInventoryDraftCacheService.removeDraftItemsWithNewLots(draft);
+                    // ANGOLASUP-825: Ends here.
                 })
                     .catch(function() {
                         loadingModalService.close();
@@ -515,10 +525,8 @@
                                 'stockPhysicalInventoryDraft.printModal.yes',
                                 'stockPhysicalInventoryDraft.printModal.no')
                                 .then(function() {
-                                    // ANGOLASUP-716: Fixed printing Inventory Report
-                                    $window.open(accessTokenFactory.addAccessToken(getPrintUrl(draft)),
+                                    $window.open(accessTokenFactory.addAccessToken(getPrintUrl(draft.id)),
                                         '_blank');
-                                    // ANGOLASUP-716: ends here
                                 })
                                 .finally(function() {
                                     $state.go('openlmis.stockmanagement.stockCardSummaries', {
@@ -678,6 +686,33 @@
                 return item.lot;
             });
 
+            // ANGOLASUP-825: Fixed inventory saving functionality
+            var draftWithNewLots = physicalInventoryDraftCacheService
+                .getPhysicalInventoryDraftItemsWithNewLots(facility.id, program.id);
+            if (draftWithNewLots) {
+                var extendedLineItems = draft.lineItems;
+                draftWithNewLots.lineItems.forEach(function(lineItem) {
+                    var duplicate = draft.lineItems.some(function(item) {
+                        return ((item.orderable.id === lineItem.orderable.id) &&
+                        (item.lot && (item.lot.lotCode === lineItem.lot.lotCode)));
+                    });
+                    if (!duplicate) {
+                        extendedLineItems.push(lineItem);
+
+                        var productWithNewLotDisplayed = displayLineItemsGroup.filter(function(product) {
+                            return product[0].orderable.id === lineItem.orderable.id;
+                        });
+
+                        if (productWithNewLotDisplayed.length > 0) {
+                            productWithNewLotDisplayed[0].push(lineItem);
+                        }
+                    }
+                });
+
+                draft.lineItems = extendedLineItems;
+            }
+            // ANGOLASUP-825: Ends here
+
             draft.lineItems.forEach(function(item) {
                 item.unaccountedQuantity =
                     stockReasonsCalculations.calculateUnaccounted(item, item.stockAdjustments);
@@ -742,15 +777,8 @@
          *
          * @return {String} the prepared URL
          */
-        //AO-457
-        function getPrintUrl(draft) {
-            var reportTemplateId = '1e0221c4-58f4-40b6-9cde-4b3781cea6a1';
-            return stockmanagementUrlFactory('/api/reports/templates/angola/' + reportTemplateId
-                + '/pdf?programId=' + draft.programId + '&facilityId=' + draft.facilityId
-            // AO-507: Added signature to inventory report
-                + '&signature=' + draft.signature);
-            // AO-507: ends here
-        //AO-457 ends here
+        function getPrintUrl(id) {
+            return stockmanagementUrlFactory('/api/physicalInventories/' + id + '?format=pdf');
         }
 
         /**
@@ -763,6 +791,18 @@
          */
         function cacheDraft() {
             physicalInventoryDraftCacheService.cacheDraft(draft);
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name cacheItemsWithNewLot
+         *
+         * @description
+         * Caches draft line items with new Lots.
+         */
+        function cacheItemsWithNewLots() {
+            physicalInventoryDraftCacheService.cacheItemsWithNewLots(draft);
         }
 
         /**
