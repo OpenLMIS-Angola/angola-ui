@@ -1,0 +1,101 @@
+<h2>{{'report.viewReports' | message}}</h2>
+<!-- ANGOLASUP-797: Catalogue and organize reports -->
+<div style="display:flex">
+    <div class="openlmis-table-container">
+        <table>
+            <caption class="error" ng-show="!vm.stockReports.jasper.length && !vm.stockReports.superSet.length">
+                {{'report.noReports' | message}}
+            </caption>
+            <thead>
+                <tr>
+                    <th>{{'report.stockReports' | message}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="report in vm.stockReports.jasper | orderBy:'name'">
+                    <td>
+                        <a ui-sref=".generate({module: report.$module, report: report.id})">{{report.name}}</a>
+                    </td>
+                </tr>
+                <tr ng-repeat="report in vm.stockReports.superSet | orderBy:'code'">
+                    <td ng-if="vm.hasRight(report.right)">
+                        <a ui-sref="{{'.superset.' + report.code}}">{{ 'report.superset.' + report.code | message}}</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="openlmis-table-container">
+        <table>
+            <caption class="error" ng-show="!vm.requisitionReports.jasper.length && !vm.requisitionReports.superSet.length">
+                {{'report.noReports' | message}}
+            </caption>
+            <thead>
+                <tr>
+                    <th>{{'report.requisitionReports' | message}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="report in vm.requisitionReports.jasper | orderBy:'name'">
+                    <td>
+                        <a ui-sref=".generate({module: report.$module, report: report.id})">{{report.name}}</a>
+                    </td>
+                </tr>
+                <tr ng-repeat="report in vm.requisitionReports.superSet | orderBy:'code'">
+                    <td ng-if="vm.hasRight(report.right)">
+                        <a ui-sref="{{'.superset.' + report.code}}">{{ 'report.superset.' + report.code | message}}</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="openlmis-table-container">
+        <table>
+            <caption class="error" ng-show="!vm.orderReports.jasper.length && !vm.orderReports.superSet.length">
+                {{'report.noReports' | message}}
+            </caption>
+            <thead>
+                <tr>
+                    <th>{{'report.orderReports' | message}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="report in vm.orderReports.jasper | orderBy:'name'">
+                    <td ng-if="vm.hasRight(report.right)">
+                        <a ui-sref=".generate({module: report.$module, report: report.id})">{{report.name}}</a>
+                    </td>
+                </tr>
+                <tr ng-repeat="report in vm.orderReports.superSet | orderBy:'code'">
+                    <td ng-if="vm.hasRight(report.right)">
+                        <a ui-sref="{{'.superset.' + report.code}}">{{ 'report.superset.' + report.code | message}}</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="openlmis-table-container">
+        <table>
+            <caption class="error" ng-show="!vm.administrationReports.jasper.length && !vm.administrationReports.superSet.length">
+                {{'report.noReports' | message}}
+            </caption>
+            <thead>
+                <tr>
+                    <th>{{'report.administrationReports' | message}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="report in vm.administrationReports.jasper | orderBy:'name'">
+                    <td ng-if="vm.hasRight(report.right)">
+                        <a ui-sref=".generate({module: report.$module, report: report.id})">{{report.name}}</a>
+                    </td>
+                </tr>
+                <tr ng-repeat="report in vm.administrationReports.superSet | orderBy:'code'">
+                    <td ng-if="vm.hasRight(report.right)">
+                        <a ui-sref="{{'.superset.' + report.code}}">{{ 'report.superset.' + report.code | message}}</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- ANGOLASUP-797: Ends here -->
