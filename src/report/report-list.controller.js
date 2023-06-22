@@ -47,6 +47,74 @@
          */
         vm.reports = reports;
 
+        // ANGOLASUP-797: Catalogue and organize reports
+        var stockReports = {
+            jasper: getJasperReports('STOCK'),
+            superSet: getSuperSetReports('STOCK')
+        };
+        var requisitionReports = {
+            jasper: getJasperReports('REQUISITION'),
+            superSet: getSuperSetReports('REQUISITION')
+        };
+        var orderReports = {
+            jasper: getJasperReports('ORDER'),
+            superSet: getSuperSetReports('ORDER')
+        };
+        var administrationReports = {
+            jasper: getJasperReports('ADMINISTRATION'),
+            superSet: getSuperSetReports('ADMINISTRATION')
+        };
+
+        console.log('stockReports', stockReports);
+        console.log('requisitionReports', requisitionReports.superSet);
+        console.log('orderReports', orderReports);
+        console.log('administrationReports', administrationReports.superSet);
+
+        /**
+         * @ngdoc property
+         * @propertyOf report.controller:ReportListController
+         * @name stockReports
+         * @type {Array}
+         *
+         * @description
+         * The list of all available stock reports.
+         */
+        vm.stockReports = stockReports;
+
+        /**
+         * @ngdoc property
+         * @propertyOf report.controller:ReportListController
+         * @name requisitionReports
+         * @type {Array}
+         *
+         * @description
+         * The list of all available requisition reports.
+         */
+        vm.requisitionReports = requisitionReports;
+
+        /**
+         * @ngdoc property
+         * @propertyOf report.controller:ReportListController
+         * @name orderReports
+         * @type {Array}
+         *
+         * @description
+         * The list of all available order reports.
+         */
+        vm.orderReports = orderReports;
+
+        /**
+         * @ngdoc property
+         * @propertyOf report.controller:ReportListController
+         * @name administrationReports
+         * @type {Array}
+         *
+         * @description
+         * The list of all available administration reports.
+         */
+        vm.administrationReports = administrationReports;
+        // ANGOLASUP-797: Ends here
+
         /**
          * @ngdoc property
          * @propertyOf report.controller:ReportListController
@@ -83,5 +151,25 @@
         function hasRight(rightName) {
             return vm.permissions[rightName] || vm.permissions[REPORT_RIGHTS.REPORTS_VIEW];
         }
+
+        // ANGOLASUP-797: Catalogue and organize reports
+        function getJasperReports(category) {
+            return reports.filter(function(report) {
+                return report.category === category;
+            });
+        }
+
+        function getSuperSetReports(category) {
+            console.log('vm.superSetReports', vm.supersetReports);
+            var superSetReportsArray = vm.supersetReports ? Object.values(vm.supersetReports) : [];
+            console.log('superSetReportsArray', superSetReportsArray);
+            return superSetReportsArray.filter(function(report) {
+                console.log('report', report);
+                console.log('report category', report.category, 'category', category);
+                console.log('equals ===', report.category === category);
+                return report.category === category;
+            });
+        }
+        // ANGOLASUP-797: Ends here
     }
 })();
