@@ -65,6 +65,11 @@
             superSet: getSuperSetReports('ADMINISTRATION')
         };
 
+        console.log('stockReports', stockReports);
+        console.log('requisitionReports', requisitionReports.superSet);
+        console.log('orderReports', orderReports);
+        console.log('administrationReports', administrationReports.superSet);
+
         /**
          * @ngdoc property
          * @propertyOf report.controller:ReportListController
@@ -155,8 +160,13 @@
         }
 
         function getSuperSetReports(category) {
+            console.log('vm.superSetReports', vm.supersetReports);
             var superSetReportsArray = vm.supersetReports ? Object.values(vm.supersetReports) : [];
+            console.log('superSetReportsArray', superSetReportsArray);
             return superSetReportsArray.filter(function(report) {
+                console.log('report', report);
+                console.log('report category', report.category, 'category', category);
+                console.log('equals ===', report.category === category);
                 return report.category === category;
             });
         }
