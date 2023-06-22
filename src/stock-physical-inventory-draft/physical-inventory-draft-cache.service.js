@@ -95,12 +95,26 @@
                 }).length === 0);
             });
 
+            existingItemsWithNewLots.forEach((function(lineItem) {
+                lineItem.stockAdjustments = getAdjustmentsReasonFromDraft(lineItem, parsedDraft);
+            }));
+
             itemsWithNewLots.forEach(function(lineItem) {
+                lineItem.stockAdjustments = getAdjustmentsReasonFromDraft(lineItem, parsedDraft);
                 existingItemsWithNewLots.push(lineItem);
             });
 
             parsedDraft.lineItems = existingItemsWithNewLots;
             physicalInventoryDraftItemsWithNewLots.put(parsedDraft);
+        }
+
+        function getAdjustmentsReasonFromDraft(lineItem, draft) {
+            var lineItemReasons = draft.lineItems.find(function(draftLineItem) {
+                return draftLineItem.displayLotMessage === lineItem.displayLotMessage &&
+                draftLineItem.orderable.id === lineItem.orderable.id;
+            }).stockAdjustments;
+
+            return lineItemReasons;
         }
         // ANGOLASUP-825: Ends here
 
