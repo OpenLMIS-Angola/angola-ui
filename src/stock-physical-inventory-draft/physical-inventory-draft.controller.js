@@ -705,6 +705,8 @@
 
                         if (productWithNewLotDisplayed.length > 0) {
                             productWithNewLotDisplayed[0].push(lineItem);
+                        } else {
+                            displayLineItemsGroup.push([lineItem]);
                         }
                     }
                 });
