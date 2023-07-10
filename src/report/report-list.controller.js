@@ -64,11 +64,16 @@
             jasper: getJasperReports('ADMINISTRATION'),
             superSet: getSuperSetReports('ADMINISTRATION')
         };
+        var dashboardReports = {
+            jasper: getJasperReports('DASHBOARD'),
+            superSet: getSuperSetReports('DASHBOARD')
+        };
 
         console.log('stockReports', stockReports);
         console.log('requisitionReports', requisitionReports.superSet);
         console.log('orderReports', orderReports);
         console.log('administrationReports', administrationReports.superSet);
+        console.log('dashboardReports', dashboardReports.superSet);
 
         /**
          * @ngdoc property
@@ -113,6 +118,17 @@
          * The list of all available administration reports.
          */
         vm.administrationReports = administrationReports;
+
+        /**
+         * @ngdoc property
+         * @propertyOf report.controller:ReportListController
+         * @name dashboardReports
+         * @type {Array}
+         *
+         * @description
+         * The list of all available dashboard reports.
+         */
+        vm.dashboardReports = dashboardReports;
         // ANGOLASUP-797: Ends here
 
         /**
