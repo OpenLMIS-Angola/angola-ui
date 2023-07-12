@@ -28,7 +28,7 @@
         .module('stock-physical-inventory-draft')
         .controller('PhysicalInventoryDraftController', controller);
 
-    controller.$inject = ['$scope', '$state', '$stateParams', 'addProductsModalService',
+    controller.$inject = ['$rootScope', '$scope', '$state', '$stateParams', 'addProductsModalService',
         'messageService', 'physicalInventoryFactory', 'notificationService', 'alertService',
         'chooseDateModalService', 'program', 'facility', 'draft',
         'displayLineItemsGroup', 'confirmService', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
@@ -37,7 +37,7 @@
         'offlineService', 'physicalInventoryDraftCacheService', 'stockCardService', 'LotResource',
         'editLotModalService'];
 
-    function controller($scope, $state, $stateParams, addProductsModalService, messageService,
+    function controller($rootScope, $scope, $state, $stateParams, addProductsModalService, messageService,
                         physicalInventoryFactory, notificationService, alertService,
                         chooseDateModalService, program, facility, draft, displayLineItemsGroup,
                         confirmService, physicalInventoryService, MAX_INTEGER_VALUE, VVM_STATUS,
@@ -686,6 +686,25 @@
                 return item.lot;
             });
 
+            draft.lineItems.forEach(function(item) {
+                item.unaccountedQuantity =
+                    stockReasonsCalculations.calculateUnaccounted(item, item.stockAdjustments);
+            });
+
+            vm.updateProgress();
+            var orderableGroups = orderableGroupService.groupByOrderableId(draft.lineItems);
+            vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(orderableGroups);
+            shouldDisplayHideButtonColumn(draft.lineItems);
+            $scope.$watchCollection(function() {
+                return vm.pagedLineItems;
+            }, function(newList) {
+                vm.groupedCategories = $filter('groupByProgramProductCategory')(newList, vm.program.id);
+            }, true);
+
+            if (!$stateParams.noReload) {
+                vm.cacheDraft();
+            }
+
             // ANGOLASUP-825: Fixed inventory saving functionality
             var draftWithNewLots = physicalInventoryDraftCacheService
                 .getPhysicalInventoryDraftItemsWithNewLots(facility.id, program.id);
@@ -714,25 +733,6 @@
                 draft.lineItems = extendedLineItems;
             }
             // ANGOLASUP-825: Ends here
-
-            draft.lineItems.forEach(function(item) {
-                item.unaccountedQuantity =
-                    stockReasonsCalculations.calculateUnaccounted(item, item.stockAdjustments);
-            });
-
-            vm.updateProgress();
-            var orderableGroups = orderableGroupService.groupByOrderableId(draft.lineItems);
-            vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(orderableGroups);
-            shouldDisplayHideButtonColumn(draft.lineItems);
-            $scope.$watchCollection(function() {
-                return vm.pagedLineItems;
-            }, function(newList) {
-                vm.groupedCategories = $filter('groupByProgramProductCategory')(newList, vm.program.id);
-            }, true);
-
-            if (!$stateParams.noReload) {
-                vm.cacheDraft();
-            }
         }
 
         /**
@@ -824,6 +824,13 @@
         }
 
         vm.validateOnPageChange();
+
+        // eslint-disable-next-line no-unused-vars
+        $scope.$parent.$on('$stateChangeSuccess', function(evt, toState, toParams, fromState, fromParams) {
+            if (toState.url !== fromState.url) {
+                physicalInventoryDraftCacheService.removeNotSavedDraftItemsWithNewLots(draft);
+            }
+        });
 
     }
 })();

@@ -46,6 +46,7 @@
         this.updateSingleItemWithNewLot = updateSingleItemWithNewLot;
         this.removeDraftItemsWithNewLots = removeDraftItemsWithNewLots;
         this.getPhysicalInventoryDraftItemsWithNewLots = getPhysicalInventoryDraftItemsWithNewLots;
+        this.removeNotSavedDraftItemsWithNewLots = removeNotSavedDraftItemsWithNewLots;
         // ANGOLASUP-825: Ends here
         this.getDraft = getDraft;
         this.removeById = removeById;
@@ -96,10 +97,12 @@
             });
 
             existingItemsWithNewLots.forEach((function(lineItem) {
+                lineItem.saved = true;
                 lineItem.stockAdjustments = getAdjustmentsReasonFromDraft(lineItem, parsedDraft);
             }));
 
             itemsWithNewLots.forEach(function(lineItem) {
+                lineItem.saved = true;
                 lineItem.stockAdjustments = getAdjustmentsReasonFromDraft(lineItem, parsedDraft);
                 existingItemsWithNewLots.push(lineItem);
             });
@@ -183,13 +186,27 @@
          * @name removeDraftItemsWithNewLots
          *
          * @description
-         * Delete cached draft with line items that contains new Lots from given physical inventory 
+         * Delete cached draft with line items that contains new Lots from given physical inventory
          * draft from the local storage.
          *
          * @param {Object} draft  the draft containing items with new Lots
          */
         function removeDraftItemsWithNewLots(draft) {
             physicalInventoryDraftItemsWithNewLots.removeBy('id', draft.id);
+        }
+
+        function removeNotSavedDraftItemsWithNewLots(draft) {
+            var parsedDraft = JSON.parse(JSON.stringify(draft));
+            var physicalInventoryNewLots = getPhysicalInventoryDraftItemsWithNewLots(parsedDraft.facilityId,
+                parsedDraft.programId);
+            var savedPhysicalInventoryNewLots = physicalInventoryNewLots.lineItems ?
+                physicalInventoryNewLots.lineItems : [];
+            savedPhysicalInventoryNewLots = savedPhysicalInventoryNewLots.filter(function(lineItem) {
+                return lineItem.saved;
+            });
+
+            parsedDraft.lineItems = savedPhysicalInventoryNewLots;
+            physicalInventoryDraftItemsWithNewLots.put(parsedDraft);
         }
         // ANGOLASUP-825: Ends here
 
@@ -203,7 +220,7 @@
          *
          * @param  {String}  draftId
          *
-         */ 
+         */
         function getDraft(draftId) {
             var cachedDraft,
                 identities;

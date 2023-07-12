@@ -317,6 +317,7 @@
                     if (item.$isNewItem && item.id) {
                         selectedItems.push(item);
                     } else if (!item.id) {
+                        item.saved = false;
                         physicalInventoryDraftCacheService.cacheSingleItemWithNewLot(draft, item);
                     }
                     // ANGOLASUP-825: Ends here
