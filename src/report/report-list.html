@@ -97,5 +97,24 @@
             </tbody>
         </table>
     </div>
+    <div class="openlmis-table-container">
+        <table>
+            <caption class="error" ng-show="!vm.reports.length && !vm.supersetReports">
+                {{:: 'report.noReports' | message}}
+            </caption>
+            <thead>
+            <tr>
+                <th>{{:: 'report.dashboardReports' | message}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="report in vm.supersetReports">
+                <td ng-if="vm.hasRight(report.right)">
+                    <a ui-sref="{{'.superset.' + report.code}}">{{ 'report.superset.' + report.code | message}}</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 <!-- ANGOLASUP-797: Ends here -->

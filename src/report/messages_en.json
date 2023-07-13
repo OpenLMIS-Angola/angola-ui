@@ -20,5 +20,6 @@
   "report.stockReports": "Stock",
   "report.requisitionReports": "Requisitions",
   "report.orderReports": "Orders",
-  "report.administrationReports": "Administration"
+  "report.administrationReports": "Administration",
+  "report.dashboardReports": "Dashboard"
 }
