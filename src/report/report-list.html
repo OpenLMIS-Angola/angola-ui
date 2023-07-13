@@ -100,11 +100,11 @@
     <div class="openlmis-table-container">
         <table>
             <caption class="error" ng-show="!vm.reports.length && !vm.supersetReports">
-                {{'report.noReports' | message}}
+                {{:: 'report.noReports' | message}}
             </caption>
             <thead>
             <tr>
-                <th>{{'report.dashboardReports' | message}}</th>
+                <th>{{:: 'report.dashboardReports' | message}}</th>
             </tr>
             </thead>
             <tbody>
