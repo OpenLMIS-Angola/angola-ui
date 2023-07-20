@@ -767,6 +767,7 @@
             vm.validateQuantity(lineItem);
             vm.checkUnaccountedStockAdjustments(lineItem);
             vm.dataChanged = !vm.dataChanged;
+            physicalInventoryDraftCacheService.cacheSingleItemWithNewLot(draft, lineItem);
         }
 
         /**
