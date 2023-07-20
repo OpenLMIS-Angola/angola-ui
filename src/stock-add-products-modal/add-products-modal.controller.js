@@ -28,6 +28,7 @@
         .module('stock-add-products-modal')
         .controller('AddProductsModalController', controller);
 
+    //ANGOLASUP-806: Implement adding default reason in physical inventory
     controller.$inject = ['availableItems', 'messageService', 'modalDeferred', 'orderableGroupService',
         '$scope', 'MAX_INTEGER_VALUE', 'hasPermissionToAddNewLot', 'selectedItems', 'alertService',
         'moment', 'draft', 'physicalInventoryDraftCacheService', 'useDefaultReason', 'defaultReason'];
@@ -35,6 +36,7 @@
     function controller(availableItems, messageService, modalDeferred, orderableGroupService,
                         $scope, MAX_INTEGER_VALUE, hasPermissionToAddNewLot, selectedItems, alertService,
                         moment, draft, physicalInventoryDraftCacheService, useDefaultReason, defaultReason) {
+    //ANGOLASUP-806: Ends here
         var vm = this;
 
         vm.$onInit = onInit;
