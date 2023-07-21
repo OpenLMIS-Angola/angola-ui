@@ -76,7 +76,7 @@
          * @name cacheItemsWithNewLot
          *
          * @description
-         * Caches line items with new Lots from given physical inventory 
+         * Caches line items with new Lots from given physical inventory
          * draft in the local storage.
          *
          * @param {Object} draft  the draft containing items with new Lots
@@ -141,6 +141,10 @@
                 physicalInventoryNewLots.lineItems = [];
             }
 
+            physicalInventoryNewLots.lineItems = physicalInventoryNewLots.lineItems.filter(function(lineItem) {
+                return lineItem.lot.lotCode !== item.lot.lotCode;
+            });
+
             physicalInventoryNewLots.lineItems.push(item);
 
             physicalInventoryDraftItemsWithNewLots.put(physicalInventoryNewLots);
@@ -183,7 +187,7 @@
          * @name removeDraftItemsWithNewLots
          *
          * @description
-         * Delete cached draft with line items that contains new Lots from given physical inventory 
+         * Delete cached draft with line items that contains new Lots from given physical inventory
          * draft from the local storage.
          *
          * @param {Object} draft  the draft containing items with new Lots
@@ -203,7 +207,7 @@
          *
          * @param  {String}  draftId
          *
-         */ 
+         */
         function getDraft(draftId) {
             var cachedDraft,
                 identities;
