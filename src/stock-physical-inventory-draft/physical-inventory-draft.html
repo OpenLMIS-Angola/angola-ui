@@ -2,6 +2,29 @@
     {{'stockPhysicalInventoryDraft.title' | message: {'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program': vm.program.name} }}
 </h2>
 
+<!-- ANGOLASUP-806: Implement adding default reason in physical inventory-->
+<div ng-style="{'display': 'flex', 'align-items': 'center', 'gap': '0.5em', 'height': '1em'}">
+    <label for="useDefaultReason">
+        <input id="useDefaultReason"
+                type="checkbox"
+                name="useDefaultReason"
+                ng-true-value="true"
+                ng-false-value="false"
+                ng-model="vm.useDefaultReason"/>
+
+        {{'stockPhysicalInventoryDraft.useDefaultReason' | message}}
+    </label>
+
+    <div ng-if="vm.useDefaultReason">
+        <select 
+            ng-model="vm.defaultReason"
+            ng-change="vm.updateDefaultReason()"
+            ng-options="reason.name for reason in vm.reasons track by reason.id"
+        />
+    </div>
+</div>
+<!-- ANGOLASUP-806: Ends here -->
+
 <section class="openlmis-table-container">
     <form ng-submit="vm.search()" openlmis-table-filter>
         <fieldset class="form-group">
@@ -31,29 +54,6 @@
     </button>
 
     <saving-indicator class="draft-indicator" object="vm.dataChanged"/>
-
-    <!-- ANGOLASUP-806: Implement adding default reason in physical inventory-->
-    <div class="pull-right">
-        <label for="useDefaultReason">
-            <input id="useDefaultReason"
-                    type="checkbox"
-                    name="useDefaultReason"
-                    ng-true-value="true"
-                    ng-false-value="false"
-                    ng-model="vm.useDefaultReason"/>
-
-            {{'stockPhysicalInventoryDraft.useDefaultReason' | message}}
-        </label>
-
-        <div ng-if="vm.useDefaultReason">
-            <select 
-                ng-model="vm.defaultReason"
-                ng-change="vm.updateDefaultReason()"
-                ng-options="reason.name for reason in vm.reasons track by reason.id"
-            />
-        </div>
-    </div>
-    <!-- ANGOLASUP-806: Ends here -->
 
     <table>
         <caption ng-if="!vm.displayLineItemsGroup.length && !vm.stateParams.keyword">
