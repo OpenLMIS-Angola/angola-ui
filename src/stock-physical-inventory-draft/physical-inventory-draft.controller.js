@@ -56,6 +56,7 @@
         vm.checkUnaccountedStockAdjustments = checkUnaccountedStockAdjustments;
         // ANGOLASUP-806: Implement adding default reason in physical inventory
         vm.updateDefaultReason = updateDefaultReason;
+        vm.updateUseDefaultReason = updateUseDefaultReason;
         vm.getToolbarWidth = getToolbarWidth;
         // ANGOLASUP-806: Ends here
 
@@ -866,6 +867,12 @@
         // ANGOLASUP-806: Implement adding default reason in physical inventory
         function updateDefaultReason() {
             $stateParams.defaultReason = vm.defaultReason;
+        }
+
+        function updateUseDefaultReason() {
+            if (!vm.useDefaultReason) {
+                $stateParams.defaultReason = null;
+            }
         }
 
         function getToolbarWidth() {
