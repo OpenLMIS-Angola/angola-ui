@@ -56,6 +56,7 @@
         vm.checkUnaccountedStockAdjustments = checkUnaccountedStockAdjustments;
         // ANGOLASUP-806: Implement adding default reason in physical inventory
         vm.updateDefaultReason = updateDefaultReason;
+        vm.getToolbarWidth = getToolbarWidth;
         // ANGOLASUP-806: Ends here
 
         /**
@@ -865,6 +866,13 @@
         // ANGOLASUP-806: Implement adding default reason in physical inventory
         function updateDefaultReason() {
             $stateParams.defaultReason = vm.defaultReason;
+        }
+
+        function getToolbarWidth() {
+            var tableWidth = angular.element(
+                document.getElementsByClassName('openlmis-flex-table')
+            )[0].clientWidth;
+            return tableWidth + 'px';
         }
         // ANGOLASUP-806: Ends here
 
