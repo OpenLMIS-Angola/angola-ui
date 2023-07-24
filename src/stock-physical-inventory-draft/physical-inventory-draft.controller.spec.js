@@ -61,6 +61,7 @@ describe('PhysicalInventoryDraftController', function() {
         spyOn(this.$state, 'go');
         spyOn(this.draftFactory, 'saveDraft');
         spyOn(this.physicalInventoryDraftCacheService, 'cacheDraft');
+        spyOn(this.physicalInventoryDraftCacheService, 'cacheSingleItemWithNewLot');
         spyOn(this.alertService, 'error');
         spyOn(this.stockCardService, 'deactivateStockCard');
         spyOn(this.editLotModalService, 'show');
