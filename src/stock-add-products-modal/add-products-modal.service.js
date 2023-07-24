@@ -46,7 +46,8 @@
          * @param  {Array}   draft  physical inventory draft
          * @return {Promise}                resolved with selected products.
          */
-        function show(availableItems, draft) {
+        // ANGOLASUP-806: Implement adding default reason in physical inventory
+        function show(availableItems, draft, useDefaultReason, defaultReason) {
             return openlmisModalService.createDialog(
                 {
                     controller: 'AddProductsModalController',
@@ -77,6 +78,12 @@
                                 .catch(function() {
                                     return false;
                                 });
+                        },
+                        useDefaultReason: function() {
+                            return useDefaultReason;
+                        },
+                        defaultReason: function() {
+                            return defaultReason;
                         }
                     }
                 }
@@ -85,6 +92,7 @@
             });
         }
         // ANGOLASUP-825: Ends here
+        // ANGOLASUP-806: Ends here
     }
 
 })();

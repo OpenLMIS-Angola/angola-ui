@@ -247,12 +247,14 @@ describe('PhysicalInventoryDraftController', function() {
         this.vm.addProducts();
 
         // ANGOLASUP-825: Fixed inventory saving functionality
+        // ANGOLASUP-806: Implement adding default reason in physical inventory
         expect(this.addProductsModalService.show).toHaveBeenCalledWith([
             this.lineItem2,
             this.lineItem4,
             asd(this.lineItem1.orderable),
             asd(this.lineItem3.orderable)
-        ], this.draft);
+        ], this.draft, true, undefined);
+        // ANGOLASUP-806: Ends here
         // ANGOLASUP-825: Ends here
     });
 

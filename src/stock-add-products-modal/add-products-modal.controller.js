@@ -28,13 +28,15 @@
         .module('stock-add-products-modal')
         .controller('AddProductsModalController', controller);
 
+    //ANGOLASUP-806: Implement adding default reason in physical inventory
     controller.$inject = ['availableItems', 'messageService', 'modalDeferred', 'orderableGroupService',
         '$scope', 'MAX_INTEGER_VALUE', 'hasPermissionToAddNewLot', 'selectedItems', 'alertService',
-        'moment', 'draft', 'physicalInventoryDraftCacheService'];
+        'moment', 'draft', 'physicalInventoryDraftCacheService', 'useDefaultReason', 'defaultReason'];
 
     function controller(availableItems, messageService, modalDeferred, orderableGroupService,
                         $scope, MAX_INTEGER_VALUE, hasPermissionToAddNewLot, selectedItems, alertService,
-                        moment, draft, physicalInventoryDraftCacheService) {
+                        moment, draft, physicalInventoryDraftCacheService, useDefaultReason, defaultReason) {
+    //ANGOLASUP-806: Ends here
         var vm = this;
 
         vm.$onInit = onInit;
@@ -313,6 +315,15 @@
             });
             if (noErrors) {
                 vm.addedItems.forEach(function(item) {
+                    // ANGOLASUP-806: Implement adding default reason in physical inventory
+                    if (useDefaultReason && defaultReason !== null) {
+                        var itemStockAdjustments = [{
+                            quantity: item.quantity,
+                            reason: defaultReason
+                        }];
+                        item.stockAdjustments = itemStockAdjustments;
+                    }
+                    // ANGOLASUP-806: Ends here
                     // ANGOLASUP-825: Fixed inventory saving functionality
                     if (item.$isNewItem && item.id) {
                         selectedItems.push(item);

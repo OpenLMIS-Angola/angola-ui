@@ -81,8 +81,12 @@ describe('AddProductsModalController', function() {
             draft: {
                 lineItems: []
             },
-            physicalInventoryDraftCacheService: physicalInventoryDraftCacheService
+            physicalInventoryDraftCacheService: physicalInventoryDraftCacheService,
             // ANGOLASUP-825: Ends here
+            // ANGOLASUP-806: Implement adding default reason in physical inventory
+            defaultReason: {},
+            useDefaultReason: false
+            // ANGOLASUP-806: Ends here
         });
         vm.$onInit();
     });

@@ -54,6 +54,11 @@
         // ANGOLASUP-825: Ends here
         vm.quantityChanged = quantityChanged;
         vm.checkUnaccountedStockAdjustments = checkUnaccountedStockAdjustments;
+        // ANGOLASUP-806: Implement adding default reason in physical inventory
+        vm.updateDefaultReason = updateDefaultReason;
+        vm.updateUseDefaultReason = updateUseDefaultReason;
+        vm.getToolbarWidth = getToolbarWidth;
+        // ANGOLASUP-806: Ends here
 
         /**
          * @ngdoc property
@@ -73,6 +78,30 @@
                 });
             });
         };
+
+        // ANGOLASUP-806: Implement adding default reason in physical inventory
+        /**
+         * @ngdoc property
+         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name useDefaultReason
+         * @type {Boolean}
+         *
+         * @description
+         * Holds info if default reason should be used.
+         */
+        vm.useDefaultReason = false;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name useDefaultReason
+         * @type {Object}
+         *
+         * @description
+         * Holds default reason if default reason is used.
+         */
+        vm.defaultReason = null;
+        // ANGOLASUP-806: Ends here
 
         /**
          * @ngdoc property
@@ -260,7 +289,9 @@
                 notYetAddedItems.push(item);
             });
 
-            addProductsModalService.show(notYetAddedItems, draft).then(function() {
+            //ANGOLASUP-806: Implement adding default reason in physical inventory
+            addProductsModalService.show(notYetAddedItems, draft,
+                vm.useDefaultReason, vm.defaultReason).then(function() {
                 $stateParams.program = vm.program;
                 $stateParams.facility = vm.facility;
                 $stateParams.noReload = true;
@@ -273,6 +304,7 @@
                     reload: $state.current.name
                 });
             });
+            // ANGOLASUP-806: Ends here
         };
 
         /**
@@ -448,6 +480,7 @@
         vm.saveOnPageChange = function() {
             var params = {};
             params.noReload = true;
+            params.defaultReason = vm.defaultReason;
             params.isSubmitted = vm.isSubmitted;
 
             return $q.resolve(params);
@@ -682,6 +715,13 @@
             $stateParams.program = undefined;
             $stateParams.facility = undefined;
 
+            // ANGOLASUP-806: Implement adding default reason in physical inventory
+            if (vm.stateParams.defaultReason !== null) {
+                vm.useDefaultReason = true;
+                vm.defaultReason = vm.stateParams.defaultReason;
+            }
+            // ANGOLASUP-806: Ends here
+
             vm.hasLot = _.any(draft.lineItems, function(item) {
                 return item.lot;
             });
@@ -823,6 +863,25 @@
                 }
             });
         }
+
+        // ANGOLASUP-806: Implement adding default reason in physical inventory
+        function updateDefaultReason() {
+            $stateParams.defaultReason = vm.defaultReason;
+        }
+
+        function updateUseDefaultReason() {
+            if (!vm.useDefaultReason) {
+                $stateParams.defaultReason = null;
+            }
+        }
+
+        function getToolbarWidth() {
+            var tableWidth = angular.element(
+                document.getElementsByClassName('openlmis-flex-table')
+            )[0].clientWidth;
+            return tableWidth + 'px';
+        }
+        // ANGOLASUP-806: Ends here
 
         vm.validateOnPageChange();
 
