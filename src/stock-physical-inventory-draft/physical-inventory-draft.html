@@ -14,7 +14,7 @@
                     ng-model="vm.useDefaultReason"
                     ng-change="vm.updateUseDefaultReason()"/>
 
-            {{'stockPhysicalInventoryDraft.useDefaultReason' | message}}
+            {{:: 'stockPhysicalInventoryDraft.useDefaultReason' | message}}
         </label>
 
         <div ng-if="vm.useDefaultReason">
