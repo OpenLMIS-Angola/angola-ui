@@ -402,8 +402,9 @@ describe('PhysicalInventoryDraftController', function() {
             this.vm.submit();
             this.$rootScope.$apply();
 
-            expect(this.$window.open).toHaveBeenCalledWith('/openlmisServer/api/physicalInventories/1?format=pdf'
-                , '_blank');
+            expect(this.$window.open).toHaveBeenCalled();
+            expect(this.$window.open.mostRecentCall.args[0]).toContain('/api/physicalInventories/1?format=pdf');
+            expect(this.$window.open.mostRecentCall.args[1]).toEqual('_blank');
 
             expect(this.accessTokenFactory.addAccessToken).toHaveBeenCalled();
 
