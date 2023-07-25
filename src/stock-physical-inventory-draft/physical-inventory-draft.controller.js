@@ -101,6 +101,17 @@
          * Holds default reason if default reason is used.
          */
         vm.defaultReason = null;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name positiveReasons
+         * @type {Array}
+         *
+         * @description
+         * Holds only positive reasons.
+         */
+        vm.positiveReasons = [];
         // ANGOLASUP-806: Ends here
 
         /**
@@ -720,6 +731,10 @@
                 vm.useDefaultReason = true;
                 vm.defaultReason = vm.stateParams.defaultReason;
             }
+
+            vm.positiveReasons = reasons.filter(function(reason) {
+                return reason.reasonType === 'CREDIT';
+            });
             // ANGOLASUP-806: Ends here
 
             vm.hasLot = _.any(draft.lineItems, function(item) {
