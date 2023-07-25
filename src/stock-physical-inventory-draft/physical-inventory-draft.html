@@ -21,7 +21,7 @@
             <select 
                 ng-model="vm.defaultReason"
                 ng-change="vm.updateDefaultReason()"
-                ng-options="reason.name for reason in vm.reasons track by reason.id"
+                ng-options="reason.name for reason in vm.positiveReasons track by reason.id"
             />
         </div>
     </div>
