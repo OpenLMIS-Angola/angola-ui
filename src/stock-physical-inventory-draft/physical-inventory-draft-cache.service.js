@@ -142,7 +142,7 @@
             }
 
             physicalInventoryNewLots.lineItems = physicalInventoryNewLots.lineItems.filter(function(lineItem) {
-                return lineItem.lot.lotCode !== item.lot.lotCode;
+                return item.lot === null || lineItem.lot === null || lineItem.lot.lotCode !== item.lot.lotCode;
             });
 
             physicalInventoryNewLots.lineItems.push(item);

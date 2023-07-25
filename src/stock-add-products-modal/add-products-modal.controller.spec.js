@@ -182,7 +182,8 @@ describe('AddProductsModalController', function() {
                 displayLotMessage: 'NewLot001',
                 stockOnHand: 0,
                 $isNewItem: true,
-                active: true
+                active: true,
+                isAdded: true
             }]);
         });
     });
