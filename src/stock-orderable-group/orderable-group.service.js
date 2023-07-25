@@ -234,6 +234,7 @@
             newItem.lot = angular.copy(newLot);
             newItem.stockOnHand = 0;
             newItem.$isNewItem = true;
+            newItem.isAdded = true;
             determineLotMessage(newItem);
 
             return newItem;

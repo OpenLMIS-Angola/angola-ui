@@ -748,8 +748,8 @@
                 var extendedLineItems = draft.lineItems;
                 draftWithNewLots.lineItems.forEach(function(lineItem) {
                     var duplicate = draft.lineItems.some(function(item) {
-                        return ((item.orderable.id === lineItem.orderable.id) &&
-                        (item.lot && (item.lot.lotCode === lineItem.lot.lotCode)));
+                        return lineItem.lot === null || ((item.orderable.id === lineItem.orderable.id) &&
+                        (item.lot && lineItem.lot && (item.lot.lotCode === lineItem.lot.lotCode)));
                     });
                     if (!duplicate) {
                         extendedLineItems.push(lineItem);
