@@ -13,5 +13,6 @@
   "REPORTING_SERVICES": "angola",
   "applicationLoadingMessage": "Iniciando SIGLOFA",
   "applicationTitle": "SIGLOFA",
-  "defaultLanguage": "pt"
+  "defaultLanguage": "pt",
+  "showRequisitionLessOrder": "true"
 }
