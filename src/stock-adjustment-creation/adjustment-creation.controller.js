@@ -170,11 +170,15 @@
             var noErrors = !vm.newLot.expirationDateInvalid && !vm.newLot.lotCodeInvalid;
 
             if (noErrors) {
+                // AO-804: Display product prices on Stock Issues, Adjustments and Receives Page
                 vm.addedLineItems.unshift(_.extend({
                     $errors: {},
-                    $previewSOH: selectedItem.stockOnHand
+                    $previewSOH: selectedItem.stockOnHand,
+                    price: getProductPrice(selectedItem),
+                    totalPrice: 0
                 },
                 selectedItem, copyDefaultValue()));
+                // AO-804: Ends here
 
                 previousAdded = vm.addedLineItems[0];
 
@@ -246,6 +250,9 @@
          * @param {Object} lineItem line item to be validated.
          */
         vm.validateQuantity = function(lineItem) {
+            // AO-804: Display product prices on Stock Issues, Adjustments and Receives Page
+            lineItem.totalPrice = 0;
+            // AO-804: Ends here
             if (lineItem.quantity > lineItem.$previewSOH && lineItem.reason
                     && lineItem.reason.reasonType === REASON_TYPES.DEBIT) {
                 lineItem.$errors.quantityInvalid = messageService
@@ -254,6 +261,9 @@
                 lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
             } else if (lineItem.quantity >= 1) {
                 lineItem.$errors.quantityInvalid = false;
+                // AO-804: Display product prices on Stock Issues, Adjustments and Receives Page
+                lineItem.totalPrice = lineItem.quantity * lineItem.price;
+                // AO-804: Ends here
             } else {
                 lineItem.$errors.quantityInvalid = messageService.get(vm.key('positiveInteger'));
             }
@@ -806,6 +816,15 @@
             }
         }
 
+        // AO-804: Display product prices on Stock Issues, Adjustments and Receives Page
+        function getProductPrice(lineItem) {
+            var programOrderable = lineItem.orderable.programs.find(function(programOrderable) {
+                return programOrderable.programId === program.id;
+            });
+
+            return programOrderable.pricePerPack;
+        }
+        // AO-804: Ends here
         onInit();
     }
 })();
