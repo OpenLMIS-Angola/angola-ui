@@ -36,8 +36,11 @@
         'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'UNPACK_REASONS', 'REASON_TYPES', 'STOCKCARD_STATUS',
         'hasPermissionToAddNewLot', 'LotResource', '$q', 'editLotModalService', 'moment',
         // ANGOLASUP-717: Create New Issue Report
-        'accessTokenFactory', '$window', 'stockmanagementUrlFactory'
+        'accessTokenFactory', '$window', 'stockmanagementUrlFactory',
         // ANGOLASUP-717: ends here
+        // AO-805: Allow users with proper rights to edit product prices
+        'OrderableResource'
+        // AO-805: Ends here
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -47,8 +50,10 @@
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, UNPACK_REASONS, REASON_TYPES,
                         STOCKCARD_STATUS, hasPermissionToAddNewLot, LotResource, $q, editLotModalService, moment,
                         // ANGOLASUP-717: Create New Issue Report
-                        accessTokenFactory, $window, stockmanagementUrlFactory) {
+                        // AO-805: Allow users with proper rights to edit product prices
+                        accessTokenFactory, $window, stockmanagementUrlFactory, OrderableResource) {
         // ANGOLASUP-717: ends here
+        // AO-805: Ends here
         var vm = this,
             previousAdded = {};
 
@@ -58,6 +63,9 @@
         vm.lotChanged = lotChanged;
         vm.addProduct = addProduct;
         vm.hasPermissionToAddNewLot = hasPermissionToAddNewLot;
+        // AO-805: Allow users with proper rights to edit product prices
+        vm.editProductPriceAdjustmentTypes = ['receive', 'adjustment'];
+        // AO-805: Ends here
 
         /**
          * @ngdoc property
@@ -262,13 +270,28 @@
             } else if (lineItem.quantity >= 1) {
                 lineItem.$errors.quantityInvalid = false;
                 // AO-804: Display product prices on Stock Issues, Adjustments and Receives Page
-                lineItem.totalPrice = lineItem.quantity * lineItem.price;
+                lineItem.totalPrice = calculateTotalPrice(lineItem);
                 // AO-804: Ends here
             } else {
                 lineItem.$errors.quantityInvalid = messageService.get(vm.key('positiveInteger'));
             }
             return lineItem;
         };
+
+        // AO-805: Allow users with proper rights to edit product prices
+        vm.validatePrice = function(lineItem) {
+            lineItem.totalPrice = 0;
+            if (lineItem.price === '' || lineItem.price === null) {
+                lineItem.$errors.priceInvalid = messageService.get('adjustmentCreation.numberEqualOrGreaterThan0');
+            } else if (lineItem.price > MAX_INTEGER_VALUE) {
+                lineItem.$errors.priceInvalid = messageService.get('stockmanagement.numberTooLarge');
+            } else if (lineItem.price >= 0) {
+                lineItem.$errors.priceInvalid = false;
+                lineItem.totalPrice = calculateTotalPrice(lineItem);
+            }
+            return lineItem;
+        };
+        // AO-805: Ends here
 
         /**
          * @ngdoc method
@@ -412,6 +435,18 @@
             return messageService.get(VVM_STATUS.$getDisplayName(status));
         };
 
+        // AO-805: Allow users with proper rights to edit product prices
+        vm.canEditProductPrice = function(lineItem) {
+            var canEditPrice = vm.editProductPriceAdjustmentTypes.includes(adjustmentType.state);
+            var hasPermission = true;
+            if (adjustmentType.state === 'adjustment') {
+                var adjustmentReason = lineItem.reason;
+                canEditPrice = adjustmentReason ? (adjustmentReason.reasonType === 'CREDIT') : false;
+            }
+            return hasPermission && canEditPrice;
+        };
+        // AO-805: Ends here       
+
         function isEmpty(value) {
             return _.isUndefined(value) || _.isNull(value);
         }
@@ -422,6 +457,9 @@
                 vm.validateDate(item);
                 vm.validateAssignment(item);
                 vm.validateReason(item);
+                // AO-805: Allow users with proper rights to edit product prices
+                vm.validatePrice(item);
+                // AO-805: Ends here
             });
             return _.chain(vm.addedLineItems)
                 .groupBy(function(item) {
@@ -500,69 +538,87 @@
                     }));
             });
 
-            return $q.all(lotPromises)
-                .then(function(responses) {
-                    if (errorLots !== undefined && errorLots.length > 0) {
-                        return $q.reject();
-                    }
-                    responses.forEach(function(lot) {
-                        addedLineItems.forEach(function(lineItem) {
-                            if (lineItem.lot && lineItem.lot.lotCode === lot.lotCode
-                                && lineItem.lot.tradeItemId === lot.tradeItemId) {
-                                lineItem.lot = lot;
-                            }
-                        });
-                        return addedLineItems;
-                    });
+            // AO-805: Allow users with proper rights to edit product prices
+            var productsWithPriceChanged = getProductsWithPriceChanged(addedLineItems);
+            var priceChangesPromises = [];
 
-                    stockAdjustmentCreationService.submitAdjustments(program.id, facility.id,
-                        // AO-668: Use username as signature for Issue, Receive and Adjustment
-                        addedLineItems, adjustmentType, user)
-                        // AO-668: ends here
-                        // ANGOLASUP-717: Create New Issue Report
-                        .then(function(stockEventId) {
-                            if (adjustmentType.state === ADJUSTMENT_TYPE.ISSUE.state) {
-                                confirmService.confirm('adjustmentCreation.printModal.label',
-                                    'stockPhysicalInventoryDraft.printModal.yes',
-                                    'stockPhysicalInventoryDraft.printModal.no')
-                                    .then(function() {
-                                        $window.open(accessTokenFactory.addAccessToken(getPrintUrl(stockEventId)),
-                                            '_blank');
-                                    })
-                                    .finally(function() {
-                                        goToStockCardSummaries();
-                                    });
-                            } else {
-                                goToStockCardSummaries();
-                            }
-                            // ANGOLASUP-717: ends here
-                        }, function(errorResponse) {
-                            loadingModalService.close();
-                            alertService.error(errorResponse.data.message);
+            productsWithPriceChanged.forEach(function(productWithPriceChanged) {
+                setProductPriceForProgram(productWithPriceChanged, program);
+                priceChangesPromises.push(updateProductPrice(productWithPriceChanged.orderable,
+                    productWithPriceChanged.price));
+            });
+
+            return $q.all(priceChangesPromises).then(function() {
+                return $q.all(lotPromises)
+                    .then(function(responses) {
+                        if (errorLots !== undefined && errorLots.length > 0) {
+                            return $q.reject();
+                        }
+                        responses.forEach(function(lot) {
+                            addedLineItems.forEach(function(lineItem) {
+                                if (lineItem.lot && lineItem.lot.lotCode === lot.lotCode
+                                    && lineItem.lot.tradeItemId === lot.tradeItemId) {
+                                    lineItem.lot = lot;
+                                }
+                            });
+                            return addedLineItems;
                         });
-                })
+
+                        stockAdjustmentCreationService.submitAdjustments(program.id, facility.id,
+                            // AO-668: Use username as signature for Issue, Receive and Adjustment
+                            addedLineItems, adjustmentType, user)
+                            // AO-668: ends here
+                            // ANGOLASUP-717: Create New Issue Report
+                            .then(function(stockEventId) {
+                                if (adjustmentType.state === ADJUSTMENT_TYPE.ISSUE.state) {
+                                    confirmService.confirm('adjustmentCreation.printModal.label',
+                                        'stockPhysicalInventoryDraft.printModal.yes',
+                                        'stockPhysicalInventoryDraft.printModal.no')
+                                        .then(function() {
+                                            $window.open(accessTokenFactory.addAccessToken(getPrintUrl(stockEventId)),
+                                                '_blank');
+                                        })
+                                        .finally(function() {
+                                            goToStockCardSummaries();
+                                        });
+                                } else {
+                                    goToStockCardSummaries();
+                                }
+                                // ANGOLASUP-717: ends here
+                            }, function(errorResponse) {
+                                loadingModalService.close();
+                                alertService.error(errorResponse.data.message);
+                            });
+                    })
+                    .catch(function(errorResponse) {
+                        loadingModalService.close();
+                        if (errorLots) {
+                            var errorLotsReduced = errorLots.reduce(function(result, currentValue) {
+                                if (currentValue.error in result) {
+                                    result[currentValue.error].push(currentValue.lotCode);
+                                } else {
+                                    result[currentValue.error] = [currentValue.lotCode];
+                                }
+                                return result;
+                            }, {});
+                            for (var error in errorLotsReduced) {
+                                alertService.error(error, errorLotsReduced[error].join(', '));
+                            }
+                            vm.selectedOrderableGroup = undefined;
+                            vm.selectedLot = undefined;
+                            vm.lotChanged();
+                            return $q.reject(errorResponse.data.message);
+                        }
+                        alertService.error(errorResponse.data.message);
+                    });
+            })
                 .catch(function(errorResponse) {
                     loadingModalService.close();
-                    if (errorLots) {
-                        var errorLotsReduced = errorLots.reduce(function(result, currentValue) {
-                            if (currentValue.error in result) {
-                                result[currentValue.error].push(currentValue.lotCode);
-                            } else {
-                                result[currentValue.error] = [currentValue.lotCode];
-                            }
-                            return result;
-                        }, {});
-                        for (var error in errorLotsReduced) {
-                            alertService.error(error, errorLotsReduced[error].join(', '));
-                        }
-                        vm.selectedOrderableGroup = undefined;
-                        vm.selectedLot = undefined;
-                        vm.lotChanged();
-                        return $q.reject(errorResponse.data.message);
-                    }
+                    $q.reject();
                     alertService.error(errorResponse.data.message);
                 });
         }
+        // AO-805: Ends here
 
         // ANGOLASUP-717: Create New Issue Report
         function getPrintUrl(stockEventId) {
@@ -825,6 +881,42 @@
             return programOrderable.pricePerPack;
         }
         // AO-804: Ends here
+
+        // AO-805: Allow users with proper rights to edit product prices
+        function calculateTotalPrice(lineItem) {
+            return lineItem.price && lineItem.quantity ? lineItem.price * lineItem.quantity : 0;
+        }
+
+        function getProductsWithPriceChanged(addedLineItems) {
+            var productsToUpdate = [];
+
+            addedLineItems.forEach(function(addedLineItem) {
+                var originalItemPrice = parseFloat(getProductPrice(addedLineItem));
+
+                if (originalItemPrice !== parseFloat(addedLineItem.price)) {
+                    productsToUpdate.push(addedLineItem);
+                }
+            });
+            return productsToUpdate;
+        }
+
+        function setProductPriceForProgram(lineItem, program) {
+            var updatedLineItem = lineItem.orderable.programs.map(function(programOrderable) {
+                if (programOrderable.programId === program.id) {
+                    programOrderable.pricePerPack = parseFloat(lineItem.price);
+                }
+                return lineItem;
+            });
+
+            lineItem = updatedLineItem;
+        }
+
+        function updateProductPrice(product) {
+            return new OrderableResource()
+                .update(product);
+        }
+        // AO-805: Ends here
+
         onInit();
     }
 })();
