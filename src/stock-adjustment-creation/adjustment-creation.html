@@ -132,5 +132,12 @@
         <openlmis-pagination list="vm.displayItems" paged-list="vm.items"/>
     </section>
 </div>
-
+<!-- AO-804: Display product prices on Stock Issues, Adjustments and Receives Page-->
+<aside class="requisition-summary">
+    <dl>
+        <dt>{{'adjustmentCreation.totalCost' | message}}</dt>
+        <dd>{{vm.totalCost | openlmisCurrency}}</dd>
+    </dl>
+</aside>
+<!-- AO-804: Ends here -->
 <ng-include src="'stock-adjustment-creation/adjustment-creation-toolbar.html'"></ng-include>
