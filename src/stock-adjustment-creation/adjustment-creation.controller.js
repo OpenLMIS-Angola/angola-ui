@@ -59,6 +59,19 @@
         vm.addProduct = addProduct;
         vm.hasPermissionToAddNewLot = hasPermissionToAddNewLot;
 
+        // AO-804: Display product prices on Stock Issues, Adjustments and Receives Page
+        /**
+         * @ngdoc property
+         * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name totalCost
+         * @type {Number}
+         *
+         * @description
+         * Holds total cost of adjustments line items
+         */
+        vm.totalCost = 0;
+        // AO-804: Ends here
+
         /**
          * @ngdoc property
          * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
@@ -267,6 +280,7 @@
             } else {
                 lineItem.$errors.quantityInvalid = messageService.get(vm.key('positiveInteger'));
             }
+            calculateTotalCost(vm.items);
             return lineItem;
         };
 
@@ -823,6 +837,17 @@
             });
 
             return programOrderable.pricePerPack;
+        }
+
+        function calculateTotalCost(items) {
+            var sum = 0;
+            if (items !== undefined) {
+                items.forEach(function(lineItem) {
+                    sum += lineItem.totalPrice;
+                });
+            }
+
+            vm.totalCost = sum;
         }
         // AO-804: Ends here
         onInit();
