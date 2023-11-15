@@ -1,0 +1,51 @@
+<header>
+    <h2>
+      {{'singleProduct.priceChangesName' | message: {'program': 'test'} }}
+    </h2>
+  </header>
+  
+  <!-- <aside class="stock-card-info">
+    <div class="product-name-header">
+      <span>{{vm.stockCard.orderable | productName}}</span>
+    </div>
+  
+    <ul>
+      <li>
+        <strong>{{'stockCard.productCode'|message}}</strong>
+        {{vm.stockCard.orderable.productCode}}
+      </li>
+      <li>
+        <strong>{{'stockCard.facilityName' | message}}</strong>
+        {{vm.stockCard.facility.name}}
+      </li>
+      <li>
+        <strong>{{'stockCard.program' | message}}</strong>
+        {{vm.stockCard.program.name}}
+      </li>
+    </ul>
+  </aside> -->
+  
+  <section class="openlmis-table-container">
+  
+    <table>
+      <thead>
+      <tr>
+        <th>{{'stockCard.date' | message}}</th>
+        <th>{{'stockCard.signature' | message}}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="lineItem in vm.displayedLineItems">
+        <td>{{lineItem.occurredDate | openlmisDate}}</td>
+        <td>{{lineItem.signature}}</td>
+      </tr>
+      </tbody>
+    </table>
+  
+    <openlmis-pagination
+      list="vm.productPriceChanges.lineItems"
+      paged-list="vm.displayedLineItems"
+      pagination-id="'stockCard'">
+    </openlmis-pagination>
+  </section>
+  
