@@ -105,6 +105,19 @@
          */
         vm.lotCode = $stateParams.lotCode;
 
+        // AO-816: Add prices to the Stock On Hand view
+        /**
+         * @ngdoc property
+         * @propertyOf stock-card-summary-list.controller:StockCardSummaryListController
+         * @name totalCost
+         * @type {Number}
+         *
+         * @description
+         * Holds total cost of adjustments line items
+         */
+        vm.totalCost = 0;
+        // AO-816: Ends here
+
         /**
          * @ngdoc method
          * @methodOf stock-card-summary-list.controller:StockCardSummaryListController
@@ -114,6 +127,14 @@
          * Initialization method for StockCardSummaryListController.
          */
         function onInit() {
+            // AO-816: Add prices to the Stock On Hand view
+            stockCardSummaries.forEach(function(stockCardSummary) {
+                stockCardSummary.orderable.unitPrice = getProductPrice(stockCardSummary);
+                stockCardSummary.orderable.totalPrice = stockCardSummary.orderable.unitPrice *
+                    stockCardSummary.stockOnHand;
+            });
+            calculateTotalCost(stockCardSummaries);
+            // AO-816: Ends here
             vm.stockCardSummaries = stockCardSummaries;
             vm.displayStockCardSummaries = angular.copy(stockCardSummaries);
             checkCanFulFillIsEmpty();
@@ -235,5 +256,24 @@
                 }
             });
         }
+
+        // AO-816: Add prices to the Stock On Hand view
+        function getProductPrice(product) {
+            var programOrderable = product.orderable.programs.find(function(programOrderable) {
+                return programOrderable.programId === $stateParams.program;
+            });
+
+            return programOrderable.pricePerPack;
+        }
+
+        function calculateTotalCost(stockCardSummaries) {
+            var sum = 0;
+            stockCardSummaries.forEach(function(stockCardSummary) {
+                sum += stockCardSummary.orderable.totalPrice;
+            });
+
+            vm.totalCost = sum;
+        }
+        // AO-816: Ends here
     }
 })();
