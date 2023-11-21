@@ -2,5 +2,6 @@
     "adjustmentCreation.printModal.label": "Print this issue?",
     "adjustmentCreation.price": "Unit Price",
     "adjustmentCreation.totalPrice": "Total Price",
+    "adjustmentCreation.numberEqualOrGreaterThan0": "You must input number equal or greater than 0",
     "adjustmentCreation.totalCost": "Total Cost"
 }
