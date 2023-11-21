@@ -289,7 +289,9 @@
             } else {
                 lineItem.$errors.quantityInvalid = messageService.get(vm.key('positiveInteger'));
             }
-            calculateTotalCost(vm.items);
+            // AO-804: Display product prices on Stock Issues, Adjustments and Receives Page
+            calculateTotalCost(vm.addedLineItems);
+            // AO-804: Ends here
             return lineItem;
         };
 
@@ -733,6 +735,9 @@
             $scope.$on('$stateChangeStart', function() {
                 angular.element('.popover').popover('destroy');
             });
+            // AO-804: Display product prices on Stock Issues, Adjustments and Receives Page
+            calculateTotalCost(vm.addedLineItems);
+            // AO-804: Ends here
         }
 
         function initViewModel() {
