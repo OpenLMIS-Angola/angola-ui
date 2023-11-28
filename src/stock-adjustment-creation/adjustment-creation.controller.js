@@ -36,8 +36,11 @@
         'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'UNPACK_REASONS', 'REASON_TYPES', 'STOCKCARD_STATUS',
         'hasPermissionToAddNewLot', 'LotResource', '$q', 'editLotModalService', 'moment',
         // ANGOLASUP-717: Create New Issue Report
-        'accessTokenFactory', '$window', 'stockmanagementUrlFactory'
+        'accessTokenFactory', '$window', 'stockmanagementUrlFactory',
         // ANGOLASUP-717: ends here
+        // AO-805: Allow users with proper rights to edit product prices
+        'OrderableResource', 'permissionService', 'ADMINISTRATION_RIGHTS', 'authorizationService'
+        // AO-805: Ends here
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -47,8 +50,11 @@
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, UNPACK_REASONS, REASON_TYPES,
                         STOCKCARD_STATUS, hasPermissionToAddNewLot, LotResource, $q, editLotModalService, moment,
                         // ANGOLASUP-717: Create New Issue Report
-                        accessTokenFactory, $window, stockmanagementUrlFactory) {
+                        // AO-805: Allow users with proper rights to edit product prices
+                        accessTokenFactory, $window, stockmanagementUrlFactory, OrderableResource, permissionService,
+                        ADMINISTRATION_RIGHTS, authorizationService) {
         // ANGOLASUP-717: ends here
+        // AO-805: Ends here
         var vm = this,
             previousAdded = {};
 
@@ -58,6 +64,10 @@
         vm.lotChanged = lotChanged;
         vm.addProduct = addProduct;
         vm.hasPermissionToAddNewLot = hasPermissionToAddNewLot;
+        // AO-805: Allow users with proper rights to edit product prices
+        vm.editProductPriceAdjustmentTypes = ['receive', 'adjustment'];
+        vm.hasPermissionToEditProductPrices = hasPermissionToEditProductPrices();
+        // AO-805: Ends here
 
         // AO-804: Display product prices on Stock Issues, Adjustments and Receives Page
         /**
@@ -275,7 +285,7 @@
             } else if (lineItem.quantity >= 1) {
                 lineItem.$errors.quantityInvalid = false;
                 // AO-804: Display product prices on Stock Issues, Adjustments and Receives Page
-                lineItem.totalPrice = lineItem.quantity * lineItem.price;
+                lineItem.totalPrice = calculateTotalPrice(lineItem);
                 // AO-804: Ends here
             } else {
                 lineItem.$errors.quantityInvalid = messageService.get(vm.key('positiveInteger'));
@@ -285,6 +295,22 @@
             // AO-804: Ends here
             return lineItem;
         };
+
+        // AO-805: Allow users with proper rights to edit product prices
+        vm.validatePrice = function(lineItem) {
+            lineItem.totalPrice = 0;
+            if (lineItem.price === '' || lineItem.price === null) {
+                lineItem.$errors.priceInvalid = messageService.get('adjustmentCreation.numberEqualOrGreaterThan0');
+            } else if (lineItem.price > MAX_INTEGER_VALUE) {
+                lineItem.$errors.priceInvalid = messageService.get('stockmanagement.numberTooLarge');
+            } else if (lineItem.price >= 0) {
+                lineItem.$errors.priceInvalid = false;
+                lineItem.totalPrice = calculateTotalPrice(lineItem);
+            }
+            calculateTotalCost(vm.items);
+            return lineItem;
+        };
+        // AO-805: Ends here
 
         /**
          * @ngdoc method
@@ -318,6 +344,13 @@
             if (adjustmentType.state === 'adjustment') {
                 lineItem.$errors.reasonInvalid = isEmpty(lineItem.reason);
             }
+            // AO-805: Allow users with proper rights to edit product prices
+            if (lineItem.reason.debitReasonType) {
+                lineItem.price = getProductPrice(lineItem);
+                lineItem.totalPrice = calculateTotalPrice(lineItem);
+                calculateTotalCost(vm.items);
+            }
+            // AO-805: Ends here
             return lineItem;
         };
 
@@ -428,6 +461,18 @@
             return messageService.get(VVM_STATUS.$getDisplayName(status));
         };
 
+        // AO-805: Allow users with proper rights to edit product prices
+        vm.canEditProductPrice = function(lineItem) {
+            var canEditProductPrice = vm.editProductPriceAdjustmentTypes.includes(adjustmentType.state) &&
+                vm.hasPermissionToEditProductPrices.$$state.value;
+            if (adjustmentType.state === 'adjustment') {
+                var adjustmentReason = lineItem.reason;
+                canEditProductPrice = adjustmentReason ? (adjustmentReason.reasonType === 'CREDIT') : false;
+            }
+            return canEditProductPrice;
+        };
+        // AO-805: Ends here       
+
         function isEmpty(value) {
             return _.isUndefined(value) || _.isNull(value);
         }
@@ -438,6 +483,9 @@
                 vm.validateDate(item);
                 vm.validateAssignment(item);
                 vm.validateReason(item);
+                // AO-805: Allow users with proper rights to edit product prices
+                vm.validatePrice(item);
+                // AO-805: Ends here
             });
             return _.chain(vm.addedLineItems)
                 .groupBy(function(item) {
@@ -852,9 +900,33 @@
                 });
             }
 
-            vm.totalCost = sum;
+            if (vm.totalCost !== sum) {
+                vm.totalCost = sum;
+            }
         }
         // AO-804: Ends here
+
+        // AO-805: Allow users with proper rights to edit product prices
+        function calculateTotalPrice(lineItem) {
+            return lineItem.price && lineItem.quantity ? lineItem.price * lineItem.quantity : 0;
+        }
+
+        function hasPermissionToEditProductPrices() {
+            return permissionService.hasPermissionWithAnyProgramAndAnyFacility(
+                authorizationService.getUser().user_id,
+                {
+                    right: ADMINISTRATION_RIGHTS.EDIT_PRODUCT_PRICE_STOCK_MANAGEMENT
+                }
+            )
+                .then(function() {
+                    return true;
+                })
+                .catch(function() {
+                    return false;
+                });
+        }
+        // AO-805: Ends here
+
         onInit();
     }
 })();
