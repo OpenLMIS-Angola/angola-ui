@@ -49,7 +49,11 @@
             ORDER_CREATE: 'ORDER_CREATE',
             DATA_EXPORT: 'DATA_EXPORT',
             DATA_IMPORT: 'DATA_IMPORT',
+<<<<<<< HEAD
             // AO-805:
+=======
+            // AO-805: Allow users with proper rights to edit product prices
+>>>>>>> 582c894e6e13d440ccbed9f846e384014ffe36a2
             EDIT_PRODUCT_PRICE_STOCK_MANAGEMENT: 'EDIT_PRODUCT_PRICE_STOCK_MANAGEMENT'
             // AO-805: Ends here
         };

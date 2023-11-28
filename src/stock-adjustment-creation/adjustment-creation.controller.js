@@ -66,6 +66,7 @@
         vm.hasPermissionToAddNewLot = hasPermissionToAddNewLot;
         // AO-805: Allow users with proper rights to edit product prices
         vm.editProductPriceAdjustmentTypes = ['receive', 'adjustment'];
+        vm.hasPermissionToEditProductPrices = hasPermissionToEditProductPrices();
         // AO-805: Ends here
 
         // AO-804: Display product prices on Stock Issues, Adjustments and Receives Page
@@ -343,6 +344,13 @@
             if (adjustmentType.state === 'adjustment') {
                 lineItem.$errors.reasonInvalid = isEmpty(lineItem.reason);
             }
+            // AO-805: Allow users with proper rights to edit product prices
+            if (lineItem.reason.debitReasonType) {
+                lineItem.price = getProductPrice(lineItem);
+                lineItem.totalPrice = calculateTotalPrice(lineItem);
+                calculateTotalCost(vm.items);
+            }
+            // AO-805: Ends here
             return lineItem;
         };
 
@@ -456,7 +464,7 @@
         // AO-805: Allow users with proper rights to edit product prices
         vm.canEditProductPrice = function(lineItem) {
             var canEditProductPrice = vm.editProductPriceAdjustmentTypes.includes(adjustmentType.state) &&
-                hasPermissionToEditProductPrices();
+                vm.hasPermissionToEditProductPrices.$$state.value;
             if (adjustmentType.state === 'adjustment') {
                 var adjustmentReason = lineItem.reason;
                 canEditProductPrice = adjustmentReason ? (adjustmentReason.reasonType === 'CREDIT') : false;
@@ -910,7 +918,9 @@
                 });
             }
 
-            vm.totalCost = sum;
+            if (vm.totalCost !== sum) {
+                vm.totalCost = sum;
+            }
         }
         // AO-804: Ends here
 
