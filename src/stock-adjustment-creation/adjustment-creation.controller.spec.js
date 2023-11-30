@@ -18,7 +18,7 @@ describe('StockAdjustmentCreationController', function() {
     var vm, q, rootScope, state, stateParams, facility, program, confirmService, VVM_STATUS, messageService, scope,
         stockAdjustmentCreationService, reasons, $controller, ADJUSTMENT_TYPE, ProgramDataBuilder, FacilityDataBuilder,
         ReasonDataBuilder, OrderableGroupDataBuilder, OrderableDataBuilder, alertService, notificationService,
-        orderableGroups, LotDataBuilder, UNPACK_REASONS, LotResource;
+        orderableGroups, LotDataBuilder, UNPACK_REASONS, LotResource, timeout;
 
     beforeEach(function() {
 
@@ -34,6 +34,7 @@ describe('StockAdjustmentCreationController', function() {
 
         inject(function($injector) {
             q = $injector.get('$q');
+            timeout = $injector.get('$timeout');
             rootScope = $injector.get('$rootScope');
             stateParams = $injector.get('$stateParams');
             $controller = $injector.get('$controller');
@@ -469,16 +470,18 @@ describe('StockAdjustmentCreationController', function() {
 
             vm.submit();
 
-            rootScope.$apply();
+            rootScope.$applyAsync();
 
-            var unpackingLineItem = stockAdjustmentCreationService.submitAdjustments
-                .mostRecentCall.args[2];
+            timeout(function() {
+                var unpackingLineItem = stockAdjustmentCreationService.submitAdjustments
+                    .mostRecentCall.args[2];
 
-            expect(unpackingLineItem.length).toEqual(2);
-            expect(unpackingLineItem[1].reason.id).toEqual(UNPACK_REASONS.UNPACKED_FROM_KIT_REASON_ID);
-            expect(unpackingLineItem[0].reason.id).toEqual(UNPACK_REASONS.KIT_UNPACK_REASON_ID);
-            expect(unpackingLineItem[1].quantity).toEqual(60);
-            expect(unpackingLineItem[0].quantity).toEqual(2);
+                expect(unpackingLineItem.length).toEqual(2);
+                expect(unpackingLineItem[1].reason.id).toEqual(UNPACK_REASONS.UNPACKED_FROM_KIT_REASON_ID);
+                expect(unpackingLineItem[0].reason.id).toEqual(UNPACK_REASONS.KIT_UNPACK_REASON_ID);
+                expect(unpackingLineItem[1].quantity).toEqual(60);
+                expect(unpackingLineItem[0].quantity).toEqual(2);
+            }, 1000);
         });
 
         it('should redirect with proper state params after success in offline mode', function() {

@@ -307,7 +307,7 @@
                 lineItem.$errors.priceInvalid = false;
                 lineItem.totalPrice = calculateTotalPrice(lineItem);
             }
-            calculateTotalCost(vm.items);
+            calculateTotalCost(vm.addedLineItems);
             return lineItem;
         };
         // AO-805: Ends here
@@ -345,10 +345,10 @@
                 lineItem.$errors.reasonInvalid = isEmpty(lineItem.reason);
             }
             // AO-805: Allow users with proper rights to edit product prices
-            if (lineItem.reason.debitReasonType) {
+            if (lineItem.reason && lineItem.reason.debitReasonType) {
                 lineItem.price = getProductPrice(lineItem);
                 lineItem.totalPrice = calculateTotalPrice(lineItem);
-                calculateTotalCost(vm.items);
+                calculateTotalCost(vm.addedLineItems);
             }
             // AO-805: Ends here
             return lineItem;
@@ -463,11 +463,13 @@
 
         // AO-805: Allow users with proper rights to edit product prices
         vm.canEditProductPrice = function(lineItem) {
+            var hasProperPermission = vm.hasPermissionToEditProductPrices.$$state.value;
             var canEditProductPrice = vm.editProductPriceAdjustmentTypes.includes(adjustmentType.state) &&
-                vm.hasPermissionToEditProductPrices.$$state.value;
+                hasProperPermission;
             if (adjustmentType.state === 'adjustment') {
                 var adjustmentReason = lineItem.reason;
-                canEditProductPrice = adjustmentReason ? (adjustmentReason.reasonType === 'CREDIT') : false;
+                canEditProductPrice = adjustmentReason ? (adjustmentReason.reasonType === 'CREDIT')
+                    && hasProperPermission : false;
             }
             return canEditProductPrice;
         };
@@ -564,66 +566,82 @@
                     }));
             });
 
-            return $q.all(lotPromises)
-                .then(function(responses) {
-                    if (errorLots !== undefined && errorLots.length > 0) {
-                        return $q.reject();
-                    }
-                    responses.forEach(function(lot) {
-                        addedLineItems.forEach(function(lineItem) {
-                            if (lineItem.lot && lineItem.lot.lotCode === lot.lotCode
-                                && lineItem.lot.tradeItemId === lot.tradeItemId) {
-                                lineItem.lot = lot;
-                            }
-                        });
-                        return addedLineItems;
-                    });
+            var productsWithPriceChanged = getProductsWithPriceChanged(addedLineItems);
+            var priceChangesPromises = [];
 
-                    stockAdjustmentCreationService.submitAdjustments(program.id, facility.id,
-                        // AO-668: Use username as signature for Issue, Receive and Adjustment
-                        addedLineItems, adjustmentType, user)
-                        // AO-668: ends here
-                        // ANGOLASUP-717: Create New Issue Report
-                        .then(function(stockEventId) {
-                            if (adjustmentType.state === ADJUSTMENT_TYPE.ISSUE.state) {
-                                confirmService.confirm('adjustmentCreation.printModal.label',
-                                    'stockPhysicalInventoryDraft.printModal.yes',
-                                    'stockPhysicalInventoryDraft.printModal.no')
-                                    .then(function() {
-                                        $window.open(accessTokenFactory.addAccessToken(getPrintUrl(stockEventId)),
-                                            '_blank');
-                                    })
-                                    .finally(function() {
-                                        goToStockCardSummaries();
-                                    });
-                            } else {
-                                goToStockCardSummaries();
-                            }
-                            // ANGOLASUP-717: ends here
-                        }, function(errorResponse) {
-                            loadingModalService.close();
-                            alertService.error(errorResponse.data.message);
+            productsWithPriceChanged.forEach(function(productWithPriceChanged) {
+                setProductPriceForProgram(productWithPriceChanged, program);
+                priceChangesPromises.push(updateProductPrice(productWithPriceChanged.orderable,
+                    productWithPriceChanged.price));
+            });
+
+            return $q.all(priceChangesPromises).then(function() {
+                return $q.all(lotPromises)
+                    .then(function(responses) {
+                        if (errorLots !== undefined && errorLots.length > 0) {
+                            return $q.reject();
+                        }
+                        responses.forEach(function(lot) {
+                            addedLineItems.forEach(function(lineItem) {
+                                if (lineItem.lot && lineItem.lot.lotCode === lot.lotCode
+                                    && lineItem.lot.tradeItemId === lot.tradeItemId) {
+                                    lineItem.lot = lot;
+                                }
+                            });
+                            return addedLineItems;
                         });
-                })
+
+                        stockAdjustmentCreationService.submitAdjustments(program.id, facility.id,
+                            // AO-668: Use username as signature for Issue, Receive and Adjustment
+                            addedLineItems, adjustmentType, user)
+                            // AO-668: ends here
+                            // ANGOLASUP-717: Create New Issue Report
+                            .then(function(stockEventId) {
+                                if (adjustmentType.state === ADJUSTMENT_TYPE.ISSUE.state) {
+                                    confirmService.confirm('adjustmentCreation.printModal.label',
+                                        'stockPhysicalInventoryDraft.printModal.yes',
+                                        'stockPhysicalInventoryDraft.printModal.no')
+                                        .then(function() {
+                                            $window.open(accessTokenFactory.addAccessToken(getPrintUrl(stockEventId)),
+                                                '_blank');
+                                        })
+                                        .finally(function() {
+                                            goToStockCardSummaries();
+                                        });
+                                } else {
+                                    goToStockCardSummaries();
+                                }
+                                // ANGOLASUP-717: ends here
+                            }, function(errorResponse) {
+                                loadingModalService.close();
+                                alertService.error(errorResponse.data.message);
+                            });
+                    })
+                    .catch(function(errorResponse) {
+                        loadingModalService.close();
+                        if (errorLots) {
+                            var errorLotsReduced = errorLots.reduce(function(result, currentValue) {
+                                if (currentValue.error in result) {
+                                    result[currentValue.error].push(currentValue.lotCode);
+                                } else {
+                                    result[currentValue.error] = [currentValue.lotCode];
+                                }
+                                return result;
+                            }, {});
+                            for (var error in errorLotsReduced) {
+                                alertService.error(error, errorLotsReduced[error].join(', '));
+                            }
+                            vm.selectedOrderableGroup = undefined;
+                            vm.selectedLot = undefined;
+                            vm.lotChanged();
+                            return $q.reject(errorResponse.data.message);
+                        }
+                        alertService.error(errorResponse.data.message);
+                    });
+            })
                 .catch(function(errorResponse) {
                     loadingModalService.close();
-                    if (errorLots) {
-                        var errorLotsReduced = errorLots.reduce(function(result, currentValue) {
-                            if (currentValue.error in result) {
-                                result[currentValue.error].push(currentValue.lotCode);
-                            } else {
-                                result[currentValue.error] = [currentValue.lotCode];
-                            }
-                            return result;
-                        }, {});
-                        for (var error in errorLotsReduced) {
-                            alertService.error(error, errorLotsReduced[error].join(', '));
-                        }
-                        vm.selectedOrderableGroup = undefined;
-                        vm.selectedLot = undefined;
-                        vm.lotChanged();
-                        return $q.reject(errorResponse.data.message);
-                    }
+                    $q.reject();
                     alertService.error(errorResponse.data.message);
                 });
         }
@@ -924,6 +942,28 @@
                 .catch(function() {
                     return false;
                 });
+        }
+
+        function getProductsWithPriceChanged(products) {
+            return products.filter(function(product) {
+                return product.price !== getProductPrice(product);
+            });
+        }
+
+        function setProductPriceForProgram(lineItem, program) {
+            var updatedLineItem = lineItem.orderable.programs.map(function(programOrderable) {
+                if (programOrderable.programId === program.id) {
+                    programOrderable.pricePerPack = parseFloat(lineItem.price);
+                }
+                return lineItem;
+            });
+
+            lineItem = updatedLineItem;
+        }
+
+        function updateProductPrice(product) {
+            return new OrderableResource()
+                .update(product);
         }
         // AO-805: Ends here
 
