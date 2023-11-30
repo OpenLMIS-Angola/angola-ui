@@ -307,7 +307,7 @@
                 lineItem.$errors.priceInvalid = false;
                 lineItem.totalPrice = calculateTotalPrice(lineItem);
             }
-            calculateTotalCost(vm.items);
+            calculateTotalCost(vm.addedLineItems);
             return lineItem;
         };
         // AO-805: Ends here
@@ -345,10 +345,10 @@
                 lineItem.$errors.reasonInvalid = isEmpty(lineItem.reason);
             }
             // AO-805: Allow users with proper rights to edit product prices
-            if (lineItem.reason.debitReasonType) {
+            if (lineItem.reason && lineItem.reason.debitReasonType) {
                 lineItem.price = getProductPrice(lineItem);
                 lineItem.totalPrice = calculateTotalPrice(lineItem);
-                calculateTotalCost(vm.items);
+                calculateTotalCost(vm.addedLineItems);
             }
             // AO-805: Ends here
             return lineItem;
@@ -463,11 +463,13 @@
 
         // AO-805: Allow users with proper rights to edit product prices
         vm.canEditProductPrice = function(lineItem) {
+            var hasProperPermission = vm.hasPermissionToEditProductPrices.$$state.value;
             var canEditProductPrice = vm.editProductPriceAdjustmentTypes.includes(adjustmentType.state) &&
-                vm.hasPermissionToEditProductPrices.$$state.value;
+                hasProperPermission;
             if (adjustmentType.state === 'adjustment') {
                 var adjustmentReason = lineItem.reason;
-                canEditProductPrice = adjustmentReason ? (adjustmentReason.reasonType === 'CREDIT') : false;
+                canEditProductPrice = adjustmentReason ? (adjustmentReason.reasonType === 'CREDIT')
+                    && hasProperPermission : false;
             }
             return canEditProductPrice;
         };
@@ -564,7 +566,6 @@
                     }));
             });
 
-            // AO-805: Allow users with proper rights to edit product prices
             var productsWithPriceChanged = getProductsWithPriceChanged(addedLineItems);
             var priceChangesPromises = [];
 
@@ -958,6 +959,28 @@
                 .catch(function() {
                     return false;
                 });
+        }
+
+        function getProductsWithPriceChanged(products) {
+            return products.filter(function(product) {
+                return product.price !== getProductPrice(product);
+            });
+        }
+
+        function setProductPriceForProgram(lineItem, program) {
+            var updatedLineItem = lineItem.orderable.programs.map(function(programOrderable) {
+                if (programOrderable.programId === program.id) {
+                    programOrderable.pricePerPack = parseFloat(lineItem.price);
+                }
+                return lineItem;
+            });
+
+            lineItem = updatedLineItem;
+        }
+
+        function updateProductPrice(product) {
+            return new OrderableResource()
+                .update(product);
         }
         // AO-805: Ends here
 
