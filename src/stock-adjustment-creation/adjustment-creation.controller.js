@@ -39,7 +39,7 @@
         'accessTokenFactory', '$window', 'stockmanagementUrlFactory',
         // ANGOLASUP-717: ends here
         // AO-805: Allow users with proper rights to edit product prices
-        'OrderableResource', 'permissionService', 'ADMINISTRATION_RIGHTS', 'authorizationService'
+        'OrderableResource', 'permissionService', 'ADMINISTRATION_RIGHTS', 'authorizationService', 'localStorageService'
         // AO-805: Ends here
     ];
 
@@ -52,7 +52,7 @@
                         // ANGOLASUP-717: Create New Issue Report
                         // AO-805: Allow users with proper rights to edit product prices
                         accessTokenFactory, $window, stockmanagementUrlFactory, OrderableResource, permissionService,
-                        ADMINISTRATION_RIGHTS, authorizationService) {
+                        ADMINISTRATION_RIGHTS, authorizationService, localStorageService) {
         // ANGOLASUP-717: ends here
         // AO-805: Ends here
         var vm = this,
@@ -645,7 +645,6 @@
                     alertService.error(errorResponse.data.message);
                 });
         }
-        // AO-805: Ends here
 
         // ANGOLASUP-717: Create New Issue Report
         function getPrintUrl(stockEventId) {
@@ -967,6 +966,13 @@
                 .update(product);
         }
         // AO-805: Ends here
+
+        // AO-803: Track who makes product price changes
+        // function getCurrentUserId() {
+        //     var currentUserInfo = JSON.parse(localStorageService.get('currentUser'));
+        //     return currentUserInfo.id;
+        // }
+        // AO-803: Ends here
 
         onInit();
     }
