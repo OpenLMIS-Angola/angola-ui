@@ -908,7 +908,7 @@
                 return programOrderable.programId === program.id;
             });
 
-            return programOrderable.unitPrice;
+            return programOrderable.pricePerPack;
         }
 
         function calculateTotalCost(items) {
@@ -928,22 +928,6 @@
         // AO-805: Allow users with proper rights to edit product prices
         function calculateTotalPrice(lineItem) {
             return lineItem.price && lineItem.quantity ? lineItem.price * lineItem.quantity : 0;
-        }
-
-        function setProductPriceForProgram(lineItem, program) {
-            var updatedLineItem = lineItem.orderable.programs.map(function(programOrderable) {
-                if (programOrderable.programId === program.id) {
-                    programOrderable.unitPrice = parseFloat(lineItem.price);
-                }
-                return lineItem;
-            });
-
-            lineItem = updatedLineItem;
-        }
-
-        function updateProductPrice(product) {
-            return new OrderableResource()
-                .update(product);
         }
 
         function hasPermissionToEditProductPrices() {
