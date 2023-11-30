@@ -31,12 +31,12 @@
     controller.$inject = [
         '$state', 'programOrderable', 'orderableDisplayCategories', 'orderable',
         'canEdit', 'OrderableResource', 'filteredPrograms', 'FunctionDecorator', 'successNotificationKey',
-        'errorNotificationKey', 'programsMap'
+        'errorNotificationKey', 'programsMap', 'localStorageService'
     ];
 
     function controller($state, programOrderable, orderableDisplayCategories, orderable,
                         canEdit, OrderableResource, filteredPrograms, FunctionDecorator, successNotificationKey,
-                        errorNotificationKey, programsMap) {
+                        errorNotificationKey, programsMap, localStorageService) {
 
         var vm = this;
         vm.$onInit = onInit;
