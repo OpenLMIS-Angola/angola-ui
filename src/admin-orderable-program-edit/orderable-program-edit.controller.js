@@ -31,12 +31,12 @@
     controller.$inject = [
         '$state', 'programOrderable', 'orderableDisplayCategories', 'orderable',
         'canEdit', 'OrderableResource', 'filteredPrograms', 'FunctionDecorator', 'successNotificationKey',
-        'errorNotificationKey', 'programsMap', 'localStorageService'
+        'errorNotificationKey', 'programsMap'
     ];
 
     function controller($state, programOrderable, orderableDisplayCategories, orderable,
                         canEdit, OrderableResource, filteredPrograms, FunctionDecorator, successNotificationKey,
-                        errorNotificationKey, programsMap, localStorageService) {
+                        errorNotificationKey, programsMap) {
 
         var vm = this;
         vm.$onInit = onInit;
@@ -165,12 +165,5 @@
                 reload: true
             });
         }
-
-        // AO-803: Track who makes product price changes
-        // function getCurrentUserId() {
-        //     var currentUserInfo = JSON.parse(localStorageService.get('currentUser'));
-        //     return currentUserInfo.id;
-        // }
-        // AO-803: Ends here
     }
 })();
