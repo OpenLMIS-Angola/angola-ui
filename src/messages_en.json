@@ -55,8 +55,6 @@
     "digestConfiguration.requisition-convertToOrder": "Requisition - Convert To Order",
     "digestConfiguration.requisition-statusUpdate": "Requisition - Status Update",
     "openlmisTableFilter.filter": "Filter",
-    "adminRoleForm.priceChangesView": "View Stock Price Changes",
-    "adminRoleForm.editProductPriceStockManagement": "Edit Product Prices in Stock",
     "adminRoleForm.podsManage": "Manage proofs of delivery",
     "adminRoleForm.podsView": "View proofs of delivery",
     "adminRoleForm.orderFulfillmentDescription": "Provides rights for viewing, transferring, editing orders and managing proof of deliveries.",

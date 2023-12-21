@@ -12,10 +12,10 @@
 
 <form ng-submit="vm.loadStockCardSummaries()" class="sidebar">
     <openlmis-facility-program-select
-        is-supervised="vm.isSupervised"
-        facility="vm.facility"
-        program="vm.program"
-        module="'stock-card-summary-list'">
+            is-supervised="vm.isSupervised"
+            facility="vm.facility"
+            program="vm.program"
+            module="'stock-card-summary-list'">
     </openlmis-facility-program-select>
     <input type="submit" value="{{'stockCardSummaryList.search'|message}}"/>
 </form>
@@ -48,63 +48,43 @@
             {{'stockCardSummaryList.noProducts' | message}}
         </caption>
         <thead>
-            <tr>
-                <th>{{'stockCardSummaryList.productCode' | message}}</th>
-                <th>{{'stockCardSummaryList.product' | message}}</th>
-                <th>{{'stockCardSummaryList.lotCode' | message}}</th>
-                <th>{{'stockCardSummaryList.expiryDate' | message}}</th>
-                <th>{{'stockCardSummaryList.lastUpdate' | message}}</th>
-                <th>{{'stockCardSummaryList.stockOnHand' | message}}</th>
-                <!-- AO-816: Add prices to the Stock On Hand view -->
-                <th>{{'stockCardSummaryList.unitPrice' | message}}</th>
-                <th>{{'stockCardSummaryList.totalPrice' | message}}</th>
-                <!-- AO-816: Ends here -->
-                <th>{{'stockCardSummaryList.actions' | message}}</th>
-            </tr>
+        <tr>
+            <th>{{'stockCardSummaryList.productCode' | message}}</th>
+            <th>{{'stockCardSummaryList.product' | message}}</th>
+            <th>{{'stockCardSummaryList.lotCode' | message}}</th>
+            <th>{{'stockCardSummaryList.expiryDate' | message}}</th>
+            <th>{{'stockCardSummaryList.lastUpdate' | message}}</th>
+            <th>{{'stockCardSummaryList.stockOnHand' | message}}</th>
+            <th>{{'stockCardSummaryList.actions' | message}}</th>
+        </tr>
         </thead>
         <tbody>
-            <tr class="is-secondary" ng-if="vm.displayStockCardSummaries.length > 0" ng-repeat-start="summary in vm.displayStockCardSummaries">
-                <td>{{summary.orderable.productCode}}</td>
-                <td>{{summary.orderable.fullProductName}}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>{{summary.stockOnHand}}</td>
-                <!-- AO-816: Add prices to the Stock On Hand view -->
-                <td>{{summary.orderable.unitPrice | openlmisCurrency}}</td>
-                <td>{{summary.orderable.totalPrice | openlmisCurrency}}</td>
-                <!-- AO-816: Ends here -->
-                <td></td>
-            </tr>
-            <!-- AO-553: Sorted lots order by expiry date -->
-            <tr ng-repeat="fulfills in summary.canFulfillForMe | orderBy:'lot?lot.expirationDate:\'\''" ng-repeat-end>
+        <tr class="is-secondary" ng-if="vm.displayStockCardSummaries.length > 0" ng-repeat-start="summary in vm.displayStockCardSummaries">
+            <td>{{summary.orderable.productCode}}</td>
+            <td>{{summary.orderable.fullProductName}}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>{{summary.stockOnHand}}</td>
+            <td></td>
+        </tr>
+        <!-- AO-553: Sorted lots order by expiry date -->
+        <tr ng-repeat="fulfills in summary.canFulfillForMe | orderBy:'lot?lot.expirationDate:\'\''" ng-repeat-end>
             <!-- AO-553: ends here -->
-                <td>{{fulfills.orderable.productCode}}</td>
-                <td>{{fulfills.orderable.fullProductName}}</td>
-                <td>{{fulfills.lot ? fulfills.lot.lotCode : ('stockCardSummaryList.noLotDefined' | message)}}</td>
-                <td>{{fulfills.lot ? (fulfills.lot.expirationDate | openlmisDate) : ''}}</td>
-                <td>{{fulfills.occurredDate | openlmisDate}}</td>
-                <td>{{fulfills.stockOnHand}}</td>
-                <!-- AO-816: Add prices to the Stock On Hand view -->
-                <td></td>
-                <td></td>
-                <!-- AO-816: Ends here -->
-                <td>
-                    <button ng-if="fulfills.stockCard" type="button" ng-click="vm.viewSingleCard(fulfills.stockCard.id)" class="primary">
-                        {{'stockCardSummaryList.view'| message}}
-                    </button>
-                </td>
-            </tr>
+            <td>{{fulfills.orderable.productCode}}</td>
+            <td>{{fulfills.orderable.fullProductName}}</td>
+            <td>{{fulfills.lot ? fulfills.lot.lotCode : ('stockCardSummaryList.noLotDefined' | message)}}</td>
+            <td>{{fulfills.lot ? (fulfills.lot.expirationDate | openlmisDate) : ''}}</td>
+            <td>{{fulfills.occurredDate | openlmisDate}}</td>
+            <td>{{fulfills.stockOnHand}}</td>
+            <td>
+                <button ng-if="fulfills.stockCard" type="button" ng-click="vm.viewSingleCard(fulfills.stockCard.id)" class="primary">
+                    {{'stockCardSummaryList.view'| message}}
+                </button>
+            </td>
+        </tr>
         </tbody>
     </table>
     <openlmis-pagination ng-if="!vm.offline()" list="vm.displayStockCardSummaries" paged-list="vm.pagedList" pagination-id="'stockCardList'"/>
     <openlmis-pagination ng-if="vm.offline()" list="vm.stockCardSummaries" paged-list="vm.pagedList"></openlmis-pagination>
 </section>
-<!-- AO-816: Add prices to the Stock On Hand view -->
-<aside class="requisition-summary">
-    <dl>
-        <dt>{{'adjustmentCreation.totalCost' | message}}</dt>
-        <dd>{{vm.totalCost | openlmisCurrency}}</dd>
-    </dl>
-</aside>
-<!-- AO-816: Ends here -->
