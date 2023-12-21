@@ -37,6 +37,27 @@
             resolve: {
                 productPriceChanges: function() {
                     return {};
+                },
+                stockCard: function(paginationService, StockCardSummaryRepository,
+                    StockCardSummaryRepositoryImpl, $stateParams, params) {
+                    return paginationService.registerUrl($stateParams, function(stateParams) {
+                        if (stateParams.program) {
+
+                            return new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl())
+                                .query(params);
+                        }
+                        return undefined;
+                    }, {
+                        customPageParamName: 'page',
+                        customSizeParamName: 'size',
+                        paginationId: 'stockCardList'
+                    });
+                },
+                facility: function(facilityService, $stateParams) {
+                    return facilityService.get($stateParams.facility);
+                },
+                program: function(programService, $stateParams) {
+                    return programService.get($stateParams.program);
                 }
             }
         });

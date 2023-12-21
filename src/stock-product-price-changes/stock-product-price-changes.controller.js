@@ -28,35 +28,34 @@
         .module('stock-price-changes')
         .controller('stockProductPriceChangesController', controller);
 
-    controller.$inject = ['productPriceChanges'];
+    controller.$inject = ['productPriceChanges', 'stockCard', '$stateParams', 'facility', 'program'];
 
-    function controller(productPriceChanges) {
+    function controller(productPriceChanges, stockCard, $stateParams, facility, program) {
         var vm = this;
 
         vm.$onInit = onInit;
         vm.productPriceChanges = [];
         vm.displayedLineItems = [];
+        vm.stockCard = undefined;
+        vm.facility = facility;
+        vm.program = program;
 
         function onInit() {
 
             var items = [];
-            // angular.forEach(stockCard.lineItems, function(lineItem) {
-            //     if (lineItem.stockAdjustments.length > 0) {
-            //         angular.forEach(lineItem.stockAdjustments.slice().reverse(), function(adjustment, i) {
-            //             var lineValue = angular.copy(lineItem);
-            //             if (i !== 0) {
-            //                 lineValue.stockOnHand = previousSoh;
-            //             }
-            //             lineValue.reason = adjustment.reason;
-            //             lineValue.quantity = adjustment.quantity;
-            //             lineValue.stockAdjustments = [];
-            //             items.push(lineValue);
-            //             previousSoh = lineValue.stockOnHand - getSignedQuantity(adjustment);
-            //         });
-            //     } else {
-            //         items.push(lineItem);
-            //     }
-            // });
+
+            angular.forEach(stockCard, function(lineItem) {
+                if ($stateParams.singleProductId === lineItem.orderable.id) {
+                    angular.forEach(lineItem.orderable.programs, function(program) {
+                        if (program.programId === vm.program.id) {
+                            vm.stockCard = lineItem;
+                            angular.forEach(program.priceChanges, function(item) {
+                                items.push(item);
+                            });
+                        }
+                    });
+                }
+            });
 
             vm.productPriceChanges = productPriceChanges;
             vm.productPriceChanges.lineItems = items;

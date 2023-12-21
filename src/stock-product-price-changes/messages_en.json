@@ -1,3 +1,4 @@
 {
-    "singleProduct.priceChangesName": "Price Changes for ${program}"
+    "singleProduct.priceChangesName": "Price Changes for ${program}",
+    "stockCard.price": "Price"
 }

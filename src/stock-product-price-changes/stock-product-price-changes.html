@@ -1,29 +1,29 @@
 <header>
     <h2>
-      {{'singleProduct.priceChangesName' | message: {'program': 'test'} }}
+      {{'singleProduct.priceChangesName' | message: {'program': vm.stockCard.orderable.fullProductName} }}
     </h2>
   </header>
   
-  <!-- <aside class="stock-card-info">
+ <aside class="stock-card-info">
     <div class="product-name-header">
-      <span>{{vm.stockCard.orderable | productName}}</span>
+      <span>{{vm.stockCard.orderable.fullProductName}}</span>
     </div>
-  
+
     <ul>
       <li>
-        <strong>{{'stockCard.productCode'|message}}</strong>
+        <strong>{{'stockCard.productCode' | message}}</strong>
         {{vm.stockCard.orderable.productCode}}
       </li>
       <li>
         <strong>{{'stockCard.facilityName' | message}}</strong>
-        {{vm.stockCard.facility.name}}
+        {{vm.facility.name}}
       </li>
       <li>
         <strong>{{'stockCard.program' | message}}</strong>
-        {{vm.stockCard.program.name}}
+        {{vm.program.name}}
       </li>
     </ul>
-  </aside> -->
+  </aside>
   
   <section class="openlmis-table-container">
   
@@ -32,12 +32,14 @@
       <tr>
         <th>{{'stockCard.date' | message}}</th>
         <th>{{'stockCard.signature' | message}}</th>
+        <th>{{'stockCard.price' | message}}</th>
       </tr>
       </thead>
       <tbody>
-      <tr ng-repeat="lineItem in vm.displayedLineItems">
+      <tr ng-repeat="lineItem in vm.productPriceChanges.lineItems">
         <td>{{lineItem.occurredDate | openlmisDate}}</td>
-        <td>{{lineItem.signature}}</td>
+        <td>{{lineItem.author.firstName + ' ' + lineItem.author.lastName}}</td>
+        <td>{{lineItem.price}}</td>
       </tr>
       </tbody>
     </table>
