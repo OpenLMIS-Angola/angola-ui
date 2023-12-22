@@ -1,0 +1,12 @@
+{
+  "order.status.ordered": "ORDERED",
+  "order.status.received": "RECEIVED",
+  "order.status.shipped": "SHIPPED",
+  "order.status.fulfilling": "FULFILLING",
+  "order.status.transfer_failed": "TRANSFER FAILED",
+  "order.status.creating": "CREATING",
+  "order.status.in_route": "IN_ROUTE",
+  "order.status.ready_to_pack": "READY_TO_PACK",
+
+  "orderStatus.CREATING": "Creating"
+}
