@@ -32,12 +32,13 @@
     controller.$inject = [
         'supplyingFacilities', 'requestingFacilities', 'programs', 'requestingFacilityFactory',
         'loadingModalService', 'notificationService', 'fulfillmentUrlFactory', 'orders',
-        'orderService', 'orderStatusFactory', 'canRetryTransfer', '$stateParams', '$filter', '$state', '$scope'
+        'orderService', 'orderStatusFactory', 'canRetryTransfer', '$stateParams', '$filter', '$state', '$scope',
+        'ORDER_STATUSES'
     ];
 
     function controller(supplyingFacilities, requestingFacilities, programs, requestingFacilityFactory,
                         loadingModalService, notificationService, fulfillmentUrlFactory, orders, orderService,
-                        orderStatusFactory, canRetryTransfer, $stateParams, $filter, $state, $scope) {
+                        orderStatusFactory, canRetryTransfer, $stateParams, $filter, $state, $scope, ORDER_STATUSES) {
 
         var vm = this;
 
@@ -47,6 +48,7 @@
         vm.getDownloadUrl = getDownloadUrl;
         vm.retryTransfer = retryTransfer;
         vm.redirectToOrderEdit = redirectToOrderEdit;
+        vm.getOrderStatus = ORDER_STATUSES.getStatusMessage;
 
         /**
          * @ngdoc property

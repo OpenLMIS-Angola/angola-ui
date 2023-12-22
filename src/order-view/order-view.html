@@ -8,7 +8,7 @@
     <input type="submit" value="{{'orderView.search' | message}}" />
 </form>
 <section class="openlmis-table-container order-view">
-    <form ng-submit="vm.loadOrders()" >
+        <form ng-submit="vm.loadOrders()" >
         <label for="requestingFacility">{{'orderView.requestingFacility' | message}}</label>
         <select id="requestingFacility"
                 ng-model="vm.requestingFacility"
@@ -20,7 +20,7 @@
         <label>{{'orderView.status' | message}}</label>
         <select id="status"
                 ng-model="vm.status"
-                ng-options="status.value as status.name for status in vm.orderStatuses track by status.value"></select>
+                ng-options="status as status.name for status in vm.orderStatuses track by status.value"></select>
         <label for=periodStartDate>{{'orderView.periodStart' | message}}</label>
         <input id="periodStartDate" type="date" ng-model="vm.periodStartDate" max-date="vm.periodEndDate"/>
         <label for=periodEndDate>{{'orderView.periodEnd' | message}}</label>
@@ -54,7 +54,7 @@
                 <td>{{order.processingPeriod.name}}</td>
                 <td>{{order.processingPeriod.startDate | openlmisDate}}</td>
                 <td>{{order.processingPeriod.endDate | openlmisDate}}</td>
-                <td>{{order.status | orderStatus}}</td>
+                <td>{{vm.getOrderStatus(order.status)}}</td>
                 <td class="col-emergency">
                     <i ng-class="{'icon-ok': order.emergency}"></i>
                 </td>
