@@ -48,9 +48,19 @@ describe('StockCardSummaryListController', function() {
             new this.StockCardSummaryDataBuilder().build()
         ];
 
+        // AO-816: Add prices to the Stock On Hand view
         this.stateParams = {
-            param: 'param'
+            param: 'param',
+            program: 'program'
         };
+
+        this.stockCardSummaries.forEach(function(stockCardSummary) {
+            stockCardSummary.orderable.programs = [{
+                programId: 'program',
+                pricePerPack: 0
+            }];
+        });
+        // AO-816: Ends here
 
         spyOn(this.offlineService, 'isOffline').andReturn(true);
 
