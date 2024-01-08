@@ -20,9 +20,9 @@
         .module('stock-price-changes')
         .config(routes);
 
-    routes.$inject = ['$stateProvider'];
+    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
 
-    function routes($stateProvider) {
+    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.stockPriceChanges', {
             isOffline: true,
             url: '/stockPriceChanges'
@@ -38,7 +38,7 @@
                     templateUrl: 'stock-price-changes/stock-price-changes.html'
                 }
             },
-            // accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST]
+            accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
             resolve: {
                 facilityProgramData: function(facilityProgramCacheService, offlineService, $q) {
                     if (offlineService.isOffline()) {
