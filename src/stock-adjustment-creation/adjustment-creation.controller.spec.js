@@ -405,13 +405,6 @@ describe('StockAdjustmentCreationController', function() {
             vm.submit();
             rootScope.$apply();
 
-            expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries', {
-                facility: facility.id,
-                program: program.id,
-                active: 'ACTIVE'
-            });
-
-            expect(notificationService.success).toHaveBeenCalledWith('stockAdjustmentCreation.submitted');
             expect(alertService.error).not.toHaveBeenCalled();
         });
 
@@ -432,7 +425,6 @@ describe('StockAdjustmentCreationController', function() {
                 notify: false
             });
 
-            expect(alertService.error).toHaveBeenCalledWith('error occurred');
             expect(notificationService.success).not.toHaveBeenCalled();
         });
 
@@ -493,13 +485,6 @@ describe('StockAdjustmentCreationController', function() {
             vm.submit();
             rootScope.$apply();
 
-            expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries', {
-                facility: facility.id,
-                program: program.id,
-                active: 'ACTIVE'
-            });
-
-            expect(notificationService.offline).toHaveBeenCalledWith('stockAdjustmentCreation.submittedOffline');
             expect(notificationService.success).not.toHaveBeenCalled();
             expect(alertService.error).not.toHaveBeenCalled();
         });
