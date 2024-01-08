@@ -567,13 +567,12 @@
             });
 
             var productsWithPriceChanged = getProductsWithPriceChanged(addedLineItems);
+            var lastProductWithPriceChanged = productsWithPriceChanged[productsWithPriceChanged.length - 1];
             var priceChangesPromises = [];
 
-            productsWithPriceChanged.forEach(function(productWithPriceChanged) {
-                setProductPriceForProgram(productWithPriceChanged, program);
-                priceChangesPromises.push(updateProductPrice(productWithPriceChanged.orderable,
-                    productWithPriceChanged.price));
-            });
+            setProductPriceForProgram(lastProductWithPriceChanged, program);
+            priceChangesPromises.push(updateProductPrice(lastProductWithPriceChanged.orderable,
+                lastProductWithPriceChanged.price));
 
             return $q.all(priceChangesPromises).then(function() {
                 return $q.all(lotPromises)
