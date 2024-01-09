@@ -55,6 +55,10 @@
             <th>{{'stockCardSummaryList.expiryDate' | message}}</th>
             <th>{{'stockCardSummaryList.lastUpdate' | message}}</th>
             <th>{{'stockCardSummaryList.stockOnHand' | message}}</th>
+            <!-- AO-816: Add prices to the Stock On Hand view -->
+            <th>{{'stockCardSummaryList.unitPrice' | message}}</th>
+            <th>{{'stockCardSummaryList.totalPrice' | message}}</th>
+            <!-- AO-816: Ends here -->
             <th>{{'stockCardSummaryList.actions' | message}}</th>
         </tr>
         </thead>
@@ -66,6 +70,10 @@
             <td></td>
             <td></td>
             <td>{{summary.stockOnHand}}</td>
+            <!-- AO-816: Add prices to the Stock On Hand view -->
+            <td>{{summary.orderable.unitPrice | openlmisCurrency}}</td>
+            <td>{{summary.orderable.totalPrice | openlmisCurrency}}</td>
+            <!-- AO-816: Ends here -->
             <td></td>
         </tr>
         <!-- AO-553: Sorted lots order by expiry date -->
@@ -77,6 +85,10 @@
             <td>{{fulfills.lot ? (fulfills.lot.expirationDate | openlmisDate) : ''}}</td>
             <td>{{fulfills.occurredDate | openlmisDate}}</td>
             <td>{{fulfills.stockOnHand}}</td>
+            <!-- AO-816: Add prices to the Stock On Hand view -->
+            <td></td>
+            <td></td>
+            <!-- AO-816: Ends here -->
             <td>
                 <button ng-if="fulfills.stockCard" type="button" ng-click="vm.viewSingleCard(fulfills.stockCard.id)" class="primary">
                     {{'stockCardSummaryList.view'| message}}
@@ -88,3 +100,11 @@
     <openlmis-pagination ng-if="!vm.offline()" list="vm.displayStockCardSummaries" paged-list="vm.pagedList" pagination-id="'stockCardList'"/>
     <openlmis-pagination ng-if="vm.offline()" list="vm.stockCardSummaries" paged-list="vm.pagedList"></openlmis-pagination>
 </section>
+<!-- AO-816: Add prices to the Stock On Hand view -->
+<aside class="requisition-summary">
+    <dl>
+        <dt>{{'adjustmentCreation.totalCost' | message}}</dt>
+        <dd>{{vm.totalCost | openlmisCurrency}}</dd>
+    </dl>
+</aside>
+<!-- AO-816: Ends here -->

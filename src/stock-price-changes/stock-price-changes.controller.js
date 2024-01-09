@@ -19,14 +19,14 @@
 
     /**
      * @ngdoc controller
-     * @name stock-card-summary-list.controller:StockCardSummaryListController
+     * @name stock-price-changes.controller:StockPriceChangesListController
      *
      * @description
      * Controller responsible displaying Stock Card Summaries.
      */
     angular
-        .module('stock-card-summary-list')
-        .controller('StockCardSummaryListController', controller);
+        .module('stock-price-changes')
+        .controller('StockPriceChangesController', controller);
 
     controller.$inject = [
         'loadingModalService', '$state', '$stateParams', 'StockCardSummaryRepositoryImpl', 'stockCardSummaries',
@@ -39,15 +39,31 @@
 
         vm.$onInit = onInit;
         vm.loadStockCardSummaries = loadStockCardSummaries;
-        vm.viewSingleCard = viewSingleCard;
-        vm.print = print;
+        vm.viewSingleProduct = viewSingleProduct;
         vm.search = search;
         vm.offline = offlineService.isOffline;
-        vm.goToPendingOfflineEventsPage = goToPendingOfflineEventsPage;
 
         /**
          * @ngdoc property
-         * @propertyOf stock-card-summary-list.controller:StockCardSummaryListController
+         * @propertyOf stock-price-changes.controller:StockPriceChangesListController
+         * @name productCode
+         * @type {String}
+         *
+         */
+        vm.productCode = $stateParams.productCode;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-price-changes.controller:StockPriceChangesListController
+         * @name productName
+         * @type {String}
+         *
+         */
+        vm.productName = $stateParams.productName;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-price-changes.controller:StockPriceChangesListController
          * @name stockCardSummaries
          * @type {Array}
          *
@@ -58,7 +74,7 @@
 
         /**
          * @ngdoc property
-         * @propertyOf stock-card-summary-list.controller:StockCardSummaryListController
+         * @propertyOf stock-price-changes.controller:StockPriceChangesListController
          * @name displayStockCardSummaries
          * @type {Array}
          *
@@ -69,7 +85,7 @@
 
         /**
          * @ngdoc property
-         * @propertyOf stock-card-summary-list.controller:StockCardSummaryListController
+         * @propertyOf stock-price-changes.controller:StockPriceChangesListController
          * @name includeInactive
          * @type {Boolean}
          *
@@ -79,69 +95,20 @@
         vm.includeInactive = $stateParams.includeInactive;
 
         /**
-         * @ngdoc property
-         * @propertyOf stock-card-summary-list.controller:StockCardSummaryListController
-         * @name productCode
-         * @type {String}
-         *
-         */
-        vm.productCode = $stateParams.productCode;
-
-        /**
-         * @ngdoc property
-         * @propertyOf stock-card-summary-list.controller:StockCardSummaryListController
-         * @name productName
-         * @type {String}
-         *
-         */
-        vm.productName = $stateParams.productName;
-
-        /**
-         * @ngdoc property
-         * @propertyOf stock-card-summary-list.controller:StockCardSummaryListController
-         * @name lotCode
-         * @type {String}
-         *
-         */
-        vm.lotCode = $stateParams.lotCode;
-
-        // AO-816: Add prices to the Stock On Hand view
-        /**
-         * @ngdoc property
-         * @propertyOf stock-card-summary-list.controller:StockCardSummaryListController
-         * @name totalCost
-         * @type {Number}
-         *
-         * @description
-         * Holds total cost of adjustments line items
-         */
-        vm.totalCost = 0;
-        // AO-816: Ends here
-
-        /**
          * @ngdoc method
-         * @methodOf stock-card-summary-list.controller:StockCardSummaryListController
+         * @methodOf stock-price-changes.controller:StockPriceChangesListController
          * @name getStockSummaries
          *
          * @description
-         * Initialization method for StockCardSummaryListController.
+         * Initialization method for StockPriceChangesListController.
          */
         function onInit() {
-            // AO-816: Add prices to the Stock On Hand view
-            stockCardSummaries.forEach(function(stockCardSummary) {
-                stockCardSummary.orderable.unitPrice = getProductPrice(stockCardSummary);
-                stockCardSummary.orderable.totalPrice = stockCardSummary.orderable.unitPrice *
-                    stockCardSummary.stockOnHand;
-            });
-            calculateTotalCost(stockCardSummaries);
-            // AO-816: Ends here
-            vm.stockCardSummaries = stockCardSummaries;
             vm.displayStockCardSummaries = angular.copy(stockCardSummaries);
             checkCanFulFillIsEmpty();
             paginationService.registerList(null, $stateParams, function() {
                 return vm.displayStockCardSummaries;
             }, {
-                paginationId: 'stockCardSummaries'
+                paginationId: 'stockCardList'
             });
             $scope.$watchCollection(function() {
                 return vm.pagedList;
@@ -154,7 +121,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-card-summary-list.controller:StockCardSummaryListController
+         * @methodOf stock-price-changes.controller:StockPriceChangesListController
          * @name loadStockCardSummaries
          *
          * @description
@@ -167,47 +134,33 @@
             stateParams.program = vm.program.id;
             stateParams.active = STOCKCARD_STATUS.ACTIVE;
             stateParams.supervised = vm.isSupervised;
-
-            stateParams.productName = vm.productName;
             stateParams.productCode = vm.productCode;
-            stateParams.lotCode = vm.lotCode;
+            stateParams.productName = vm.productName;
 
-            $state.go('openlmis.stockmanagement.stockCardSummaries', stateParams, {
+            $state.go('openlmis.stockmanagement.stockPriceChanges', stateParams, {
                 reload: true
             });
         }
 
         /**
          * @ngdoc method
-         * @methodOf stock-card-summary-list.controller:StockCardSummaryListController
-         * @name viewSingleCard
+         * @methodOf stock-price-changes.controller:StockPriceChangesListController
+         * @name viewSingleProduct
          *
          * @description
          * Go to the clicked stock card's page to view its details.
          *
-         * @param {String} stockCardId the Stock Card UUID
+         * @param {String} productId the Product UUID
          */
-        function viewSingleCard(stockCardId) {
-            $state.go('openlmis.stockmanagement.stockCardSummaries.singleCard', {
-                stockCardId: stockCardId
+        function viewSingleProduct(productId) {
+            $state.go('openlmis.stockmanagement.stockPriceChanges.singleProduct', {
+                singleProductId: productId
             });
         }
 
         /**
          * @ngdoc method
-         * @methodOf stock-card-summary-list.controller:StockCardSummaryListController
-         * @name print
-         *
-         * @description
-         * Print SOH summary of current selected program and facility.
-         */
-        function print() {
-            new StockCardSummaryRepositoryImpl().print(vm.program.id, vm.facility.id);
-        }
-
-        /**
-         * @ngdoc method
-         * @methodOf stock-card-summary-list.controller:StockCardSummaryListController
+         * @methodOf stock-price-changes.controller:StockPriceChangesListController
          * @name search
          */
         function search() {
@@ -217,33 +170,19 @@
             stateParams.program = vm.program.id;
             stateParams.supervised = vm.isSupervised;
             stateParams.includeInactive = vm.includeInactive;
-
             stateParams.productCode = vm.productCode;
             stateParams.productName = vm.productName;
-            stateParams.lotCode = vm.lotCode;
             stateParams.page = 0;
             stateParams.size = 10;
 
-            $state.go('openlmis.stockmanagement.stockCardSummaries', stateParams, {
+            $state.go('openlmis.stockmanagement.stockPriceChanges', stateParams, {
                 reload: true
             });
         }
 
         /**
          * @ngdoc method
-         * @methodOf stock-card-summary-list.controller:StockCardSummaryListController
-         * @name goToPendingOfflineEventsPage
-         *
-         * @description
-         * Takes the user to the pending offline events page.
-         */
-        function goToPendingOfflineEventsPage() {
-            $state.go('openlmis.pendingOfflineEvents');
-        }
-
-        /**
-         * @ngdoc method
-         * @methodOf stock-card-summary-list.controller:StockCardSummaryListController
+         * @methodOf stock-price-changes.controller:StockPriceChangesListController
          * @name checkCanFulFillIsEmpty
          *
          * @description
@@ -256,24 +195,5 @@
                 }
             });
         }
-
-        // AO-816: Add prices to the Stock On Hand view
-        function getProductPrice(product) {
-            var programOrderable = product.orderable.programs.find(function(programOrderable) {
-                return programOrderable.programId === $stateParams.program;
-            });
-
-            return programOrderable.pricePerPack;
-        }
-
-        function calculateTotalCost(stockCardSummaries) {
-            var sum = 0;
-            stockCardSummaries.forEach(function(stockCardSummary) {
-                sum += stockCardSummary.orderable.totalPrice;
-            });
-
-            vm.totalCost = sum;
-        }
-        // AO-816: Ends here
     }
 })();
