@@ -117,6 +117,14 @@
                     vm.displayStockCardSummaries = newList;
                 }
             }, true);
+
+            angular.forEach(vm.displayStockCardSummaries, function(item) {
+                angular.forEach(item.orderable.programs, function(program) {
+                    if ($stateParams.program === program.programId) {
+                        item.pricePerPack = program.pricePerPack;
+                    }
+                });
+            });
         }
 
         /**
@@ -153,9 +161,12 @@
          * @param {String} productId the Product UUID
          */
         function viewSingleProduct(productId) {
-            $state.go('openlmis.stockmanagement.stockPriceChanges.singleProduct', {
-                singleProductId: productId
-            });
+            var stateParams = angular.copy($stateParams);
+            stateParams.singleProductId = productId;
+            stateParams.facility = vm.facility.id;
+            stateParams.program = vm.program.id;
+
+            $state.go('openlmis.stockmanagement.stockPriceChangesForSingleProduct', stateParams);
         }
 
         /**

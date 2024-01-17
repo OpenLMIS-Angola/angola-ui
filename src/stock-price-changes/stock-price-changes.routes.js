@@ -38,7 +38,7 @@
                     templateUrl: 'stock-price-changes/stock-price-changes.html'
                 }
             },
-            accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
+            accessRights: [STOCKMANAGEMENT_RIGHTS.PRICE_CHANGES_VIEW],
             resolve: {
                 facilityProgramData: function(facilityProgramCacheService, offlineService, $q) {
                     if (offlineService.isOffline()) {

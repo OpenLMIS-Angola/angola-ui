@@ -23,8 +23,9 @@
     routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
-        $stateProvider.state('openlmis.stockmanagement.stockPriceChanges.singleProduct', {
-            url: '/:singleProductId',
+        $stateProvider.state('openlmis.stockmanagement.stockPriceChangesForSingleProduct', {
+            url: '/:singleProductId?facility&program&page&size&pricesListPage&pricesListSize',
+            label: 'stockPriceChanges.title',
             showInNavigation: false,
             views: {
                 '@openlmis': {
@@ -33,10 +34,15 @@
                     controllerAs: 'vm'
                 }
             },
-            accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW],
+            accessRights: [STOCKMANAGEMENT_RIGHTS.PRICE_CHANGES_VIEW],
             resolve: {
-                productPriceChanges: function() {
-                    return {};
+                params: function($stateParams) {
+                    var paramsCopy = angular.copy($stateParams);
+
+                    paramsCopy.facilityId = $stateParams.facility;
+                    paramsCopy.programId = $stateParams.program;
+
+                    return paramsCopy;
                 },
                 stockCard: function(paginationService, StockCardSummaryRepository,
                     StockCardSummaryRepositoryImpl, $stateParams, params) {

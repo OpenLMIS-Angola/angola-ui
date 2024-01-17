@@ -28,37 +28,45 @@
         .module('stock-price-changes')
         .controller('stockProductPriceChangesController', controller);
 
-    controller.$inject = ['productPriceChanges', 'stockCard', '$stateParams', 'facility', 'program'];
+    controller.$inject = ['stockCard', '$stateParams', 'facility', 'program', 'paginationService'];
 
-    function controller(productPriceChanges, stockCard, $stateParams, facility, program) {
+    function controller(stockCard, $stateParams, facility, program, paginationService) {
         var vm = this;
 
         vm.$onInit = onInit;
-        vm.productPriceChanges = [];
-        vm.displayedLineItems = [];
+        vm.lineItems = [];
         vm.stockCard = undefined;
         vm.facility = facility;
         vm.program = program;
+        vm.paginationId = 'priceChangesList';
 
         function onInit() {
 
             var items = [];
 
-            angular.forEach(stockCard, function(lineItem) {
-                if ($stateParams.singleProductId === lineItem.orderable.id) {
-                    angular.forEach(lineItem.orderable.programs, function(program) {
-                        if (program.programId === vm.program.id) {
-                            vm.stockCard = lineItem;
-                            angular.forEach(program.priceChanges, function(item) {
-                                items.push(item);
-                            });
-                        }
-                    });
-                }
+            paginationService.registerList(null, $stateParams, function(stateParams) {
+
+                angular.forEach(stockCard, function(lineItem) {
+                    if (stateParams.singleProductId === lineItem.orderable.id) {
+                        angular.forEach(lineItem.orderable.programs, function(program) {
+                            if (program.programId === vm.program.id) {
+                                vm.stockCard = lineItem;
+                                angular.forEach(program.priceChanges, function(item) {
+                                    items.push(item);
+                                });
+                            }
+                        });
+                    }
+                });
+
+                return items;
+            }, {
+                customPageParamName: 'pricesListPage',
+                customSizeParamName: 'pricesListSize',
+                paginationId: vm.paginationId
             });
 
-            vm.productPriceChanges = productPriceChanges;
-            vm.productPriceChanges.lineItems = items;
+            vm.lineItems = items;
         }
 
     }

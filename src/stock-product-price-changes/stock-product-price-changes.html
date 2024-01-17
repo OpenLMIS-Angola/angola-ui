@@ -36,17 +36,18 @@
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="lineItem in vm.productPriceChanges.lineItems">
+        <tr ng-repeat="lineItem in vm.displayedLineItems">
             <td>{{lineItem.occurredDate | openlmisDate}}</td>
             <td>{{lineItem.author.firstName + ' ' + lineItem.author.lastName}}</td>
-            <td>{{lineItem.price}}</td>
+            <td class="numeric">{{lineItem.price | openlmisCurrency}}</td>
         </tr>
         </tbody>
     </table>
 
     <openlmis-pagination
-            list="vm.productPriceChanges.lineItems"
+            list="vm.lineItems"
             paged-list="vm.displayedLineItems"
-            pagination-id="'stockCard'">
+            pagination-id="vm.paginationId"
+            >
     </openlmis-pagination>
 </section>

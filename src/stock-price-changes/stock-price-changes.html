@@ -41,6 +41,7 @@
         <tr>
             <th>{{'stockCardSummaryList.productCode' | message}}</th>
             <th>{{'stockCardSummaryList.product' | message}}</th>
+            <th>{{'stockCardSummaryList.unitPrice' | message}}</th>
             <th>{{'stockCardSummaryList.actions' | message}}</th>
         </tr>
         </thead>
@@ -48,6 +49,7 @@
         <tr class="is-secondary" ng-if="vm.displayStockCardSummaries.length > 0" ng-repeat="summary in vm.displayStockCardSummaries">
             <td>{{summary.orderable.productCode}}</td>
             <td>{{summary.orderable.fullProductName}}</td>
+            <td>{{summary.pricePerPack | openlmisCurrency}}</td>
             <td>
                 <button type="button" ng-click="vm.viewSingleProduct(summary.orderable.id)" class="primary">
                     {{'stockCardSummaryList.view'| message}}
