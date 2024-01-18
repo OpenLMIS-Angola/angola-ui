@@ -46,7 +46,7 @@
 
             paginationService.registerList(null, $stateParams, function(stateParams) {
 
-                angular.forEach(stockCard, function(lineItem) {
+                angular.forEach(stockCard.content, function(lineItem) {
                     if (stateParams.singleProductId === lineItem.orderable.id) {
                         angular.forEach(lineItem.orderable.programs, function(program) {
                             if (program.programId === vm.program.id) {
