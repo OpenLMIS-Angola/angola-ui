@@ -45,8 +45,8 @@
             <th>{{'stockCardSummaryList.actions' | message}}</th>
         </tr>
         </thead>
-        <tbody>
-        <tr class="is-secondary" ng-if="vm.displayStockCardSummaries.length > 0" ng-repeat="summary in vm.displayStockCardSummaries">
+        <tbody>WE
+        <tr class="is-secondary" ng-repeat="summary in vm.pagedList">
             <td>{{summary.orderable.productCode}}</td>
             <td>{{summary.orderable.fullProductName}}</td>
             <td>{{summary.pricePerPack | openlmisCurrency}}</td>

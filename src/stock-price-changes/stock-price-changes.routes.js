@@ -27,7 +27,7 @@
             isOffline: true,
             url: '/stockPriceChanges'
                 + '?facility&program&supervised&page&size&includeInactive'
-                + '&productCode&productName&lotCode',
+                + '&productCode&productName&lotCode&stockCardListPage&stockCardListSize',
             label: 'stockPriceChanges.title',
             priority: 1,
             showInNavigation: true,
@@ -57,6 +57,8 @@
                     paramsCopy.orderableCode = $stateParams.productCode;
                     paramsCopy.orderableName = $stateParams.productName;
                     paramsCopy.nonEmptyOnly = true;
+
+                    paramsCopy.size = 2147483647;
 
                     delete paramsCopy.facility;
                     delete paramsCopy.program;

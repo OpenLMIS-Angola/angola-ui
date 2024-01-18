@@ -108,6 +108,8 @@
             paginationService.registerList(null, $stateParams, function() {
                 return vm.displayStockCardSummaries;
             }, {
+                customPageParamName: 'stockCardListPage',
+                customSizeParamName: 'stockCardListSize',
                 paginationId: 'stockCardList'
             });
             $scope.$watchCollection(function() {
