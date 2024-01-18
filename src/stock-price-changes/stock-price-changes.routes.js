@@ -26,8 +26,8 @@
         $stateProvider.state('openlmis.stockmanagement.stockPriceChanges', {
             isOffline: true,
             url: '/stockPriceChanges'
-                + '?facility&program&supervised&page&size&includeInactive'
-                + '&productCode&productName&lotCode',
+                + '?facility&program&supervised&includeInactive'
+                + '&productCode&productName&lotCode&stockCardListPage&stockCardListSize',
             label: 'stockPriceChanges.title',
             priority: 1,
             showInNavigation: true,
@@ -58,26 +58,22 @@
                     paramsCopy.orderableName = $stateParams.productName;
                     paramsCopy.nonEmptyOnly = true;
 
+                    // size is set 2147483647, because StockCardSummaryRepository.query is taking default value 10
+                    // which would have cut off the items if there were more than 10 of them
+                    paramsCopy.size = 2147483647;
+
                     delete paramsCopy.facility;
                     delete paramsCopy.program;
                     delete paramsCopy.supervised;
 
                     return paramsCopy;
                 },
-                stockCardSummaries: function(paginationService, StockCardSummaryRepository,
-                    StockCardSummaryRepositoryImpl, $stateParams, params) {
-                    return paginationService.registerUrl($stateParams, function(stateParams) {
-                        if (stateParams.program) {
-
-                            return new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl())
-                                .query(params);
-                        }
-                        return undefined;
-                    }, {
-                        customPageParamName: 'page',
-                        customSizeParamName: 'size',
-                        paginationId: 'stockCardList'
-                    });
+                stockCardSummaries: function(StockCardSummaryRepository, StockCardSummaryRepositoryImpl,
+                    $stateParams, params) {
+                    if ($stateParams.program) {
+                        return new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl())
+                            .query(params);
+                    }
                 }
             }
         });

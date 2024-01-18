@@ -24,7 +24,7 @@
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.stockPriceChangesForSingleProduct', {
-            url: '/:singleProductId?facility&program&page&size&pricesListPage&pricesListSize',
+            url: '/:singleProductId?facility&program&pricesListPage&pricesListSize',
             label: 'stockPriceChanges.title',
             showInNavigation: false,
             views: {
@@ -42,22 +42,18 @@
                     paramsCopy.facilityId = $stateParams.facility;
                     paramsCopy.programId = $stateParams.program;
 
+                    // size is set 2147483647, because StockCardSummaryRepository.query is taking default value 10
+                    // which would have cut off the items if there were more than 10 of them
+                    paramsCopy.size = 2147483647;
+
                     return paramsCopy;
                 },
                 stockCard: function(paginationService, StockCardSummaryRepository,
                     StockCardSummaryRepositoryImpl, $stateParams, params) {
-                    return paginationService.registerUrl($stateParams, function(stateParams) {
-                        if (stateParams.program) {
-
-                            return new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl())
-                                .query(params);
-                        }
-                        return undefined;
-                    }, {
-                        customPageParamName: 'page',
-                        customSizeParamName: 'size',
-                        paginationId: 'stockCardList'
-                    });
+                    if ($stateParams.program) {
+                        return new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl())
+                            .query(params);
+                    }
                 },
                 facility: function(facilityService, $stateParams) {
                     return facilityService.get($stateParams.facility);

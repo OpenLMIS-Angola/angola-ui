@@ -108,6 +108,8 @@
             paginationService.registerList(null, $stateParams, function() {
                 return vm.displayStockCardSummaries;
             }, {
+                customPageParamName: 'stockCardListPage',
+                customSizeParamName: 'stockCardListSize',
                 paginationId: 'stockCardList'
             });
             $scope.$watchCollection(function() {
@@ -200,11 +202,13 @@
          * Filters only not empty displayStockCardSummaries.
          */
         function checkCanFulFillIsEmpty() {
-            vm.displayStockCardSummaries = vm.displayStockCardSummaries.filter(function(summary) {
-                if (summary.canFulfillForMe.length !== 0) {
-                    return summary;
-                }
-            });
+            if (vm.displayStockCardSummaries !== undefined) {
+                vm.displayStockCardSummaries = vm.displayStockCardSummaries.content.filter(function(summary) {
+                    if (summary.canFulfillForMe.length !== 0) {
+                        return summary;
+                    }
+                });
+            }
         }
     }
 })();
