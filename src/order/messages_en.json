@@ -8,5 +8,12 @@
   "order.status.in_route": "IN_ROUTE",
   "order.status.ready_to_pack": "READY_TO_PACK",
 
-  "orderStatus.CREATING": "Creating"
+  "orderStatus.CREATING": "Creating",
+  "orderStatus.ORDERED": "Ordered",
+  "orderStatus.FULFILLING": "Fulfilling",
+  "orderStatus.RECEIVED": "Received",
+  "orderStatus.SHIPPED": "Shipped",
+  "orderStatus.TRANSFER_FAILED": "Transfer Failed",
+  "orderStatus.IN_ROUTE": "In Route",
+  "orderStatus.READY_TO_PACK": "Ready to pack"
 }
