@@ -1,0 +1,79 @@
+<h2>{{'reports.embedded.label' | message}}</h2>
+<div style="display:flex">
+    <div class="openlmis-table-container">
+        <table>
+            <caption class="error" ng-show="!vm.reportsList.stocks.length">
+                {{'report.noReports' | message}}
+            </caption>
+            <thead>
+            <tr>
+                <th>{{'report.stockReports' | message}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="report in vm.reportsList.stocks">
+                <td>
+                    <a ui-sref="{{'.superset.' + report.code}}">{{ 'report.superset.' + report.code | message}}</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="openlmis-table-container">
+        <table>
+            <caption class="error" ng-show="!vm.reportsList.requisitions.length">
+                {{'report.noReports' | message}}
+            </caption>
+            <thead>
+            <tr>
+                <th>{{'report.requisitionReports' | message}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="report in vm.reportsList.requisitions">
+                <td>
+                    <a ui-sref="{{'.superset.' + report.code}}">{{ 'report.superset.' + report.code | message}}</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="openlmis-table-container">
+        <table>
+            <caption class="error" ng-show="!vm.reportsList.orders.length">
+                {{'report.noReports' | message}}
+            </caption>
+            <thead>
+            <tr>
+                <th>{{'report.orderReports' | message}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="report in vm.reportsList.orders">
+                <td>
+                    <a ui-sref="{{'.superset.' + report.code}}">{{ 'report.superset.' + report.code | message}}</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="openlmis-table-container">
+        <table>
+            <caption class="error" ng-show="!vm.reportsList.administrations">
+                {{'report.noReports' | message}}
+            </caption>
+            <thead>
+            <tr>
+                <th>{{'report.administrationReports' | message}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="report in vm.reportsList.administrations">
+                <td>
+                    <a ui-sref="{{'.superset.' + report.code}}">{{ 'report.superset.' + report.code | message}}</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
