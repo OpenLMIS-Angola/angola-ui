@@ -28,26 +28,53 @@
         .module('report-embedded')
         .controller('reportEmbeddedController', controller);
 
-    controller.$inject = ['reportEmbeddedService', 'loadingModalService'];
+    controller.$inject = ['reportEmbeddedService', 'loadingModalService', '$state'];
 
-    function controller(reportEmbeddedService, loadingModalService) {
+    function controller(reportEmbeddedService, loadingModalService, $state) {
         var vm = this;
+
+        vm.add = add;
 
         vm.reportsList = undefined;
 
         function onInit() {
+            loadingModalService.open();
             loadReports();
-
+            loadingModalService.close();
         }
 
         function loadReports() {
-            loadingModalService.open();
+
+            var reportsList = {
+                stocks: [],
+                requisitions: [],
+                orders: [],
+                administrations: []
+            };
 
             reportEmbeddedService.getAll()
                 .then(function(reports) {
-                    vm.reportsList = reports;
-                    loadingModalService.close();
+                    reports.content.forEach(function(report) {
+                        if (report.category === 'stock') {
+                            reportsList.stocks.push(report);
+                        }
+                        if (report.category === 'requisition') {
+                            reportsList.requisitions.push(report);
+                        }
+                        if (report.category === 'order') {
+                            reportsList.orders.push(report);
+                        }
+                        if (report.category === 'administration') {
+                            reportsList.administrations.push(report);
+                        }
+                    });
+
+                    vm.reportsList = reportsList;
                 });
+        }
+
+        function add() {
+            $state.go('openlmis.reports.embedded.add');
         }
 
         vm.$onInit = onInit;

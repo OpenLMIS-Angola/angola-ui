@@ -1,9 +1,13 @@
-<h2>{{'reports.embedded.label' | message}}</h2>
-
+<header>
+    <h2>{{'reports.embedded.label' | message}}</h2>
+    <button style="float: right" class="primary add" ng-click="vm.add()">
+        {{'reports.embedded.add' | message}}
+    </button>
+</header>
 <div style="display:flex">
     <div class="openlmis-table-container">
         <table>
-            <caption class="error" ng-show="!vm.reportsList.stocks.length">
+            <caption class="error" ng-show="vm.reportsList.stocks.length === 0">
                 {{'report.noReports' | message}}
             </caption>
             <thead>
@@ -14,7 +18,7 @@
             <tbody>
             <tr ng-repeat="report in vm.reportsList.stocks">
                 <td>
-                    <a ui-sref="{{'.superset.' + report.url}}">{{ 'report.superset.' + report.url | message}}</a>
+                    <a ui-sref="{{'.superset.' + report.url}}">{{report.name | message}}</a>
                 </td>
             </tr>
             </tbody>
@@ -22,7 +26,7 @@
     </div>
     <div class="openlmis-table-container">
         <table>
-            <caption class="error" ng-show="!vm.reportsList.requisitions.length">
+            <caption class="error" ng-show="vm.reportsList.requisitions.length  === 0">
                 {{'report.noReports' | message}}
             </caption>
             <thead>
@@ -33,7 +37,7 @@
             <tbody>
             <tr ng-repeat="report in vm.reportsList.requisitions">
                 <td>
-                    <a ui-sref="{{'.superset.' + report.url}}">{{ 'report.superset.' + report.url | message}}</a>
+                    <a ui-sref="{{'.superset.' + report.url}}">{{report.name | message}}</a>
                 </td>
             </tr>
             </tbody>
@@ -41,7 +45,7 @@
     </div>
     <div class="openlmis-table-container">
         <table>
-            <caption class="error" ng-show="!vm.reportsList.orders.length">
+            <caption class="error" ng-show="vm.reportsList.orders.length === 0">
                 {{'report.noReports' | message}}
             </caption>
             <thead>
@@ -52,7 +56,7 @@
             <tbody>
             <tr ng-repeat="report in vm.reportsList.orders">
                 <td>
-                    <a ui-sref="{{'.superset.' + report.url}}">{{ 'report.superset.' + report.url | message}}</a>
+                    <a ui-sref="{{'.superset.' + report.url}}">{{report.name | message}}</a>
                 </td>
             </tr>
             </tbody>
@@ -60,7 +64,7 @@
     </div>
     <div class="openlmis-table-container">
         <table>
-            <caption class="error" ng-show="!vm.reportsList.administrations">
+            <caption class="error" ng-show="vm.reportsList.administrations === 0">
                 {{'report.noReports' | message}}
             </caption>
             <thead>
@@ -71,7 +75,7 @@
             <tbody>
             <tr ng-repeat="report in vm.reportsList.administrations">
                 <td>
-                    <a ui-sref="{{'.superset.' + report.url}}">{{ 'report.superset.' + report.url | message}}</a>
+                    <a ui-sref="{{'.superset.' + report.url}}">{{report.name | message}}</a>
                 </td>
             </tr>
             </tbody>

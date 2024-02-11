@@ -25,22 +25,26 @@
 
     function service(openlmisUrlFactory, $resource) {
 
-        var resource = $resource(openlmisUrlFactory('/api/embeddedReports'), {}, {
+        var resource = $resource(openlmisUrlFactory('/api/reports/embeddedReports'), {}, {
             get: {
                 method: 'GET',
-                url: openlmisUrlFactory('/api/embeddedReports/:id')
+                url: openlmisUrlFactory('/api/reports/embeddedReports/:id')
+            },
+            getAll: {
+                method: 'GET',
+                url: openlmisUrlFactory('/api/reports/embeddedReports')
             },
             post: {
                 method: 'POST',
-                url: openlmisUrlFactory('/api/embeddedReports')
+                url: openlmisUrlFactory('/api/reports/embeddedReports')
             },
             remove: {
                 method: 'POST',
-                url: openlmisUrlFactory('/api/embeddedReports/:id')
+                url: openlmisUrlFactory('/api/reports/embeddedReports/:id')
             },
             getAllByCategory: {
                 method: 'POST',
-                url: openlmisUrlFactory('/api/embeddedReports?category=:categoryName')
+                url: openlmisUrlFactory('/api/reports/embeddedReports?category=:categoryName')
             }
         });
 
