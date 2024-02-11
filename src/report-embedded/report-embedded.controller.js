@@ -28,20 +28,26 @@
         .module('report-embedded')
         .controller('reportEmbeddedController', controller);
 
-    controller.$inject = [];
+    controller.$inject = ['reportEmbeddedService', 'loadingModalService'];
 
-    function controller() {
+    function controller(reportEmbeddedService, loadingModalService) {
         var vm = this;
 
-        vm.reportsList = {
-            stocks: [],
-            requisitions: [],
-            orders: [],
-            administrations: []
-        };
+        vm.reportsList = undefined;
 
         function onInit() {
+            loadReports();
 
+        }
+
+        function loadReports() {
+            loadingModalService.open();
+
+            reportEmbeddedService.getAll()
+                .then(function(reports) {
+                    vm.reportsList = reports;
+                    loadingModalService.close();
+                });
         }
 
         vm.$onInit = onInit;

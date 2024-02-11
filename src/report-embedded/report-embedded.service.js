@@ -25,14 +25,58 @@
 
     function service(openlmisUrlFactory, $resource) {
 
-        var resource = $resource(openlmisUrlFactory('/api/embeddedReports'), {}, {});
+        var resource = $resource(openlmisUrlFactory('/api/embeddedReports'), {}, {
+            get: {
+                method: 'GET',
+                url: openlmisUrlFactory('/api/embeddedReports/:id')
+            },
+            post: {
+                method: 'POST',
+                url: openlmisUrlFactory('/api/embeddedReports')
+            },
+            remove: {
+                method: 'POST',
+                url: openlmisUrlFactory('/api/embeddedReports/:id')
+            },
+            getAllByCategory: {
+                method: 'POST',
+                url: openlmisUrlFactory('/api/embeddedReports?category=:categoryName')
+            }
+        });
 
         return {
-            get: get
+            get: get,
+            getAll: getAll,
+            post: post,
+            remove: remove,
+            getAllByCategory: getAllByCategory
         };
 
-        function get() {
-            return resource.get().$promise;
+        function getAll() {
+            return resource.getAll().$promise;
         }
+
+        function get(id) {
+            return resource.get({
+                id: id
+            }).$promise;
+        }
+
+        function post() {
+            return resource.post().$promise;
+        }
+
+        function remove(id) {
+            return resource.remove({
+                id: id
+            }).$promise;
+        }
+
+        function getAllByCategory(categoryName) {
+            return resource.remove({
+                categoryName: categoryName
+            }).$promise;
+        }
+
     }
 })();
