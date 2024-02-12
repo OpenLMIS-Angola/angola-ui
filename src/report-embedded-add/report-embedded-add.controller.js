@@ -26,20 +26,29 @@
         .module('report-embedded-add')
         .controller('ReportEmbeddedAddController', ReportEmbeddedAddController);
 
-    ReportEmbeddedAddController.$inject = [];
+    ReportEmbeddedAddController.$inject = ['reportEmbeddedService', 'loadingModalService'];
 
-    function ReportEmbeddedAddController() {
+    function ReportEmbeddedAddController(reportEmbeddedService, loadingModalService) {
         var vm = this;
 
         vm.goBack = goBack;
         vm.add = add;
         vm.validateField = validateField;
         vm.invalidFields = new Set();
+        vm.report = undefined;
+
+        vm.categories = ['Administration', 'Orders', 'Requistion', 'Stock'];
 
         function add() {
+            loadingModalService.open();
+
             if (validateAddReport()) {
-                // console.log('validated');
+                reportEmbeddedService.add(vm.report)
+                    .then(function() {
+                        goBack();
+                    });
             }
+
         }
 
         function goBack() {
@@ -47,9 +56,9 @@
         }
 
         function validateAddReport() {
-            var fieldsToValidate = ['name', 'URL', 'category'];
+            var fieldsToValidate = ['name', 'url', 'category'];
             fieldsToValidate.forEach(function(fieldName) {
-                validateField(vm[fieldName], fieldName);
+                validateField(vm.report[fieldName], fieldName);
             });
 
             return vm.invalidFields.size === 0;

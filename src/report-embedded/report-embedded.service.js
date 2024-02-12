@@ -34,7 +34,7 @@
                 method: 'GET',
                 url: openlmisUrlFactory('/api/reports/embeddedReports')
             },
-            post: {
+            add: {
                 method: 'POST',
                 url: openlmisUrlFactory('/api/reports/embeddedReports')
             },
@@ -51,7 +51,7 @@
         return {
             get: get,
             getAll: getAll,
-            post: post,
+            add: add,
             remove: remove,
             getAllByCategory: getAllByCategory
         };
@@ -66,8 +66,8 @@
             }).$promise;
         }
 
-        function post() {
-            return resource.post().$promise;
+        function add(report) {
+            return resource.add(report).$promise;
         }
 
         function remove(id) {

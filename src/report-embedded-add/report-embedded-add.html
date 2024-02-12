@@ -11,8 +11,8 @@
       <input
         type="text"
         id="name"
-        ng-model="vm.name"
-        ng-change="vm.validateField(vm.name, 'name')"
+        ng-model="vm.report.name"
+        ng-change="vm.validateField(vm.report.name, 'name')"
         required
       />
     </div>
@@ -26,17 +26,17 @@
     >
     <div
       class="input-control"
-      ng-class="{'is-invalid': vm.invalidFields.has('URL')}"
+      ng-class="{'is-invalid': vm.invalidFields.has('url')}"
     >
       <input
         type="text"
         id="URL"
-        ng-model="vm.URL"
-        ng-change="vm.validateField(vm.URL, 'URL')"
+        ng-model="vm.report.url"
+        ng-change="vm.validateField(vm.report.url, 'url')"
         required
       />
     </div>
-    <ul class="openlmis-invalid" ng-if="vm.invalidFields.has('URL')">
+    <ul class="openlmis-invalid" ng-if="vm.invalidFields.has('url')">
       <li>{{'adminReportAdd.fieldRequired' | message}}</li>
     </ul>
   </fieldset>
@@ -49,9 +49,10 @@
       ng-class="{'is-invalid': vm.invalidFields.has('category')}"
     >
       <select
-        id="role"
-        ng-change="vm.validateField(vm.category, 'category')"
-        ng-model="vm.role"
+        id="category"
+        ng-change="vm.validateField(vm.report.category, 'category')"
+        ng-model="vm.report.category"
+        ng-options="category for category in vm.categories"
         required
       ></select>
     </div>

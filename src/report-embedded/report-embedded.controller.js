@@ -55,16 +55,16 @@
             reportEmbeddedService.getAll()
                 .then(function(reports) {
                     reports.content.forEach(function(report) {
-                        if (report.category === 'stock') {
+                        if (report.category === 'Stock') {
                             reportsList.stocks.push(report);
                         }
-                        if (report.category === 'requisition') {
+                        if (report.category === 'Requisition') {
                             reportsList.requisitions.push(report);
                         }
-                        if (report.category === 'order') {
+                        if (report.category === 'Order') {
                             reportsList.orders.push(report);
                         }
-                        if (report.category === 'administration') {
+                        if (report.category === 'Administration') {
                             reportsList.administrations.push(report);
                         }
                     });
