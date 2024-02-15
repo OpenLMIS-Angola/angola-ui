@@ -12,27 +12,25 @@
  * the GNU Affero General Public License along with this program. If not, see
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
-
 (function() {
     'use strict';
 
     angular
-        .module('report-embedded-add')
+        .module('report-embedded')
         .config(routes);
 
     routes.$inject = ['$stateProvider', 'REPORT_RIGHTS'];
 
     function routes($stateProvider, REPORT_RIGHTS) {
-        $stateProvider.state('openlmis.reports.embedded.add', {
-            isOffline: true,
-            url: '/add',
-            label: 'adminReportAdd.title',
+        $stateProvider.state('openlmis.reports.embedded.view', {
+            url: '/reportId=:id',
             showInNavigation: false,
+            label: 'reports.embedded.view',
             views: {
                 '@openlmis': {
-                    controller: 'ReportEmbeddedAddController',
+                    controller: 'reportEmbeddedViewController',
                     controllerAs: 'vm',
-                    templateUrl: 'report-embedded-add/report-embedded-add.html'
+                    templateUrl: 'report-embedded/report-embedded-view.html'
                 }
             },
             accessRights: [REPORT_RIGHTS.EMBEDDED_REPORTS_VIEW]

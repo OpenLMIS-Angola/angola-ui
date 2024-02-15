@@ -34,13 +34,13 @@
         var vm = this;
 
         vm.add = add;
+        vm.openEmbeddedReport = openEmbeddedReport;
 
         vm.reportsList = undefined;
 
         function onInit() {
             loadingModalService.open();
             loadReports();
-            loadingModalService.close();
         }
 
         function loadReports() {
@@ -70,11 +70,18 @@
                     });
 
                     vm.reportsList = reportsList;
+                    loadingModalService.close();
                 });
         }
 
         function add() {
             $state.go('openlmis.reports.embedded.add');
+        }
+
+        function openEmbeddedReport(id) {
+            $state.go('openlmis.reports.embedded.view', {
+                id: id
+            });
         }
 
         vm.$onInit = onInit;

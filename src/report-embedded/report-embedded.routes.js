@@ -19,9 +19,9 @@
         .module('report-embedded')
         .config(routes);
 
-    routes.$inject = ['$stateProvider'];
+    routes.$inject = ['$stateProvider', 'REPORT_RIGHTS'];
 
-    function routes($stateProvider) {
+    function routes($stateProvider, REPORT_RIGHTS) {
         $stateProvider.state('openlmis.reports.embedded', {
             url: '/embedded-reports',
             showInNavigation: true,
@@ -33,7 +33,8 @@
                     controllerAs: 'vm',
                     templateUrl: 'report-embedded/report-embedded.html'
                 }
-            }
+            },
+            accessRights: [REPORT_RIGHTS.EMBEDDED_REPORTS_VIEW]
         });
     }
 })();

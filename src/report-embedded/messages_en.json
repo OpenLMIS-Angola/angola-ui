@@ -1,4 +1,5 @@
 {
-  "reports.embedded.label": "View Embedded Reports",
+  "reports.embedded.label": "Embedded Reports",
+  "reports.embedded.view": "View Embedded Report",
   "reports.embedded.add": "Add"
 }
