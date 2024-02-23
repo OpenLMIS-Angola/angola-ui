@@ -1,8 +1,8 @@
-<h2>{{'adminReportAdd.title' | message}}</h2>
+<h2>{{:: 'adminReportAdd.title' | message}}</h2>
 <form id="addReport">
   <fieldset class="form-group">
     <label for="name" class="is-required"
-      >{{'adminReportAdd.name' | message}}</label
+      >{{:: 'adminReportAdd.name' | message}}</label
     >
     <div
       class="input-control"
@@ -22,7 +22,7 @@
   </fieldset>
   <fieldset class="form-group">
     <label for="URL" class="is-required"
-      >{{'adminReportAdd.URL' | message}}</label
+      >{{:: 'adminReportAdd.URL' | message}}</label
     >
     <div
       class="input-control"
@@ -42,7 +42,7 @@
   </fieldset>
   <fieldset class="form-group">
     <label for="category" class="is-required"
-      >{{'adminReportAdd.category' | message}}</label
+      >{{:: 'adminReportAdd.category' | message}}</label
     >
     <div
       class="input-control"
@@ -62,8 +62,8 @@
   </fieldset>
 </form>
 <div class="openlmis-toolbar">
-  <button ng-click="vm.goBack()">{{'adminReportAdd.cancel' | message}}</button>
+  <button ng-click="vm.goBack()">{{:: 'adminReportAdd.cancel' | message}}</button>
   <button ng-click="vm.add()" class="primary">
-    {{'adminReportAdd.add' | message}}
+    {{:: 'adminReportAdd.add' | message}}
   </button>
 </div>

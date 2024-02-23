@@ -48,7 +48,6 @@
                         goBack();
                     });
             }
-
         }
 
         function goBack() {

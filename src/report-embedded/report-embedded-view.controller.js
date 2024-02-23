@@ -34,26 +34,22 @@
                                           $sce) {
         var vm = this;
 
+        vm.$onInit = onInit;
         vm.reportUrl = undefined;
-        vm.isReady = false;
 
         function onInit() {
             loadingModalService.open();
 
             reportEmbeddedService.get($stateParams.id)
                 .then(function(report) {
-                    vm.reportUrl = report.url;
-                    vm.isReady = true;
+                    vm.reportUrl = trustSrc(report.url);
 
                     loadingModalService.close();
                 });
         }
 
-        $scope.trustSrc = function(src) {
+        function trustSrc(src) {
             return $sce.trustAsResourceUrl(src);
-        };
-
-        onInit();
+        }
     }
-
 })();
