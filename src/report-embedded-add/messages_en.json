@@ -1,0 +1,12 @@
+{
+    "adminReportAdd.title": "Add Embedded Report",
+    "adminReportAdd.URL": "URL",
+    "adminReportAdd.name": "Name",
+    "adminReportAdd.category": "Category",
+    "adminReportAdd.add": "Add",
+    "adminReportAdd.cancel": "Cancel",
+    "adminReportAdd.fieldRequired": "This field is required",
+    "adminReportAdd.update.confirm": "Do you really want to add the Report?",
+    "adminReportAdd.supplyLineUpdatedSuccessfully": "Report has been added successfully.",
+    "adminReportAdd.failure": "Failed to add the Report."
+}

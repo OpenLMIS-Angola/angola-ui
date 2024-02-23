@@ -1,0 +1,69 @@
+<h2>{{:: 'adminReportAdd.title' | message}}</h2>
+<form id="addReport">
+  <fieldset class="form-group">
+    <label for="name" class="is-required"
+      >{{:: 'adminReportAdd.name' | message}}</label
+    >
+    <div
+      class="input-control"
+      ng-class="{'is-invalid': vm.invalidFields.has('name')}"
+    >
+      <input
+        type="text"
+        id="name"
+        ng-model="vm.report.name"
+        ng-change="vm.validateField(vm.report.name, 'name')"
+        required
+      />
+    </div>
+    <ul class="openlmis-invalid" ng-if="vm.invalidFields.has('name')">
+      <li>{{'adminReportAdd.fieldRequired' | message}}</li>
+    </ul>
+  </fieldset>
+  <fieldset class="form-group">
+    <label for="URL" class="is-required"
+      >{{:: 'adminReportAdd.URL' | message}}</label
+    >
+    <div
+      class="input-control"
+      ng-class="{'is-invalid': vm.invalidFields.has('url')}"
+    >
+      <input
+        type="text"
+        id="URL"
+        ng-model="vm.report.url"
+        ng-change="vm.validateField(vm.report.url, 'url')"
+        required
+      />
+    </div>
+    <ul class="openlmis-invalid" ng-if="vm.invalidFields.has('url')">
+      <li>{{'adminReportAdd.fieldRequired' | message}}</li>
+    </ul>
+  </fieldset>
+  <fieldset class="form-group">
+    <label for="category" class="is-required"
+      >{{:: 'adminReportAdd.category' | message}}</label
+    >
+    <div
+      class="input-control"
+      ng-class="{'is-invalid': vm.invalidFields.has('category')}"
+    >
+      <select
+        id="category"
+        ng-change="vm.validateField(vm.report.category, 'category')"
+        ng-model="vm.report.category"
+        ng-options="category for category in vm.categories"
+        required
+      ></select>
+    </div>
+    <ul class="openlmis-invalid" ng-if="vm.invalidFields.has('category')">
+      <li>{{'adminReportAdd.fieldRequired' | message}}</li>
+    </ul>
+  </fieldset>
+</form>
+<div class="openlmis-toolbar">
+  <button ng-click="vm.goBack()">{{:: 'adminReportAdd.cancel' | message}}</button>
+  <button ng-click="vm.add()" class="primary">
+    {{:: 'adminReportAdd.add' | message}}
+  </button>
+</div>
