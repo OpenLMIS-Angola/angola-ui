@@ -1,0 +1,127 @@
+<div class="modal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" style="width: 613px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title">
+                    <h2>{{'adminFacilitySupervisoryNodeAdd.addSupervisoryNode' | message}}</h2>
+                </h1>
+            </div>
+            <div class="modal-body">
+                <form id="addSupervisoryNode" ng-submit="vm.addSupervisoryNode()">
+                    <label for="code">{{'adminFacilitySupervisoryNodeAdd.code' | message}}</label>
+                    <input id="code" class="form-control" ng-model="vm.supervisoryNode.code" required/>
+                    <label for="supervisoryNodeName">{{'adminFacilitySupervisoryNodeAdd.supervisoryNodeName' | message}}</label>
+                    <input id="supervisoryNodeName" class="form-control" ng-model="vm.supervisoryNode.name" required/>
+                    <label for="facility">{{'adminFacilitySupervisoryNodeAdd.associatedFacility' | message}}</label>
+                    <select id="facility"
+                            class="form-control"
+                            ng-model="vm.supervisoryNode.facility"
+                            ng-options="facility as facility.name for (facilityId, facility) in vm.facilitiesMap track by facility.id"
+                    >
+                    </select>
+                    <label for="parentSupervisoryNode">{{'adminFacilitySupervisoryNodeAdd.parentNode' | message}}</label>
+                    <select id="parentSupervisoryNode"
+                            class="form-control"
+                            ng-model="vm.supervisoryNode.parentNode"
+                            ng-options="supervisoryNode as supervisoryNode.name for supervisoryNode in vm.parentNodes track by supervisoryNode.id">
+                    </select>
+                    <label for="description">{{'adminFacilitySupervisoryNodeAdd.description' | message}}</label>
+                    <textarea id="description" ng-model="vm.supervisoryNode.description"></textarea>
+                    <label class="checkbox">
+                        <input id="skip-approval" type="checkbox" ng-model="vm.supervisoryNode.extraData.skipSecondApproval" />
+                        {{'adminFacilitySupervisoryNodeAdd.skipSecondApproval' | message}}
+                    </label>&nbsp;
+                </form>
+                <label>{{'adminFacilitySupervisoryNodeAdd.childNodes' | message}}</label>
+                <section class="openlmis-table-container">
+                        <section class="is-primary">
+                            <form class="form-inline" ng-submit="vm.addChildNode()" reload-form>
+                                <div>
+                                    <label for="selectedChildNode">{{'adminFacilitySupervisoryNodeAdd.supervisoryNode' | message}}</label>
+                                    <select id="selectedChildNode"
+                                            class="form-control"
+                                            ng-model="vm.selectedChildNode"
+                                            ng-options="supervisoryNode as supervisoryNode.name for supervisoryNode in vm.childNodes"
+                                            >
+                                    </select>
+                                </div>
+                                <button type="submit" class="add">{{'adminFacilitySupervisoryNodeAdd.add' | message}}</button>
+                            </form>
+                        </section>
+                    <table>
+                        <caption ng-if="!vm.supervisoryNode.childNodes || !vm.supervisoryNode.childNodes.length">
+                            {{'adminFacilitySupervisoryNodeAdd.noChildNodes' | message}}
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th>{{'adminFacilitySupervisoryNodeAdd.name' | message}}</th>
+                                <th>{{'adminFacilitySupervisoryNodeAdd.code' | message}}</th>
+                                <th>{{'adminFacilitySupervisoryNodeAdd.facility' | message}}</th>
+                                <th>{{'adminFacilitySupervisoryNodeAdd.actions' | message}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="node in vm.supervisoryNode.childNodes" ng-init="nodeDetails = vm.supervisoryNodesMap[node.id]">
+                                <td>{{nodeDetails.name}}</td>
+                                <td>{{nodeDetails.code}}</td>
+                                <td ng-if="nodeDetails.facility">{{vm.facilitiesMap[nodeDetails.facility.id].name}}</td>
+                                <td ng-if="!nodeDetails.facility"></td>
+                                <td>
+                                    <button class="danger" ng-click="vm.removeChildNode(node)">
+                                        {{'adminFacilitySupervisoryNodeAdd.removeChildNode' | message}}
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+                <label>{{'adminFacilitySupervisoryNodeAdd.partnerNodes' | message}}</label>
+                <section class="openlmis-table-container">
+                    <section class="is-primary">
+                        <form class="form-inline" ng-submit="vm.addPartnerNode()" reload-form>
+                            <div>
+                                <label for="selectedPartnerNode">{{'adminFacilitySupervisoryNodeAdd.supervisoryNode' | message}}</label>
+                                <select id="selectedPartnerNode"
+                                        class="form-control"
+                                        ng-model="vm.selectedPartnerNode"
+                                        ng-options="supervisoryNode as supervisoryNode.name for supervisoryNode in vm.partnerNodes track by supervisoryNode.id"
+                                        >
+                                </select>
+                            </div>
+                            <button type="submit" class="add">{{'adminFacilitySupervisoryNodeAdd.add' | message}}</button>
+                        </form>
+                    </section>
+                    <table>
+                        <caption ng-if="!vm.supervisoryNode.partnerNodes || !vm.supervisoryNode.partnerNodes.length">
+                            {{'adminFacilitySupervisoryNodeAdd.noPartnerNodes' | message}}
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th>{{'adminFacilitySupervisoryNodeAdd.name' | message}}</th>
+                                <th>{{'adminFacilitySupervisoryNodeAdd.code' | message}}</th>
+                                <th>{{'adminFacilitySupervisoryNodeAdd.facility' | message}}</th>
+                                <th>{{'adminFacilitySupervisoryNodeAdd.actions' | message}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="partnerNode in vm.supervisoryNode.partnerNodes">
+                                <td>{{vm.supervisoryNodesMap[partnerNode.id].name}}</td>
+                                <td>{{vm.supervisoryNodesMap[partnerNode.id].code}}</td>
+                                <td>{{vm.facilitiesMap[vm.supervisoryNodesMap[partnerNode.id].facility.id].name}}</td>
+                                <td>
+                                    <button class="danger" ng-click="vm.removePartnerNode(partnerNode)">
+                                        {{'adminFacilitySupervisoryNodeAdd.removePartnerNode' | message}}
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+            <div class="modal-footer">
+                <button class="primary" type="submit" form="addSupervisoryNode">{{'adminFacilitySupervisoryNodeAdd.addSupervisoryNode' | message}}</button>
+                <button ng-click="vm.cancelSupervisoryNode()">{{'adminFacilitySupervisoryNodeAdd.cancel' | message}}</button>
+            </div>
+        </div>
+    </div>
+</div>

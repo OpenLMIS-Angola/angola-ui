@@ -1,0 +1,46 @@
+<div class="modal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1>{{'adminFacilityAdd.addFacility' | message}}</h1>
+            </div>
+            <div class="modal-body">
+                <form id="add-facility-form" ng-submit="vm.save()">
+                    <ng-include src="'admin-facility-add/facility-information.html'"></ng-include>
+                </form>
+                <!--AO-849: start here-->
+                <label for="requisitionGroup">{{'adminFacilityAdd.requisitionGroup' | message}}</label>
+                <select id="requisitionGroup" ng-model="vm.selectedRequisitionGroup" ng-change="vm.addRequisitionGroup()"
+                        ng-options="requisitionGroup as requisitionGroup.name for requisitionGroup in vm.requisitionGroups track by requisitionGroup.id"
+                >
+                </select>
+                <section class="openlmis-table-container" >
+                    <table>
+                        <caption ng-if="!vm.selectedRequisitionGroups || vm.selectedRequisitionGroups.length === 0">
+                            {{'adminFacilityAdd.noRequisitionGroups' | message}}
+                        </caption>
+                        <thead>
+                        <tr>
+                            <th>{{'adminFacilityAdd.name' | message}}</th>
+                            <th>{{'adminFacilityAdd.actions' | message}}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="requisitionGroup in vm.selectedRequisitionGroups">
+                            <td>{{requisitionGroup.name}}</td>
+                            <td>
+                                <button ng-click="vm.removeRequisitionGroup(requisitionGroup)">{{'adminFacilityAdd.removeRequisitionGroup' | message}}</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </section>
+                <!--AO-849: end here-->
+            </div>
+            <div class="modal-footer">
+                <button id="cancel" ng-click="vm.goToPreviousState()">{{'adminFacilityAdd.cancel' | message}}</button>
+                <button class="primary" form="add-facility-form">{{'adminFacilityAdd.save' | message}}</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,38 @@
+<div class="modal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title">
+                    <h2>{{'adminSupplyLineAdd.addSupplyLine' | message}}</h2>
+                </h1>
+            </div>
+            <div class="modal-body">
+                <form id="addSupplyLine">
+                    <fieldset class="form-group">
+                        <label for="program">{{'adminSupplyLineAdd.program' | message}}</label>
+                        <select id="program" class="form-control" ng-model="vm.supplyLine.program"
+                                ng-options="program.name for program in vm.programs track by program.id" required></select>
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label for="supervisoryNode">{{'adminSupplyLineAdd.supervisoryNode' | message}}</label>
+                        <select id="supervisoryNode" class="form-control" ng-model="vm.supplyLine.supervisoryNode"
+                                ng-options="supervisoryNode.code for supervisoryNode in vm.supervisoryNodes track by supervisoryNode.id" required></select>
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label for="supplyingFacility">{{'adminSupplyLineAdd.supplyingFacility' | message}}</label>
+                        <select id="supplyingFacility" class="form-control" ng-model="vm.supplyLine.supplyingFacility"
+                                ng-options="facility.name for facility in vm.facilities track by facility.id" required></select>
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label for="description">{{'adminSupplyLineAdd.description' | message}}</label>
+                        <textarea id="description" class="form-control" ng-model="vm.supplyLine.description"></textarea>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button ng-click="vm.cancelSupplyLine()">{{'adminSupplyLineAdd.cancel' | message}}</button>
+                <button class="primary add" ng-click="vm.add(program, supervisoryNode, supplyingFacility, description)">{{'adminSupplyLineAdd.add' | message}}</button>
+            </div>
+        </div>
+    </div>
+</div>
