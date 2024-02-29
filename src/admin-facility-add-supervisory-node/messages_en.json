@@ -24,6 +24,6 @@
     "adminFacilitySupervisoryNodeAdd.partnerNodes": "Partner Nodes",
     "adminFacilitySupervisoryNodeAdd.removePartnerNode": "Remove Partner Node",
     "adminFacilitySupervisoryNodeAdd.skipSecondApproval": "Skip Second Approval",
-    "adminFacilitySupervisoryNodeAdd.doYouWantToAddSupplyLine": "Do you want to add Supply Line to ${facility}?",
+    "adminFacilitySupervisoryNodeAdd.doYouWantToAddSupplyLine": "Do you want to add Supply Line?",
     "adminFacilitySupervisoryNodeAdd.addSupplyLine": "Add Supply Line"
 }

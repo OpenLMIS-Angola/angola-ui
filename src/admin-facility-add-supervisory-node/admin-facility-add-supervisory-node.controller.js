@@ -30,11 +30,11 @@
 
     controller.$inject = ['$state', 'facilitiesMap', '$q', 'supervisoryNodesMap', 'supervisoryNodes',
         'AdminFacilityAddSupervisoryNodeService', 'loadingModalService', 'messageService', 'confirmService',
-        '$stateParams', 'stateTrackerService'];
+        '$stateParams', 'stateTrackerService', 'FacilityRepository'];
 
     function controller($state, facilitiesMap, $q, supervisoryNodesMap, supervisoryNodes,
                         AdminFacilityAddSupervisoryNodeService, loadingModalService, messageService, confirmService,
-                        $stateParams, stateTrackerService) {
+                        $stateParams, stateTrackerService, FacilityRepository) {
 
         var vm = this;
 
@@ -146,7 +146,7 @@
                 'adminFacilitySupervisoryNodeAdd.addSupplyLine',
                 'adminFacilitySupervisoryNodeAdd.cancel').then(function() {
                 $state.go('openlmis.administration.facilities.facility.supplyLines', {
-                    facilityId: $stateParams.facilityId,
+                    facilityId: response.facility.id,
                     supervisoryNodeId: response.id
                 });
             });
