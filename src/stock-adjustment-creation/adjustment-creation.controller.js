@@ -148,9 +148,12 @@
          * Checks whether the expiration date of a particular LOT has been exceeded.
          */
         vm.isExpired = function(lot) {
-            var currentDate = new Date();
-            var currentDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
-            return lot.expirationDate < currentDay;
+            if (lot.expirationDate) {
+                var currentDate = new Date();
+                var currentDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+                return lot.expirationDate < currentDay;
+            }
+            return false;
         };
         // OAM-5: Ends here.
 
@@ -459,18 +462,27 @@
             $scope.productForm.$setPristine();
 
             vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup, vm.hasPermissionToAddNewLot);
+            // OAM-5: Lot code filter UI improvements.
             var currentDate = new Date();
             var currentDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
 
             var nonExpiredLots = [];
             var expiredLots = [];
+            var lotsWithNoExpirationDate = [];
+            var addLot = [];
 
             vm.lots.forEach(function(lot) {
-                var expirationDate = new Date(lot.expirationDate);
-                if (expirationDate >= currentDay) {
-                    nonExpiredLots.push(lot);
+                if (lot.lotCode === 'Add lot') {
+                    addLot.push(lot);
+                } else if (lot.expirationDate) {
+                    var expirationDate = new Date(lot.expirationDate);
+                    if (expirationDate >= currentDay) {
+                        nonExpiredLots.push(lot);
+                    } else {
+                        expiredLots.push(lot);
+                    }
                 } else {
-                    expiredLots.push(lot);
+                    lotsWithNoExpirationDate.push(lot);
                 }
             });
 
@@ -486,7 +498,7 @@
                 return lotAExptDate - lotBExptDate;
             });
 
-            vm.lots = nonExpiredLots.concat(expiredLots);
+            vm.lots = addLot.concat(lotsWithNoExpirationDate, nonExpiredLots, expiredLots);
             // OAM-5: ends here
             vm.selectedOrderableHasLots = vm.lots.length > 0;
         };
