@@ -1,4 +1,4 @@
-(function() {
+(function () {
     'use strict';
 
     angular
@@ -19,7 +19,12 @@
 
     function compile(element) {
         var header = element.find('thead tr');
-        console.log(header);
+        header.children().each(function () {
+            var child = angular.element(this);
+            child.on('click', function () {
+                console.log('Clicked on:', child.text());
+            });
+        });
         return link;
     }
 
