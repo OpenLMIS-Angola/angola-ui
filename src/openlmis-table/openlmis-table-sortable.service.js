@@ -3,18 +3,15 @@
 
     angular
         .module('openlmis-table')
-        .factory('openlmisTableSortableService', openlmisTableSortableService);
+        .service('openlmisTableSortableService', openlmisTableSortableService);
 
-    openlmisTableSortableService.$inject = ['$timeout', 'OPENLMIS_TABLE_SORTABLE'];
+    openlmisTableSortableService.$inject = ['OPENLMIS_TABLE_SORTABLE'];
 
-    function openlmisTableSortableService($timeout, OPENLMIS_TABLE_SORTABLE) {
-        var openlmisTableSortableService = {
-            sortArrayAccordingToPropertyType: sortArrayAccordingToPropertyType,
-            getArrayName: getArrayName,
-            setupPropertiesSortingOrder: setupPropertiesSortingOrder,
-            toCamelCase: toCamelCase
-        };
-        return openlmisTableSortableService;
+    function openlmisTableSortableService(OPENLMIS_TABLE_SORTABLE) {
+        this.sortArrayAccordingToPropertyType = sortArrayAccordingToPropertyType;
+        this.getArrayName = getArrayName;
+        this.setupPropertiesSortingOrder = setupPropertiesSortingOrder;
+        this.toCamelCase = toCamelCase;
 
         function sortArrayAccordingToPropertyType(array, prop, propertiesSortingOrder, headerElements) {
             var firstElementPropertyValue = array[0][prop];
