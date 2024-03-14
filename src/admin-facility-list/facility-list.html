@@ -1,11 +1,11 @@
-<h2>{{'adminFacilityList.facilities' | message}}</h2>
-<section class="openlmis-table-container">
+<!-- <h2>{{'adminFacilityList.facilities' | message}}</h2>
+<section class="openlmis-table-container"> -->
     <!-- AO-744: Extend Admin Products and Facilities pages with print option -->
-    <button id="print-facility" class="primary" ng-click="vm.goToPrintFacilityPage()">
+    <!-- <button id="print-facility" class="primary" ng-click="vm.goToPrintFacilityPage()">
         {{'adminFacilityList.export' | message}}
-    </button>
+    </button> -->
     <!-- AO-744: ends here -->
-    <button id="add-facility" class="add" ng-click="vm.goToAddFacilityPage()">
+    <!-- <button id="add-facility" class="add" ng-click="vm.goToAddFacilityPage()">
         {{'adminFacilityList.addFacility' | message}}
     </button>
     <form ng-submit="vm.search()">
@@ -54,5 +54,31 @@
             </tr>
         </tbody>
     </table>
+    <openlmis-pagination/>
+</section> -->
+<h2>{{'adminFacilityList.facilities' | message}}</h2>
+<section class="openlmis-table-container">
+    <!-- AO-744: Extend Admin Products and Facilities pages with print option -->
+    <button id="print-facility" class="primary" ng-click="vm.goToPrintFacilityPage()">
+        {{'adminFacilityList.export' | message}}
+    </button>
+    <!-- AO-744: ends here -->
+    <button id="add-facility" class="add" ng-click="vm.goToAddFacilityPage()">
+        {{'adminFacilityList.addFacility' | message}}
+    </button>
+    <form ng-submit="vm.search()">
+        <fieldset class="form-group">
+            <label for="facilityName">{{'adminFacilityList.name' | message}}</label>
+            <input type="text" id="facilityName" ng-model="vm.facilityName"/>
+        </fieldset>
+        <fieldset class="form-group">
+            <label for="geographicZone">{{'adminFacilityList.geographicZone' | message}}</label>
+            <select id="geographicZone" ng-model="vm.geographicZone"
+                    ng-options="zone.id as zone.name for zone in vm.geographicZones">
+            </select>
+        </fieldset>
+        <input type="submit" value="{{'adminFacilityList.search' | message}}"/>
+    </form>
+    <openlmis-table table-config="vm.tableConfig"></openlmis-table>
     <openlmis-pagination/>
 </section>

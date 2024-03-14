@@ -1,0 +1,17 @@
+<table>
+    <caption ng-if="$ctrl.tableConfig.displayCaption">
+        {{$ctrl.tableConfig.caption | message}}
+    </caption>
+    <thead>
+        <tr>
+            <th ng-repeat="column in $ctrl.tableConfig.columns">{{ column.header | message}}</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="element in $ctrl.tableConfig.data" ng-init="parentIndex=$index">
+            <td ng-repeat="column in $ctrl.tableConfig.columns" ng-init="childIndex=$index">
+                <openlmis-table-element-template element-config="$ctrl.elementsConfiguration[parentIndex][childIndex]"></openlmis-table-element-template>
+            </td>
+        </tr>
+    </tbody>
+</table>

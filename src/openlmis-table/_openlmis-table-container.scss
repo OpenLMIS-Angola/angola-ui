@@ -168,7 +168,7 @@ Styleguide 4.1
   .openlmis-flex-table {
     overflow: auto;
     position: relative; // tell JS to calculate offset from here
-    > table {
+    table {
       @extend .openlmis-table;
       width: 100%;
       border: 10px solid black;
