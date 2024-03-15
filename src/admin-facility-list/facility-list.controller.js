@@ -179,7 +179,8 @@
                     {
                         header: 'adminFacilityList.actions',
                         propertyPath: 'id',
-                        template: '<button ui-sref="openlmis.administration.facilities.edit({id: \'item.id\'})">{{\'adminFacilityList.edit\' | message}}</button>'
+                        template: '<button ui-sref="openlmis.administration.facilities.edit({id: \'item.id\'})">{{\'adminFacilityList.edit\' | message}}</button>',
+                        sortable: false
                     }
                 ],
                 data: vm.facilities

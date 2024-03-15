@@ -12,50 +12,20 @@
         .module('openlmis-table')
         .controller('OpenlmisTableController', openlmisTableController);
 
-    openlmisTableController.$inject = [];
+    openlmisTableController.$inject = ['openlmisTableService', 'openlmisTableSortingService'];
 
-    function openlmisTableController() {
+    function openlmisTableController(openlmisTableService, openlmisTableSortingService) {
         var $ctrl = this;
+        $ctrl.sortTable = sortTable;
+        $ctrl.$onInit = onInit;
 
-        $ctrl.$onInit = function() {
-            $ctrl.elementsConfiguration = $ctrl.getElementsConfiguration();
-        };
-
-        $ctrl.getElementsConfiguration = function() {
-            var elementsConfiguration = [];
-            $ctrl.tableConfig.data.forEach(function(item) {
-                elementsConfiguration.push(getSingleRowConfig(item));
-            });
-            return elementsConfiguration;
-        };
-
-        function getSingleRowConfig(item) {
-            return $ctrl.tableConfig.columns.map(function(column) {
-                return {
-                    propertyPath: column.propertyPath,
-                    value: getElementPropertyValue(item, column.propertyPath),
-                    template: column.template
-                };
-            });
+        function onInit() {
+            openlmisTableSortingService.prepareHeadersClasses($ctrl.tableConfig.columns);
+            $ctrl.elementsConfiguration = openlmisTableService.getElementsConfiguration($ctrl.tableConfig);
         }
 
-        function getElementPropertyValue(obj, propertyPath) {
-            var keys = propertyPath.split('.');
-            var value = obj;
-            for (var i = 0; i < keys.length; i++) {
-                value = value[keys[i]];
-            }
-            return value;
+        function sortTable(chosenColumn) {
+            openlmisTableSortingService.sortTable($ctrl.tableConfig.columns, chosenColumn);
         }
-
-        $ctrl.getElementConfig = function(elementProperty, $index) {
-            return {
-                propertyPath: elementProperty.propertyPath,
-                value: $ctrl.tableConfig.data[$index][elementProperty.propertyPath],
-                template: elementProperty.template,
-                tableItemName: $ctrl.tableConfig.tableItemName
-            };
-        };
     }
-
 })();
