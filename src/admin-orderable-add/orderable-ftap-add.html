@@ -2,7 +2,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1>{{'adminOrderableFtapAdd.addFtap' | message}}</h1>
+                <h1>{{:: 'adminOrderableFtapAdd.addFtap' | message}}</h1>
             </div>
             <div class="modal-body">
                 <fieldset ng-disabled="!vm.canEdit">
@@ -25,10 +25,10 @@
                 </fieldset>
             </div>
             <div class="modal-footer">
-                <button ng-click="vm.goToFtapsList()">{{'adminOrderableFtapAdd.cancel' | message}}</button>
+                <button ng-click="vm.goToFtapsList()">{{:: 'adminOrderableFtapAdd.cancel' | message}}</button>
                 <div class="button-group primary">
                     <button class="primary" type="submit"
-                            form="ftapForm">{{'adminOrderableFtapAdd.addFtap' | message}}</button>
+                            form="ftapForm">{{:: 'adminOrderableFtapAdd.addFtap' | message}}</button>
                 </div>
             </div>
         </div>

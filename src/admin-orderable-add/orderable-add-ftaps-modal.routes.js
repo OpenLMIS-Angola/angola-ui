@@ -24,7 +24,7 @@
     function routes(modalStateProvider, ADMINISTRATION_RIGHTS) {
 
         modalStateProvider.state('openlmis.administration.orderables.ftap', {
-            label: 'orderableAddFtaps.AddFtaps',
+            label: 'orderableAddFtaps.addFtaps',
             url: '/:id/addFacilityTypeApprovedProducts',
             controller: 'OrderableEditFtapsListController',
             templateUrl: 'admin-orderable-add/orderable-add-ftaps-list.html',
