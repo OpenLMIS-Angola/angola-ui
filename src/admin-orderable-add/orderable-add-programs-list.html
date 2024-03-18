@@ -9,16 +9,16 @@
             <div class="modal-body">
                 <section class="openlmis-table-container">
                     <button id="add-program" class="add" ng-show="vm.canEdit" ui-sref="openlmis.administration.orderables.programs.add">
-                        {{'adminOrderableEdit.addProgram' | message}}
+                        {{:: 'adminOrderableEdit.addProgram' | message}}
                     </button>
                     <table>
                         <caption ng-if="!vm.programOrderables || vm.programOrderables.length === 0">
-                            {{'adminOrderableEdit.noAssociatedPrograms' | message}}
+                            {{:: 'adminOrderableEdit.noAssociatedPrograms' | message}}
                         </caption>
                         <thead>
                             <tr>
-                                <th>{{'adminOrderableEdit.programName' | message}}</th>
-                                <th>{{'adminOrderableEdit.actions' | message}}</th>
+                                <th>{{:: 'adminOrderableEdit.programName' | message}}</th>
+                                <th>{{:: 'adminOrderableEdit.actions' | message}}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -26,7 +26,7 @@
                                 <td>{{vm.programsMap[program.programId].name}}</td>
                                 <td>
                                     <button class="danger" ng-show="vm.canEdit" ng-click="vm.removeProgramOrderable({program})">
-                                        {{'adminOrderableEdit.remove' | message}}
+                                        {{:: 'adminOrderableEdit.remove' | message}}
                                     </button>
                                 </td>
                             </tr>

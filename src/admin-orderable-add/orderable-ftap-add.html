@@ -7,19 +7,19 @@
             <div class="modal-body">
                 <fieldset ng-disabled="!vm.canEdit">
                     <form id="ftapForm" ng-submit="vm.saveFacilityTypeApprovedProduct()">
-                        <label for="facilityType">{{'adminOrderableEdit.facilityType' | message}}</label>
+                        <label for="facilityType">{{:: 'adminOrderableEdit.facilityType' | message}}</label>
                         <select id="facilityType" ng-disabled="vm.facilityTypeApprovedProduct.id" ng-model="vm.facilityTypeApprovedProduct.facilityType"
                                 ng-options="facilityType as facilityType.name for facilityType in vm.facilityTypes track by facilityType.id" required>
                         </select>
-                        <label for="program">{{'adminOrderableEdit.program' | message}}</label>
+                        <label for="program">{{:: 'adminOrderableEdit.program' | message}}</label>
                         <select id="program" ng-disabled="vm.facilityTypeApprovedProduct.id" ng-model="vm.facilityTypeApprovedProduct.program"
                                 ng-options="program as program.name for program in vm.programs track by program.id" required>
                         </select>
-                        <label for="maxPeriodsOfStock">{{'adminOrderableEdit.maxPeriodsOfStock' | message}}</label>
+                        <label for="maxPeriodsOfStock">{{:: 'adminOrderableEdit.maxPeriodsOfStock' | message}}</label>
                         <input positive-decimal id="maxPeriodsOfStock" type="text" ng-model="vm.facilityTypeApprovedProduct.maxPeriodsOfStock" required/>
-                        <label for="emergencyOrderPoint">{{'adminOrderableEdit.emergencyOrderPoint' | message}}</label>
+                        <label for="emergencyOrderPoint">{{:: 'adminOrderableEdit.emergencyOrderPoint' | message}}</label>
                         <input positive-decimal id="emergencyOrderPoint" type="text" ng-model="vm.facilityTypeApprovedProduct.emergencyOrderPoint"/>
-                        <label for="minPeriodsOfStock">{{'adminOrderableEdit.minPeriodsOfStock' | message}}</label>
+                        <label for="minPeriodsOfStock">{{:: 'adminOrderableEdit.minPeriodsOfStock' | message}}</label>
                         <input positive-decimal id="minPeriodsOfStock" type="text" ng-model="vm.facilityTypeApprovedProduct.minPeriodsOfStock"/>
                     </form>
                 </fieldset>

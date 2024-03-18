@@ -9,17 +9,17 @@
             <div class="modal-body">
                 <section class="openlmis-table-container">
                     <button ng-if="vm.canEdit" id="add-facility-type-approved-product" class="add" ui-sref="openlmis.administration.orderables.ftap.add">
-                        {{'adminOrderableEdit.addFtap' | message}}
+                        {{:: 'adminOrderableEdit.addFtap' | message}}
                     </button>
                     <table>
                         <caption ng-if="!vm.facilityTypeApprovedProducts || vm.facilityTypeApprovedProducts.length === 0">
-                            {{'adminOrderableEdit.noAssociatedFtaps' | message}}
+                            {{:: 'adminOrderableEdit.noAssociatedFtaps' | message}}
                         </caption>
                         <thead>
                         <tr>
-                            <th>{{'adminOrderableEdit.facilityType' | message}}</th>
-                            <th>{{'adminOrderableEdit.programs' | message}}</th>
-                            <th>{{'adminOrderableEdit.actions' | message}}</th>
+                            <th>{{:: 'adminOrderableEdit.facilityType' | message}}</th>
+                            <th>{{:: 'adminOrderableEdit.programs' | message}}</th>
+                            <th>{{:: 'adminOrderableEdit.actions' | message}}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -33,7 +33,7 @@
                             <td>{{ftap.program.name}}</td>
                             <td>
                                 <button ng-if="vm.canEdit"
-                                        class="danger" ng-click="vm.deactivateFacilityTypeApproveProduct(ftap)">{{'adminOrderableEdit.remove' | message}}
+                                        class="danger" ng-click="vm.deactivateFacilityTypeApproveProduct(ftap)">{{:: 'adminOrderableEdit.remove' | message}}
                                 </button>
                             </td>
                         </tr>

@@ -9,35 +9,35 @@
             <div class="modal-body">
                 <form id="edit-program-orderable-form" ng-submit="vm.saveProgramOrderable()">
                     <fieldset ng-disabled="!vm.canEdit">
-                        <label for="program" ng-show="!vm.editMode">{{'adminOrderableProgram.program' | message}}</label>
+                        <label for="program" ng-show="!vm.editMode">{{:: 'adminOrderableProgram.program' | message}}</label>
                         <select id="program" ng-model="vm.programOrderable.programId" ng-if="!vm.editMode"
                                 ng-options="item.id as item.name for item in vm.filteredPrograms" required></select>
                         <label>
                             <input type="checkbox" ng-model="vm.programOrderable.fullSupply"/>
-                            {{'adminOrderableProgram.fullSupply' | message}}
+                            {{:: 'adminOrderableProgram.fullSupply' | message}}
                         </label>
-                        <label for="dosesPerPatient">{{'adminOrderableProgram.dosesPerPatient' | message}}</label>
+                        <label for="dosesPerPatient">{{:: 'adminOrderableProgram.dosesPerPatient' | message}}</label>
                         <input positive-integer type="text" id="dosesPerPatient" ng-model="vm.programOrderable.dosesPerPatient"></input>
-                        <label for="orderableDisplayCategory">{{'adminOrderableProgram.orderableDisplayCategory' | message}}</label>
+                        <label for="orderableDisplayCategory">{{:: 'adminOrderableProgram.orderableDisplayCategory' | message}}</label>
                         <select id="orderableDisplayCategory" ng-model="vm.programOrderable.orderableDisplayCategoryId"
                                 ng-options="item.id as item.displayName for item in vm.orderableDisplayCategories" required></select>
-                        <label for="displayOrder">{{'adminOrderableProgram.displayOrder' | message}}</label>
+                        <label for="displayOrder">{{:: 'adminOrderableProgram.displayOrder' | message}}</label>
                         <input positive-integer type="text" id="displayOrder" ng-model="vm.programOrderable.displayOrder"></input>
-                        <label for="pricePerPack">{{'adminOrderableProgram.pricePerPack' | message}}</label>
+                        <label for="pricePerPack">{{:: 'adminOrderableProgram.pricePerPack' | message}}</label>
                         <input positive-decimal type="text" id="pricePerPack" ng-model="vm.programOrderable.pricePerPack"></input>
                     </fieldset>
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="primary" ng-click="vm.goToProgramOrderablePage()" ng-show="!vm.canEdit">{{'adminOrderableProgram.ok' | message}}</button>
-                <button ng-click="vm.goBack()" ng-show="vm.canEdit">{{'adminOrderableProgram.cancel' | message}}</button>
+                <button class="primary" ng-click="vm.goToProgramOrderablePage()" ng-show="!vm.canEdit">{{:: 'adminOrderableProgram.ok' | message}}</button>
+                <button ng-click="vm.goBack()" ng-show="vm.canEdit">{{:: 'adminOrderableProgram.cancel' | message}}</button>
                 <div class="button-group primary">
                     <button class="primary" type="submit"
-                            form="edit-program-orderable-form" ng-show="vm.canEdit && !vm.editMode">{{'adminOrderableProgram.add' | message}}</button>
+                            form="edit-program-orderable-form" ng-show="vm.canEdit && !vm.editMode">{{:: 'adminOrderableProgram.add' | message}}</button>
                 </div>
                 <div class="button-group primary"></div>
                 <button class="primary" type="submit"
-                        form="edit-program-orderable-form" ng-show="vm.canEdit && vm.editMode">{{'adminOrderableProgram.update' | message}}</button>
+                        form="edit-program-orderable-form" ng-show="vm.canEdit && vm.editMode">{{:: 'adminOrderableProgram.update' | message}}</button>
             </div>
         </div>
     </div>
