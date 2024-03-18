@@ -35,7 +35,7 @@
         vm.add = add;
         vm.validateField = validateField;
         vm.invalidFields = new Set();
-        vm.report = undefined;
+        vm.report = {};
 
         vm.categories = ['Administration', 'Orders', 'Requistion', 'Stock'];
 
@@ -47,6 +47,8 @@
                     .then(function() {
                         goBack();
                     });
+            } else {
+                loadingModalService.close();
             }
         }
 
