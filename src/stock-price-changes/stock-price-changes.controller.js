@@ -95,6 +95,17 @@
         vm.includeInactive = $stateParams.includeInactive;
 
         /**
+         * @ngdoc property
+         * @propertyOf stock-price-changes.controller:StockPriceChangesListController
+         * @name tableConfig
+         * @type {Object}
+         *
+         * @description
+         * Holds configuration for price changes table
+         */
+        vm.tableConfig = undefined;
+
+        /**
          * @ngdoc method
          * @methodOf stock-price-changes.controller:StockPriceChangesListController
          * @name getStockSummaries
@@ -118,6 +129,7 @@
                 if (vm.offline()) {
                     vm.displayStockCardSummaries = newList;
                 }
+                vm.tableConfig = getTableConfig();
             }, true);
 
             angular.forEach(vm.displayStockCardSummaries, function(item) {
@@ -127,6 +139,7 @@
                     }
                 });
             });
+
         }
 
         /**
@@ -209,6 +222,36 @@
                     }
                 });
             }
+        }
+
+        function getTableConfig() {
+            return {
+                caption: 'stockCardSummaryList.noProducts',
+                displayCaption: !vm.displayStockCardSummaries.length,
+                columns: [
+                    {
+                        header: 'stockCardSummaryList.productCode',
+                        propertyPath: 'orderable.productCode'
+                    },
+                    {
+                        header: 'stockCardSummaryList.product',
+                        propertyPath: 'orderable.fullProductName'
+                    },
+                    {
+                        header: 'stockCardSummaryList.unitPrice',
+                        propertyPath: 'pricePerPack',
+                        template: '<span>{{item.pricePerPack | openlmisCurrency}}</span>'
+                    },
+                    {
+                        header: 'stockCardSummaryList.actions',
+                        propertyPath: 'orderable.id',
+                        template: '<button type="button" ng-click="vm.viewSingleProduct(item.orderable.id)"' +
+                            ' class="primary">{{\'stockCardSummaryList.view\' | message}}</button>',
+                        sortable: false
+                    }
+                ],
+                data: vm.displayStockCardSummaries
+            };
         }
     }
 })();

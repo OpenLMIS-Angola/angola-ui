@@ -10,11 +10,11 @@
      */
     angular
         .module('openlmis-table')
-        .controller('OpenlmisTableController', openlmisTableController);
+        .controller('OpenlmisTableController', OpenlmisTableController);
 
-    openlmisTableController.$inject = ['openlmisTableService', 'openlmisTableSortingService'];
+    OpenlmisTableController.$inject = ['openlmisTableService', 'openlmisTableSortingService'];
 
-    function openlmisTableController(openlmisTableService, openlmisTableSortingService) {
+    function OpenlmisTableController(openlmisTableService, openlmisTableSortingService) {
         var $ctrl = this;
         $ctrl.sortTable = sortTable;
         $ctrl.$onInit = onInit;

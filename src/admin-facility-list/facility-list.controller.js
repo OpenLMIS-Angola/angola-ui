@@ -29,10 +29,10 @@
         .controller('FacilityListController', controller);
 
     controller.$inject = [
-        '$state', '$stateParams', 'facilities', 'geographicZones'
+        '$state', '$stateParams', 'facilities', 'geographicZones', 'TABLE_CONSTANTS'
     ];
 
-    function controller($state, $stateParams, facilities, geographicZones) {
+    function controller($state, $stateParams, facilities, geographicZones, TABLE_CONSTANTS) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -174,15 +174,23 @@
                     {
                         header: 'adminFacilityList.enabled',
                         propertyPath: 'enabled',
-                        template: '<i ng-class="{\'icon-ok\': item.enabled}"></i>'
-                    },
-                    {
-                        header: 'adminFacilityList.actions',
-                        propertyPath: 'id',
-                        template: '<button ui-sref="openlmis.administration.facilities.edit({id: \'item.id\'})">{{\'adminFacilityList.edit\' | message}}</button>',
-                        sortable: false
+                        template: function(item) {
+                            return '<i ng-class="{\'icon-ok\':' + item.enabled + '}"></i>';
+                        }
                     }
                 ],
+                actions: {
+                    header: 'adminFacilityList.actions',
+                    data: [
+                        {
+                            type: TABLE_CONSTANTS.actionTypes.REDIRECT,
+                            redirectLink: function(item) {
+                                return 'openlmis.administration.facilities.edit({id:\'' + item.id + '\'})';
+                            },
+                            text: 'adminFacilityList.edit'
+                        }
+                    ]
+                },
                 data: vm.facilities
             };
         };

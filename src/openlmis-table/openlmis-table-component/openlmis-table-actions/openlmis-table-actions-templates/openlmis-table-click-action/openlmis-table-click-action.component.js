@@ -18,21 +18,21 @@
     'use strict';
 
     /**
-     * @ngdoc service
-     * @name openlmis-table.component:openlmisTableElementTemplate
+     * @ngdoc component
+     * @name openlmis-table.component:openlmisTableClickAction
      *
      * @description
      * Component responsible for
     */
     angular
         .module('openlmis-table')
-        .component('openlmisTableElementTemplate', {
-            templateUrl: 'openlmis-table/openlmis-table-component' +
-                '/openlmis-table-element-template/openlmis-table-element-template.html',
+        .component('openlmisTableClickAction', {
+            templateUrl: 'openlmis-table/openlmis-table-component/openlmis-table-actions' +
+                '/openlmis-table-actions-templates/openlmis-table-click-action/openlmis-table-click-action.html',
             bindings: {
-                elementConfig: '<?'
+                actionConfig: '<?'
             },
-            controller: 'openlmisTableElementTemplateController',
+            controller: 'OpenlmisTableClickActionController',
             controllerAs: '$ctrl'
         });
 })();

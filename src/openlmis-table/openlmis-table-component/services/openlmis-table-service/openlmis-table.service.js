@@ -25,7 +25,8 @@
                 return {
                     propertyPath: column.propertyPath,
                     value: getElementPropertyValue(item, column.propertyPath),
-                    template: column.template
+                    template: column.template,
+                    item: item
                 };
             });
         }

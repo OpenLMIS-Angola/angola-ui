@@ -85,7 +85,7 @@
                 table = element.children('openlmis-table');
             }
             table.appendTo(main)
-                .wrap('<div class="openlmis-flex-table openlmis-table-sortable"></div>');
+                .wrap('<div class="openlmis-flex-table"></div>');
             table.parent()
                 .after(element.children('openlmis-pagination'));
 

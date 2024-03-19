@@ -29,11 +29,26 @@
         }
 
         function injectHtmlContent() {
-            var htmlContent = $ctrl.elementConfig.template;
-            var elementPropertyPath = 'item.' + $ctrl.elementConfig.propertyPath;
-            htmlContent = htmlContent.replace(elementPropertyPath, $ctrl.elementConfig.value);
+            var htmlContent = getItemTemplateValue($ctrl.elementConfig.template, $ctrl.elementConfig.item);
             var compiledHtml = $compile(angular.element(htmlContent))($scope);
-            jQuery('#' + $ctrl.divId).append(compiledHtml);
+            if (compiledHtml.length === 0) {
+                jQuery('#' + $ctrl.divId).append(htmlContent);
+            } else {
+                jQuery('#' + $ctrl.divId).append(compiledHtml);
+            }
+        }
+
+        function getItemTemplateValue(template, item) {
+            if (typeof template === 'function') {
+                return template(item);
+            }
+
+            var regex = /item\.(\w+)/g;
+
+            return template.replace(regex, function(match, property) {
+                var value = item[property];
+                return value ? value : match;
+            });
         }
     }
 

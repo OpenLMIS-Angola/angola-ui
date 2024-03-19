@@ -33,30 +33,6 @@
             <input type="submit" value="{{'stockCardSummaryList.search' | message}}"/>
         </fieldset>
     </form>
-    <table>
-        <caption ng-if="!vm.displayStockCardSummaries.length">
-            {{'stockCardSummaryList.noProducts' | message}}
-        </caption>
-        <thead>
-        <tr>
-            <th>{{'stockCardSummaryList.productCode' | message}}</th>
-            <th>{{'stockCardSummaryList.product' | message}}</th>
-            <th>{{'stockCardSummaryList.unitPrice' | message}}</th>
-            <th>{{'stockCardSummaryList.actions' | message}}</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="is-secondary" ng-repeat="summary in vm.pagedList">
-            <td>{{summary.orderable.productCode}}</td>
-            <td>{{summary.orderable.fullProductName}}</td>
-            <td>{{summary.pricePerPack | openlmisCurrency}}</td>
-            <td>
-                <button type="button" ng-click="vm.viewSingleProduct(summary.orderable.id)" class="primary">
-                    {{'stockCardSummaryList.view'| message}}
-                </button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <openlmis-table ng-if="vm.tableConfig" table-config="vm.tableConfig"></openlmis-table>
     <openlmis-pagination list="vm.displayStockCardSummaries" paged-list="vm.pagedList" pagination-id="'stockCardList'"/>
 </section>

@@ -18,7 +18,7 @@
     'use strict';
 
     /**
-     * @ngdoc service
+     * @ngdoc component
      * @name openlmis-table.component:openlmisTable
      *
      * @description
@@ -31,7 +31,6 @@
             bindings: {
                 tableConfig: '<?'
             },
-            transclude: true,
             controller: 'OpenlmisTableController',
             controllerAs: '$ctrl'
         });

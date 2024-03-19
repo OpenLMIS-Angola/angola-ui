@@ -1,0 +1,6 @@
+<button
+    ng-if="$ctrl.actionConfig.displayItem($ctrl.actionConfig.item)"
+    ui-sref="$ctrl.actionConfig.redirectLink($ctrl.actionConfig.item)"
+    class="{{$ctrl.actionConfig.classes}}">
+    {{$ctrl.actionConfig.text | message}}
+</button>
