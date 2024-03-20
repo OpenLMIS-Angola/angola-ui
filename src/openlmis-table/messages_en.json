@@ -1,4 +1,5 @@
 {
     "column.notSortable.message": "It is not possible to sort by this column",
-    "column.notSortable.title": "Sorting not possible"
+    "column.notSortable.title": "Sorting not possible",
+    "sorting.error.nestedProperty.message": "It is currently not possible to sort by nested properties"
 }

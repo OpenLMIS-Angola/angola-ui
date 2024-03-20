@@ -201,6 +201,7 @@
                 })[0];
             }
 
+            vm.tableConfig = getTableConfig();
             $scope.$watch(function() {
                 return vm.supplyingFacility;
             }, function(newValue, oldValue) {
@@ -347,12 +348,14 @@
                     },
                     {
                         header: 'orderView.facility',
-                        propertyPath: 'code',
-                        template: 'item.facility.code - item.facility.name'
+                        propertyPath: 'facility.code',
+                        template: function(item) {
+                            return item.facility.code + ' - ' + item.facility.name;
+                        }
                     },
                     {
                         header: 'orderView.district',
-                        propertyPath: 'geographicZone.name'
+                        propertyPath: 'facility.geographicZone.name'
                     },
                     {
                         header: 'orderView.program',
@@ -365,12 +368,18 @@
                     {
                         header: 'orderView.startDate',
                         propertyPath: 'processingPeriod.startDate',
-                        template: '{{item.processingPeriod.startDate | openlmisDate}}'
+                        template: function(item) {
+                            return item.processingPeriod ?
+                                $filter('openlmisDate')(item.processingPeriod.startDate) : '';
+                        }
                     },
                     {
                         header: 'orderView.endDate',
                         propertyPath: 'processingPeriod.endDate',
-                        template: '<span>{{item.processingPeriod.endDate | openlmisDate}}</span>'
+                        template: function(item) {
+                            return item.processingPeriod ?
+                                $filter('openlmisDate')(item.processingPeriod.endDate) : '';
+                        }
                     },
                     {
                         header: 'orderView.status',
@@ -382,17 +391,25 @@
                     {
                         header: 'orderView.emergency',
                         propertyPath: 'emergency',
-                        template: '<i ng-class="{\'icon-ok\': item.emergency}"></i>'
+                        template: function(item) {
+                            return '<i ng-class="{\'icon-ok\':' + item.emergency + '}"></i>';
+                        }
                     },
                     {
                         header: 'orderView.createdDate',
                         propertyPath: 'createdDate',
-                        template: '{{item.createdDate | openlmisDate}}'
+                        template: function(item) {
+                            return item.createdDate ?
+                                $filter('openlmisDate')(item.createdDate) : '';
+                        }
                     },
                     {
                         header: 'orderView.lastUpdated',
                         propertyPath: 'lastUpdatedDate',
-                        template: '{{item.lastUpdatedDate | openlmisDate}}'
+                        template: function(item) {
+                            return item.lastUpdatedDate ?
+                                $filter('openlmisDate')(item.lastUpdatedDate) : '';
+                        }
                     }
                 ],
                 actions: {

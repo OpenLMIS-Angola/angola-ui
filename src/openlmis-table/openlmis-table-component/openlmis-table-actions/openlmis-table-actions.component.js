@@ -32,7 +32,6 @@
                 actionsConfig: '<?',
                 item: '<?'
             },
-            controller: 'OpenlmisTableActionsController',
             controllerAs: '$ctrl'
         });
 })();

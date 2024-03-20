@@ -30,9 +30,9 @@
             templateUrl: 'openlmis-table/openlmis-table-component/openlmis-table-actions' +
                 '/openlmis-table-actions-templates/openlmis-table-download-action/openlmis-table-download-action.html',
             bindings: {
-                actionConfig: '<?'
+                actionConfig: '<?',
+                item: '<?'
             },
-            controller: 'OpenlmisTableDownloadActionController',
             controllerAs: '$ctrl'
         });
 })();

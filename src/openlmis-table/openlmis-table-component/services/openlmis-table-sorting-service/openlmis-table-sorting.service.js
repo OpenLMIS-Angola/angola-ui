@@ -16,23 +16,36 @@
 
         return {
             sortTable: sortTable,
-            prepareHeadersClasses: prepareHeadersClasses
+            setHeadersClasses: setHeadersClasses,
+            isColumnSortable: isColumnSortable
         };
 
-        function sortTable(columns, selectedColumn) {
-            if (typeof selectedColumn.sortable === 'undefined' || selectedColumn.sortable) {
-                var propertyToOrder = selectedColumn.propertyPath.split('.')[0];
+        function sortTable(selectedColumn) {
+            if (isColumnSortable(selectedColumn)) {
+                var propertyPathParts = selectedColumn.propertyPath.split('.');
+                if (isNestedProperty(propertyPathParts)) {
+                    return;
+                }
+
+                var propertyToOrder = propertyPathParts[0];
                 var stateParams = JSON.parse(JSON.stringify($stateParams));
-                setSortingProperties(propertyToOrder);
+                setSortingProperties(selectedColumn.propertyPath);
                 stateParams.sort = getSortingParamValue(propertyToOrder);
                 $state.go($state.current.name, stateParams);
-                manageHeadersClasses(columns);
             } else {
                 alertService.info({
                     title: 'column.notSortable.title',
                     message: 'column.notSortable.message'
                 });
             }
+        }
+
+        function isNestedProperty(propertyPathParts) {
+            if (propertyPathParts.length > 1) {
+                alertService.error('sorting.error.nestedProperty.message');
+                return true;
+            }
+            return false;
         }
 
         function getSortingParamValue(propertyToOrder) {
@@ -43,7 +56,7 @@
         }
 
         function setSortingProperties(propertyToOrder) {
-            if (typeof sortingProperites.isSortedBy === 'undefined' ||
+            if (sortingProperites.isSortedBy === undefined ||
                 sortingProperites.isSortedBy !== propertyToOrder
             ) {
                 setSortingPropertiesValue(
@@ -70,16 +83,28 @@
             };
         }
 
-        function prepareHeadersClasses(columns) {
-            columns.forEach(function(column) {
-                column.class = '';
-            });
-        }
+        function setHeadersClasses(columns) {
+            setInitialSortingProperties();
 
-        function manageHeadersClasses(columns) {
             columns.forEach(function(column) {
                 column.class = getColumnClass(column.propertyPath);
             });
+        }
+
+        function setInitialSortingProperties() {
+            var sortParam = $stateParams.sort;
+
+            if (sortParam) {
+                var sortParamParts = sortParam.split(',');
+                var isSortedBy = sortParamParts[0];
+                var sortingOrder = sortParamParts[1];
+                var headerClass = sortingOrder === SORTING_SERVICE_CONSTANTS.ASC ?
+                    SORTING_SERVICE_CONSTANTS.SORT_ASC_CLASS : SORTING_SERVICE_CONSTANTS.SORT_DESC_CLASS;
+
+                setSortingPropertiesValue(isSortedBy, sortingOrder, headerClass);
+            } else {
+                setSortingPropertiesValue(undefined, '', '');
+            }
         }
 
         function getColumnClass(propertyPath) {
@@ -87,7 +112,11 @@
         }
 
         function isSortedByColumn(propertyPath) {
-            return propertyPath.split('.')[0] === sortingProperites.isSortedBy;
+            return propertyPath === sortingProperites.isSortedBy;
+        }
+
+        function isColumnSortable(column) {
+            return column.sortable === undefined || column.sortable;
         }
     }
 })();

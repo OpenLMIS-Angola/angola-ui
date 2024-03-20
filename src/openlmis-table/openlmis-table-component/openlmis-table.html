@@ -4,7 +4,13 @@
     </caption>
     <thead>
         <tr>
-            <th ng-repeat="column in $ctrl.tableConfig.columns" ng-click="$ctrl.sortTable(column)" class="{{column.class}}">{{ column.header | message}}</th>
+            <th
+                ng-repeat="column in $ctrl.tableConfig.columns"
+                ng-click="$ctrl.sortTable(column)"
+                class="{{column.class}}"
+                ng-class="{'header-sortable': $ctrl.isColumnSortable(column)}">
+                {{ column.header | message}}
+            </th>
             <th>{{ $ctrl.tableConfig.actions.header | message }}</th>
         </tr>
     </thead>

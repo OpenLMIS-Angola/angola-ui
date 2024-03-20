@@ -30,7 +30,8 @@
             templateUrl: 'openlmis-table/openlmis-table-component/openlmis-table-actions' +
                 '/openlmis-table-action/openlmis-table-action.html',
             bindings: {
-                actionConfig: '<?'
+                actionConfig: '<?',
+                item: '<?'
             },
             controller: 'OpenlmisTableActionController',
             controllerAs: '$ctrl'

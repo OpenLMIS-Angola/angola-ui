@@ -30,9 +30,9 @@
             templateUrl: 'openlmis-table/openlmis-table-component/openlmis-table-actions' +
                 '/openlmis-table-actions-templates/openlmis-table-redirect-action/openlmis-table-redirect-action.html',
             bindings: {
-                actionConfig: '<?'
+                actionConfig: '<?',
+                item: '<?'
             },
-            controller: 'OpenlmisTableRedirectActionController',
             controllerAs: '$ctrl'
         });
 })();

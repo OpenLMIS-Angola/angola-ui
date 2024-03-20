@@ -16,9 +16,6 @@
 
     function OpenlmisTableActionController(TABLE_CONSTANTS) {
         var $ctrl = this;
-        $ctrl.REDIRECT_TYPE = TABLE_CONSTANTS.actionTypes.REDIRECT;
-        $ctrl.DOWNLOAD_TYPE = TABLE_CONSTANTS.actionTypes.DOWNLOAD;
-        $ctrl.CLICK_TYPE = TABLE_CONSTANTS.actionTypes.CLICK;
 
         $ctrl.$onInit = onInit;
 

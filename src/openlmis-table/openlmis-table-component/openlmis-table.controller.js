@@ -18,14 +18,19 @@
         var $ctrl = this;
         $ctrl.sortTable = sortTable;
         $ctrl.$onInit = onInit;
+        $ctrl.isColumnSortable = isColumnSortable;
 
         function onInit() {
-            openlmisTableSortingService.prepareHeadersClasses($ctrl.tableConfig.columns);
+            openlmisTableSortingService.setHeadersClasses($ctrl.tableConfig.columns);
             $ctrl.elementsConfiguration = openlmisTableService.getElementsConfiguration($ctrl.tableConfig);
         }
 
         function sortTable(chosenColumn) {
-            openlmisTableSortingService.sortTable($ctrl.tableConfig.columns, chosenColumn);
+            openlmisTableSortingService.sortTable(chosenColumn);
+        }
+
+        function isColumnSortable(selectedColumn) {
+            return openlmisTableSortingService.isColumnSortable(selectedColumn);
         }
     }
 })();

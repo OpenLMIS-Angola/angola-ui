@@ -174,11 +174,7 @@ Styleguide 4.1
       border: 10px solid black;
       thead {
         tr {
-          th {
-            // display: flex;
-            // gap: .7rem;
-            // flex-direction: row-reverse;
-            // justify-content: flex-end;
+          .header-sortable {
             &:hover {
               cursor: pointer;
             }
@@ -188,6 +184,7 @@ Styleguide 4.1
             @include icon('arrow-up');
             &::before {
               font-weight: 300;
+              margin-right: .5rem;
             }
           }
 
@@ -195,6 +192,7 @@ Styleguide 4.1
             @include icon('arrow-down');
             &::before {
               font-weight: 300;
+              margin-right: .5rem;
             }
           }
         }
