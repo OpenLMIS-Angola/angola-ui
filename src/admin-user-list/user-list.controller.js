@@ -28,9 +28,10 @@
         .module('admin-user-list')
         .controller('UserListController', controller);
 
-    controller.$inject = ['$state', '$stateParams', 'users', 'confirmService', 'userPasswordModalFactory'];
+    controller.$inject = ['$state', '$stateParams', 'users', 'confirmService', 'userPasswordModalFactory',
+        'TABLE_CONSTANTS'];
 
-    function controller($state, $stateParams, users, confirmService, userPasswordModalFactory) {
+    function controller($state, $stateParams, users, confirmService, userPasswordModalFactory, TABLE_CONSTANTS) {
 
         var vm = this;
 
@@ -204,6 +205,34 @@
                         sortable: false
                     }
                 ],
+                actions: {
+                    header: 'adminUserList.actions',
+                    data: [
+                        {
+                            classes: 'primary',
+                            text: 'adminUserList.edit',
+                            type: TABLE_CONSTANTS.actionTypes.REDIRECT,
+                            redirectLink: function(item) {
+                                return 'openlmis.administration.users.form({id: \'' + item.id + '\'})';
+                            }
+                        },
+                        {
+                            text: 'adminUserList.roles',
+                            type: TABLE_CONSTANTS.actionTypes.REDIRECT,
+                            redirectLink: function(item) {
+                                return 'openlmis.administration.users.roles.SUPERVISION({id: \'' + item.id +
+                                    '\', page: \'0\'})';
+                            }
+                        },
+                        {
+                            text: 'adminUserList.resetPassword',
+                            type: TABLE_CONSTANTS.actionTypes.CLICK,
+                            onClick: function(item) {
+                                return vm.resetUserPassword(item);
+                            }
+                        }
+                    ]
+                },
                 data: vm.users
             };
         }

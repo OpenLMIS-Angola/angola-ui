@@ -184,7 +184,7 @@ Styleguide 4.1
             @include icon('arrow-up');
             &::before {
               font-weight: 300;
-              margin-right: .5rem;
+              margin-right: .3rem;
             }
           }
 
@@ -192,7 +192,7 @@ Styleguide 4.1
             @include icon('arrow-down');
             &::before {
               font-weight: 300;
-              margin-right: .5rem;
+              margin-right: .3rem;
             }
           }
         }

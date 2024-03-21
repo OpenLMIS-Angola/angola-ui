@@ -20,7 +20,7 @@
         $ctrl.$onInit = onInit;
 
         function onInit() {
-            if (typeof $ctrl.actionConfig.displayItem === 'undefined') {
+            if (typeof $ctrl.actionConfig.displayAction === 'undefined') {
                 $ctrl.actionConfig.displayAction = TABLE_CONSTANTS.defaultDisplayActionFunction;
             }
             if (typeof $ctrl.actionConfig.classes === 'undefined') {
