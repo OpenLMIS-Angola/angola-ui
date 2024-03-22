@@ -28,9 +28,9 @@
         .module('admin-lot-list')
         .controller('LotListController', controller);
 
-    controller.$inject = ['$state', '$stateParams', 'lots', 'orderables'];
+    controller.$inject = ['$state', '$stateParams', 'lots', 'orderables', 'TABLE_CONSTANTS'];
 
-    function controller($state, $stateParams, lots, orderables) {
+    function controller($state, $stateParams, lots, orderables, TABLE_CONSTANTS) {
 
         var vm = this;
         vm.$onInit = onInit;
@@ -98,6 +98,14 @@
         // ANGOLASUP-715: Ends here
 
         /**
+         * @ngdoc property
+         * @propertyOf admin-lot-list.controller:LotListController
+         * @name tableConfig
+         * @type {Object}
+         */
+        vm.tableConfig = undefined;
+
+        /**
          * @ngdoc method
          * @methodOf admin-lot-list.controller:LotListController
          * @name search
@@ -138,6 +146,50 @@
             // ANGOLASUP-715: Filtering by lot code
             vm.lotCode = $stateParams.lotCode;
             // ANGOLASUP-715: Ends here
+
+            vm.tableConfig = getTableConfig();
+        }
+
+        function getTableConfig() {
+            return {
+                caption: 'adminLotList.noLots',
+                displayCaption: vm.lots.length === 0,
+                columns: [
+                    {
+                        header: 'adminLotList.productCode',
+                        propertyPath: 'productCode'
+                    },
+                    {
+                        header: 'adminLotList.productName',
+                        propertyPath: 'productName'
+                    },
+                    {
+                        header: 'adminLotList.lotCode',
+                        propertyPath: 'lotCode'
+                    },
+                    {
+                        header: 'adminLotList.expirationDate',
+                        propertyPath: 'expirationDate'
+                    },
+                    {
+                        header: 'adminLotList.manufacturedDate',
+                        propertyPath: 'manufacturedDate'
+                    }
+                ],
+                actions: {
+                    header: 'adminLotList.actions',
+                    data: [
+                        {
+                            type: TABLE_CONSTANTS.actionTypes.REDIRECT,
+                            text: 'adminLotList.edit',
+                            redirectLink: function(item) {
+                                return 'openlmis.administration.lots.edit({lotId: \'' + item.id + '\'})';
+                            }
+                        }
+                    ]
+                },
+                data: vm.lots
+            };
         }
     }
 

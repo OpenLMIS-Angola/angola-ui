@@ -27,7 +27,7 @@
             showInNavigation: true,
             label: 'adminLotList.lots',
             // ANGOLASUP-715: Filtering by lot code
-            url: '/lots?orderableId&expirationDateFrom&expirationDateTo&lotCode&page&size',
+            url: '/lots?orderableId&expirationDateFrom&expirationDateTo&lotCode&page&size&sort',
             // ANGOLASUP-715: Ends here
             controller: 'LotListController',
             templateUrl: 'admin-lot-list/lot-list.html',

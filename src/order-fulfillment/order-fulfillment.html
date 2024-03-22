@@ -1,0 +1,22 @@
+<h2 ng-if="vm.orderingFacility">{{'orderFulfillment.fulfillOrdersAt' | message: {'facility':  vm.orderingFacility.name} }}</h2>
+<h2 ng-if="!vm.orderingFacility">{{'orderFulfillment.fulfillOrders' | message}}</h2>
+<section class="openlmis-table-container">
+  <openlmis-sort options="vm.options"/>
+  <form ng-submit="vm.loadOrders()" >
+    <label for="orderingFacility">{{'orderFulfillment.orderingFacility' | message}}</label>
+    <select id="orderingFacility"
+            ng-model="vm.orderingFacility"
+            ng-options="facility.name for facility in vm.orderingFacilities"></select>
+    <label>{{'orderFulfillment.program' | message}}</label>
+    <select id="program"
+            ng-model="vm.program"
+            ng-options="program.name for program in vm.programs"></select>
+    <label>{{'orderFulfillment.orderStatus' | message}}</label>
+    <select id="orderStatus"
+            ng-model="vm.orderStatus"
+            ng-options="orderStatus for orderStatus in vm.orderStatuses"></select>
+    <input type="submit" class="btn btn-primary" value="{{'orderFulfillment.search' | message}}"/>
+  </form>
+  <openlmis-table table-config="vm.tableConfig"></openlmis-table>
+  <openlmis-pagination/>
+</section>

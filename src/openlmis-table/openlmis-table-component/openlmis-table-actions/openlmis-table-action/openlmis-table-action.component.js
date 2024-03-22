@@ -22,7 +22,12 @@
      * @name openlmis-table.component:openlmisTableAction
      *
      * @description
-     * Component responsible for
+     * Component responsible for rendering a single actions in actions cell
+     *
+     * @param {ActionConfig} actionConfig - holds config for this action
+     *  structure of 'ActionConfig' is described in openlmis-table.component.js
+     * @param {item} item element from data array that is displayed in table row
+     * where this actions cell is placed
     */
     angular
         .module('openlmis-table')

@@ -336,7 +336,7 @@
                         propertyPath: '$availableOffline',
                         template: function(item) {
                             var $availableOffline = item.$availableOffline ? item.$availableOffline : false;
-                            return '<i ng-class="{\'icon-ok\':' + $availableOffline + '"></i>';
+                            return '<i ng-class="{\'icon-ok\':' + $availableOffline + '}"></i>';
                         }
                     }
                 ],

@@ -1,6 +1,28 @@
+/*
+ * This program is part of the OpenLMIS logistics management information system platform software.
+ * Copyright © 2017 VillageReach
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms
+ * of the GNU Affero General Public License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ *  
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+ * See the GNU Affero General Public License for more details. You should have received a copy of
+ * the GNU Affero General Public License along with this program. If not, see
+ * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
+ */
+
 (function() {
     'use strict';
 
+    /**
+     * @ngdoc service
+     * @name openlmis-table:openlmisTableSortingService
+     *
+     * @description
+     * Responsible for every operation regarding sorting the table
+     */
     angular
         .module('openlmis-table')
         .service('openlmisTableSortingService', openlmisTableSortingService);
@@ -20,6 +42,16 @@
             isColumnSortable: isColumnSortable
         };
 
+        /**
+         * @ngdoc method
+         * @methodOf openlmis-table:openlmisTableSortingService
+         * @name sortTable
+         *
+         * @description Orders a table by given column. By sending request with updated
+         *  sort state param
+         *
+         * @param {Object} selectedColumn
+         */
         function sortTable(selectedColumn) {
             if (isColumnSortable(selectedColumn)) {
                 var propertyPathParts = selectedColumn.propertyPath.split('.');
@@ -83,11 +115,21 @@
             };
         }
 
+        /**
+         * @ngdoc method
+         * @methodOf openlmis-table:openlmisTableSortingService
+         * @name setHeadersClasses
+         *
+         * @description
+         *  Sets the classes of table headers. If table is ordered by some header
+         *   it will assign a special class
+         * @param  {Array<Object>} columns
+         */
         function setHeadersClasses(columns) {
             setInitialSortingProperties();
 
             columns.forEach(function(column) {
-                column.class = getColumnClass(column.propertyPath);
+                column.class = getColumnClass(column);
             });
         }
 
@@ -107,14 +149,26 @@
             }
         }
 
-        function getColumnClass(propertyPath) {
-            return isSortedByColumn(propertyPath) ? sortingProperites.headerClass : '';
+        function getColumnClass(column) {
+            var baseClass = column.classes ? column.classes : '';
+
+            return isSortedByColumn(column.propertyPath) ?
+                baseClass + sortingProperites.headerClass : baseClass;
         }
 
         function isSortedByColumn(propertyPath) {
             return propertyPath === sortingProperites.isSortedBy;
         }
 
+        /**
+         * @ngdoc method
+         * @methodOf openlmis-table:openlmisTableSortingService
+         * @name isColumnSortable
+         *
+         * @description Checks if column is sortable
+         *
+         * @param  {Object} column
+         */
         function isColumnSortable(column) {
             return column.sortable === undefined || column.sortable;
         }

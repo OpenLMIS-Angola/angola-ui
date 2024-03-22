@@ -25,45 +25,6 @@
     <input type="submit" value="{{'proofOfDeliveryManage.search' | message}}"/>
 </form>
 <section class="openlmis-table-container">
-    <table>
-        <caption ng-if="vm.pods && !vm.pods.length">
-            {{'proofOfDeliveryManage.noPodsFound' | message}}
-        </caption>
-        <thead>
-            <tr>
-                <th>{{'proofOfDeliveryManage.orderNumber' | message}}</th>
-                <th>{{'proofOfDeliveryManage.orderStatus' | message}}</th>
-                <th>{{'proofOfDeliveryManage.requestingFacility' | message}}</th>
-                <th>{{'proofOfDeliveryManage.supplyingDepot' | message}}</th>
-                <th>{{'proofOfDeliveryManage.program' | message}}</th>
-                <th>{{'proofOfDeliveryManage.period' | message}}</th>
-                <th>{{'proofOfDeliveryManage.orderDate' | message}}</th>
-                <th>{{'proofOfDeliveryManage.emergency' | message}}</th>
-                <th class="col-sticky sticky-right">{{'proofOfDeliveryManage.actions' | message}}</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr ng-repeat="order in vm.pods">
-                <td>{{order.orderCode}}</td>
-                <td>{{order.status | orderStatus}}</td>
-                <td>{{order.requestingFacility.name}}</td>
-                <td>{{order.supplyingFacility.name}}</td>
-                <td>{{order.program.name}}</td>
-                <td>{{order.processingPeriod.name}}</td>
-                <td>{{order.createdDate | openlmisDate}}</td>
-                <td class="col-emergency">
-                    <i ng-class="{'icon-ok': order.emergency}"></i>
-                </td>
-                <td>
-                    <button class="primary" ng-click="vm.openPod(order.id)">
-                        {{'proofOfDeliveryManage.manage' | message}}
-                    </button>
-                    <button ng-click="vm.printProofOfDelivery(order.id)">
-                        {{'proofOfDeliveryManage.print' | message}}
-                    </button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <openlmis-table table-config="vm.tableConfig"></openlmis-table>
     <openlmis-pagination list="vm.pods"></openlmis-pagination>
 </section>

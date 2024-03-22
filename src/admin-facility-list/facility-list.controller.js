@@ -97,12 +97,12 @@
             vm.geographicZones = geographicZones;
             vm.facilityName = $stateParams.name;
             vm.geographicZone = $stateParams.zoneId;
-            vm.tableConfig = vm.getTableConfig();
+            vm.tableConfig = getTableConfig();
         }
 
         /**
          * @ngdoc method
-         * @methodOf admin-facilitelementsConfigurationy-list.controller:FacilityListController
+         * @methodOf admin-facility-list.controller:FacilityListController
          * @name search
          *
          * @description
@@ -145,7 +145,15 @@
         }
         // AO-744: ends here
 
-        vm.getTableConfig = function() {
+        /**
+         * @ngdoc method
+         * @methodOf admin-facility-list.controller:FacilityListController
+         * @name getTableConfig
+         *
+         * @description
+         * Returns the configuration for facility list table.
+         */
+        function getTableConfig() {
             return {
                 caption: 'adminFacilityList.noFacilities',
                 displayCaption: !vm.facilities || vm.facilities.length === 0,
@@ -193,7 +201,7 @@
                 },
                 data: vm.facilities
             };
-        };
+        }
     }
 
 })();

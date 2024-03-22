@@ -191,18 +191,6 @@
                     {
                         header: 'adminUserList.email',
                         propertyPath: 'email'
-                    },
-                    {
-                        header: 'adminUserList.actions',
-                        propertyPath: 'id',
-                        template:
-                            '<button class="primary" ui-sref="openlmis.administration.users.form({id: \'item.id\'})">' +
-                            '{{\'adminUserList.edit\' | message}}</button>' +
-                            '<button ui-sref="openlmis.administration.users.roles.SUPERVISION' +
-                            '({id: \'item.id\', page: \'0\'})">{{\'adminUserList.roles\' | message}}</button>' +
-                            '<button ng-click="vm.resetUserPassword(item)">' +
-                            '{{\'adminUserList.resetPassword\' | message}}</button>',
-                        sortable: false
                     }
                 ],
                 actions: {

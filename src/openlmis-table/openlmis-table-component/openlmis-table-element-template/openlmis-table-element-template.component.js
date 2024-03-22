@@ -22,7 +22,16 @@
      * @name openlmis-table.component:openlmisTableElementTemplate
      *
      * @description
-     * Component responsible for
+     * Component responsible for rendering a content inside the <td> element
+     *
+     * @param {TableElementConfig} elementConfig - holds table element config properties
+     *
+     * @typedef TableElementConfig
+     * @property {any} value - value of the item[propertyPath], used when a template is not passed
+     * @property {string|function} template - optional property which specifies how item should
+     *  displayed. More about template in 'openlmis-table.component.js'
+     * @property {Object} item - single element from data array that is displayed in table row
+     * of this cell
     */
     angular
         .module('openlmis-table')

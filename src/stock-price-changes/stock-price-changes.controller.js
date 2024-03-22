@@ -30,11 +30,13 @@
 
     controller.$inject = [
         'loadingModalService', '$state', '$stateParams', 'StockCardSummaryRepositoryImpl', 'stockCardSummaries',
-        'offlineService', '$scope', 'STOCKCARD_STATUS', 'messageService', 'paginationService'
+        'offlineService', '$scope', 'STOCKCARD_STATUS', 'messageService', 'paginationService', 'TABLE_CONSTANTS',
+        '$filter'
     ];
 
     function controller(loadingModalService, $state, $stateParams, StockCardSummaryRepositoryImpl, stockCardSummaries,
-                        offlineService, $scope, STOCKCARD_STATUS, messageService, paginationService) {
+                        offlineService, $scope, STOCKCARD_STATUS, messageService, paginationService, TABLE_CONSTANTS,
+                        $filter) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -240,16 +242,19 @@
                     {
                         header: 'stockCardSummaryList.unitPrice',
                         propertyPath: 'pricePerPack',
-                        template: '<span>{{item.pricePerPack | openlmisCurrency}}</span>'
-                    },
-                    {
-                        header: 'stockCardSummaryList.actions',
-                        propertyPath: 'orderable.id',
-                        template: '<button type="button" ng-click="vm.viewSingleProduct(item.orderable.id)"' +
-                            ' class="primary">{{\'stockCardSummaryList.view\' | message}}</button>',
-                        sortable: false
+                        template: function(item) {
+                            return $filter('openlmisCurrency')(item.pricePerPack);
+                        }
                     }
                 ],
+                actions: {
+                    header: 'stockCardSummaryList.actions',
+                    type: TABLE_CONSTANTS.actionTypes.CLICK,
+                    text: 'stockCardSummaryList.view',
+                    onClick: function(item) {
+                        vm.viewSingleProduct(item.orderable.id);
+                    }
+                },
                 data: vm.displayStockCardSummaries
             };
         }

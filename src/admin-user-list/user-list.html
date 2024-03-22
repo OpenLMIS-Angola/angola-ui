@@ -21,6 +21,6 @@
         </fieldset>
         <input type="submit" value="{{'adminUserList.search'|message}}"/>
     </form>
-    <openlmis-table table-config="vm.tableConfig"></openlmis-table>
+    <openlmis-table ng-if="vm.tableConfig" table-config="vm.tableConfig"></openlmis-table>
     <openlmis-pagination/>
 </section>
