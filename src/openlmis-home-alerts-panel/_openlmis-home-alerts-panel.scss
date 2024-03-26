@@ -1,0 +1,36 @@
+@mixin flex-layout {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+.alerts-panel-wrapper {
+    font-size: $font-size;
+    padding: 1.2rem;
+    background-color: $very-light-gray;
+
+    .alerts-panel {
+        background-color: $white;
+        display: flex;
+        flex-direction: row;
+        gap: 2rem;
+        box-shadow: 0 0 .5rem rgba(black, .3);
+
+        .header-section {
+            background-color: $very-light-gray;
+            padding: $font-size;
+            display: grid;
+            place-items: center;
+        }
+
+        .alert-section {
+            @include flex-layout();
+            justify-content: space-between;
+            padding: $font-size;
+
+            .section-data {
+                @include flex-layout();
+            }
+        }
+    }
+}

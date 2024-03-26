@@ -1,0 +1,8 @@
+{
+    "alerts.panel.title": "Alerts",
+    "label.requisitionsToBeCreated": "Number of Requisitions to be created this month",
+    "label.messagesIssuedBySystem": "Number of Messages or  issued by by the system",
+    "label.lateCreationOfInventories": "Late creation of inventories",
+    "label.updatesOfRequisitions": "Updates on requisitions",
+    "label.updatesOfOrdersAndPod": "Updates on orders and POD"
+}

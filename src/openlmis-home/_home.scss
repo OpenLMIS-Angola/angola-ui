@@ -4,6 +4,9 @@ $image-height: 136px;
   @extend .page-hero;
   padding-bottom: 4em;
   display: flex;
+  // OAM-18: Homepage UI alerts
+  flex: 1 0 auto;
+  // OAM-18: ends here
   align-items: flex-start;
   // AO-556: moved system notifications below home page title
   flex-direction: column;
@@ -11,7 +14,7 @@ $image-height: 136px;
   .system-notification-list {
     margin-top: 1em;
   }
-  
+
   // AO-556: ends here
   &::after{
     content:"";
