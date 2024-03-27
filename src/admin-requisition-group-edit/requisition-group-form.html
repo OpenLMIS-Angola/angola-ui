@@ -1,0 +1,31 @@
+<form id="newRequisitionGroupForm" name="newRequisitionGroupForm" ng-submit="vm.save()">
+    <label for="name">{{'adminRequisitionGroupEdit.name' | message}}</label>
+    <input id="name"
+           class="form-control"
+           name="requisitionGroupName"
+           type="text"
+           ng-model="vm.requisitionGroup.name"
+           required/>
+
+    <label for="code">{{'adminRequisitionGroupEdit.code' | message}}</label>
+    <input id="code"
+           class="form-control"
+           name="requisitionGroupCode"
+           type="text"
+           ng-model="vm.requisitionGroup.code"
+           required/>
+
+    <label for="supervisoryNode">{{'adminRequisitionGroupEdit.supervisoryNode' | message}}</label>
+    <select id="supervisoryNode"
+            ng-model="vm.requisitionGroup.supervisoryNode"
+            ng-options="supervisoryNode as supervisoryNode.name for supervisoryNode
+            in vm.supervisoryNodes track by supervisoryNode.id"
+            required></select>
+</form>
+
+<ul bs-active-pane="vm.selectedTab" bs-tabs>
+    <li bs-pane data-title="{{'adminRequisitionGroupEdit.facilities' | message}}">
+        <ng-include src="'admin-requisition-group-edit/member-facilities.html'"></ng-include>
+    </li>
+</ul>
+</nav>

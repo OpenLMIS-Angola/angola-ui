@@ -1,0 +1,12 @@
+<h2>{{'adminRequisitionGroupEdit.addRequisitionGroup' | message}}</h2>
+<ng-include src="'admin-requisition-group-edit/requisition-group-form.html'"></ng-include>
+<div class="openlmis-toolbar button-group">
+    <div class="button-group primary">
+        <button ng-click="vm.save()" class="primary">
+            {{'adminRequisitionGroupEdit.save' | message}}
+        </button>
+    </div>
+    <div class="button-group">
+        <button ng-click="vm.onCancel()">{{'adminRequisitionGroupEdit.cancel' | message}}</button>
+    </div>
+</div>
