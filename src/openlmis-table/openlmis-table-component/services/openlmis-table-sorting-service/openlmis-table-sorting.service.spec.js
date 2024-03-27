@@ -1,5 +1,22 @@
+/*
+ * This program is part of the OpenLMIS logistics management information system platform software.
+ * Copyright © 2017 VillageReach
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms
+ * of the GNU Affero General Public License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ *  
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+ * See the GNU Affero General Public License for more details. You should have received a copy of
+ * the GNU Affero General Public License along with this program. If not, see
+ * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
+ */
+
 describe('openlmisTableSortingService', function() {
     var openlmisTableSortingService, $state, $stateParams, alertService;
+    var mockSelectedColumn,
+        mockSelectedColumnNotSortable;
 
     beforeEach(function() {
         module('openlmis-table');
@@ -10,30 +27,21 @@ describe('openlmisTableSortingService', function() {
             $stateParams = $injector.get('$stateParams');
             alertService = $injector.get('alertService');
         });
+        mockSelectedColumn = {
+            header: 'adminFacilityList.name',
+            propertyPath: 'name'
+        };
+
+        mockSelectedColumnNotSortable = {
+            header: 'test.name',
+            propertyPath: 'facility.name',
+            sortable: false
+        };
     });
 
     describe('sortTable', function() {
-        var mockSelectedColumn,
-            mockSelectedColumnNotSortable;
-
-        beforeEach(function() {
-            mockSelectedColumn = {
-                header: 'adminFacilityList.name',
-                propertyPath: 'name'
-            };
-
-            mockSelectedColumnNotSortable = {
-                header: 'test.name',
-                propertyPath: 'facility.name',
-                sortable: false
-            };
-        });
-
         it('should sort the table by the selected column if it is sortable', function() {
-            spyOn(openlmisTableSortingService, 'isColumnSortable').and.returnValue(true);
-
             $stateParams.sort = null;
-
             spyOn($state, 'go');
             openlmisTableSortingService.sortTable(mockSelectedColumn);
 
@@ -42,7 +50,6 @@ describe('openlmisTableSortingService', function() {
         });
 
         it('should display an alert if the column is not sortable', function() {
-            spyOn(openlmisTableSortingService, 'isColumnSortable').and.returnValue(false);
             spyOn(alertService, 'info');
             openlmisTableSortingService.sortTable(mockSelectedColumnNotSortable);
 
@@ -51,31 +58,21 @@ describe('openlmisTableSortingService', function() {
                 message: 'column.notSortable.message'
             });
         });
-
-        // Add more test cases for other scenarios (nested properties, state params update) as needed
     });
 
-    // Tests for setHeadersClasses method
-    // describe('setHeadersClasses', function () {
-    //     it('should set classes for table headers', function () {
-    //         // Your test logic here
-    //     });
+    describe('isColumnSortable', function() {
+        it('should return true if the column is sortable', function() {
+            spyOn(openlmisTableSortingService, 'isColumnSortable').andReturn(true);
+            var result = openlmisTableSortingService.isColumnSortable(mockSelectedColumn);
 
-    //     // Add more tests as needed
-    // });
+            expect(result).toBe(true);
+        });
 
-    // // Tests for isColumnSortable method
-    // describe('isColumnSortable', function () {
-    //     it('should return true if the column is sortable', function () {
-    //         // Your test logic here
-    //     });
+        it('should return false if the column is not sortable', function() {
+            spyOn(openlmisTableSortingService, 'isColumnSortable').andReturn(false);
+            var result = openlmisTableSortingService.isColumnSortable(mockSelectedColumn);
 
-    //     it('should return false if the column is not sortable', function () {
-    //         // Your test logic here
-    //     });
-
-    //     // Add more tests as needed
-    // });
-
-    // Add more describe blocks for other methods if needed
+            expect(result).toBe(false);
+        });
+    });
 });

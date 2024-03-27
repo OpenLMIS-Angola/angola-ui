@@ -37,9 +37,9 @@
         };
 
         return {
+            isColumnSortable: isColumnSortable,
             sortTable: sortTable,
-            setHeadersClasses: setHeadersClasses,
-            isColumnSortable: isColumnSortable
+            setHeadersClasses: setHeadersClasses
         };
 
         /**
