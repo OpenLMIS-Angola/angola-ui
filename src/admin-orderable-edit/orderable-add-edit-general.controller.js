@@ -31,12 +31,12 @@
     controller.$inject = [
         'orderable', '$state', 'OrderableResource', 'FunctionDecorator', 'successNotificationKey',
         'errorNotificationKey', 'orderableListRelativePath', 'messageService', 'confirmService', 'loadingModalService',
-        'alertService'
+        'alertService', 'notificationService'
     ];
 
     function controller(orderable, $state, OrderableResource, FunctionDecorator, successNotificationKey,
                         errorNotificationKey, orderableListRelativePath, messageService, confirmService,
-                        loadingModalService, alertService) {
+                        loadingModalService, alertService, notificationService) {
 
         var vm = this,
             isNew;
@@ -45,7 +45,6 @@
         vm.goToOrderableList  = goToOrderableList;
         vm.saveOrderable = new FunctionDecorator()
             .decorateFunction(saveOrderable)
-            .withSuccessNotification(successNotificationKey)
             .withErrorNotification(errorNotificationKey)
             .withLoading(true)
             .getDecoratedFunction();
@@ -135,22 +134,21 @@
         function saveOrderable() {
             loadingModalService.open();
 
-            if (validateAddReport()) {
-                new OrderableResource()
-                    .update(vm.orderable)
-                    .then(function(orderable) {
-                        if (isNew) {
-                            addPrograms(orderable);
-                            loadingModalService.close();
-                        } else {
-                            goToOrderableList();
-                        }
-                    })
-                    .catch(function() {
+            return new OrderableResource()
+                .update(vm.orderable)
+                .then(function(orderable) {
+                    if (isNew && validateAddReport()) {
+                        notificationService.success('adminOrderableAdd.productHasBeenCreatedSuccessfully');
+                        addPrograms(orderable);
                         loadingModalService.close();
-                        alertService.error(messageService.get('adminOrderableEdit.productCodeError'));
-                    });
-            }
+                    } else {
+                        goToOrderableList();
+                    }
+                })
+                .catch(function() {
+                    loadingModalService.close();
+                    alertService.error(messageService.get('adminOrderableEdit.productCodeError'));
+                });
         }
 
         function addPrograms(response) {
