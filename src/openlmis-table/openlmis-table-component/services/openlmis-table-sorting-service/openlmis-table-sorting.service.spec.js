@@ -14,7 +14,7 @@
  */
 
 describe('openlmisTableSortingService', function() {
-    var openlmisTableSortingService, $state, $stateParams, alertService;
+    var openlmisTableSortingService, $state, $stateParams, alertService, SORTING_SERVICE_CONSTANTS;
     var mockSelectedColumn,
         mockSelectedColumnNotSortable;
 
@@ -26,6 +26,7 @@ describe('openlmisTableSortingService', function() {
             $state = $injector.get('$state');
             $stateParams = $injector.get('$stateParams');
             alertService = $injector.get('alertService');
+            SORTING_SERVICE_CONSTANTS = $injector.get('SORTING_SERVICE_CONSTANTS');
         });
         mockSelectedColumn = {
             header: 'adminFacilityList.name',
@@ -62,17 +63,65 @@ describe('openlmisTableSortingService', function() {
 
     describe('isColumnSortable', function() {
         it('should return true if the column is sortable', function() {
-            spyOn(openlmisTableSortingService, 'isColumnSortable').andReturn(true);
+            spyOn(openlmisTableSortingService, 'isColumnSortable').
+                andReturn(mockSelectedColumn.sortable === undefined || mockSelectedColumn.sortable);
+
             var result = openlmisTableSortingService.isColumnSortable(mockSelectedColumn);
 
             expect(result).toBe(true);
         });
 
         it('should return false if the column is not sortable', function() {
-            spyOn(openlmisTableSortingService, 'isColumnSortable').andReturn(false);
+            spyOn(openlmisTableSortingService, 'isColumnSortable')
+                .andReturn(mockSelectedColumnNotSortable.sortable === undefined
+                    || mockSelectedColumnNotSortable.sortable);
+
             var result = openlmisTableSortingService.isColumnSortable(mockSelectedColumn);
 
             expect(result).toBe(false);
+        });
+    });
+
+    describe('setHeadersClasses', function() {
+        var mockColumns;
+
+        beforeEach(function() {
+            mockColumns =  [
+                {
+                    header: 'adminFacilityList.name',
+                    propertyPath: 'name'
+                },
+                {
+                    header: 'adminFacilityList.code',
+                    propertyPath: 'code'
+                },
+                {
+                    header: 'adminFacilityList.geographicZone',
+                    propertyPath: 'geographicZone.name'
+                },
+                {
+                    header: 'adminFacilityList.type',
+                    propertyPath: 'type.name'
+                }
+            ];
+        });
+
+        it('should assign the SORT_ASC_CLASS to the code column', function() {
+            $stateParams.sort = 'code,asc';
+
+            openlmisTableSortingService.setHeadersClasses(mockColumns);
+
+            expect(mockColumns[1].class).toBe(SORTING_SERVICE_CONSTANTS.SORT_ASC_CLASS);
+        });
+
+        it('should assign the empty string class to every column', function() {
+            $stateParams.sort = undefined;
+
+            openlmisTableSortingService.setHeadersClasses(mockColumns);
+
+            expect(mockColumns.map(function(col) {
+                return col.class;
+            })).toEqual(['', '', '', '']);
         });
     });
 });
