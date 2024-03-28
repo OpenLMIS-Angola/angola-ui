@@ -1,7 +1,7 @@
 <section class="requisition-group-facilities">
     <form class="form-inline" ng-submit="vm.addFacility()" reload-form>
         <div class="form-group">
-            <label for="facility-select">{{'adminRequisitionGroupEdit.facility' | message}}</label>
+            <label for="facility-select">{{:: 'adminRequisitionGroupEdit.facility' | message}}</label>
             <select id="facility-select"
                     ng-options="facility as facility.name for facility in vm.facilities"
                     required
@@ -9,7 +9,7 @@
             </select>
         </div>
 
-        <button type="submit" class="add">{{'adminRequisitionGroupEdit.add' | message}}</button>
+        <button type="submit" class="add">{{:: 'adminRequisitionGroupEdit.add' | message}}</button>
     </form>
 </section>
 <hr/>
@@ -24,15 +24,15 @@
     <table>
         <caption ng-if="!vm.requisitionGroup.memberFacilities ||
                 vm.requisitionGroup.memberFacilities.length === 0">
-            {{'adminRequisitionGroupEdit.noAssociatedFacilities' | message}}
+            {{:: 'adminRequisitionGroupEdit.noAssociatedFacilities' | message}}
         </caption>
         <thead>
         <tr>
-            <th>{{'adminRequisitionGroupEdit.facilityName' | message}}</th>
-            <th>{{'adminRequisitionGroupEdit.geographicZone' | message}}</th>
-            <th>{{'adminRequisitionGroupEdit.facilityType' | message}}</th>
-            <th>{{'adminRequisitionGroupEdit.facilityEnabled' | message}}</th>
-            <th>{{'adminRequisitionGroupEdit.actions' | message}}</th>
+            <th>{{:: 'adminRequisitionGroupEdit.facilityName' | message}}</th>
+            <th>{{:: 'adminRequisitionGroupEdit.geographicZone' | message}}</th>
+            <th>{{:: 'adminRequisitionGroupEdit.facilityType' | message}}</th>
+            <th>{{:: 'adminRequisitionGroupEdit.facilityEnabled' | message}}</th>
+            <th>{{:: 'adminRequisitionGroupEdit.actions' | message}}</th>
         </tr>
         </thead>
         <tbody>
@@ -44,7 +44,7 @@
             <td>
                 <button class="danger"
                         ng-click="vm.removeFacility(facility)">
-                    {{'adminRequisitionGroupEdit.remove' | message}}
+                    {{:: 'adminRequisitionGroupEdit.remove' | message}}
                 </button>
             </td>
         </tr>
