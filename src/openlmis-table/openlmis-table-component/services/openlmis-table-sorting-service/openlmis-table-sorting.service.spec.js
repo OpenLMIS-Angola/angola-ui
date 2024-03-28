@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /*
  * This program is part of the OpenLMIS logistics management information system platform software.
  * Copyright © 2017 VillageReach
@@ -18,10 +17,6 @@ describe('openlmisTableSortingService', function() {
     var openlmisTableSortingService, $state, $stateParams, alertService, SORTING_SERVICE_CONSTANTS;
     var mockSelectedColumn,
         mockSelectedColumnNotSortable;
-=======
-describe('openlmisTableSortingService', function() {
-    var openlmisTableSortingService, $state, $stateParams, alertService;
->>>>>>> bd3e59e (wip)
 
     beforeEach(function() {
         module('openlmis-table');
@@ -31,7 +26,6 @@ describe('openlmisTableSortingService', function() {
             $state = $injector.get('$state');
             $stateParams = $injector.get('$stateParams');
             alertService = $injector.get('alertService');
-<<<<<<< HEAD
             SORTING_SERVICE_CONSTANTS = $injector.get('SORTING_SERVICE_CONSTANTS');
         });
         mockSelectedColumn = {
@@ -49,33 +43,7 @@ describe('openlmisTableSortingService', function() {
     describe('sortTable', function() {
         it('should sort the table by the selected column if it is sortable', function() {
             $stateParams.sort = null;
-=======
-        });
-    });
 
-    describe('sortTable', function() {
-        var mockSelectedColumn,
-            mockSelectedColumnNotSortable;
-
-        beforeEach(function() {
-            mockSelectedColumn = {
-                header: 'adminFacilityList.name',
-                propertyPath: 'name'
-            };
-
-            mockSelectedColumnNotSortable = {
-                header: 'test.name',
-                propertyPath: 'facility.name',
-                sortable: false
-            };
-        });
-
-        it('should sort the table by the selected column if it is sortable', function() {
-            spyOn(openlmisTableSortingService, 'isColumnSortable').and.returnValue(true);
-
-            $stateParams.sort = null;
-
->>>>>>> bd3e59e (wip)
             spyOn($state, 'go');
             openlmisTableSortingService.sortTable(mockSelectedColumn);
 
@@ -84,10 +52,6 @@ describe('openlmisTableSortingService', function() {
         });
 
         it('should display an alert if the column is not sortable', function() {
-<<<<<<< HEAD
-=======
-            spyOn(openlmisTableSortingService, 'isColumnSortable').and.returnValue(false);
->>>>>>> bd3e59e (wip)
             spyOn(alertService, 'info');
             openlmisTableSortingService.sortTable(mockSelectedColumnNotSortable);
 
@@ -96,25 +60,17 @@ describe('openlmisTableSortingService', function() {
                 message: 'column.notSortable.message'
             });
         });
-<<<<<<< HEAD
     });
 
     describe('isColumnSortable', function() {
         it('should return true if the column is sortable', function() {
-            spyOn(openlmisTableSortingService, 'isColumnSortable').
-                andReturn(mockSelectedColumn.sortable === undefined || mockSelectedColumn.sortable);
-
             var result = openlmisTableSortingService.isColumnSortable(mockSelectedColumn);
 
             expect(result).toBe(true);
         });
 
         it('should return false if the column is not sortable', function() {
-            spyOn(openlmisTableSortingService, 'isColumnSortable')
-                .andReturn(mockSelectedColumnNotSortable.sortable === undefined
-                    || mockSelectedColumnNotSortable.sortable);
-
-            var result = openlmisTableSortingService.isColumnSortable(mockSelectedColumn);
+            var result = openlmisTableSortingService.isColumnSortable(mockSelectedColumnNotSortable);
 
             expect(result).toBe(false);
         });
@@ -162,33 +118,4 @@ describe('openlmisTableSortingService', function() {
             })).toEqual(['', '', '', '']);
         });
     });
-=======
-
-        // Add more test cases for other scenarios (nested properties, state params update) as needed
-    });
-
-    // Tests for setHeadersClasses method
-    // describe('setHeadersClasses', function () {
-    //     it('should set classes for table headers', function () {
-    //         // Your test logic here
-    //     });
-
-    //     // Add more tests as needed
-    // });
-
-    // // Tests for isColumnSortable method
-    // describe('isColumnSortable', function () {
-    //     it('should return true if the column is sortable', function () {
-    //         // Your test logic here
-    //     });
-
-    //     it('should return false if the column is not sortable', function () {
-    //         // Your test logic here
-    //     });
-
-    //     // Add more tests as needed
-    // });
-
-    // Add more describe blocks for other methods if needed
->>>>>>> bd3e59e (wip)
 });
