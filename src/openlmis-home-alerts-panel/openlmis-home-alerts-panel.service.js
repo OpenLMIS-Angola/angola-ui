@@ -32,11 +32,11 @@
         };
 
         function getRequisitionsStatusesData() {
-            return requisitionStatusesResource.get().$promise;
+            return requisitionStatusesResource.get(requisitionStatusesResource).$promise;
         }
 
         function getOrdersStatusesData() {
-            return orderStatusesResource.get().$promise;
+            return orderStatusesResource.get(orderStatusesResource).$promise;
         }
     }
 })();
