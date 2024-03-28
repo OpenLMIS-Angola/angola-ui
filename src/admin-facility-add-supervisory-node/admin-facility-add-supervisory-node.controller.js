@@ -62,7 +62,10 @@
             vm.childNodes = supervisoryNodes;
             vm.partnerNodes = supervisoryNodes;
             vm.parentNodes = supervisoryNodes;
-            vm.supervisoryNode.facility = facilitiesMap[$stateParams.facilityId];
+
+            if (facilitiesMap[$stateParams.facilityId]) {
+                vm.supervisoryNode.facility = facilitiesMap[$stateParams.facilityId];
+            }
         }
 
         function goToSupervisoryNodeList() {
