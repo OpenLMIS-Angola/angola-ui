@@ -138,6 +138,25 @@
          */
         vm.newLot = undefined;
 
+        // OAM-5: Lot code filter UI improvements.
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name isExpired
+         *
+         * @description
+         * Checks whether the expiration date of a particular LOT has been exceeded.
+         */
+        vm.isExpired = function(lot) {
+            if (lot.expirationDate) {
+                var currentDate = new Date();
+                var currentDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+                return lot.expirationDate < currentDay;
+            }
+            return false;
+        };
+        // OAM-5: Ends here.
+
         /**
          * @ngdoc method
          * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
@@ -443,6 +462,44 @@
             $scope.productForm.$setPristine();
 
             vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup, vm.hasPermissionToAddNewLot);
+            // OAM-5: Lot code filter UI improvements.
+            var currentDate = new Date();
+            var currentDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+
+            var nonExpiredLots = [];
+            var expiredLots = [];
+            var lotsWithNoExpirationDate = [];
+            var addLot = [];
+
+            vm.lots.forEach(function(lot) {
+                if (lot.lotCode === 'Add lot') {
+                    addLot.push(lot);
+                } else if (lot.expirationDate) {
+                    var expirationDate = new Date(lot.expirationDate);
+                    if (expirationDate >= currentDay) {
+                        nonExpiredLots.push(lot);
+                    } else {
+                        expiredLots.push(lot);
+                    }
+                } else {
+                    lotsWithNoExpirationDate.push(lot);
+                }
+            });
+
+            nonExpiredLots.sort(function(lotA, lotB) {
+                var lotAExptDate = new Date(lotA.expirationDate);
+                var lotBExptDate = new Date(lotB.expirationDate);
+                return lotAExptDate - lotBExptDate;
+            });
+
+            expiredLots.sort(function(lotA, lotB) {
+                var lotAExptDate = new Date(lotA.expirationDate);
+                var lotBExptDate = new Date(lotB.expirationDate);
+                return lotAExptDate - lotBExptDate;
+            });
+
+            vm.lots = addLot.concat(lotsWithNoExpirationDate, nonExpiredLots, expiredLots);
+            // OAM-5: ends here
             vm.selectedOrderableHasLots = vm.lots.length > 0;
         };
 
@@ -767,6 +824,16 @@
             vm.orderableGroups.forEach(function(group) {
                 vm.hasLot = vm.hasLot || orderableGroupService.lotsOf(group, hasPermissionToAddNewLot).length > 0;
             });
+            // OAM-5: Lot code filter UI improvements.
+            var collator = new Intl.Collator('pt', {
+                numeric: true,
+                sensitivity: 'base'
+            });
+            vm.orderableGroups.sort(function(a, b) {
+                return collator.compare(a[0].orderable.fullProductName,
+                    b[0].orderable.fullProductName);
+            });
+            // OAM-5: ends here
             vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(vm.orderableGroups);
             vm.hasPermissionToAddNewLot = hasPermissionToAddNewLot;
             vm.canAddNewLot = false;

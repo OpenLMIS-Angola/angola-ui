@@ -1,0 +1,43 @@
+<div class="modal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" style="width: 613px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title">
+                    <h2>{{:: 'adminOrderableEdit.associatedPrograms' | message}}</h2>
+                </h1>
+            </div>
+            <div class="modal-body">
+                <section class="openlmis-table-container">
+                    <button id="add-program" class="add" ng-show="vm.canEdit" ui-sref="openlmis.administration.orderables.programs.add">
+                        {{:: 'adminOrderableEdit.addProgram' | message}}
+                    </button>
+                    <table>
+                        <caption ng-if="!vm.programOrderables || vm.programOrderables.length === 0">
+                            {{:: 'adminOrderableEdit.noAssociatedPrograms' | message}}
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th>{{:: 'adminOrderableEdit.programName' | message}}</th>
+                                <th>{{:: 'adminOrderableEdit.actions' | message}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="program in vm.programOrderables">
+                                <td>{{vm.programsMap[program.programId].name}}</td>
+                                <td>
+                                    <button class="danger" ng-show="vm.canEdit" ng-click="vm.removeProgramOrderable({program})">
+                                        {{:: 'adminOrderableEdit.remove' | message}}
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+            <div class="modal-footer">
+                <button class="primary" ng-click="vm.addFacilityTypes()">{{:: 'orderableAddPrograms.save' | message}}</button>
+                <button ng-click="vm.cancel()">{{:: 'orderableAddPrograms.cancel' | message}}</button>
+            </div>
+        </div>
+    </div>
+</div>
