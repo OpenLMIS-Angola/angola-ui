@@ -1,0 +1,51 @@
+<form id="orderableForm" ng-submit="vm.saveOrderable()">
+    <label for="productCode">{{'adminOrderableEdit.productCode' | message}}</label>
+    <input id="productCode"
+           type="text"
+           ng-model="vm.orderable.productCode"
+           required
+           ng-change="vm.validateField(vm.orderable.productCode, 'productCode')"
+    />
+    <label for="fullProductName">{{'adminOrderableEdit.name' | message}}</label>
+    <input id="fullProductName"
+           type="text"
+           ng-model="vm.orderable.fullProductName"
+           required
+           ng-change="vm.validateField(vm.orderable.fullProductName, 'fullProductName')"
+    />
+    <label for="description">{{'adminOrderableEdit.description' | message}}</label>
+    <input id="description" type="text" ng-model="vm.orderable.description" />
+    <h3>{{'adminOrderableEdit.packSizeInformation' | message}}</h3>
+    <label for="dispensingUnit">{{'adminOrderableEdit.dispensingUnit' | message}}</label>
+    <input id="dispensingUnit"
+           type="text"
+           ng-model="vm.orderable.dispensable.dispensingUnit"
+           required
+           ng-change="vm.validateField(vm.orderable.dispensable.dispensingUnit, 'dispensingUnit')"
+    />
+    <p class="note">
+        {{ 'adminOrderableEdit.dispensingUnit.info' | message}}
+    </p>
+    <label for="netContent">{{'adminOrderableEdit.netContent' | message}}</label>
+    <input positive-integer
+           id="netContent"
+           type="text"
+           ng-model="vm.orderable.netContent"
+           required
+           ng-change="vm.validateField(vm.orderable.netContent, 'netContent')"
+    />
+    <label for="packRoundingThreshold">{{'adminOrderableEdit.packRoundingThreshold' | message}}</label>
+    <input positive-integer
+           id="packRoundingThreshold"
+           type="text"
+           ng-model="vm.orderable.packRoundingThreshold"
+           required
+           ng-change="vm.validateField(vm.orderable.packRoundingThreshold, 'packRoundingThreshold')"
+    />
+    <fieldset class="form-group">
+        <label>
+            <input type="checkbox" ng-model="vm.orderable.roundToZero" />
+            {{'adminOrderableEdit.roundToZero' | message}}
+        </label>
+    </fieldset>
+</form>

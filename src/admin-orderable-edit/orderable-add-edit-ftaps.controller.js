@@ -31,12 +31,12 @@
     controller.$inject = [
         'facilityTypeApprovedProduct', 'FacilityTypeApprovedProductResource', 'FunctionDecorator',
         'successNotificationKey', 'errorNotificationKey', 'programOrderables', 'facilityTypes', 'canEdit',
-        '$state'
+        '$state', 'alertService', 'messageService', 'loadingModalService', 'notificationService'
     ];
 
     function controller(facilityTypeApprovedProduct, FacilityTypeApprovedProductResource, FunctionDecorator,
                         successNotificationKey, errorNotificationKey, programOrderables, facilityTypes, canEdit,
-                        $state) {
+                        $state, alertService, messageService, loadingModalService, notificationService) {
 
         var vm = this;
 
@@ -45,7 +45,6 @@
         vm.cancel  = cancel;
         vm.saveFacilityTypeApprovedProduct = new FunctionDecorator()
             .decorateFunction(saveFacilityTypeApprovedProduct)
-            .withSuccessNotification(successNotificationKey)
             .withErrorNotification(errorNotificationKey)
             .withLoading(true)
             .getDecoratedFunction();
@@ -110,7 +109,12 @@
                     return new FacilityTypeApprovedProductResource()
                         .create(vm.facilityTypeApprovedProduct)
                         .then(function() {
+                            notificationService.success('adminOrderableFtapAdd.ftapHasBeenCreatedSuccessfully');
                             goToFtapsList();
+                        })
+                        .catch(function() {
+                            loadingModalService.close();
+                            return alertService.error(messageService.get('adminOrderableEdit.ftapExistsError'));
                         });
                 });
         }

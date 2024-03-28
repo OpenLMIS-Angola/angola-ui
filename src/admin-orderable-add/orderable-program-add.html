@@ -24,7 +24,7 @@
                         <label for="displayOrder">{{:: 'adminOrderableProgram.displayOrder' | message}}</label>
                         <input positive-integer type="text" id="displayOrder" ng-model="vm.programOrderable.displayOrder"></input>
                         <label for="pricePerPack">{{:: 'adminOrderableProgram.pricePerPack' | message}}</label>
-                        <input positive-decimal type="text" id="pricePerPack" ng-model="vm.programOrderable.pricePerPack"></input>
+                        <input positive-decimal type="text" id="pricePerPack" ng-model="vm.programOrderable.pricePerPack" required></input>
                     </fieldset>
                 </form>
             </div>
