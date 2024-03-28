@@ -11,5 +11,6 @@
     "adminSupplyLineAdd.update.confirm": "Do you really want to add the Supply Line?",
     "adminSupplyLineAdd.supplyLineUpdatedSuccessfully": "Supply Line has been added successfully.",
     "adminSupplyLineAdd.failure": "Failed to add the Supply Line.",
-    "adminSupplyLineAdd.doYouWantToAddPrograms": "Do you want to add programs to ${facility}?"
+    "adminSupplyLineAdd.doYouWantToAddPrograms": "Do you want to add programs to ${facility}?",
+    "adminFacilitySupplyLineAdd.addSupplyLine": "Add Supply Line"
 }
