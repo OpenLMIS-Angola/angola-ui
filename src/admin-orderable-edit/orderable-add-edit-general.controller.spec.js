@@ -36,7 +36,7 @@ describe('OrderableAddEditGeneralController', function() {
         this.orderable = new this.OrderableDataBuilder().buildJson();
         this.successNotificationKey = 'successMessage.key';
         this.errorNotificationKey = 'errorMessage.key';
-        this.orderableListRelativePath = 'orderable.list.relative.path';
+        this.orderableListRelativePath = 'openlmis.administration.orderables.programs';
 
         spyOn(this.$state, 'go');
         spyOn(this.OrderableResource.prototype, 'update').andReturn(this.$q.resolve(this.orderable));
@@ -57,11 +57,6 @@ describe('OrderableAddEditGeneralController', function() {
 
         it('should expose orderable', function() {
             expect(this.vm.orderable).toEqual(this.orderable);
-        });
-
-        it('should decorate with correct success message', function() {
-            expect(this.FunctionDecorator.prototype.withSuccessNotification)
-                .toHaveBeenCalledWith(this.successNotificationKey);
         });
 
         it('should decorate with correct error message', function() {
@@ -118,9 +113,9 @@ describe('OrderableAddEditGeneralController', function() {
             this.vm.saveOrderable();
             this.$rootScope.$apply();
 
-            expect(this.confirmService.confirm.andReturn(this.$q.resolve()))
-                .toHaveBeenCalledWith('orderableAddPrograms.doYouWantToAddPrograms',
-                    'orderableAddPrograms.proceed', 'orderableAddPrograms.cancel');
+            expect(this.$state.go).toHaveBeenCalledWith(this.orderableListRelativePath, {}, {
+                reload: true
+            });
         });
 
     });

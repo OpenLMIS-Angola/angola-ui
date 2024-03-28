@@ -30,12 +30,13 @@
 
     controller.$inject = [
         'orderable', '$state', 'OrderableResource', 'FunctionDecorator', 'successNotificationKey',
-        'errorNotificationKey', 'orderableListRelativePath', 'messageService', 'confirmService', 'loadingModalService'
+        'errorNotificationKey', 'orderableListRelativePath', 'messageService', 'confirmService', 'loadingModalService',
+        'alertService', 'notificationService'
     ];
 
     function controller(orderable, $state, OrderableResource, FunctionDecorator, successNotificationKey,
                         errorNotificationKey, orderableListRelativePath, messageService, confirmService,
-                        loadingModalService) {
+                        loadingModalService, alertService, notificationService) {
 
         var vm = this,
             isNew;
@@ -44,10 +45,10 @@
         vm.goToOrderableList  = goToOrderableList;
         vm.saveOrderable = new FunctionDecorator()
             .decorateFunction(saveOrderable)
-            .withSuccessNotification(successNotificationKey)
             .withErrorNotification(errorNotificationKey)
             .withLoading(true)
             .getDecoratedFunction();
+        vm.invalidFields = new Set();
 
         /**
          * @ngdoc method
@@ -79,21 +80,74 @@
         /**
          * @ngdoc method
          * @methodOf admin-orderable-edit.controller:OrderableAddEditGeneralController
+         * @name validateAddReport
+         *
+         * @description
+         * Validate required fields when adding new facility.
+         */
+        function validateAddReport() {
+            var fieldsToValidate =
+                [
+                    'productCode',
+                    'fullProductName',
+                    'dispensingUnit',
+                    'netContent',
+                    'packRoundingThreshold'
+                ];
+            fieldsToValidate.forEach(function(fieldName) {
+                if (fieldName === 'dispensingUnit') {
+                    validateField(vm.orderable.dispensable[fieldName], fieldName);
+                } else {
+                    validateField(vm.orderable[fieldName], fieldName);
+                }
+            });
+
+            return vm.invalidFields.size === 0;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf admin-orderable-edit.controller:OrderableAddEditGeneralController
+         * @name validateField
+         *
+         * @description
+         * Validate single field.
+         */
+        function validateField(value, fieldName) {
+            var isValid = !!value;
+
+            if (vm.invalidFields.has(fieldName) && isValid) {
+                vm.invalidFields.delete(fieldName);
+            } else if (!isValid) {
+                vm.invalidFields.add(fieldName);
+            }
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf admin-orderable-edit.controller:OrderableAddEditGeneralController
          * @name saveOrderable
          *
          * @description
          * Updates the orderable and return to the orderable list on success.
          */
         function saveOrderable() {
+            loadingModalService.open();
+
             return new OrderableResource()
                 .update(vm.orderable)
                 .then(function(orderable) {
-                    if (isNew) {
+                    if (isNew && validateAddReport()) {
+                        notificationService.success('adminOrderableAdd.productHasBeenCreatedSuccessfully');
                         addPrograms(orderable);
                         loadingModalService.close();
                     } else {
                         goToOrderableList();
                     }
+                })
+                .catch(function() {
+                    loadingModalService.close();
+                    alertService.error(messageService.get('adminOrderableEdit.productCodeError'));
                 });
         }
 
