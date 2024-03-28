@@ -27,7 +27,8 @@
             isOffline: true,
             url: '/stockPriceChanges'
                 + '?facility&program&supervised&includeInactive'
-                + '&productCode&productName&lotCode&stockCardListPage&stockCardListSize',
+                + '&productCode&productName&lotCode&stockCardListPage&stockCardListSize'
+                + '&sort',
             label: 'stockPriceChanges.title',
             priority: 1,
             showInNavigation: true,
@@ -56,6 +57,7 @@
 
                     paramsCopy.orderableCode = $stateParams.productCode;
                     paramsCopy.orderableName = $stateParams.productName;
+                    paramsCopy.sort = $stateParams.sort;
                     paramsCopy.nonEmptyOnly = true;
 
                     // size is set 2147483647, because StockCardSummaryRepository.query is taking default value 10

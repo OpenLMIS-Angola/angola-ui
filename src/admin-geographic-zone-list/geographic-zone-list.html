@@ -1,0 +1,19 @@
+<h2>{{'adminGeographicZoneList.geographicZones' | message}}</h2>
+<section class="openlmis-table-container">
+    <form ng-submit="vm.search()">
+        <fieldset class="form-group">
+            <label for="name">{{'adminGeographicZoneList.name' | message}}</label>
+            <input type="text" id="name" ng-model="vm.name"/>
+        </fieldset>
+        <fieldset class="form-group">
+            <label for="parent">{{'adminGeographicZoneList.parent' | message}}</label>
+            <select id="parent"
+                    ng-options="parent.id as parent.name for parent in vm.geographicZones"
+                    ng-model="vm.parent">
+            </select>
+        </fieldset>
+        <input type="submit" value="{{'adminGeographicZoneList.search' | message}}"/>
+    </form>
+    <openlmis-table table-config="vm.tableConfig"></openlmis-table>
+    <openlmis-pagination/>
+</section>

@@ -1,0 +1,27 @@
+<table>
+    <caption ng-if="$ctrl.tableConfig.displayCaption">
+        {{$ctrl.tableConfig.caption | message}}
+    </caption>
+    <thead>
+        <tr>
+            <th
+                ng-repeat="column in $ctrl.tableConfig.columns"
+                ng-click="$ctrl.sortTable(column)"
+                class="{{column.class}}"
+                ng-class="{'header-sortable': $ctrl.isColumnSortable(column)}">
+                {{ column.header | message}}
+            </th>
+            <th>{{ $ctrl.tableConfig.actions.header | message }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="element in $ctrl.tableConfig.data" ng-init="parentIndex=$index">
+            <td ng-repeat="column in $ctrl.tableConfig.columns" ng-init="childIndex=$index">
+                <openlmis-table-element-template element-config="$ctrl.elementsConfiguration[parentIndex][childIndex]"></openlmis-table-element-template>
+            </td>
+            <td>
+                <openlmis-table-actions actions-config="$ctrl.tableConfig.actions" item="element"></openlmis-table-actions>
+            </td>
+        </tr>
+    </tbody>
+</table>

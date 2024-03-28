@@ -33,12 +33,13 @@
         'supplyingFacilities', 'requestingFacilities', 'programs', 'requestingFacilityFactory',
         'loadingModalService', 'notificationService', 'fulfillmentUrlFactory', 'orders',
         'orderService', 'orderStatusFactory', 'canRetryTransfer', '$stateParams', '$filter', '$state', '$scope',
-        'ORDER_STATUSES'
+        'ORDER_STATUSES', 'TABLE_CONSTANTS'
     ];
 
     function controller(supplyingFacilities, requestingFacilities, programs, requestingFacilityFactory,
                         loadingModalService, notificationService, fulfillmentUrlFactory, orders, orderService,
-                        orderStatusFactory, canRetryTransfer, $stateParams, $filter, $state, $scope, ORDER_STATUSES) {
+                        orderStatusFactory, canRetryTransfer, $stateParams, $filter, $state, $scope, ORDER_STATUSES,
+                        TABLE_CONSTANTS) {
 
         var vm = this;
 
@@ -139,6 +140,17 @@
         vm.orderStatuses = undefined;
 
         /**
+         * @ngdoc property
+         * @propertyOf order-view.controller:OrderViewController
+         * @name tableConfig
+         * @type {Object}
+         *
+         * @description
+         * Contains config for orders list table
+         */
+        vm.tableConfig = undefined;
+
+        /**
          * @ngdoc method
          * @methodOf order-view.controller:OrderViewController
          * @name $onInit
@@ -189,11 +201,13 @@
                 })[0];
             }
 
+            vm.tableConfig = getTableConfig();
             $scope.$watch(function() {
                 return vm.supplyingFacility;
             }, function(newValue, oldValue) {
                 if (newValue && hasSupplyingFacilityChange(newValue, oldValue)) {
                     loadRequestingFacilities(vm.supplyingFacility.id);
+                    vm.tableConfig = getTableConfig();
                 }
                 if (!newValue) {
                     vm.requestingFacilities = undefined;
@@ -321,6 +335,137 @@
                     orderId: orderId
                 }
             );
+        }
+
+        function getTableConfig() {
+            return {
+                caption: 'orderView.noOrdersFound',
+                displayCaption: !vm.orders.length,
+                columns: [
+                    {
+                        header: 'orderView.orderNumber',
+                        propertyPath: 'orderCode'
+                    },
+                    {
+                        header: 'orderView.facility',
+                        propertyPath: 'facility.code',
+                        template: function(item) {
+                            return item.facility.code + ' - ' + item.facility.name;
+                        }
+                    },
+                    {
+                        header: 'orderView.district',
+                        propertyPath: 'facility.geographicZone.name'
+                    },
+                    {
+                        header: 'orderView.program',
+                        propertyPath: 'program.name'
+                    },
+                    {
+                        header: 'orderView.period',
+                        propertyPath: 'processingPeriod.name'
+                    },
+                    {
+                        header: 'orderView.startDate',
+                        propertyPath: 'processingPeriod.startDate',
+                        template: function(item) {
+                            return item.processingPeriod ?
+                                $filter('openlmisDate')(item.processingPeriod.startDate) : '';
+                        }
+                    },
+                    {
+                        header: 'orderView.endDate',
+                        propertyPath: 'processingPeriod.endDate',
+                        template: function(item) {
+                            return item.processingPeriod ?
+                                $filter('openlmisDate')(item.processingPeriod.endDate) : '';
+                        }
+                    },
+                    {
+                        header: 'orderView.status',
+                        propertyPath: 'status',
+                        template: function(item) {
+                            return vm.getOrderStatus(item.status);
+                        }
+                    },
+                    {
+                        header: 'orderView.emergency',
+                        propertyPath: 'emergency',
+                        classes: 'col-emergency',
+                        template: function(item) {
+                            return '<i ng-class="{\'icon-ok\':' + item.emergency + '}"></i>';
+                        }
+                    },
+                    {
+                        header: 'orderView.createdDate',
+                        propertyPath: 'createdDate',
+                        template: function(item) {
+                            return item.createdDate ?
+                                $filter('openlmisDate')(item.createdDate) : '';
+                        }
+                    },
+                    {
+                        header: 'orderView.lastUpdated',
+                        propertyPath: 'lastUpdatedDate',
+                        template: function(item) {
+                            return item.lastUpdatedDate ?
+                                $filter('openlmisDate')(item.lastUpdatedDate) : '';
+                        }
+                    }
+                ],
+                actions: {
+                    header: 'orderView.actions',
+                    data: [
+                        {
+                            type: TABLE_CONSTANTS.actionTypes.DOWNLOAD,
+                            displayAction: function(item) {
+                                return item.status !== ORDER_STATUSES.CREATING;
+                            },
+                            classes: 'print',
+                            onClick: function(item) {
+                                vm.getPrintUrl(item);
+                            },
+                            text: 'orderView.print'
+                        },
+                        {
+                            type: TABLE_CONSTANTS.actionTypes.DOWNLOAD,
+                            displayAction: function(item) {
+                                return item.status !== ORDER_STATUSES.CREATING;
+                            },
+                            classes: 'download',
+                            onClick: function(item) {
+                                vm.getDownloadUrl(item);
+                            },
+                            text: 'orderView.download'
+                        },
+                        {
+                            type: TABLE_CONSTANTS.actionTypes.CLICK,
+                            displayAction: function(item) {
+                                return item.status !== ORDER_STATUSES.CREATING &&
+                                    vm.canRetryTransfer &&
+                                    item.transferFailed();
+                            },
+                            classes: 'retry',
+                            onClick: function(item) {
+                                vm.retryTransfer(item);
+                            },
+                            text: 'orderView.retry'
+                        },
+                        {
+                            type: TABLE_CONSTANTS.actionTypes.CLICK,
+                            displayAction: function(item) {
+                                return item.status === ORDER_STATUSES.CREATING;
+                            },
+                            classes: 'order-edit',
+                            onClick: function(item) {
+                                vm.redirectToOrderEdit(item.id);
+                            },
+                            text: 'orderView.edit'
+                        }
+                    ]
+                },
+                data: vm.orders
+            };
         }
 
     }

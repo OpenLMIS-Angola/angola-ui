@@ -29,11 +29,10 @@
         .controller('FacilityListController', controller);
 
     controller.$inject = [
-        '$state', '$stateParams', 'facilities', 'geographicZones'
+        '$state', '$stateParams', 'facilities', 'geographicZones', 'TABLE_CONSTANTS'
     ];
 
-    function controller($state, $stateParams, facilities, geographicZones) {
-
+    function controller($state, $stateParams, facilities, geographicZones, TABLE_CONSTANTS) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -98,6 +97,7 @@
             vm.geographicZones = geographicZones;
             vm.facilityName = $stateParams.name;
             vm.geographicZone = $stateParams.zoneId;
+            vm.tableConfig = getTableConfig();
         }
 
         /**
@@ -144,6 +144,64 @@
             $state.go('openlmis.administration.facilities.facility.print');
         }
         // AO-744: ends here
+
+        /**
+         * @ngdoc method
+         * @methodOf admin-facility-list.controller:FacilityListController
+         * @name getTableConfig
+         *
+         * @description
+         * Returns the configuration for facility list table.
+         */
+        function getTableConfig() {
+            return {
+                caption: 'adminFacilityList.noFacilities',
+                displayCaption: !vm.facilities || vm.facilities.length === 0,
+                columns: [
+                    {
+                        header: 'adminFacilityList.name',
+                        propertyPath: 'name'
+                    },
+                    {
+                        header: 'adminFacilityList.code',
+                        propertyPath: 'code'
+                    },
+                    {
+                        header: 'adminFacilityList.geographicZone',
+                        propertyPath: 'geographicZone.name'
+                    },
+                    {
+                        header: 'adminFacilityList.type',
+                        propertyPath: 'type.name'
+                    },
+                    {
+                        header: 'adminFacilityList.active',
+                        propertyPath: 'active',
+                        template: '<i ng-class="{\'icon-ok\': item.active}"></i>'
+                    },
+                    {
+                        header: 'adminFacilityList.enabled',
+                        propertyPath: 'enabled',
+                        template: function(item) {
+                            return '<i ng-class="{\'icon-ok\':' + item.enabled + '}"></i>';
+                        }
+                    }
+                ],
+                actions: {
+                    header: 'adminFacilityList.actions',
+                    data: [
+                        {
+                            type: TABLE_CONSTANTS.actionTypes.REDIRECT,
+                            redirectLink: function(item) {
+                                return 'openlmis.administration.facilities.edit({id:\'' + item.id + '\'})';
+                            },
+                            text: 'adminFacilityList.edit'
+                        }
+                    ]
+                },
+                data: vm.facilities
+            };
+        }
     }
 
 })();

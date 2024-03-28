@@ -54,10 +54,10 @@
          * @ngdoc method
          * @methodOf angola-service-desk.ServiceDeskResource
          * @name create
-         * 
+         *
          * @description
          * Creates issue for Service Desk API.
-         * 
+         *
          * @param  {Object}  issue issue to be created
          * @return {Promise}       the promise resolving to the server response, rejected if request fails
          */
@@ -69,10 +69,10 @@
          * @ngdoc method
          * @methodOf angola-service-desk.ServiceDeskResource
          * @name addAttachment
-         * 
+         *
          * @description
          * Attaches file to the Service Desk issue.
-         * 
+         *
          * @param  {File}    attachment file to be attached
          * @param  {String}  issueId    id of already created issue
          * @return {Promise}            the promise resolving to the server response, rejected if request fails

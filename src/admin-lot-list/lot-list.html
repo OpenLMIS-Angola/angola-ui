@@ -24,34 +24,6 @@
         <!-- ANGOLASUP-715: Ends here -->
         <input type="submit" value="{{'adminLotList.search' | message}}"/>
     </form>
-    <table>
-        <caption ng-if="vm.lots.length === 0">
-            {{'adminLotList.noLots' | message}}
-        </caption>
-        <thead>
-        <tr>
-            <th>{{'adminLotList.productCode' | message}}</th>
-            <th>{{'adminLotList.productName' | message}}</th>
-            <th>{{'adminLotList.lotCode' | message}}</th>
-            <th>{{'adminLotList.expirationDate' | message}}</th>
-            <th>{{'adminLotList.manufacturedDate' | message}}</th>
-            <th>{{'adminLotList.actions' | message}}</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="lot in vm.lots">
-            <td>{{lot.productCode}}</td>
-            <td>{{lot.productName}}</td>
-            <td>{{lot.lotCode}}</td>
-            <td>{{lot.expirationDate}}</td>
-            <td>{{lot.manufacturedDate}}</td>
-            <td>
-                <button ui-sref="openlmis.administration.lots.edit({lotId: lot.id})">
-                    {{'adminLotList.edit' | message}}
-                </button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <openlmis-table table-config="vm.tableConfig"></openlmis-table>
     <openlmis-pagination/>
 </section>

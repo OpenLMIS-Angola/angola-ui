@@ -27,63 +27,6 @@
         <input id="periodEndDate" type="date" ng-model="vm.periodEndDate" min-date="vm.periodStartDate"/>
         <input type="submit" class="btn btn-primary" value="{{'orderView.search' | message}}"/>
     </form>
-    <table>
-        <caption ng-if="!vm.orders.length">{{'orderView.noOrdersFound' | message}}</caption>
-        <thead>
-            <tr>
-                <th>{{'orderView.orderNumber' | message}}</th>
-                <th>{{'orderView.facility' | message}}</th>
-                <th>{{'orderView.district' | message}}</th>
-                <th>{{'orderView.program' | message}}</th>
-                <th>{{'orderView.period' | message}}</th>
-                <th>{{'orderView.startDate' | message}}</th>
-                <th>{{'orderView.endDate' | message}}</th>
-                <th>{{'orderView.status' | message}}</th>
-                <th>{{'orderView.emergency' | message}}</th>
-                <th>{{'orderView.createdDate' | message}}</th>
-                <th>{{'orderView.lastUpdated' | message}}</th>
-                <th class="col-sticky sticky-right">{{'orderView.actions' | message}}</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr ng-repeat="order in vm.orders">
-                <td>{{order.orderCode}}</td>
-                <td>{{order.facility.code}} - {{order.facility.name}}</td>
-                <td>{{order.facility.geographicZone.name}}</td>
-                <td>{{order.program.name}}</td>
-                <td>{{order.processingPeriod.name}}</td>
-                <td>{{order.processingPeriod.startDate | openlmisDate}}</td>
-                <td>{{order.processingPeriod.endDate | openlmisDate}}</td>
-                <td>{{vm.getOrderStatus(order.status)}}</td>
-                <td class="col-emergency">
-                    <i ng-class="{'icon-ok': order.emergency}"></i>
-                </td>
-                <td>{{order.createdDate | openlmisDate}}</td>
-                <td>{{order.lastUpdatedDate | openlmisDate}}</td>
-                <td>
-                    <button ng-if="order.status !== 'CREATING'"
-                            class="print"
-                            openlmis-download="{{vm.getPrintUrl(order)}}">
-                        {{'orderView.print'|message}}
-                    </button>
-                    <button ng-if="order.status !== 'CREATING'"
-                            class="download"
-                            openlmis-download="{{vm.getDownloadUrl(order)}}">
-                        {{'orderView.download'|message}}
-                    </button>
-                    <button ng-if="order.status !== 'CREATING' && vm.canRetryTransfer && order.transferFailed()"
-                            class="retry"
-                            ng-click="vm.retryTransfer(order)">
-                        {{'orderView.retry'|message}}
-                    </button>
-                    <button ng-if="order.status === 'CREATING'"
-                            class="order-edit"
-                            ng-click="vm.redirectToOrderEdit(order.id)">
-                        {{ 'orderView.edit' | message }}
-                    </button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <openlmis-table table-config="vm.tableConfig"></openlmis-table>
     <openlmis-pagination/>
 </section>

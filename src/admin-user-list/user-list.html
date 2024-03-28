@@ -1,0 +1,26 @@
+<h2>{{'adminUserList.users.label' | message}}</h2>
+<section class="openlmis-table-container">
+    <openlmis-sort options="vm.options"/>
+    <button ui-sref="openlmis.administration.users.form" class="add">{{'adminUserList.addUser' | message}}</button>
+    <form ng-submit="vm.search()">
+        <fieldset class="form-group">
+            <label for="username">{{'adminUserList.username' | message}}</label>
+            <input type="text" id="username" ng-model="vm.username"/>
+        </fieldset>
+        <fieldset class="form-group">
+            <label for="firstName">{{'adminUserList.firstName' | message}}</label>
+            <input type="text" id="firstName" ng-model="vm.firstName"/>
+        </fieldset>
+        <fieldset class="form-group">
+            <label for="lastName">{{'adminUserList.lastName' | message}}</label>
+            <input type="text" id="lastName" ng-model="vm.lastName"/>
+        </fieldset>
+        <fieldset class="form-group">
+            <label for="email">{{'adminUserList.email' | message}}</label>
+            <input type="text" id="email" ng-model="vm.email"/>
+        </fieldset>
+        <input type="submit" value="{{'adminUserList.search'|message}}"/>
+    </form>
+    <openlmis-table ng-if="vm.tableConfig" table-config="vm.tableConfig"></openlmis-table>
+    <openlmis-pagination/>
+</section>

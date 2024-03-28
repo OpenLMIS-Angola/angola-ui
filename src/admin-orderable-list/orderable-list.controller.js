@@ -28,9 +28,9 @@
         .module('admin-orderable-list')
         .controller('OrderableListController', controller);
 
-    controller.$inject = ['$state', '$stateParams', 'orderables', 'programs', 'canAdd'];
+    controller.$inject = ['$state', '$stateParams', 'orderables', 'programs', 'canAdd', 'TABLE_CONSTANTS'];
 
-    function controller($state, $stateParams, orderables, programs, canAdd) {
+    function controller($state, $stateParams, orderables, programs, canAdd, TABLE_CONSTANTS) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -93,6 +93,17 @@
         vm.program = undefined;
 
         /**
+         * @ngdoc property
+         * @propertyOf admin-orderable-list.controller:OrderableListController
+         * @name tableConfig
+         * @type {Object}
+         *
+         * @description
+         * Holds orderables table configuration.
+         */
+        vm.tableConfig = undefined;
+
+        /**
          * @ngdoc method
          * @methodOf admin-orderable-list.controller:OrderableListController
          * @name $onInit
@@ -107,6 +118,7 @@
             vm.name = $stateParams.name;
             vm.program = $stateParams.program;
             vm.canAdd = canAdd;
+            vm.tableConfig = getTableConfig();
         }
 
         /**
@@ -142,6 +154,48 @@
             $state.go('openlmis.administration.orderables.print');
         }
         // AO-744: ends here
+
+        /**
+         * @ngdoc method
+         * @methodOf admin-orderable-list.controller:OrderableListController
+         * @name getTableConfig
+         *
+         * @description
+         * prepares the table config for orerables table
+         */
+        function getTableConfig() {
+            return {
+                caption: 'adminOrderableList.products.error',
+                displayCaption: !vm.orderables || vm.orderables.length === 0,
+                columns: [
+                    {
+                        header: 'adminOrderableList.code',
+                        propertyPath: 'productCode'
+                    },
+                    {
+                        header: 'adminOrderableList.name',
+                        propertyPath: 'fullProductName'
+                    },
+                    {
+                        header: 'adminOrderableList.description',
+                        propertyPath: 'description'
+                    }
+                ],
+                actions: {
+                    header: 'adminOrderableList.actions',
+                    data: [
+                        {
+                            type: TABLE_CONSTANTS.actionTypes.REDIRECT,
+                            text: 'adminOrderableList.edit',
+                            redirectLink: function(item) {
+                                return '.edit.general({id: ' + item.id + '})';
+                            }
+                        }
+                    ]
+                },
+                data: vm.orderables
+            };
+        }
     }
 
 })();
