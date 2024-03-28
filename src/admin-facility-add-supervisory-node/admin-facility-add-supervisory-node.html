@@ -14,6 +14,7 @@
                     <input id="supervisoryNodeName" class="form-control" ng-model="vm.supervisoryNode.name" required/>
                     <label for="facility">{{'adminFacilitySupervisoryNodeAdd.associatedFacility' | message}}</label>
                     <select id="facility"
+                            disabled
                             class="form-control"
                             ng-model="vm.supervisoryNode.facility"
                             ng-options="facility as facility.name for (facilityId, facility) in vm.facilitiesMap track by facility.id"

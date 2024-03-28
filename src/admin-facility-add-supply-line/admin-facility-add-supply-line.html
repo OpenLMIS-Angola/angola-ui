@@ -15,12 +15,12 @@
                     </fieldset>
                     <fieldset class="form-group">
                         <label for="supervisoryNode">{{'adminSupplyLineAdd.supervisoryNode' | message}}</label>
-                        <select id="supervisoryNode" class="form-control" ng-model="vm.supplyLine.supervisoryNode"
+                        <select id="supervisoryNode" class="form-control" ng-model="vm.supplyLine.supervisoryNode" disabled
                                 ng-options="supervisoryNode.code for supervisoryNode in vm.supervisoryNodes track by supervisoryNode.id" required></select>
                     </fieldset>
                     <fieldset class="form-group">
                         <label for="supplyingFacility">{{'adminSupplyLineAdd.supplyingFacility' | message}}</label>
-                        <select id="supplyingFacility" class="form-control" ng-model="vm.supplyLine.supplyingFacility"
+                        <select id="supplyingFacility" class="form-control" ng-model="vm.supplyLine.supplyingFacility" disabled
                                 ng-options="facility.name for facility in vm.facilities track by facility.id" required></select>
                     </fieldset>
                     <fieldset class="form-group">
