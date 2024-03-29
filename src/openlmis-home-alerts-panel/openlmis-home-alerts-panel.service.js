@@ -20,11 +20,26 @@
         .module('openlmis-home-alerts-panel')
         .service('openlmisHomeAlertsPanelService', openlmisHomeAlertsPanelService);
 
-    openlmisHomeAlertsPanelService.$inject = ['$resource', 'referencedataUrlFactory'];
+    openlmisHomeAlertsPanelService.$inject = ['$resource', 'openlmisUrlFactory'];
 
-    function openlmisHomeAlertsPanelService($resource, referencedataUrlFactory) {
-        var requisitionStatusesResource = $resource(referencedataUrlFactory(' /api/requisitions/statusesStatsData'));
-        var orderStatusesResource = $resource(referencedataUrlFactory(' /api/orders/statusesStatsData -'));
+    function openlmisHomeAlertsPanelService($resource, openlmisUrlFactory) {
+        var requisitionStatusesResource = $resource(
+            openlmisUrlFactory(' /api'), {}, {
+                get: {
+                    method: 'GET',
+                    url: openlmisUrlFactory('/api/requisitions/statusesStatsData')
+                }
+            }
+        );
+
+        var orderStatusesResource = $resource(
+            openlmisUrlFactory(' /api/orders/statusesStatsData'), {}, {
+                get: {
+                    method: 'GET',
+                    url: openlmisUrlFactory('/api/orders/statusesStatsData')
+                }
+            }
+        );
 
         return {
             getRequisitionsStatusesData: getRequisitionsStatusesData,
@@ -32,11 +47,11 @@
         };
 
         function getRequisitionsStatusesData() {
-            return requisitionStatusesResource.get(requisitionStatusesResource).$promise;
+            return requisitionStatusesResource.get().$promise;
         }
 
         function getOrdersStatusesData() {
-            return orderStatusesResource.get(orderStatusesResource).$promise;
+            return orderStatusesResource.get().$promise;
         }
     }
 })();

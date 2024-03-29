@@ -49,16 +49,18 @@
          *
         * */
         function onInit() {
-            // openlmisHomeAlertsPanelService.getRequisitionsStatusesData()
-            //     .then(function(requisitionsData) {
-            //         $ctrl.requisitionsStatusesStats = requisitionsData.statusesStats;
-            //         $ctrl.requisitionsToBeCreated = requisitionsData.requisitionsToBeCreated;
-            //     });
+            openlmisHomeAlertsPanelService.getRequisitionsStatusesData()
+                .then(function(requisitionsData) {
+                    $ctrl.requisitionsStatusesStats = requisitionsData.statusesStats;
+                    $ctrl.requisitionsToBeCreated = requisitionsData.requisitionsToBeCreated;
+                    console.log(requisitionsData);
+                });
 
-            // openlmisHomeAlertsPanelService.getOrdersStatusesData()
-            //     .then(function(ordersData) {
-            //         $ctrl.ordersStatusesStats = ordersData.statusesStats;
-            //     });
+            openlmisHomeAlertsPanelService.getOrdersStatusesData()
+                .then(function(ordersData) {
+                    $ctrl.ordersStatusesStats = ordersData.statusesStats;
+                    console.log(ordersData);
+                });
         }
     }
 })();
