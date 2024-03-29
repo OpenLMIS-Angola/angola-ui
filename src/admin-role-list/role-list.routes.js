@@ -26,7 +26,7 @@
         $stateProvider.state('openlmis.administration.roles', {
             showInNavigation: true,
             label: 'adminRoleList.roles',
-            url: '/roles?page&size&sort',
+            url: '/roles?page&size',
             controller: 'RoleListController',
             templateUrl: 'admin-role-list/role-list.html',
             controllerAs: 'vm',

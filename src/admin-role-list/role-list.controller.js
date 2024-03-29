@@ -28,9 +28,9 @@
         .module('admin-role-list')
         .controller('RoleListController', controller);
 
-    controller.$inject = ['roles', '$filter', 'TABLE_CONSTANTS'];
+    controller.$inject = ['roles'];
 
-    function controller(roles, $filter, TABLE_CONSTANTS) {
+    function controller(roles) {
         var vm = this;
 
         /**
@@ -46,62 +46,10 @@
 
         vm.rolesPage = undefined;
 
-        /**
-         * @ngdoc property
-         * @propertyOf admin-role-list.controller:RoleListController
-         * @name tableConfig
-         * @type {Object}
-         *
-         * @description
-         * Holds config for roles table.
-         */
-        vm.tableConfig = undefined;
-
         vm.$onInit = onInit;
 
         function onInit() {
             vm.roles = roles;
-            vm.tableConfig = getTableConfig();
-        }
-
-        function getTableConfig() {
-            return {
-                columns: [
-                    {
-                        header: 'adminRoleList.role',
-                        propertyPath: 'name'
-                    },
-                    {
-                        header: 'adminRoleList.roleType',
-                        propertyPath: 'rights[0].type',
-                        template: function(item) {
-                            return $filter('roleType')(item.rights[0].type);
-                        }
-                    },
-                    {
-                        header: 'adminRoleList.description',
-                        propertyPath: 'description'
-                    },
-                    {
-                        header: 'adminRoleList.numberOfUsers',
-                        propertyPath: 'count'
-                    }
-                ],
-                actions: {
-                    header: 'adminRoleList.actions',
-                    data: [
-                        {
-                            type: TABLE_CONSTANTS.actionTypes.REDIRECT,
-                            text: 'adminRoleList.edit',
-                            redirectLink: function(item) {
-                                return '.createUpdate({roleId: ' + item.id + '})';
-                            }
-                        }
-                    ]
-                },
-                data: vm.roles
-            };
         }
     }
-
 })();

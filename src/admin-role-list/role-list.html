@@ -1,5 +1,5 @@
 <h2>{{'adminRoleList.roles' | message}}</h2>
-<section class="openlmis-table-container">
+<section class="openlmis-table-container" ng-if="vm.roles">
     <button class="add" ui-sref=".createUpdate">{{'adminRoleList.createRole' | message}}</button>
     <table>
         <thead>

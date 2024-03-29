@@ -28,8 +28,7 @@
         'openlmis-pagination',
         'openlmis-rights',
         'referencedata-role',
-        'ui.router',
-        'openlmis-table'
+        'ui.router'
     ]);
 
 })();
