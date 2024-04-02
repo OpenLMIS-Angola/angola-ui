@@ -18,38 +18,18 @@
     'use strict';
 
     /**
-     * @ngdoc controller
-     * @name admin-role-list.controller:RoleListController
+     * @module admin-orderable-list
      *
      * @description
-     * Controller for managing roles list screen.
+     * Provides base admin-orderable state and controller for retrieving list of orderables from the OpenLMIS server.
      */
-    angular
-        .module('admin-role-list')
-        .controller('RoleListController', controller);
+    angular.module('admin-orderable-list', [
+        'openlmis-admin',
+        'openlmis-pagination',
+        'openlmis-rights',
+        'referencedata-orderable',
+        'ui.router',
+        'openlmis-table'
+    ]);
 
-    controller.$inject = ['roles'];
-
-    function controller(roles) {
-        var vm = this;
-
-        /**
-         * @ngdoc property
-         * @propertyOf admin-role-list.controller:RoleListController
-         * @name roles
-         * @type {Array}
-         *
-         * @description
-         * Array of all roles.
-         */
-        vm.roles = undefined;
-
-        vm.rolesPage = undefined;
-
-        vm.$onInit = onInit;
-
-        function onInit() {
-            vm.roles = roles;
-        }
-    }
 })();

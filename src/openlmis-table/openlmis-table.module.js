@@ -18,38 +18,18 @@
     'use strict';
 
     /**
-     * @ngdoc controller
-     * @name admin-role-list.controller:RoleListController
+     * @module openlmis-table
      *
      * @description
-     * Controller for managing roles list screen.
+     * This module is responsible for styling tables within application.
      */
-    angular
-        .module('admin-role-list')
-        .controller('RoleListController', controller);
+    angular.module('openlmis-table', [
+        'openlmis-invalid',
+        'openlmis-config',
+        'openlmis-templates',
+        'material.components.virtualRepeat',
+        'ui.router',
+        'openlmis-modal'
+    ]);
 
-    controller.$inject = ['roles'];
-
-    function controller(roles) {
-        var vm = this;
-
-        /**
-         * @ngdoc property
-         * @propertyOf admin-role-list.controller:RoleListController
-         * @name roles
-         * @type {Array}
-         *
-         * @description
-         * Array of all roles.
-         */
-        vm.roles = undefined;
-
-        vm.rolesPage = undefined;
-
-        vm.$onInit = onInit;
-
-        function onInit() {
-            vm.roles = roles;
-        }
-    }
 })();

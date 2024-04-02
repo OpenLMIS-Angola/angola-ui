@@ -18,38 +18,17 @@
     'use strict';
 
     /**
-     * @ngdoc controller
-     * @name admin-role-list.controller:RoleListController
+     * @module admin-role-list
      *
      * @description
-     * Controller for managing roles list screen.
+     * Provides base admin-role state and controller for retrieving list of roles from the OpenLMIS server.
      */
-    angular
-        .module('admin-role-list')
-        .controller('RoleListController', controller);
+    angular.module('admin-role-list', [
+        'admin-role-form',
+        'openlmis-pagination',
+        'openlmis-rights',
+        'referencedata-role',
+        'ui.router'
+    ]);
 
-    controller.$inject = ['roles'];
-
-    function controller(roles) {
-        var vm = this;
-
-        /**
-         * @ngdoc property
-         * @propertyOf admin-role-list.controller:RoleListController
-         * @name roles
-         * @type {Array}
-         *
-         * @description
-         * Array of all roles.
-         */
-        vm.roles = undefined;
-
-        vm.rolesPage = undefined;
-
-        vm.$onInit = onInit;
-
-        function onInit() {
-            vm.roles = roles;
-        }
-    }
 })();

@@ -18,38 +18,17 @@
     'use strict';
 
     /**
-     * @ngdoc controller
-     * @name admin-role-list.controller:RoleListController
+     * @module admin-geographic-zone-list
      *
      * @description
-     * Controller for managing roles list screen.
+     * Provides base admin state and controller for retrieving list of geographic zones from the OpenLMIS server.
      */
-    angular
-        .module('admin-role-list')
-        .controller('RoleListController', controller);
+    angular.module('admin-geographic-zone-list', [
+        'openlmis-pagination',
+        'openlmis-rights',
+        'referencedata-geographic-zone',
+        'ui.router',
+        'openlmis-table'
+    ]);
 
-    controller.$inject = ['roles'];
-
-    function controller(roles) {
-        var vm = this;
-
-        /**
-         * @ngdoc property
-         * @propertyOf admin-role-list.controller:RoleListController
-         * @name roles
-         * @type {Array}
-         *
-         * @description
-         * Array of all roles.
-         */
-        vm.roles = undefined;
-
-        vm.rolesPage = undefined;
-
-        vm.$onInit = onInit;
-
-        function onInit() {
-            vm.roles = roles;
-        }
-    }
 })();

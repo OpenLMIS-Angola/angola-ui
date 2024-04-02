@@ -18,38 +18,20 @@
     'use strict';
 
     /**
-     * @ngdoc controller
-     * @name admin-role-list.controller:RoleListController
+     * @module admin-facility-list
      *
      * @description
-     * Controller for managing roles list screen.
+     * Provides facility list screen for administrator.
      */
-    angular
-        .module('admin-role-list')
-        .controller('RoleListController', controller);
-
-    controller.$inject = ['roles'];
-
-    function controller(roles) {
-        var vm = this;
-
-        /**
-         * @ngdoc property
-         * @propertyOf admin-role-list.controller:RoleListController
-         * @name roles
-         * @type {Array}
-         *
-         * @description
-         * Array of all roles.
-         */
-        vm.roles = undefined;
-
-        vm.rolesPage = undefined;
-
-        vm.$onInit = onInit;
-
-        function onInit() {
-            vm.roles = roles;
-        }
-    }
+    angular.module('admin-facility-list', [
+        'openlmis-admin',
+        'openlmis-pagination',
+        'openlmis-rights',
+        'openlmis-templates',
+        'referencedata-facility',
+        'referencedata-geographic-zone',
+        'openlmis-admin',
+        'ui.router',
+        'openlmis-table'
+    ]);
 })();
