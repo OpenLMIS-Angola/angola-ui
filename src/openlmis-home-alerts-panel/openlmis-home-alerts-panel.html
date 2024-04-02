@@ -11,7 +11,7 @@
             </strong>
             <div class="section-data">
                 <span>
-                    Number
+                    {{ $ctrl.requisitionsToBeCreated }}
                 </span>
             </div>
         </section>
@@ -21,7 +21,7 @@
             </strong>
             <div class="section-data">
                 <span>
-                    Number
+                    -
                 </span>
             </div>
         </section>
@@ -31,7 +31,7 @@
             </strong>
             <div class="section-data">
                 <span>
-                    Number
+                    -
                 </span>
             </div>
         </section>
@@ -40,8 +40,9 @@
                 {{:: 'label.updatesOfRequisitions' | message }}
             </strong>
             <div class="section-data">
-                <span>
-                    Number
+                <span ng-if="$ctrl.requisitionsStatusesStats"
+                    ng-repeat="stat in $ctrl.requisitionsStatusesStats">
+                    {{stat.key}}: {{stat.value}}
                 </span>
             </div>
         </section>
@@ -50,8 +51,9 @@
                 {{:: 'label.updatesOfOrdersAndPod' | message }}
             </strong>
             <div class="section-data">
-                <span>
-                    Number
+                <span ng-if="$ctrl.ordersStatusesStats"
+                    ng-repeat="stat in $ctrl.ordersStatusesStats">
+                    {{stat.key}}: {{stat.value}}
                 </span>
             </div>
         </section>

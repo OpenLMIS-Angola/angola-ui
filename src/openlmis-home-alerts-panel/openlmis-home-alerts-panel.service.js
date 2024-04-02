@@ -43,7 +43,8 @@
 
         return {
             getRequisitionsStatusesData: getRequisitionsStatusesData,
-            getOrdersStatusesData: getOrdersStatusesData
+            getOrdersStatusesData: getOrdersStatusesData,
+            getMappedStatussesStats: getMappedStatussesStats
         };
 
         function getRequisitionsStatusesData() {
@@ -52,6 +53,28 @@
 
         function getOrdersStatusesData() {
             return orderStatusesResource.get().$promise;
+        }
+
+        function getMappedStatussesStats(statusesStats) {
+            var mappedStatussesStats = [];
+
+            for (var key in statusesStats) {
+                mappedStatussesStats.push({
+                    key: snakeCaseToNatural(key),
+                    value: statusesStats[key]
+                });
+            }
+
+            return mappedStatussesStats;
+        }
+
+        function snakeCaseToNatural(text) {
+            var words = text.split('_');
+            var naturalText = words.map(function(word) {
+                return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+            }).join(' ');
+
+            return naturalText;
         }
     }
 })();

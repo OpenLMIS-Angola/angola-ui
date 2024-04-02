@@ -25,7 +25,6 @@
 
         .alert-section {
             @include flex-layout();
-            justify-content: space-between;
             padding: $font-size;
 
             .section-data {
