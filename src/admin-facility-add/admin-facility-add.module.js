@@ -30,9 +30,7 @@
         'admin-facility',
         'openlmis-modal',
         'openlmis-templates',
-        'openlmis-state-tracker',
-        'openlmis-modal-state',
-        'openlmis-table'
+        'openlmis-state-tracker'
     ]);
 
 })();

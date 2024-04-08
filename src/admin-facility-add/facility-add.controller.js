@@ -32,13 +32,13 @@
     FacilityAddController.$inject = [
         'facility', 'facilityTypes', 'geographicZones', 'facilityOperators', 'confirmService',
         'FacilityRepository', 'stateTrackerService', '$state', 'loadingModalService',
-        'notificationService', 'messageService', 'requisitionGroupService', 'TABLE_CONSTANTS'
+        'notificationService', 'messageService', 'requisitionGroupService'
     ];
 
     function FacilityAddController(facility, facilityTypes, geographicZones, facilityOperators,
                                    confirmService, FacilityRepository, stateTrackerService,
                                    $state, loadingModalService, notificationService,
-                                   messageService, requisitionGroupService, TABLE_CONSTANTS) {
+                                   messageService, requisitionGroupService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -50,7 +50,6 @@
         vm.requisitionGroups = undefined;
         vm.selectedRequisitionGroup = undefined;
         vm.selectedRequisitionGroups = [];
-        vm.tableConfig = undefined;
 
         /**
          * @ngdoc method
@@ -70,7 +69,6 @@
 
             requisitionGroupService.getAll().then(function(requisitionGroupList) {
                 vm.requisitionGroups = requisitionGroupList;
-                vm.tableConfig = getTableConfig();
             });
         }
 
@@ -160,32 +158,6 @@
                     facilityId: response.id
                 });
             });
-        }
-
-        function getTableConfig() {
-            return {
-                caption: 'adminFacilityAdd.noRequisitionGroups',
-                displayCaption: !vm.selectedRequisitionGroups || vm.selectedRequisitionGroups.length === 0,
-                columns: [
-                    {
-                        header: 'adminFacilityAdd.name',
-                        propertyPath: 'name'
-                    }
-                ],
-                actions: {
-                    header: 'adminFacilityList.actions',
-                    data: [
-                        {
-                            type: TABLE_CONSTANTS.actionTypes.CLICK,
-                            onClick: function(item) {
-                                vm.removeRequisitionGroup(item);
-                            },
-                            text: 'adminFacilityAdd.removeRequisitionGroup'
-                        }
-                    ]
-                },
-                data: vm.facilities
-            };
         }
     }
 
