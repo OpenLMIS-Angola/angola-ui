@@ -1,0 +1,67 @@
+<h2>{{'adminValidDestinationList.validDestinations' | message}}</h2>
+<section class="openlmis-table-container">
+    <button id="add-valid-destination" class="add" ng-click="vm.openAddValidDestinationModal()">
+        {{'adminValidDestinationList.addValidDestination' | message}}
+    </button>
+    <form ng-submit="vm.search()">
+        <fieldset class="form-group">
+            <label for="facilityId" ng-class="{'is-required': vm.programId}">
+                {{'adminValidDestinationList.facility' | message}}
+            </label>
+            <select id="facilityId"
+                    ng-model="vm.facilityId"
+                    ng-options="f.id as f.name for f in vm.facilities"
+                    ng-required="vm.programId"
+            >
+            </select>
+            <label for="programId" ng-class="{'is-required': vm.facilityId}">
+                {{'adminValidDestinationList.program' | message}}
+            </label>
+            <select id="programId"
+                    ng-model="vm.programId"
+                    ng-options="p.id as p.name for p in vm.programs"
+                    ng-required="vm.facilityId"
+            >
+            </select>
+        </fieldset>
+        <input type="submit" value="{{'adminValidDestinationList.search' | message}}"/>
+    </form>
+
+    <openlmis-table table-config="vm.tableConfig">
+        <!-- <table>
+            <caption ng-if="!vm.validDestinations || vm.validDestinations.length === 0">
+                {{'adminValidDestinationList.noValidDestinations' | message}}
+            </caption>
+            <thead>
+            <tr>
+                <th class="col-sticky">
+                    <input type="checkbox" ng-model="vm.selectAll"
+                           ng-change="vm.toggleSelectAll(vm.selectAll)">
+                </th>
+                <th class="header-sortable">
+                    {{'adminValidDestinationList.program' | message}}
+                </th>
+                <th class="header-sortable">{{'adminValidDestinationList.facilityType' | message}}</th>
+                <th class="header-sortable">{{'adminValidDestinationList.name' | message}}</th>
+                <th class="header-sortable">{{'adminValidDestinationList.geoZone' | message}}</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="validDestination in vm.validDestinations">
+                    <td>
+                        <input type="checkbox" ng-model="validDestination.$selected"
+                            ng-change="vm.onValidDestinationSelect(validDestination)">
+                    </td>
+                    <td>{{vm.programsMap[validDestination.programId]}}</td>
+                    <td>{{vm.facilityTypesMap[validDestination.facilityTypeId]}}</td>
+                    <td>{{validDestination.name}}</td>
+                    <td>{{vm.geographicZonesMap[validDestination.geoZoneId]}}</td>
+                </tr>
+            </tbody>
+        </table> -->
+    </openlmis-table>
+    <openlmis-pagination/>
+</section>
+<div class="openlmis-toolbar" ng-if="vm.validDestinations.length">
+	<button class="danger" ng-click="vm.deleteSelectedValidDestinations()">{{'adminValidDestinationList.delete' | message}}</button>
+</div>

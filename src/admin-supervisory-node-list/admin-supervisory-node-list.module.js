@@ -14,17 +14,22 @@
  */
 
 (function() {
+
     'use strict';
 
     /**
-   * @module stock-price-changes
-   *
-   * @description
-   * Responsible for make adjustment list screen.
-   */
-    angular.module('stock-price-changes', [
-        'stock-card-summary',
-        'openlmis-facility-program-select',
+     * @module admin-supervisory-node-list
+     *
+     * @description
+     * Provides supervisory node list screen for administrator.
+     */
+    angular.module('admin-supervisory-node-list', [
+        'openlmis-pagination',
+        'openlmis-rights',
+        'openlmis-i18n',
+        'referencedata-supervisory-node',
+        'referencedata-geographic-zone',
+        'ui.router',
         'openlmis-table'
     ]);
 })();

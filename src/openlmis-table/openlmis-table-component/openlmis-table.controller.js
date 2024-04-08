@@ -34,10 +34,16 @@
         $ctrl.sortTable = sortTable;
         $ctrl.$onInit = onInit;
         $ctrl.isColumnSortable = isColumnSortable;
+        $ctrl.getItem = getItem;
 
         function onInit() {
+            if ($ctrl.tableConfig.hasCustomTemplate) {
+                return;
+            }
+            openlmisTableService.setColumnsDefaults($ctrl.tableConfig.columns);
             openlmisTableSortingService.setHeadersClasses($ctrl.tableConfig.columns);
             $ctrl.elementsConfiguration = openlmisTableService.getElementsConfiguration($ctrl.tableConfig);
+            $ctrl.headersConfiguration = openlmisTableService.getHeadersConfiguration($ctrl.tableConfig.columns);
         }
 
         function sortTable(chosenColumn) {
@@ -46,6 +52,10 @@
 
         function isColumnSortable(selectedColumn) {
             return openlmisTableSortingService.isColumnSortable(selectedColumn);
+        }
+
+        function getItem(parentIndex, childIndex) {
+            return $ctrl.elementsConfiguration[parentIndex][childIndex].item;
         }
     }
 })();

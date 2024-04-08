@@ -14,17 +14,22 @@
  */
 
 (function() {
+
     'use strict';
 
     /**
-   * @module stock-price-changes
-   *
-   * @description
-   * Responsible for make adjustment list screen.
-   */
-    angular.module('stock-price-changes', [
-        'stock-card-summary',
-        'openlmis-facility-program-select',
+     * @module admin-system-notification-list
+     *
+     * @description
+     * Provides system notification list screen for administrator.
+     */
+    angular.module('admin-system-notification-list', [
+        'openlmis-admin',
+        'openlmis-rights',
+        'openlmis-templates',
+        'referencedata-system-notification',
+        'openlmis-ok-icon',
         'openlmis-table'
     ]);
+
 })();

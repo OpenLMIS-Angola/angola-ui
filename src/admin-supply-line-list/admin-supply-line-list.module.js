@@ -14,17 +14,24 @@
  */
 
 (function() {
+
     'use strict';
 
     /**
-   * @module stock-price-changes
-   *
-   * @description
-   * Responsible for make adjustment list screen.
-   */
-    angular.module('stock-price-changes', [
-        'stock-card-summary',
-        'openlmis-facility-program-select',
-        'openlmis-table'
+     * @module admin-supply-line-list
+     *
+     * @description
+     * Provides base admin state and controller for retrieving list of supply lines from the OpenLMIS server.
+     */
+    angular.module('admin-supply-line-list', [
+        'openlmis-admin',
+        'openlmis-pagination',
+        'openlmis-rights',
+        'referencedata-facility',
+        'referencedata-supply-line',
+        'referencedata-requisition-group',
+        'openlmis-object-utils',
+        'ui.router'
     ]);
+
 })();

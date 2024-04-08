@@ -188,7 +188,7 @@
                             type: TABLE_CONSTANTS.actionTypes.REDIRECT,
                             text: 'adminOrderableList.edit',
                             redirectLink: function(item) {
-                                return '.edit.general({id: ' + item.id + '})';
+                                return '.edit.general({id: \'' + item.id + '\'})';
                             }
                         }
                     ]

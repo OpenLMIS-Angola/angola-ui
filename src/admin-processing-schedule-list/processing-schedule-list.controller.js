@@ -92,7 +92,7 @@
                             type: TABLE_CONSTANTS.actionTypes.REDIRECT,
                             text: 'adminProcessingScheduleList.edit',
                             redirectLink: function(item) {
-                                return 'openlmis.administration.processingSchedules.edit({id: ' + item.id + '})';
+                                return 'openlmis.administration.processingSchedules.edit({id: \'' + item.id + '\'})';
                             }
                         }
                     ]

@@ -37,7 +37,10 @@
      * @typedef {Object} ColumnConfig
      * @property {string} header - Header text for the column.
      * @property {string} propertyPath - Property path to extract data for the column object.
-     * @property {string} classes - additional CSS classes which should be applied to the column header
+     * @property {string} headerClasses - additional CSS classes which should be applied to the column header
+     * @property {string} cellClasses - additional CSS classes which should be applied to the table cell
+     * @property {funciton} displayColumn - function which returns whether the column should be displayed or not.
+     *  If not passed column will be visible
      * @property {string|function} [template] - Optional template to customize the display of data in the column.
      * It can be either string like this:
      * @example
@@ -236,6 +239,7 @@
                 tableConfig: '<?'
             },
             controller: 'OpenlmisTableController',
-            controllerAs: '$ctrl'
+            controllerAs: '$ctrl',
+            transclude: 'true'
         });
 })();
