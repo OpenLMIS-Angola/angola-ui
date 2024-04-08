@@ -27,9 +27,9 @@
         .module('openlmis-table')
         .controller('OpenlmisTableController', OpenlmisTableController);
 
-    OpenlmisTableController.$inject = ['openlmisTableService', 'openlmisTableSortingService'];
+    OpenlmisTableController.$inject = ['openlmisTableService', 'openlmisTableSortingService', '$scope'];
 
-    function OpenlmisTableController(openlmisTableService, openlmisTableSortingService) {
+    function OpenlmisTableController(openlmisTableService, openlmisTableSortingService, $scope) {
         var $ctrl = this;
         $ctrl.sortTable = sortTable;
         $ctrl.$onInit = onInit;
@@ -37,13 +37,16 @@
         $ctrl.getItem = getItem;
 
         function onInit() {
-            if ($ctrl.tableConfig.hasCustomTemplate) {
-                return;
-            }
             openlmisTableService.setColumnsDefaults($ctrl.tableConfig.columns);
             openlmisTableSortingService.setHeadersClasses($ctrl.tableConfig.columns);
             $ctrl.elementsConfiguration = openlmisTableService.getElementsConfiguration($ctrl.tableConfig);
             $ctrl.headersConfiguration = openlmisTableService.getHeadersConfiguration($ctrl.tableConfig.columns);
+
+            $scope.$watch('$ctrl.tableConfig', function(newVal, oldVal) {
+                if (newVal.data !== oldVal.data) {
+                    $ctrl.elementsConfiguration = openlmisTableService.getElementsConfiguration(newVal);
+                }
+            }, true);
         }
 
         function sortTable(chosenColumn) {

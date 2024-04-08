@@ -1,5 +1,4 @@
-<ng-transclude ng-if="$ctrl.tableConfig.hasCustomTemplate"></ng-transclude>
-<table ng-if="!$ctrl.tableConfig.hasCustomTemplate">
+<table>
     <caption ng-if="$ctrl.tableConfig.displayCaption">
         {{$ctrl.tableConfig.caption | message}}
     </caption>
@@ -19,6 +18,10 @@
     </thead>
     <tbody>
         <tr ng-if="$ctrl.elementsConfiguration" ng-repeat="element in $ctrl.tableConfig.data" ng-init="parentIndex=$index">
+            <td ng-if="$ctrl.tableConfig.isSelectable">
+                <input type="checkbox" ng-model="element.$selected"
+                            ng-change="$ctrl.tableConfig.onSelectElementChange">
+            </td>
             <td ng-repeat="column in $ctrl.tableConfig.columns"
                 ng-init="childIndex=$index"
                 ng-if="$ctrl.elementsConfiguration[parentIndex][$index].displayCell"

@@ -123,6 +123,7 @@
                 });
 
                 vm.requisitionGroups.splice(removeItem, 1);
+                vm.tableConfig = getTableConfig();
             }
         }
         function removeRequisitionGroup(selectedRequisitionGroup) {
@@ -169,7 +170,8 @@
                 columns: [
                     {
                         header: 'adminFacilityAdd.name',
-                        propertyPath: 'name'
+                        propertyPath: 'name',
+                        sortable: false
                     }
                 ],
                 actions: {
@@ -184,7 +186,7 @@
                         }
                     ]
                 },
-                data: vm.facilities
+                data: vm.selectedRequisitionGroups
             };
         }
     }

@@ -242,6 +242,7 @@
             angular.forEach(vm.validDestinations, function(validDestination) {
                 validDestination.$selected = selectAll;
                 vm.onValidDestinationSelect(validDestination);
+                vm.tableConfig = getTableConfig();
             });
         }
 
@@ -386,8 +387,8 @@
                         },
                         propertyPath: '$selected',
                         template: function() {
-                            return '<input type="checkbox" ng-model="item.$selected" ' +
-                                'ng-change="vm.onValidDestinationSelect(item)">';
+                            return '<input type="checkbox" ng-model="element.$selected" ' +
+                                'ng-change="vm.onValidDestinationSelect(element)">';
                         },
                         headerClasses: 'col-sticky'
                     },

@@ -239,7 +239,6 @@
                 tableConfig: '<?'
             },
             controller: 'OpenlmisTableController',
-            controllerAs: '$ctrl',
-            transclude: 'true'
+            controllerAs: '$ctrl'
         });
 })();
