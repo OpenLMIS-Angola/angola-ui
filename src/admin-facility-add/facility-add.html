@@ -15,25 +15,7 @@
                 >
                 </select>
                 <section class="openlmis-table-container" >
-                    <table>
-                        <caption ng-if="!vm.selectedRequisitionGroups || vm.selectedRequisitionGroups.length === 0">
-                            {{'adminFacilityAdd.noRequisitionGroups' | message}}
-                        </caption>
-                        <thead>
-                        <tr>
-                            <th>{{'adminFacilityAdd.name' | message}}</th>
-                            <th>{{'adminFacilityAdd.actions' | message}}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr ng-repeat="requisitionGroup in vm.selectedRequisitionGroups">
-                            <td>{{requisitionGroup.name}}</td>
-                            <td>
-                                <button ng-click="vm.removeRequisitionGroup(requisitionGroup)">{{'adminFacilityAdd.removeRequisitionGroup' | message}}</button>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                    <openlmis-table ng-if="vm.tableConfig" table-config="vm.tableConfig"></openlmis-table>
                 </section>
                 <!--AO-849: end here-->
             </div>
