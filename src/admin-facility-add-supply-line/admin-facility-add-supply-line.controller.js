@@ -30,11 +30,11 @@
 
     controller.$inject = ['facilities', 'supervisoryNodes', 'programs', 'SupplyLineResource',
         '$state', 'confirmService', 'loadingModalService', 'notificationService', '$q', '$stateParams',
-        'messageService', 'FacilityRepository', 'stateTrackerService'];
+        'messageService', 'FacilityRepository', 'stateTrackerService', '$scope'];
 
     function controller(facilities, supervisoryNodes, programs, SupplyLineResource,
                         $state, confirmService, loadingModalService, notificationService, $q, $stateParams,
-                        messageService, FacilityRepository, stateTrackerService) {
+                        messageService, FacilityRepository, stateTrackerService, $scope) {
 
         var vm = this;
 
@@ -53,16 +53,22 @@
             vm.supervisoryNodes = supervisoryNodes;
             vm.programs = programs;
 
-            facilities.map(function(facility) {
-                if (facility.id === $stateParams.facilityId) {
-                    vm.supplyLine.supplyingFacility =  facility;
+            $scope.$watch('$stateParams', function() {
+                if ($stateParams.facilityId) {
+                    facilities.map(function(facility) {
+                        if (facility.id === $stateParams.facilityId) {
+                            vm.supplyLine.supplyingFacility =  facility;
+                        }
+                    });
                 }
-            });
-            supervisoryNodes.map(function(supervisoryNode) {
-                if (supervisoryNode.id === $stateParams.supervisoryNodeId) {
-                    vm.supplyLine.supervisoryNode = supervisoryNode;
+                if ($stateParams.supervisoryNodeId) {
+                    supervisoryNodes.map(function(supervisoryNode) {
+                        if (supervisoryNode.id === $stateParams.supervisoryNodeId) {
+                            vm.supplyLine.supervisoryNode = supervisoryNode;
+                        }
+                    });
                 }
-            });
+            }, true);
         }
 
         function add() {

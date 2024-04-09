@@ -30,11 +30,11 @@
 
     controller.$inject = ['$state', 'facilitiesMap', '$q', 'supervisoryNodesMap', 'supervisoryNodes',
         'AdminFacilityAddSupervisoryNodeService', 'loadingModalService', 'messageService', 'confirmService',
-        '$stateParams', 'stateTrackerService', 'FacilityRepository'];
+        '$stateParams', 'stateTrackerService', 'FacilityRepository', '$scope'];
 
     function controller($state, facilitiesMap, $q, supervisoryNodesMap, supervisoryNodes,
                         AdminFacilityAddSupervisoryNodeService, loadingModalService, messageService, confirmService,
-                        $stateParams, stateTrackerService, FacilityRepository) {
+                        $stateParams, stateTrackerService, FacilityRepository, $scope) {
 
         var vm = this;
 
@@ -63,9 +63,12 @@
             vm.partnerNodes = supervisoryNodes;
             vm.parentNodes = supervisoryNodes;
 
-            if (facilitiesMap[$stateParams.facilityId]) {
-                vm.supervisoryNode.facility = facilitiesMap[$stateParams.facilityId];
-            }
+            $scope.$watch('$stateParams', function(newVal) {
+                if (facilitiesMap[$stateParams.facilityId]) {
+                    vm.supervisoryNode.facility = facilitiesMap[$stateParams.facilityId];
+                }
+            }, true);
+
         }
 
         function goToSupervisoryNodeList() {
