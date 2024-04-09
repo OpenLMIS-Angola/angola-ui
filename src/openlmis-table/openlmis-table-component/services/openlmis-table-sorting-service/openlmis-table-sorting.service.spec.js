@@ -105,7 +105,7 @@ describe('openlmisTableSortingService', function() {
 
             openlmisTableSortingService.setHeadersClasses(mockColumns);
 
-            expect(mockColumns[1].class).toBe(SORTING_SERVICE_CONSTANTS.SORT_ASC_CLASS);
+            expect(mockColumns[1].class).toContain(SORTING_SERVICE_CONSTANTS.SORT_ASC_CLASS);
         });
 
         it('should assign the empty string class to every column', function() {

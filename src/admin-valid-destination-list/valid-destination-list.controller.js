@@ -242,7 +242,6 @@
             angular.forEach(vm.validDestinations, function(validDestination) {
                 validDestination.$selected = selectAll;
                 vm.onValidDestinationSelect(validDestination);
-                vm.tableConfig = getTableConfig();
             });
         }
 
@@ -378,20 +377,15 @@
             return {
                 caption: 'adminValidDestinationList.noValidDestinations',
                 displayCaption: !vm.validDestinations || vm.validDestinations.length === 0,
+                isSelectable: true,
+                onSelectElementChange: function(item) {
+                    vm.onValidDestinationSelect(item);
+                },
+                onSelectAll: function(selectAll) {
+                    vm.toggleSelectAll(selectAll);
+                },
+                initialSelectAll: vm.selectAll,
                 columns: [
-                    {
-                        header: '',
-                        headerTemplate: function() {
-                            return '<input type="checkbox" ng-model="vm.selectAll"' +
-                                'ng-change="vm.toggleSelectAll(vm.selectAll)">';
-                        },
-                        propertyPath: '$selected',
-                        template: function() {
-                            return '<input type="checkbox" ng-model="element.$selected" ' +
-                                'ng-change="vm.onValidDestinationSelect(element)">';
-                        },
-                        headerClasses: 'col-sticky'
-                    },
                     {
                         header: 'adminValidDestinationList.program',
                         propertyPath: 'programId',

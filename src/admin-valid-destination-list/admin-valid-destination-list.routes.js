@@ -26,7 +26,7 @@
         $stateProvider.state('openlmis.administration.validDestination', {
             showInNavigation: true,
             label: 'adminValidDestinationList.validDestinations',
-            url: '/validDestinations?page&size&programId&facilityId&storageKey',
+            url: '/validDestinations?page&size&programId&facilityId&storageKey&sort',
             controller: 'ValidDestinationListController',
             templateUrl: 'admin-valid-destination-list/valid-destination-list.html',
             controllerAs: 'vm',

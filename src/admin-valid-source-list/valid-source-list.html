@@ -26,35 +26,7 @@
         </fieldset>
         <input type="submit" value="{{'adminValidSourceList.search' | message}}"/>
     </form>
-    <table>
-        <caption ng-if="!vm.validSources || vm.validSources.length === 0">
-            {{'adminValidSourceList.noValidSources' | message}}
-        </caption>
-        <thead>
-        <tr>
-            <th class="col-sticky">
-                <input type="checkbox" ng-model="vm.selectAll"
-                       ng-change="vm.toggleSelectAll(vm.selectAll)">
-            </th>
-            <th>{{'adminValidSourceList.program' | message}}</th>
-            <th>{{'adminValidSourceList.facilityType' | message}}</th>
-            <th>{{'adminValidSourceList.name' | message}}</th>
-            <th>{{'adminValidSourceList.geoZone' | message}}</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="validSource in vm.validSources">
-            <td>
-                <input type="checkbox" ng-model="validSource.$selected"
-                       ng-change="vm.onValidSourceSelect(validSource)">
-            </td>
-            <td>{{vm.programsMap[validSource.programId]}}</td>
-            <td>{{vm.facilityTypesMap[validSource.facilityTypeId]}}</td>
-            <td>{{validSource.name}}</td>
-            <td>{{vm.geographicZonesMap[validSource.geoZoneId]}}</td>
-        </tr>
-        </tbody>
-    </table>
+    <openlmis-table table-config="vm.tableConfig"></openlmis-table>
     <openlmis-pagination/>
 </section>
 <div class="openlmis-toolbar" ng-if="vm.validSources.length">

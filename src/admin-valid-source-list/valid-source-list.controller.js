@@ -182,6 +182,17 @@
         vm.selectAll = false;
 
         /**
+         * @ngdoc property
+         * @propertyOf admin-valid-source-list.controller:ValidSourceListController
+         * @name tableConfig
+         * @type {Object}
+         *
+         * @description
+         * Holds table config for valid sources list
+         */
+        vm.tableConfig = undefined;
+
+        /**
          * @ngdoc method
          * @methodOf admin-valid-source-list.controller:ValidSourceListController
          * @name getSelected
@@ -332,6 +343,7 @@
                 + $stateParams.storageKey;
 
             loadPreviouslySelectedValidSources();
+            vm.tableConfig = getTableConfig();
         }
 
         function deleteSelectedValidSources() {
@@ -368,6 +380,49 @@
             } else {
                 notificationService.error('adminValidSourceList.selectAtLeastOneValidSource');
             }
+        }
+
+        function getTableConfig() {
+            return {
+                caption: 'adminValidSourceList.noValidSources',
+                displayCaption: !vm.validSources || vm.validSources.length === 0,
+                isSelectable: true,
+                onSelectElementChange: function(item) {
+                    vm.onValidSourceSelect(item);
+                },
+                onSelectAll: function(selectAll) {
+                    vm.toggleSelectAll(selectAll);
+                },
+                initialSelectAll: vm.selectAll,
+                columns: [
+                    {
+                        header: 'adminValidSourceList.program',
+                        propertyPath: 'programId',
+                        template: function(item) {
+                            return vm.programsMap[item.programId];
+                        }
+                    },
+                    {
+                        header: 'adminValidSourceList.facilityType',
+                        propertyPath: 'facilityTypeId',
+                        template: function(item) {
+                            return vm.facilityTypesMap[item.facilityTypeId];
+                        }
+                    },
+                    {
+                        header: 'adminValidSourceList.name',
+                        propertyPath: 'name'
+                    },
+                    {
+                        header: 'adminValidSourceList.geoZone',
+                        propertyPath: 'geoZoneId',
+                        template: function(item) {
+                            return vm.geographicZonesMap[item.geoZoneId];
+                        }
+                    }
+                ],
+                data: vm.validSources
+            };
         }
     }
 })();

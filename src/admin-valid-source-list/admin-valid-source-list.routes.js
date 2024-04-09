@@ -26,7 +26,7 @@
         $stateProvider.state('openlmis.administration.validSource', {
             showInNavigation: true,
             label: 'adminValidSourceList.validSources',
-            url: '/validSources?page&size&programId&facilityId&storageKey',
+            url: '/validSources?page&size&programId&facilityId&storageKey&sort',
             controller: 'ValidSourceListController',
             templateUrl: 'admin-valid-source-list/valid-source-list.html',
             controllerAs: 'vm',

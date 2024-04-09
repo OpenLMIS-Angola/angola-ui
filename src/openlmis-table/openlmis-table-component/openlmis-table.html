@@ -4,6 +4,10 @@
     </caption>
     <thead ng-if="$ctrl.headersConfiguration">
         <tr>
+            <th ng-if="$ctrl.tableConfig.isSelectable" class="checkbox-cell col-sticky">
+                <input type="checkbox" ng-model="$ctrl.selectAll"
+                            ng-change="$ctrl.tableConfig.onSelectAll($ctrl.selectAll)">
+            </th>
             <th
                 ng-repeat="column in $ctrl.tableConfig.columns"
                 ng-click="$ctrl.sortTable(column)"
@@ -18,9 +22,9 @@
     </thead>
     <tbody>
         <tr ng-if="$ctrl.elementsConfiguration" ng-repeat="element in $ctrl.tableConfig.data" ng-init="parentIndex=$index">
-            <td ng-if="$ctrl.tableConfig.isSelectable">
+            <td ng-if="$ctrl.tableConfig.isSelectable" class="checkbox-cell">
                 <input type="checkbox" ng-model="element.$selected"
-                            ng-change="$ctrl.tableConfig.onSelectElementChange">
+                            ng-change="$ctrl.tableConfig.onSelectElementChange(element)">
             </td>
             <td ng-repeat="column in $ctrl.tableConfig.columns"
                 ng-init="childIndex=$index"

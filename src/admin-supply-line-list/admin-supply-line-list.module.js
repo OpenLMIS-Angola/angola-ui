@@ -31,7 +31,8 @@
         'referencedata-supply-line',
         'referencedata-requisition-group',
         'openlmis-object-utils',
-        'ui.router'
+        'ui.router',
+        'openlmis-table'
     ]);
 
 })();

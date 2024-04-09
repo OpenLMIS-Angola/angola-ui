@@ -35,8 +35,11 @@
         $ctrl.$onInit = onInit;
         $ctrl.isColumnSortable = isColumnSortable;
         $ctrl.getItem = getItem;
+        $ctrl.selectAll = undefined;
 
         function onInit() {
+            $ctrl.selectAll = $ctrl.tableConfig.initialSelectAll === undefined ?
+                false : $ctrl.tableConfig.initialSelectAll;
             openlmisTableService.setColumnsDefaults($ctrl.tableConfig.columns);
             openlmisTableSortingService.setHeadersClasses($ctrl.tableConfig.columns);
             $ctrl.elementsConfiguration = openlmisTableService.getElementsConfiguration($ctrl.tableConfig);

@@ -26,40 +26,7 @@
         </fieldset>
         <input type="submit" value="{{'adminValidDestinationList.search' | message}}"/>
     </form>
-
-    <openlmis-table table-config="vm.tableConfig">
-        <!-- <table>
-            <caption ng-if="!vm.validDestinations || vm.validDestinations.length === 0">
-                {{'adminValidDestinationList.noValidDestinations' | message}}
-            </caption>
-            <thead>
-            <tr>
-                <th class="col-sticky">
-                    <input type="checkbox" ng-model="vm.selectAll"
-                           ng-change="vm.toggleSelectAll(vm.selectAll)">
-                </th>
-                <th class="header-sortable">
-                    {{'adminValidDestinationList.program' | message}}
-                </th>
-                <th class="header-sortable">{{'adminValidDestinationList.facilityType' | message}}</th>
-                <th class="header-sortable">{{'adminValidDestinationList.name' | message}}</th>
-                <th class="header-sortable">{{'adminValidDestinationList.geoZone' | message}}</th>
-            </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="validDestination in vm.validDestinations">
-                    <td>
-                        <input type="checkbox" ng-model="validDestination.$selected"
-                            ng-change="vm.onValidDestinationSelect(validDestination)">
-                    </td>
-                    <td>{{vm.programsMap[validDestination.programId]}}</td>
-                    <td>{{vm.facilityTypesMap[validDestination.facilityTypeId]}}</td>
-                    <td>{{validDestination.name}}</td>
-                    <td>{{vm.geographicZonesMap[validDestination.geoZoneId]}}</td>
-                </tr>
-            </tbody>
-        </table> -->
-    </openlmis-table>
+    <openlmis-table table-config="vm.tableConfig"></openlmis-table>
     <openlmis-pagination/>
 </section>
 <div class="openlmis-toolbar" ng-if="vm.validDestinations.length">
