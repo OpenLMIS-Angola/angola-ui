@@ -63,7 +63,7 @@
             vm.partnerNodes = supervisoryNodes;
             vm.parentNodes = supervisoryNodes;
 
-            $scope.$watch('$stateParams', function(newVal) {
+            $scope.$watch('$stateParams', function() {
                 if (facilitiesMap[$stateParams.facilityId]) {
                     vm.supervisoryNode.facility = facilitiesMap[$stateParams.facilityId];
                 }
