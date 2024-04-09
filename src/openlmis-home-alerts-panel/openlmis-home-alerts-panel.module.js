@@ -14,23 +14,7 @@
  */
 
 (function() {
-
     'use strict';
 
-    /**
-     * @module admin-facility-add
-     *
-     * @description
-     * Provides a modal for adding new facilities to the OpenLMIS.
-     */
-    angular.module('admin-facility-add', [
-        'referencedata-facility',
-        'referencedata-facility-type',
-        'referencedata-facility-operator',
-        'admin-facility',
-        'openlmis-modal',
-        'openlmis-templates',
-        'openlmis-state-tracker'
-    ]);
-
+    angular.module('openlmis-home-alerts-panel', []);
 })();

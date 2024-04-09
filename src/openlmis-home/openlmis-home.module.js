@@ -18,19 +18,21 @@
     'use strict';
 
     /**
-     * @module admin-facility-add
+     * @module openlmis-home
      *
      * @description
-     * Provides a modal for adding new facilities to the OpenLMIS.
+     * Responsible for primary navigation elements within the OpenLMIS-UI.
      */
-    angular.module('admin-facility-add', [
-        'referencedata-facility',
-        'referencedata-facility-type',
-        'referencedata-facility-operator',
-        'admin-facility',
-        'openlmis-modal',
+    angular.module('openlmis-home', [
+        'openlmis-i18n',
         'openlmis-templates',
-        'openlmis-state-tracker'
+        'openlmis-pagination',
+        'referencedata-system-notification',
+        'openlmis-message',
+        // OAM-18: Homepage UI alerts
+        'openlmis-home-alerts-panel',
+        // OAM-18: ends here
+        'ui.router'
     ]);
 
 })();
