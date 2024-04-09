@@ -37,9 +37,11 @@
 
         function getElementsConfiguration(tableConfig) {
             var elementsConfiguration = [];
-            tableConfig.data.forEach(function(item) {
-                elementsConfiguration.push(getSingleRowConfig(tableConfig.columns, item));
-            });
+            if (tableConfig.data) {
+                tableConfig.data.forEach(function(item) {
+                    elementsConfiguration.push(getSingleRowConfig(tableConfig.columns, item));
+                });
+            }
             return elementsConfiguration;
         }
 
