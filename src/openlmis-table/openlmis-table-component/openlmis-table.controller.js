@@ -47,7 +47,10 @@
 
             $scope.$watch('$ctrl.tableConfig', function(newVal, oldVal) {
                 if (newVal.data !== oldVal.data) {
-                    $ctrl.elementsConfiguration = openlmisTableService.getElementsConfiguration(newVal);
+                    $ctrl.elementsConfiguration = undefined;
+                    $scope.$applyAsync(function() {
+                        $ctrl.elementsConfiguration = openlmisTableService.getElementsConfiguration(newVal);
+                    });
                 }
             }, true);
         }
