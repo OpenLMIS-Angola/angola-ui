@@ -1,0 +1,19 @@
+<h2>{{'adminSystemNotificationList.systemNotifications' | message}}</h2>
+<section class="openlmis-table-container">
+    <form ng-submit="vm.loadSystemNotifications()" >
+        <label for="author">{{'adminSystemNotificationList.author' | message}}</label>
+        <select id="author"
+                ng-model="vm.authorId"
+                ng-options="author.id as author | user for author in vm.users"></select>
+        <label class="checkbox">
+            <input type="checkbox" ng-model="vm.isDisplayed"/>
+            {{'adminSystemNotificationList.only.displayed' | message}}
+        </label>
+        <input type="submit" value="{{'adminSystemNotificationList.search' | message}}" />
+    </form>
+    <button id="add-system-notification" class="add" ui-sref="openlmis.administration.systemNotifications.add">
+        {{'adminSystemNotificationList.addSystemNotification' | message}}
+    </button>
+    <openlmis-table table-config="vm.tableConfig"></openlmis-table>
+    <openlmis-pagination/>
+</section>

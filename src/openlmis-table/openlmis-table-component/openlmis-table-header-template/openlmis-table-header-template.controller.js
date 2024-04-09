@@ -19,28 +19,27 @@
 
     /**
      * @ngdoc controller
-     * @name openlmis-table.controller:openlmisTableElementTemplateController      *
+     * @name openlmis-table.controller:openlmisTableHeaderTemplateController      *
      *
      * @description - manages rendering the content inside the <td> based on
-     *  elementConfig
+     *  headerConfig
      *
      */
     angular
         .module('openlmis-table')
-        .controller('openlmisTableElementTemplateController', openlmisTableElementTemplateController);
+        .controller('openlmisTableHeaderTemplateController', openlmisTableHeaderTemplateController);
 
-    openlmisTableElementTemplateController.$inject = ['$compile', '$scope', '$timeout', 'uniqueIdService', 'jQuery',
+    openlmisTableHeaderTemplateController.$inject = ['$compile', '$scope', '$timeout', 'uniqueIdService', 'jQuery',
         'openlmisTableService'];
 
-    function openlmisTableElementTemplateController($compile, $scope, $timeout, uniqueIdService, jQuery,
-                                                    openlmisTableService) {
+    function openlmisTableHeaderTemplateController($compile, $scope, $timeout, uniqueIdService, jQuery) {
         var $ctrl = this;
 
         $ctrl.$onInit = onInit;
 
         function onInit() {
             $ctrl.divId = uniqueIdService.generate();
-            if ($ctrl.elementConfig.template) {
+            if ($ctrl.headerConfig.template) {
                 $timeout(function() {
                     injectHtmlContent();
                 });
@@ -48,7 +47,7 @@
         }
 
         function injectHtmlContent() {
-            var htmlContent = getItemTemplateValue($ctrl.elementConfig.template, $ctrl.elementConfig.item);
+            var htmlContent = $ctrl.headerConfig.template();
             try {
                 var compiledHtml = $compile(angular.element(htmlContent))($scope);
                 if (compiledHtml.length === 0) {
@@ -60,19 +59,5 @@
                 jQuery('#' + $ctrl.divId).append(htmlContent);
             }
         }
-
-        function getItemTemplateValue(template, item) {
-            if (typeof template === 'function') {
-                return template(item);
-            }
-
-            var regex = /item\.(\w+)/g;
-
-            return template.replace(regex, function(match, property) {
-                var value = openlmisTableService.getElementPropertyValue(item, property);
-                return value ? value : match;
-            });
-        }
     }
-
 })();

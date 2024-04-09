@@ -27,17 +27,32 @@
         .module('openlmis-table')
         .controller('OpenlmisTableController', OpenlmisTableController);
 
-    OpenlmisTableController.$inject = ['openlmisTableService', 'openlmisTableSortingService'];
+    OpenlmisTableController.$inject = ['openlmisTableService', 'openlmisTableSortingService', '$scope'];
 
-    function OpenlmisTableController(openlmisTableService, openlmisTableSortingService) {
+    function OpenlmisTableController(openlmisTableService, openlmisTableSortingService, $scope) {
         var $ctrl = this;
         $ctrl.sortTable = sortTable;
         $ctrl.$onInit = onInit;
         $ctrl.isColumnSortable = isColumnSortable;
+        $ctrl.getItem = getItem;
+        $ctrl.selectAll = undefined;
 
         function onInit() {
+            $ctrl.selectAll = $ctrl.tableConfig.initialSelectAll === undefined ?
+                false : $ctrl.tableConfig.initialSelectAll;
+            openlmisTableService.setColumnsDefaults($ctrl.tableConfig.columns);
             openlmisTableSortingService.setHeadersClasses($ctrl.tableConfig.columns);
             $ctrl.elementsConfiguration = openlmisTableService.getElementsConfiguration($ctrl.tableConfig);
+            $ctrl.headersConfiguration = openlmisTableService.getHeadersConfiguration($ctrl.tableConfig.columns);
+
+            $scope.$watch('$ctrl.tableConfig', function(newVal, oldVal) {
+                if (newVal.data !== oldVal.data) {
+                    $ctrl.elementsConfiguration = undefined;
+                    $scope.$applyAsync(function() {
+                        $ctrl.elementsConfiguration = openlmisTableService.getElementsConfiguration(newVal);
+                    });
+                }
+            }, true);
         }
 
         function sortTable(chosenColumn) {
@@ -46,6 +61,10 @@
 
         function isColumnSortable(selectedColumn) {
             return openlmisTableSortingService.isColumnSortable(selectedColumn);
+        }
+
+        function getItem(parentIndex, childIndex) {
+            return $ctrl.elementsConfiguration[parentIndex][childIndex].item;
         }
     }
 })();

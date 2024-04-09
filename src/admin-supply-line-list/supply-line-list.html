@@ -1,0 +1,20 @@
+<h2>{{'adminSupplyLineList.supplyLines' | message}}</h2>
+<section class="openlmis-table-container">
+    <form ng-submit="vm.search()">
+        <fieldset class="form-group">
+            <label for="supplyingFacility">{{'adminSupplyLineList.supplyingFacility' | message}}</label>
+            <select id="supplyingFacility"
+                    ng-options="supplyingFacility.id as supplyingFacility.name for supplyingFacility in vm.supplyingFacilities"
+                    ng-model="vm.supplyingFacilityId">
+            </select>
+            <label for="program">{{'adminSupplyLineList.program' | message}}</label>
+            <select id="program"
+                    ng-options="program.id as program.name for program in vm.programs"
+                    ng-model="vm.programId">
+            </select>
+        </fieldset>
+        <input type="submit" value="{{'adminSupplyLineList.search' | message}}"/>
+    </form>
+    <openlmis-table table-config="vm.tableConfig"></openlmis-table>
+    <openlmis-pagination/>
+</section>

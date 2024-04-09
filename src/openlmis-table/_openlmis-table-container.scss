@@ -109,6 +109,19 @@ the current table sort order is recommended.*
 Styleguide 4.1
 */
 
+@mixin sortedColumn {
+  position: relative;
+  padding-left: 2rem;
+
+  &::before {
+    position: absolute;
+    left: 0;
+    padding-left: .5rem;
+    font-weight: 300;
+    margin-right: .2rem;
+  }
+}
+
 .ps-container {
   overflow: hidden !important;
 }
@@ -182,20 +195,18 @@ Styleguide 4.1
 
           .sorted-ascending {
             @include icon('arrow-up');
-            &::before {
-              font-weight: 300;
-              margin-right: .3rem;
-            }
+            @include sortedColumn();
           }
 
           .sorted-descending {
             @include icon('arrow-down');
-            &::before {
-              font-weight: 300;
-              margin-right: .3rem;
-            }
+            @include sortedColumn();
           }
         }
+      }
+
+      .checkbox-cell {
+        padding: 8px;
       }
     }
   }

@@ -30,13 +30,13 @@
 
     controller.$inject = [
         'loadingModalService', '$state', '$stateParams', 'StockCardSummaryRepositoryImpl', 'stockCardSummaries',
-        'offlineService', '$scope', 'STOCKCARD_STATUS', 'messageService', 'paginationService', 'TABLE_CONSTANTS',
-        '$filter'
+        'offlineService', '$scope', 'STOCKCARD_STATUS', 'messageService', 'paginationService', '$filter',
+        'TABLE_CONSTANTS'
     ];
 
     function controller(loadingModalService, $state, $stateParams, StockCardSummaryRepositoryImpl, stockCardSummaries,
-                        offlineService, $scope, STOCKCARD_STATUS, messageService, paginationService, TABLE_CONSTANTS,
-                        $filter) {
+                        offlineService, $scope, STOCKCARD_STATUS, messageService, paginationService, $filter,
+                        TABLE_CONSTANTS) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -229,7 +229,7 @@
         function getTableConfig() {
             return {
                 caption: 'stockCardSummaryList.noProducts',
-                displayCaption: !vm.displayStockCardSummaries.length,
+                displayCaption: !vm.displayStockCardSummaries || !vm.displayStockCardSummaries.length,
                 columns: [
                     {
                         header: 'stockCardSummaryList.productCode',
@@ -249,11 +249,16 @@
                 ],
                 actions: {
                     header: 'stockCardSummaryList.actions',
-                    type: TABLE_CONSTANTS.actionTypes.CLICK,
-                    text: 'stockCardSummaryList.view',
-                    onClick: function(item) {
-                        vm.viewSingleProduct(item.orderable.id);
-                    }
+                    data: [
+                        {
+                            type: TABLE_CONSTANTS.actionTypes.CLICK,
+                            text: 'stockCardSummaryList.view',
+                            classes: 'primary',
+                            onClick: function(item) {
+                                vm.viewSingleProduct(item.orderable.id);
+                            }
+                        }
+                    ]
                 },
                 data: vm.displayStockCardSummaries
             };

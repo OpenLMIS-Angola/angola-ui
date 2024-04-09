@@ -139,7 +139,8 @@
             if (sortParam) {
                 var sortParamParts = sortParam.split(',');
                 var isSortedBy = sortParamParts[0];
-                var sortingOrder = sortParamParts[1];
+                // Removing whitespaces from sorting param
+                var sortingOrder = sortParamParts[1].split(' ').join('');
                 var headerClass = sortingOrder === SORTING_SERVICE_CONSTANTS.ASC ?
                     SORTING_SERVICE_CONSTANTS.SORT_ASC_CLASS : SORTING_SERVICE_CONSTANTS.SORT_DESC_CLASS;
 
@@ -150,10 +151,10 @@
         }
 
         function getColumnClass(column) {
-            var baseClass = column.classes ? column.classes : '';
+            var baseClass = column.headerClasses ? column.headerClasses : '';
 
             return isSortedByColumn(column.propertyPath) ?
-                baseClass + sortingProperites.headerClass : baseClass;
+                baseClass + ' ' + sortingProperites.headerClass : baseClass;
         }
 
         function isSortedByColumn(propertyPath) {

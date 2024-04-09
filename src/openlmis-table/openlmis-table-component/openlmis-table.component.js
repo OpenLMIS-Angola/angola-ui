@@ -24,21 +24,35 @@
      * @description
      * Component responsible for displaying a table
      *
-     * @param {TableConfig} tableConfig specifies what columns, actions, header, etc. will the table have
+     * @param {TableConfig} tableConfig Specifies what columns, actions, header, etc. will the table have
      * @typedef {Object} TableConfig
      * @property {string} caption - Text which will be displayed if data is not present.
-     * @property {boolean} displayCaption - Whether to display the caption or not.
+     * @prope   rty {boolean} displayCaption - Whether to display the caption or not.
      * @property {ColumnConfig[]} columns - Array of column configurations.
      * @property {ActionsConfig} actions - Configuration for table actions.
      * @property {Object[]} data - Array of data to be displayed in the table.
+     * @property {boolean} isSelectable - (optional) Defines should it be possible to set $selected property of
+     *  table item. If set to true, the additional column with checkboxes will be rendered. By default false
+     * @property {funciton} onSelectElementChange -  (optional) Function that should be triggered when table
+     *  item is selected
+     * @property {funciton} onSelectAll - (optional) Function that should be triggered when allItems are
+     *  selected
+     * @property {boolean} initialSelectAll - (optional) Initial value of selectAll param which specifies if
+     *  all table items should be selected or not.
      *
      * Configuration for a single column in the table.
-     *
      * @typedef {Object} ColumnConfig
      * @property {string} header - Header text for the column.
-     * @property {string} propertyPath - Property path to extract data for the column object.
-     * @property {string} classes - additional CSS classes which should be applied to the column header
-     * @property {string|function} [template] - Optional template to customize the display of data in the column.
+     * @property {string} propertyPath - Property path to extract data for the column object. It also specifies by which
+     *  property the table will be sorted after clicking on header.
+     * @property {boolean} sortable - (optional) Decides if it should be possible to sort by this column,
+     *  by default true
+     * @property {string} headerClasses - (optional) Additional CSS classes which should be applied to the column header
+     * @property {string} cellClasses - (optional) Additional CSS classes which should be applied to the table cell
+     * @property {funciton} displayColumn - (optional) Function which returns whether the column
+     * should be displayed or not. If not passed column will be visible
+     * @property {Popover} popover - (optional) If passed attaches the popover after hovering on the column.
+     * @property {string|function} [template] - (optional) template to customize the display of data in the column.
      * It can be either string like this:
      * @example
      * 'item.name - item.code'
@@ -59,13 +73,17 @@
      *                       filter('openlmisDate')(item.processingPeriod.startDate) : '';
      *               }
      *
+     * Popover configuration
+     * @typedef {Object} Popover
+     * @property {string} title - Translation key of the popover title
+     * @property {string} template - Path to the html file where the template is located
+     *
      * Configuration for table actions.
      * @typedef {Object} ActionsConfig
      * @property {string} header - Header text for the actions column.
      * @property {Action[]} data - Array of action data objects.
      *
      * Data object defining an action for the table.
-     *
      * @typedef {Object} Action
      * @property {string} type - Type of action. Possible values:
      * REDIRECT -> action is created with the ui-sref property

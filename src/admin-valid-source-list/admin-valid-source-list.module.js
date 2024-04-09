@@ -14,17 +14,24 @@
  */
 
 (function() {
+
     'use strict';
 
     /**
-   * @module stock-price-changes
-   *
-   * @description
-   * Responsible for make adjustment list screen.
-   */
-    angular.module('stock-price-changes', [
-        'stock-card-summary',
-        'openlmis-facility-program-select',
+     * @module admin-valid-source-list
+     *
+     * @description
+     * Provides valid source list screen for administrator.
+     */
+    angular.module('admin-valid-source-list', [
+        'openlmis-admin',
+        'openlmis-cached-repository',
+        'openlmis-pagination',
+        'openlmis-rights',
+        'ui.router',
+        'referencedata-geographic-zone',
+        'openlmis-state-tracker',
+        'openlmis-uuid',
         'openlmis-table'
     ]);
 })();

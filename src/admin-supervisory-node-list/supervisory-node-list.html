@@ -1,0 +1,18 @@
+<h2>{{'adminSupervisoryNodeList.supervisoryNodes' | message}}</h2>
+<section class="openlmis-table-container">
+    <form ng-submit="vm.search()">
+        <fieldset class="form-group">
+            <label for="supervisoryNodeName">{{'adminSupervisoryNodeList.name' | message}}</label>
+            <input type="text" id="supervisoryNodeName" ng-model="vm.supervisoryNodeName"/>
+        </fieldset>
+        <fieldset class="form-group">
+            <label for="geographicZone">{{'adminSupervisoryNodeList.geographicZone' | message}}</label>
+            <select id="geographicZone" ng-model="vm.geographicZone"
+                    ng-options="zone.id as zone.name for zone in vm.geographicZones">
+            </select>
+        </fieldset>
+        <input type="submit" value="{{'adminSupervisoryNodeList.search' | message}}"/>
+    </form>
+    <openlmis-table table-config="vm.tableConfig"></openlmis-table>
+    <openlmis-pagination/>
+</section>

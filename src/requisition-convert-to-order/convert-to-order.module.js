@@ -14,17 +14,23 @@
  */
 
 (function() {
+
     'use strict';
 
     /**
-   * @module stock-price-changes
-   *
-   * @description
-   * Responsible for make adjustment list screen.
-   */
-    angular.module('stock-price-changes', [
-        'stock-card-summary',
-        'openlmis-facility-program-select',
-        'openlmis-table'
+     * @module requisition-convert-to-order
+     *
+     * @description
+     * Responsible for requisition convert to order screen.
+     */
+    angular.module('requisition-convert-to-order', [
+        'requisition',
+        'openlmis-date',
+        'referencedata-facility',
+        'referencedata-program',
+        'openlmis-modal',
+        'openlmis-pagination',
+        'ui.router'
     ]);
+
 })();

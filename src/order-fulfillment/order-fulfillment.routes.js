@@ -37,7 +37,7 @@
                 FULFILLMENT_RIGHTS.SHIPMENTS_EDIT
             ],
             params: {
-                sort: ['createdDate,desc']
+                sort: 'createdDate,desc'
             },
             areAllRightsRequired: false,
             resolve: {

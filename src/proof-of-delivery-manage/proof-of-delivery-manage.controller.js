@@ -304,7 +304,7 @@
                     {
                         header: 'proofOfDeliveryManage.emergency',
                         propertyPath: 'emergency',
-                        classes: 'col-emergency',
+                        headerClasses: 'col-emergency',
                         template: function(item) {
                             return '<i ng-class="{\'icon-ok\': ' + item.emergency + '}"></i>';
                         }

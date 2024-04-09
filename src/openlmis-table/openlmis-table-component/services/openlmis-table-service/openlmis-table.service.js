@@ -32,15 +32,34 @@
     function openlmisTableService() {
         return {
             getElementsConfiguration: getElementsConfiguration,
-            getElementPropertyValue: getElementPropertyValue
+            getElementPropertyValue: getElementPropertyValue,
+            setColumnsDefaults: setColumnsDefaults,
+            getHeadersConfiguration: getHeadersConfiguration
         };
 
         function getElementsConfiguration(tableConfig) {
             var elementsConfiguration = [];
-            tableConfig.data.forEach(function(item) {
-                elementsConfiguration.push(getSingleRowConfig(tableConfig.columns, item));
-            });
+            if (tableConfig.data) {
+                tableConfig.data.forEach(function(item) {
+                    elementsConfiguration.push(getSingleRowConfig(tableConfig.columns, item));
+                });
+            }
             return elementsConfiguration;
+        }
+
+        function getHeadersConfiguration(columns) {
+            var usedHeaders = [];
+
+            return columns.map(function(column) {
+                var alreadyUsed = usedHeaders.includes(column.header);
+                usedHeaders.push(column.header);
+
+                return {
+                    text: column.header,
+                    template: column.headerTemplate,
+                    isDisplayed: !alreadyUsed
+                };
+            });
         }
 
         function getSingleRowConfig(tableColumns, item) {
@@ -48,8 +67,20 @@
                 return {
                     value: getElementPropertyValue(item, column.propertyPath),
                     template: column.template,
-                    item: item
+                    item: item,
+                    displayCell: column.displayColumn ? column.displayColumn(item) : true
                 };
+            });
+        }
+
+        function setColumnsDefaults(columns) {
+            columns.forEach(function(column) {
+                var defaultPopover = {
+                    template: '',
+                    text: ''
+                };
+
+                column.popover = column.popover ? column.popover : defaultPopover;
             });
         }
 
