@@ -26,9 +26,9 @@
                     <label for="lotSelect">{{'stockAddProductsModal.lotCode' | message}}</label>
                     <!-- OAM-5: Lot code filter UI improvements. -->
                     <select id="lotSelect" ng-model="vm.selectedLot"
-                            ng-options="lot as (vm.isExpired(lot) ? '[EXP] ' : '') 
-                            + lot.lotCode 
-                            + ((lot.lotCode !== 'Add lot' && lot.expirationDate != undefined) ? ' | ' + (lot.expirationDate | date:'dd.MM.yyyy') : '') 
+                            ng-options="lot as (vm.isExpired(lot) ? '[EXP] ' : '')
+                            + lot.lotCode
+                            + ((lot.lotCode !== 'Add lot' && lot.expirationDate != undefined) ? ' | ' + (lot.expirationDate | date:'dd.MM.yyyy') : '')
                             for lot in vm.lots"
                             ng-change="vm.lotChanged()"
                             required>
