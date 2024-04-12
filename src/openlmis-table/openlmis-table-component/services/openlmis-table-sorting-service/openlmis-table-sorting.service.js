@@ -137,6 +137,9 @@
             var sortParam = $stateParams.sort;
 
             if (sortParam) {
+                if (typeof sortParam === 'object' && sortParam.length !== undefined) {
+                    sortParam = sortParam[0];
+                }
                 var sortParamParts = sortParam.split(',');
                 var isSortedBy = sortParamParts[0];
                 // Removing whitespaces from sorting param
@@ -171,7 +174,7 @@
          * @param  {Object} column
          */
         function isColumnSortable(column) {
-            return column.sortable === undefined || column.sortable;
+            return (column.sortable === undefined || column.sortable) && column.propertyPath !== undefined;
         }
     }
 })();

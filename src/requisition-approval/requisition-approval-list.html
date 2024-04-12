@@ -1,0 +1,18 @@
+<h2>{{'requisitionApproval.approveRequisitions' | message}}</h2>
+<h4 ng-if="vm.isBatchApproveScreenActive">{{ 'requisitionApproval.instruction' | message }}</h4>
+<div class="openlmis-table-container">
+    <openlmis-sort options="vm.options"/>
+    <form class="openlmis-table-filters" ng-submit="vm.search()">
+        <label for=program>{{'requisitionApproval.program' | message}}</label>
+        <select id="program" placeholder="{{'requisitionApproval.selectProgram' | message}}"
+                ng-model="vm.selectedProgram"
+                ng-options="program as program.name for program in vm.programs">
+        </select>
+        <input class="btn btn-primary" type="submit" value="{{'requisitionApproval.search' | message}}"/>
+    </form>
+    <openlmis-table table-config="vm.tableConfig"></openlmis-table>
+    <openlmis-pagination/>
+</div>
+<div class="openlmis-toolbar" ng-if="vm.requisitions.length && vm.isBatchApproveScreenActive">
+    <button class="primary" ng-click="vm.viewSelectedRequisitions()">{{'requisitionApproval.viewSelectedRequisitions' | message}}</button>
+</div>
