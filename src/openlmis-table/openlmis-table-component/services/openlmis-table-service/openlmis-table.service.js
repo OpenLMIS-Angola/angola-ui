@@ -85,7 +85,7 @@
         }
 
         function getElementPropertyValue(obj, propertyPath) {
-            if (!obj) {
+            if (!obj || !propertyPath) {
                 return undefined;
             }
 
