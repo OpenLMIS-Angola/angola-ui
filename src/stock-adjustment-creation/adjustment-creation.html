@@ -26,9 +26,9 @@
                     <label for="lotSelect">{{'stockAddProductsModal.lotCode' | message}}</label>
                     <!-- OAM-5: Lot code filter UI improvements. -->
                     <select id="lotSelect" ng-model="vm.selectedLot"
-                            ng-options="lot as (vm.isExpired(lot) ? '[EXP] ' : '') 
-                            + lot.lotCode 
-                            + ((lot.lotCode !== 'Add lot' && lot.expirationDate != undefined) ? ' | ' + (lot.expirationDate | date:'dd.MM.yyyy') : '') 
+                            ng-options="lot as (vm.isExpired(lot) ? '[EXP] ' : '')
+                            + lot.lotCode
+                            + ((lot.lotCode !== 'Add lot' && lot.expirationDate != undefined) ? ' | ' + (lot.expirationDate | date:'dd.MM.yyyy') : '')
                             for lot in vm.lots"
                             ng-change="vm.lotChanged()"
                             required>
@@ -59,6 +59,7 @@
                 <th ng-show="vm.hasLot">{{vm.key('expiryDate') | message}}</th>
                 <th>{{vm.key('soh') | message}}</th>
                 <th ng-show="vm.srcDstAssignments">{{vm.key('srcDstLabel') | message}}</th>
+                <th ng-if="vm.showServicesColumn">{{:: 'adjustmentCreation.service' | message}}</th>
                 <th ng-show="vm.srcDstAssignments">{{vm.key('srcDstComments') | message}}</th>
                 <th ng-if="vm.showReasonDropdown">{{vm.key('reason') | message}}</th>
                 <th ng-if="vm.showReasonDropdown">{{vm.key('reasonComments') | message}}</th>
@@ -88,8 +89,14 @@
                 <td align="right">{{lineItem.$previewSOH}}</td>
                 <td ng-show="vm.srcDstAssignments" openlmis-invalid="{{lineItem.$errors.assignmentInvalid ? 'openlmisForm.required' : '' | message}}">
                     <select ng-model="lineItem.assignment"
-                            ng-change="vm.validateAssignment(lineItem);vm.clearFreeText(lineItem, 'srcDstFreeText')"
+                            ng-change="vm.validateAssignment(lineItem);vm.clearFreeText(lineItem, 'srcDstFreeText');vm.checkAssignmentForServices(lineItem.assignment)"
                             ng-options="assignment.name for assignment in vm.srcDstAssignments track by assignment.id" autofocus>
+                    </select>
+                </td>
+                <td ng-if="vm.showServicesColumn">
+                    <!-- TODO: input for wards/services -->
+                    <select ng-model="lineItem.assignment.targetService"
+                            ng-options="service.name for service in lineItem.assignment.services track by service.id" autofocus>
                     </select>
                 </td>
                 <td ng-show="vm.srcDstAssignments">

@@ -123,6 +123,17 @@
          */
         vm.offline = offlineService.isOffline;
 
+        /**
+         * @ngdoc property
+         * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name showServicesColumn
+         * @type {boolean}
+         *
+         * @description
+         * Decides should the services input be displayed
+         */
+        vm.showServicesColumn = false;
+
         vm.key = function(secondaryKey) {
             return adjustmentType.prefix + 'Creation.' + secondaryKey;
         };
@@ -813,6 +824,13 @@
             vm.facility = facility;
             vm.reasons = reasons;
             vm.showReasonDropdown = (adjustmentType.state !== ADJUSTMENT_TYPE.KIT_UNPACK.state);
+            var names = ['s1', 's2', 's3'];
+            for (var i = 0; i < 3; i++) {
+                srcDstAssignments[i].services = [{
+                    id: Math.floor(Math.random() * 10000),
+                    name: names[i]
+                }];
+            }
             vm.srcDstAssignments = srcDstAssignments;
             vm.addedLineItems = $stateParams.addedLineItems || [];
             $stateParams.displayItems = displayItems;
@@ -903,6 +921,15 @@
          */
         vm.canEditLot = function(lineItem) {
             return vm.hasPermissionToAddNewLot && lineItem.lot && lineItem.$isNewItem;
+        };
+
+        vm.checkAssignmentForServices = function(facility) {
+            console.log('checking for services');
+            vm.showServicesColumn =
+                facility.services !== undefined &&
+                facility.services !== null &&
+                facility.services.length !== 0;
+            console.log(vm.showServicesColumn);
         };
 
         /**
