@@ -1,0 +1,19 @@
+<div class="modal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1>{{:: 'openlmisUnitAdd.form.header' | message}}</h1>
+            </div>
+            <div class="modal-body">
+                <form id="add-unit-form" ng-submit="$ctrl.save()">
+                    <label for="unit-name">{{:: 'openlmisUnitAdd.form.label.name' | message}}</label>
+                    <input id="unit-name" type="text">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="cancel" ng-click="$ctrl.goToPreviousState()">{{'openlmisUnitAdd.cancel' | message}}</button>
+                <button class="primary" form="add-unit-form">{{'openlmisUnitAdd.save' | message}}</button>
+            </div>
+        </div>
+    </div>
+</div>

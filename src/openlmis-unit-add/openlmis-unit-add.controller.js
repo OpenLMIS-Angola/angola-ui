@@ -14,25 +14,33 @@
  */
 
 (function() {
+
     'use strict';
 
-    angular.module('stock-adjustment-creation', [
-        'openlmis-date',
-        // AO-695: Use first name + last name as a signature for Issue,Receive,Adjustment
-        'openlmis-local-storage',
-        // AO-695: Ends here
-        'stock-adjustment',
-        'stock-confirm-discard',
-        'stock-orderable-group',
-        'stock-product-name',
-        'stock-constants',
-        'stock-valid-reason',
-        'referencedata-program',
-        'referencedata-facility',
-        'referencedata-lot',
-        'stock-unpack-kit',
-        'stock-reasons-modal',
-        'stock-edit-lot-modal',
-        'openlmis-unit-add'
-    ]);
+    /**
+     * @ngdoc controller
+     * @name openlmis-unit-add.controller:openlmisUnitAddController      *
+     * @description
+     * Manages the openlmis-unit-add component
+     */
+    angular
+        .module('openlmis-unit-add')
+        .controller('openlmisUnitAddController', openlmisUnitAddController);
+
+    openlmisUnitAddController.$inject = ['openlmisUnitAddService', 'stateTrackerService'];
+
+    function openlmisUnitAddController(openlmisUnitAddService, stateTrackerService) {
+        var $ctrl = this;
+        $ctrl.$onInit = onInit;
+        $ctrl.save = save;
+        $ctrl.goToPreviousState = stateTrackerService.goToPreviousState;
+
+        function onInit() {
+
+        }
+
+        function save() {
+            openlmisUnitAddService.save();
+        }
+    }
 })();

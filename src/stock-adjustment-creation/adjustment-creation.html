@@ -23,7 +23,7 @@
                     </select>
                 </div>
                 <div ng-if="vm.selectedOrderableHasLots">
-                    <label for="lotSelect">{{'stockAddProductsModal.lotCode' | message}}</label>
+                    <label for="lotSelect">{{:: 'stockAddProductsModal.lotCode' | message}}</label>
                     <!-- OAM-5: Lot code filter UI improvements. -->
                     <select id="lotSelect" ng-model="vm.selectedLot"
                             ng-options="lot as (vm.isExpired(lot) ? '[EXP] ' : '')
@@ -36,17 +36,22 @@
                     <!-- OAM-5: ends here -->
                 </div>
                 <div ng-if="vm.hasPermissionToAddNewLot && vm.canAddNewLot">
-                    <label for="lotCode">{{'stockAddProductsModal.newLotCode' | message}}</label>
+                    <label for="lotCode">{{:: 'stockAddProductsModal.newLotCode' | message}}</label>
                     <input id="lotCode" type="text" ng-model="vm.newLot.lotCode"
                            ng-change="vm.newLotCodeChanged()"
                            openlmis-invalid="{{vm.newLot.lotCodeInvalid | message}}"
                            required>
-                    <label for="expirationDate">{{'stockAddProductsModal.newLotExpirationDate' | message}}</label>
+                    <label for="expirationDate">{{:: 'stockAddProductsModal.newLotExpirationDate' | message}}</label>
                     <input id="expirationDate" type="date" ng-model="vm.newLot.expirationDate"
                            ng-change="vm.expirationDateChanged()"
                            openlmis-invalid="{{vm.newLot.expirationDateInvalid | message}}"/>
                 </div>
                 <button type="submit" class="add">{{vm.key('add') | message}}</button>
+            </form>
+            <form class="form-inline" ng-submit="vm.addNewUnit()">
+                <button>
+                    {{ 'adjustmentCreation.addNewUnit' | message }}
+                </button>
             </form>
         </section>
         <table suppress-tr-openlmis-invalid>
@@ -62,6 +67,9 @@
                 <th ng-show="vm.srcDstAssignments">{{vm.key('srcDstComments') | message}}</th>
                 <th ng-if="vm.showReasonDropdown">{{vm.key('reason') | message}}</th>
                 <th ng-if="vm.showReasonDropdown">{{vm.key('reasonComments') | message}}</th>
+                <th>
+                    {{ vm.key('unit') | message }}
+                </th>
                 <th>{{vm.key('quantity') | message}}</th>
                 <!-- AO-804: Display product prices on Stock Issues, Adjustments and Receives Page-->
                 <th>{{'adjustmentCreation.price' | message}}</th>
@@ -104,6 +112,14 @@
                 <td ng-if="vm.showReasonDropdown">
                     <input type="text" ng-show="lineItem.reason.isFreeTextAllowed" ng-model="lineItem.reasonFreeText" rows="1" cols="15"></input>
                 </td>
+                <td>
+                    <!-- TODO: OAM-27 wait for BE -->
+                    <!-- <select ng-model=""
+                            ng-change=""
+                            ng-options="unit.name for unit in vm.units">
+                    </select> -->
+                    placeholder
+                </td>
                 <td openlmis-invalid="{{lineItem.$errors.quantityInvalid}}" class="digit-cell">
                     <input class="form-control" ng-model="lineItem.quantity"
                            ng-class="{'error': lineItem.$errors.quantityInvalid}"
@@ -117,7 +133,10 @@
                 <!-- AO-805: Allow users with proper rights to edit product prices-->
                 <td openlmis-invalid="{{lineItem.$errors.priceInvalid}}" class="digit-cell" ng-if="vm.canEditProductPrice(lineItem)">
                     <input class="form-control" ng-model="lineItem.price"
-                           ng-class="{'error': lineItem.$errors.priceInvalid}"
+                           ng-class="{'eopenlmis-modal',
+                           'openlmis-templates',
+                           'openlmis-state-tracker',
+                           'openlmis-modal-state',rror': lineItem.$errors.priceInvalid}"
                            ng-change="vm.validatePrice(lineItem)" ng-blur="vm.validatePrice(lineItem)"
                            not-negative-float
                     />
