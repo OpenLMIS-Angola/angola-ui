@@ -1,19 +1,11 @@
-@mixin flex-layout {
-    display: flex;
-    flex-direction: column;
-    gap: .5rem;
-}
-
 .alerts-panel-wrapper {
-    font-size: $font-size;
-    padding: 1.2rem;
-    background-color: $very-light-gray;
+    margin-top: 1rem;
+    font-size: 17px;
+    background-color: transparent;
 
     .alerts-panel {
         background-color: $white;
-        display: flex;
-        flex-direction: row;
-        gap: 2rem;
+        @include flex-layout(row, space-between);
         box-shadow: 0 0 .5rem rgba(black, .3);
 
         .header-section {
@@ -24,11 +16,11 @@
         }
 
         .alert-section {
-            @include flex-layout();
+            @include flex-layout(column, $gap: .5rem);
             padding: $font-size;
 
             .section-data {
-                @include flex-layout();
+                @include flex-layout(column, $gap: .5rem);
             }
         }
     }
