@@ -30,11 +30,13 @@
     openlmisTableSortingService.$inject = ['SORTING_SERVICE_CONSTANTS', '$state', '$stateParams', 'alertService'];
 
     function openlmisTableSortingService(SORTING_SERVICE_CONSTANTS, $state, $stateParams, alertService) {
-        var sortingProperites = {
+        var EMPTY_SORTING_PROPERTIES = {
             isSortedBy: undefined,
-            sortingOrder: undefined,
-            headerClass: undefined
+            sortingOrder: '',
+            headerClass: ''
         };
+
+        var sortingProperties = angular.copy(EMPTY_SORTING_PROPERTIES);
 
         return {
             sortTable: sortTable,
@@ -61,7 +63,7 @@
 
                 var propertyToOrder = propertyPathParts[0];
                 var stateParams = JSON.parse(JSON.stringify($stateParams));
-                setSortingProperties(selectedColumn.propertyPath);
+                setSortingProperties(propertyToOrder);
                 stateParams.sort = getSortingParamValue(propertyToOrder);
                 $state.go($state.current.name, stateParams);
             } else {
@@ -81,38 +83,34 @@
         }
 
         function getSortingParamValue(propertyToOrder) {
-            if (typeof sortingProperites.isSortedBy === 'undefined') {
+            if (sortingProperties.isSortedBy === undefined) {
                 return undefined;
             }
-            return propertyToOrder + ',' + sortingProperites.sortingOrder;
+            return propertyToOrder + ',' + sortingProperties.sortingOrder;
         }
 
         function setSortingProperties(propertyToOrder) {
-            if (sortingProperites.isSortedBy === undefined ||
-                sortingProperites.isSortedBy !== propertyToOrder
+            if (sortingProperties.isSortedBy === undefined ||
+                sortingProperties.isSortedBy !== propertyToOrder
             ) {
-                setSortingPropertiesValue(
-                    propertyToOrder,
-                    SORTING_SERVICE_CONSTANTS.ASC,
-                    SORTING_SERVICE_CONSTANTS.SORT_ASC_CLASS
-                );
-            } else if (sortingProperites.sortingOrder === SORTING_SERVICE_CONSTANTS.ASC) {
-                setSortingPropertiesValue(
-                    propertyToOrder,
-                    SORTING_SERVICE_CONSTANTS.DESC,
-                    SORTING_SERVICE_CONSTANTS.SORT_DESC_CLASS
-                );
+                setSortingPropertiesValue({
+                    isSortedBy: propertyToOrder,
+                    sortingOrder: SORTING_SERVICE_CONSTANTS.ASC,
+                    headerClass: SORTING_SERVICE_CONSTANTS.SORT_ASC_CLASS
+                });
+            } else if (sortingProperties.sortingOrder === SORTING_SERVICE_CONSTANTS.ASC) {
+                setSortingPropertiesValue({
+                    isSortedBy: propertyToOrder,
+                    sortingOrder: SORTING_SERVICE_CONSTANTS.DESC,
+                    headerClass: SORTING_SERVICE_CONSTANTS.SORT_DESC_CLASS
+                });
             } else {
-                setSortingPropertiesValue(undefined, '', '');
+                setSortingPropertiesValue(angular.copy(EMPTY_SORTING_PROPERTIES));
             }
         }
 
-        function setSortingPropertiesValue(isSortedBy, sortingOrder, headerClass) {
-            sortingProperites = {
-                isSortedBy: isSortedBy,
-                sortingOrder: sortingOrder,
-                headerClass: headerClass
-            };
+        function setSortingPropertiesValue(sortingPropertiesValue) {
+            sortingProperties = angular.copy(sortingPropertiesValue);
         }
 
         /**
@@ -134,34 +132,45 @@
         }
 
         function setInitialSortingProperties() {
-            var sortParam = $stateParams.sort;
+            var sortParam = Array.isArray($stateParams.sort) ?
+                $stateParams.sort[0] :
+                $stateParams.sort;
 
             if (sortParam) {
-                if (typeof sortParam === 'object' && sortParam.length !== undefined) {
-                    sortParam = sortParam[0];
-                }
-                var sortParamParts = sortParam.split(',');
-                var isSortedBy = sortParamParts[0];
-                // Removing whitespaces from sorting param
-                var sortingOrder = sortParamParts[1].split(' ').join('');
-                var headerClass = sortingOrder === SORTING_SERVICE_CONSTANTS.ASC ?
-                    SORTING_SERVICE_CONSTANTS.SORT_ASC_CLASS : SORTING_SERVICE_CONSTANTS.SORT_DESC_CLASS;
-
-                setSortingPropertiesValue(isSortedBy, sortingOrder, headerClass);
+                sortingProperties = getSortingPropertiesFromParam(sortParam);
             } else {
-                setSortingPropertiesValue(undefined, '', '');
+                setSortingPropertiesValue(EMPTY_SORTING_PROPERTIES);
             }
+        }
+
+        function getSortingPropertiesFromParam(sortParam) {
+            if (sortParam === undefined) {
+                setSortingPropertiesValue(EMPTY_SORTING_PROPERTIES);
+            }
+
+            var sortParamParts = sortParam.split(',');
+            var isSortedBy = sortParamParts[0];
+            // Removing whitespaces from sorting param
+            var sortingOrder = sortParamParts[1].split(' ').join('');
+            var headerClass = sortingOrder === SORTING_SERVICE_CONSTANTS.ASC ?
+                SORTING_SERVICE_CONSTANTS.SORT_ASC_CLASS : SORTING_SERVICE_CONSTANTS.SORT_DESC_CLASS;
+
+            return {
+                isSortedBy: isSortedBy,
+                sortingOrder: sortingOrder,
+                headerClass: headerClass
+            };
         }
 
         function getColumnClass(column) {
             var baseClass = column.headerClasses ? column.headerClasses : '';
 
             return isSortedByColumn(column.propertyPath) ?
-                baseClass + ' ' + sortingProperites.headerClass : baseClass;
+                baseClass + ' ' + sortingProperties.headerClass : baseClass;
         }
 
         function isSortedByColumn(propertyPath) {
-            return propertyPath === sortingProperites.isSortedBy;
+            return propertyPath === sortingProperties.isSortedBy;
         }
 
         /**

@@ -36,9 +36,6 @@
                 FULFILLMENT_RIGHTS.SHIPMENTS_VIEW,
                 FULFILLMENT_RIGHTS.SHIPMENTS_EDIT
             ],
-            params: {
-                sort: 'createdDate,desc'
-            },
             areAllRightsRequired: false,
             resolve: {
                 supervisedFacilities: function(facilityFactory) {

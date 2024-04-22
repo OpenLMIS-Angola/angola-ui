@@ -106,8 +106,7 @@ describe('openlmis.orders.fulfillment state', function() {
             programId: undefined,
             status: [ORDER_STATUS.FULFILLING, ORDER_STATUS.ORDERED],
             page: '0',
-            size: '10',
-            sort: 'createdDate,desc'
+            size: '10'
         });
     });
 
@@ -121,8 +120,7 @@ describe('openlmis.orders.fulfillment state', function() {
             programId: undefined,
             status: [ORDER_STATUS.ORDERED],
             page: '0',
-            size: '10',
-            sort: 'createdDate,desc'
+            size: '10'
         });
     });
 

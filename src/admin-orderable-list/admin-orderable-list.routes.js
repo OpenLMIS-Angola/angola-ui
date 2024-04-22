@@ -27,9 +27,6 @@
             showInNavigation: true,
             label: 'adminOrderableList.products',
             url: '/orderables?code&name&description&program&page&size&sort',
-            params: {
-                sort: 'fullProductName,asc'
-            },
             controller: 'OrderableListController',
             templateUrl: 'admin-orderable-list/orderable-list.html',
             controllerAs: 'vm',
