@@ -19,23 +19,22 @@ import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import Tippy from '@tippyjs/react';
 
-import TrashButton from '../react-components/buttons/trash-button';
 import EditableTable from '../react-components/table/editable-table';
-import InputCell from '../react-components/table/input-cell';
 
 import { formatDate } from '../react-components/utils/format-utils';
 import getService from '../react-components/utils/angular-utils';
 import { SearchSelect } from './search-select';
 import { saveDraft, createOrder } from './reducers/orders.reducer';
+import { getTableColumns, pushNewOrder } from './order-create-helper-functions';
 
 const OrderCreateTable = () => {
 
     const history = useHistory();
-    const { orderId } = useParams();
+    const { orderIds } = useParams();
 
     const dispatch = useDispatch();
 
-    const [order, setOrder] = useState({ orderLineItems: [] });
+    const [orders, setOrders] = useState({ orderLineItems: [] });
     const [orderParams, setOrderParams] = useState({ programId: null , requestingFacilityId: null });
 
     const [orderableOptions, setOrderableOptions] = useState([]);
@@ -74,49 +73,16 @@ const OrderCreateTable = () => {
 
     useEffect(
         () => {
-            orderService.get(orderId)
-                .then((fetchedOrder) => {
-                    const orderParams = {
-                        programId: fetchedOrder.program.id,
-                        facilityId: fetchedOrder.requestingFacility.id
-                    };
-
-                    setOrderParams(orderParams);
-
-                    const orderableIds = fetchedOrder.orderLineItems.map((lineItem) => {
-                        return lineItem.orderable.id;
+            if (orderIds) {
+                const orderIdsArray = orderIds.split(',');
+                const ordersPromises = orderIdsArray.map(orderId => orderService.getOrder(orderId));
+                Promise.all(ordersPromises)
+                    .then((orders) => {
+                        orders.forEach((fetchedOrder) => {
+                            pushNewOrder(fetchedOrder, setOrderParams, stockCardSummaryRepositoryImpl, setOrders);
+                        });
                     });
-
-                    if (orderableIds && orderableIds.length) {
-                        stockCardSummaryRepositoryImpl.query({
-                            programId: fetchedOrder.program.id,
-                            facilityId: fetchedOrder.requestingFacility.id,
-                            orderableId: orderableIds
-                        })
-                            .then(function(page) {
-                                const stockItems = page.content;
-
-                                const orderWithSoh = {
-                                    ...fetchedOrder,
-                                    orderLineItems: fetchedOrder.orderLineItems.map((lineItem) => {
-                                        const stockItem =_.find(stockItems, (item) => (item.orderable.id === lineItem.orderable.id));
-
-                                        return {
-                                            ...lineItem,
-                                            soh: stockItem ? stockItem.stockOnHand : 0
-                                        };
-                                    })
-                                };
-
-                                setOrder(orderWithSoh);
-                            })
-                            .catch(function() {
-                                setOrder(fetchedOrder);
-                            });
-                    } else {
-                        setOrder(fetchedOrder);
-                    }
-                });
+            }
         },
         [orderService]
     );
@@ -142,39 +108,7 @@ const OrderCreateTable = () => {
     );
 
     const columns = useMemo(
-        () => [
-            {
-                Header: 'Product Code',
-                accessor: 'orderable.productCode'
-            },
-            {
-                Header: 'Product',
-                accessor: 'orderable.fullProductName'
-            },
-            {
-                Header: 'SOH',
-                accessor: 'soh',
-                Cell: ({ value }) => (<div className="text-right">{value}</div>)
-            },
-            {
-                Header: 'Quantity',
-                accessor: 'orderedQuantity',
-                Cell: (props) => (
-                    <InputCell
-                        {...props}
-                        numeric
-                        key={`row-${_.get(props, ['row', 'original', 'orderable', 'id'])}`}
-                    />
-                )
-            },
-            {
-                Header: 'Actions',
-                accessor: 'id',
-                Cell: ({ row: { index }, deleteRow }) => (
-                    <TrashButton onClick={() => deleteRow(index)} />
-                )
-            }
-        ],
+        getTableColumns,
         []
     );
 

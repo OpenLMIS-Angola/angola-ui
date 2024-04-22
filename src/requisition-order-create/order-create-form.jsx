@@ -18,6 +18,8 @@ import { useHistory } from 'react-router-dom';
 import getService from '../react-components/utils/angular-utils';
 import { SearchSelect } from './search-select';
 import EditableTable from '../react-components/table/editable-table';
+import TrashButton from '../react-components/buttons/trash-button';
+
 
 const OrderCreateForm = () => {
 
@@ -27,8 +29,9 @@ const OrderCreateForm = () => {
     const [requestingFacilityOptions, setRequestingFacilityOptions] = useState([]);
     const [supplyingFacilityOptions, setSupplyingFacilityOptions] = useState([]);
     const [selectedProgram, selectProgram] = useState('');
-    const [selectedRequestingFacilities, selectRequestingFacility] = useState('');
+    const [selectedRequestingFacilities, selectRequestingFacility] = useState([]);
     const [selectedSupplyingFacility, selectSupplyingFacility] = useState('');
+    const [filteredRequestingFacilities, setFilteredFacilities] = useState([]);
 
     const ADMINISTRATION_RIGHTS = useMemo(
         () => {
@@ -171,27 +174,55 @@ const OrderCreateForm = () => {
     );
 
     const createOrder = () => {
-        const order = {
+        const orders = selectedRequestingFacilities.map((facilityId) => ({
             emergency: true,
             createdBy: { id: userId },
             program: { id: selectedProgram },
-            requestingFacility: { id: selectedRequestingFacilities[0] },
-            receivingFacility: { id: selectedRequestingFacilities[0] },
+            requestingFacility: { id: facilityId },
+            receivingFacility: { id: facilityId },
             supplyingFacility: { id: selectedSupplyingFacility },
-            facility: { id: selectedRequestingFacilities[0] }
-        };
+            facility: { id: facilityId }
+        }));
 
-        orderService.create(order)
-            .then((createdOrder) => {
-                history.push(`/requisitions/orderCreate/${createdOrder.id}`);
-            });
+        const orderCreationPromises = orders.map(order => orderService.create(order));
+        Promise.all(orderCreationPromises).then((createdOrders) => {
+            const ordersIds = createdOrders.map(order => order.id).join(',');
+            history.push(`/requisitions/orderCreate/${ordersIds}`);
+        });
     };
+
+    const updateFilteredFacilities = () => {
+        const facilities = requestingFacilityOptions
+            .filter(facility => selectedRequestingFacilities.includes(facility.value));
+
+        setFilteredFacilities(facilities);
+    }
+
+    const updateTableData = (updatedData) => {
+        setFilteredFacilities(updatedData);
+        const updatedDataIds = updatedData.map(facility => facility.value)
+
+        selectRequestingFacility(prevState => {
+            return prevState.filter(id => updatedDataIds.includes(id));
+        });
+    }
+
+    useEffect(() => {
+        updateFilteredFacilities();
+    }, [selectedRequestingFacilities]);
 
     const columns = useMemo(() => {
         return [
             {
-                Header: '',
-                accessor: ''
+                Header: 'Facility',
+                accessor: 'name'
+            },
+            {
+                Header: 'Actions',
+                accessor: 'value',
+                Cell: ({ row: { index }, deleteRow }) => (
+                    <TrashButton onClick={() => deleteRow(index)} />
+                )
             }
         ];
     })
@@ -216,12 +247,15 @@ const OrderCreateForm = () => {
                     <SearchSelect
                         options={requestingFacilityOptions}
                         value={selectedRequestingFacilities.at(-1)}
-                        onChange={value => selectRequestingFacility([...selectedRequestingFacilities, value])}
+                        onChange={value => selectRequestingFacility(prevState => [...prevState, value])}
                         placeholder="Select requesting facility"
                     />
                     <EditableTable
-                        columns
-                        data={selectedRequestingFacilities || []}
+                        additionalTableClass='facilities-table'
+                        updateData={updateTableData}
+                        columns={columns}
+                        data={filteredRequestingFacilities || []}
+                        displayPagination={false}
                     />
                 </div>
                 <div className={'section'}>
