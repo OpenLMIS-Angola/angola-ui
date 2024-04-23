@@ -55,13 +55,15 @@
             return orderStatusesResource.get().$promise;
         }
 
-        function getMappedStatussesStats(statusesStats) {
+        function getMappedStatussesStats(statusesStats, importantData) {
             var mappedStatussesStats = [];
 
             for (var key in statusesStats) {
+                var keySnakeCase = snakeCaseToNatural(key);
                 mappedStatussesStats.push({
-                    key: snakeCaseToNatural(key),
-                    value: statusesStats[key]
+                    key: keySnakeCase,
+                    value: statusesStats[key],
+                    isImportant: importantData.indexOf(keySnakeCase) !== -1
                 });
             }
 

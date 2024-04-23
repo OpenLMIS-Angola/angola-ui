@@ -24,9 +24,7 @@ body {
         flex-direction: column;
 
         > * {
-            // OAM-18: Homepage UI alerts
-            // Removed flex: 1 0 auto; from here
-            // OAM-18: ends here
+            flex: 1 0 auto;
         }
     }
 

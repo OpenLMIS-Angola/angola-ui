@@ -27,6 +27,8 @@
         $ctrl.requisitionsStatusesStats = undefined;
         $ctrl.ordersStatusesStats = undefined;
         $ctrl.requisitionsToBeCreated = undefined;
+        var requisitionsImportantData = ['Submitted', 'Authorized', 'In Approval'];
+        var ordersImportantData = ['Ordered', 'Fulfilling', 'Shipped', 'In Route'];
 
         $ctrl.$onInit = onInit;
 
@@ -34,7 +36,8 @@
             openlmisHomeAlertsPanelService.getRequisitionsStatusesData()
                 .then(function(requisitionsData) {
                     $ctrl.requisitionsStatusesStats =
-                        openlmisHomeAlertsPanelService.getMappedStatussesStats(requisitionsData.statusesStats);
+                        openlmisHomeAlertsPanelService.
+                            getMappedStatussesStats(requisitionsData.statusesStats, requisitionsImportantData);
 
                     $ctrl.requisitionsToBeCreated = requisitionsData.requisitionsToBeCreated;
                 });
@@ -42,7 +45,8 @@
             openlmisHomeAlertsPanelService.getOrdersStatusesData()
                 .then(function(ordersData) {
                     $ctrl.ordersStatusesStats =
-                        openlmisHomeAlertsPanelService.getMappedStatussesStats(ordersData.statusesStats);
+                        openlmisHomeAlertsPanelService.
+                            getMappedStatussesStats(ordersData.statusesStats, ordersImportantData);
                 });
         }
     }
