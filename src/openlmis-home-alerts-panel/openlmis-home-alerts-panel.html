@@ -1,15 +1,15 @@
 <div class="alerts-panel-wrapper">
+    <section class="header-section">
+        <h2>
+            {{:: 'alerts.panel.title' | message}}
+        </h2>
+    </section>
     <div class="alerts-panel">
-        <section class="header-section">
-            <h2>
-                {{:: 'alerts.panel.title' | message}}
-            </h2>
-        </section>
         <section class="card">
             <strong class="card-header">
                 {{:: 'label.updatesOfRequisitions' | message }}
             </strong>
-            <div class="section-data">
+            <div class="card-data">
                 <span ng-if="$ctrl.requisitionsStatusesStats"
                     ng-repeat="stat in $ctrl.requisitionsStatusesStats"
                     ng-class="{'important-information': stat.isImportant}">
@@ -21,7 +21,7 @@
             <strong class="card-header">
                 {{:: 'label.updatesOfOrdersAndPod' | message }}
             </strong>
-            <div class="section-data">
+            <div class="card-data">
                 <span ng-if="$ctrl.ordersStatusesStats"
                     ng-repeat="stat in $ctrl.ordersStatusesStats"
                     ng-class="{'important-information': stat.isImportant}">
@@ -29,33 +29,33 @@
                 </span>
             </div>
         </section>
-        <section class="card">
+        <section class="card row-2">
             <strong class="card-header">
                 {{:: 'label.requisitionsToBeCreated' | message }}
             </strong>
-            <div class="section-data">
-                <span class="important-information">
+            <div class="card-data-single">
+                <span>
                     {{ $ctrl.requisitionsToBeCreated }}
                 </span>
             </div>
         </section>
-        <section class="card">
+        <section class="card row-2">
             <strong class="card-header">
                 {{:: 'label.messagesIssuedBySystem' | message }}
             </strong>
-            <div class="section-data">
+            <div class="card-data-single">
                 <span>
-                    -
+                    0
                 </span>
             </div>
         </section>
-        <section class="card">
+        <section class="card row-2">
             <strong class="card-header">
                 {{:: 'label.lateCreationOfInventories' | message }}
             </strong>
-            <div class="section-data">
+            <div class="card-data-single">
                 <span>
-                    -
+                    0
                 </span>
             </div>
         </section>
