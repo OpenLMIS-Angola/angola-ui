@@ -2,17 +2,16 @@
     margin-top: 1rem;
     font-size: 17px;
     background-color: transparent;
+    border: 1px solid rgba(black, .1);
 
     .alerts-panel {
-        background-color: $white;
         @include flex-layout(row, space-between);
-        box-shadow: 0 0 .5rem rgba(black, .3);
 
         .header-section {
-            background-color: $very-light-gray;
             padding: $font-size;
             display: grid;
             place-items: center;
+            border-right: 1px solid rgba(black, .1);
         }
 
         .alert-section {
@@ -21,6 +20,11 @@
 
             .section-data {
                 @include flex-layout(column, $gap: .5rem);
+
+                .important-information {
+                    font-weight: bold;
+                    font-size: 19px;
+                }
             }
         }
     }

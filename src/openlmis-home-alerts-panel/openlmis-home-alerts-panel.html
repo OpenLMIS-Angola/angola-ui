@@ -11,7 +11,8 @@
             </strong>
             <div class="section-data">
                 <span ng-if="$ctrl.requisitionsStatusesStats"
-                    ng-repeat="stat in $ctrl.requisitionsStatusesStats">
+                    ng-repeat="stat in $ctrl.requisitionsStatusesStats"
+                    ng-class="{'important-information': stat.isImportant}">
                     {{stat.key}}: {{stat.value}}
                 </span>
             </div>
@@ -22,7 +23,8 @@
             </strong>
             <div class="section-data">
                 <span ng-if="$ctrl.ordersStatusesStats"
-                    ng-repeat="stat in $ctrl.ordersStatusesStats">
+                    ng-repeat="stat in $ctrl.ordersStatusesStats"
+                    ng-class="{'important-information': stat.isImportant}">
                     {{stat.key}}: {{stat.value}}
                 </span>
             </div>
@@ -32,7 +34,7 @@
                 {{:: 'label.requisitionsToBeCreated' | message }}
             </strong>
             <div class="section-data">
-                <span>
+                <span class="important-information">
                     {{ $ctrl.requisitionsToBeCreated }}
                 </span>
             </div>
