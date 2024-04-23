@@ -2,21 +2,28 @@
     margin-top: 1rem;
     font-size: 17px;
     background-color: transparent;
-    border: 1px solid rgba(black, .1);
 
     .alerts-panel {
-        @include flex-layout(row, space-between);
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: .5rem 1rem;
+        padding: 0 1rem;
 
         .header-section {
-            padding: $font-size;
-            display: grid;
-            place-items: center;
-            border-right: 1px solid rgba(black, .1);
+            grid-column: 1/-1;
+            font-size: $font-size-large;
+            translate: -1rem 0;
         }
 
-        .alert-section {
+        .card {
             @include flex-layout(column, $gap: .5rem);
-            padding: $font-size;
+            padding: 2rem 1rem;
+            box-shadow: 0 0 .5rem rgba(black, .3);
+            border-radius: 1rem;
+
+            .card-header {
+                align-self: center;
+            }
 
             .section-data {
                 @include flex-layout(column, $gap: .5rem);
