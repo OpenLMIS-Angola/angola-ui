@@ -1,0 +1,83 @@
+<form id="add-ward-form" ng-submit="vm.addWard()" reload-form>
+  <div class="form-group">
+    <label for="wardCode">{{'adminFacilityView.code' | message}}</label>
+    <input
+      id="wardCode"
+      type="text"
+      ng-model="vm.newWard.code"
+      ng-disabled="vm.managedExternally"
+      required
+    />
+  </div>
+  <div class="form-group">
+    <label for="wardName">{{'adminFacilityView.name' | message}}</label>
+    <input
+      id="wardName"
+      type="text"
+      ng-model="vm.newWard.name"
+      ng-disabled="vm.managedExternally"
+      required
+    />
+  </div>
+  <div class="form-group">
+    <label for="wardDescription"
+      >{{'adminFacilityView.description' | message}}</label
+    >
+    <textarea
+      id="wardDescription"
+      ng-model="vm.newWard.description"
+      ng-disabled="vm.managedExternally"
+    ></textarea>
+  </div>
+  <div class="form-group">
+    <p class="note-warning">
+      {{'adminFacilityView.wardIsDisabled.note' | message}}
+    </p>
+    <label for="wardIsDisabled" class="checkbox">
+      <input
+        id="wardIsDisabled"
+        type="checkbox"
+        ng-model="vm.newWard.disabled"
+        ng-disabled="vm.managedExternally"
+      />
+      {{'adminFacilityView.disabled' | message}}
+    </label>
+  </div>
+  <button type="submit" class="add">
+    {{'adminFacilityView.add' | message}}
+  </button>
+</form>
+<form
+  id="facility-wards-form"
+  class="openlmis-table-container"
+  ng-submit="vm.saveFacilityWards()"
+>
+  <table>
+    <caption ng-if="!vm.wards || vm.wards.length === 0">
+      {{'adminFacilityView.noAssociatedWards' | message: {facility:
+      vm.facility.name} }}
+    </caption>
+    <thead>
+      <tr>
+        <th
+          openlmis-popover="{{'adminFacilityView.uniqueCodePopover' | message}}"
+        >
+          {{'adminFacilityView.code' | message}}
+        </th>
+        <th>{{'adminFacilityView.name' | message}}</th>
+        <th>{{'adminFacilityView.description' | message}}</th>
+        <th openlmis-popover="{{'adminFacilityView.statusPopover' | message}}">
+          {{'adminFacilityView.disabled' | message}}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="ward in vm.wards">
+        <td><input type="text" disabled ng-model="ward.code" /></td>
+        <td><input type="text" ng-model="ward.name" required /></td>
+        <td><input type="text" ng-model="ward.description" /></td>
+        <td><input type="checkbox" ng-model="ward.disabled" /></td>
+      </tr>
+    </tbody>
+  </table>
+</form>
