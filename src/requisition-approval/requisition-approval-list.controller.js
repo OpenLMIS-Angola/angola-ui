@@ -314,6 +314,7 @@
                     {
                         header: 'requisitionApproval.offline',
                         propertyPath: '$availableOffline',
+                        sortable: false,
                         template: function(item) {
                             return item.$availableOffline ? '<i class="icon-ok"></i>' : '';
                         }
