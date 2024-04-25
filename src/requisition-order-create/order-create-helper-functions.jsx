@@ -80,3 +80,27 @@ export const getTableColumns = () => {
         }
     ]
 };
+
+export const getUpdatedOrder = (selectedOrderable, order) => {
+    const newLineItem = {
+        orderedQuantity: '',
+        soh: selectedOrderable.soh,
+        orderable: {
+            id: selectedOrderable.id,
+            productCode: selectedOrderable.productCode,
+            fullProductName: selectedOrderable.fullProductName,
+            meta: {
+                versionNumber: selectedOrderable.meta.versionNumber
+            }
+        }
+    };
+
+    const orderNewLineItems = [...order.orderLineItems, newLineItem];
+
+    const updatedOrder = {
+        ...order,
+        orderLineItems: orderNewLineItems
+    };
+
+    return updatedOrder;
+};

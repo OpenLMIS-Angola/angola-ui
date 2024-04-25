@@ -2,6 +2,15 @@
   $accent-color: #49baeb;
   $light-grey: #bebebe;
 
+  .tabs-container {
+    width: calc(100% - 2em);
+    margin-left: 1em;
+
+    .tabs-link {
+      text-decoration: none;
+    }
+  }
+
   .order-create-form {
     .section {
       margin: 0.5em 0;
