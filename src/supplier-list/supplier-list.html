@@ -1,0 +1,19 @@
+<h2>{{'supplierList.pageHeader' | message}}</h2>
+<section class="openlmis-table-container">
+  <button id="add-supplier" class="add" ng-click="vm.redirectToAddSupplier()">
+    {{'supplierList.addSupplier' | message}}
+  </button>
+  <form ng-submit="vm.onSearch()">
+    <fieldset class="form-group">
+      <label for="supplierName">{{'supplierList.filter.name' | message}}</label>
+      <input type="text" id="supplierName" ng-model="vm.supplierName" />
+    </fieldset>
+  </form>
+  <openlmis-table table-config="vm.tableConfig"></openlmis-table>
+  <openlmis-pagination />
+</section>
+<div class="openlmis-toolbar" ng-if="vm.validSources.length">
+  <button class="danger" ng-click="vm.deleteSelectedValidSources()">
+    {{'supplierList.deleteSelected' | message}}
+  </button>
+</div>
