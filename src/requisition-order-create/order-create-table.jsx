@@ -14,10 +14,14 @@
  */
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { useParams, useHistory } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import getService from '../react-components/utils/angular-utils';
-import { pushNewOrder } from './order-create-helper-functions';
+import { createOrderDisabled, pushNewOrder, saveDraftDisabled } from './order-create-helper-functions';
 import OrderCreateTab from './order-create-tab';
+import { saveDraft, createOrder } from './reducers/orders.reducer';
+import { isOrderInvalid } from './order-create-validation-helper-functions';
 
 const OrderCreateTable = () => {
     const { orderIds } = useParams();
@@ -25,10 +29,28 @@ const OrderCreateTable = () => {
     const [orderParams, setOrderParams] = useState({ programId: null, requestingFacilityId: null });
     const [orderableOptions, setOrderableOptions] = useState([]);
     const [currentTab, setCurrentTab] = useState(0);
+    const [showValidationErrors, setShowValidationErrors] = useState(false);
+
+    const dispatch = useDispatch();
+    const history = useHistory();
 
     const orderService = useMemo(
         () => {
             return getService('orderCreateService');
+        },
+        []
+    );
+
+    const notificationService = useMemo(
+        () => {
+            return getService('notificationService');
+        },
+        []
+    );
+
+    const offlineService = useMemo(
+        () => {
+            return getService('offlineService');
         },
         []
     );
@@ -40,8 +62,6 @@ const OrderCreateTable = () => {
         },
         []
     );
-
-
 
     useEffect(
         () => {
@@ -79,6 +99,53 @@ const OrderCreateTable = () => {
         [orderParams]
     );
 
+    const onProductAdded = (updatedOrder) => {
+        setOrders(prevOrders => {
+            const updatedOrders = prevOrders.map(order => {
+                if (order.id === updatedOrder.id) {
+                    return updatedOrder;
+                }
+                return order;
+            });
+            return updatedOrders;
+        });
+    }
+
+    const sendOrders = () => {
+        if(isOrderInvalid(orders, setShowValidationErrors, toast)) {
+            return;
+        }
+
+        if (offlineService.isOffline()) {
+            dispatch(createOrder(orders[currentTab]));
+            notificationService.success("Offline order created successfully. It will be sent when you are online.");
+            history.push('/');
+        } else {
+            const orderCreatePromisses = orders.map(order => orderService.send(order));
+            Promise.all(orderCreatePromisses).then(() => {
+                notificationService.success('requisition.orderCreate.submitted');
+                history.push('/orders/fulfillment');
+            });
+        }
+    };
+
+    const updateOrders = () => {
+        if(isOrderInvalid(orders, setShowValidationErrors, toast)) {
+            return;
+        }
+
+        if (offlineService.isOffline()) {
+            dispatch(saveDraft(orders[currentTab]));
+            toast.success("Draft order saved offline");
+        } else {
+            setShowValidationErrors(false);
+            const updateOrdersPromises = orders.map(order => orderService.update(order));
+            Promise.all(updateOrdersPromises).then(() => {
+                toast.success("Orders saved successfully");
+            });
+        }
+    };
+
     return (
         <div className="page-container">
             <div className="page-header-responsive">
@@ -103,11 +170,33 @@ const OrderCreateTable = () => {
             </ul>
             <div className="currentTab">
                 {orders.length > 0 ? (
-                    <OrderCreateTab passedOrder={orders[currentTab]} orderableOptions={orderableOptions} />
+                    <OrderCreateTab
+                        key={currentTab}
+                        passedOrder={orders[currentTab]}
+                        orderableOptions={orderableOptions}
+                        showValidationErrors={showValidationErrors}
+                        updateOrderArray={
+                            (updatedOrder) => {
+                                onProductAdded(updatedOrder);
+                            }
+                        }/>
                 ) : (
                     <p>Loading...</p>
                 )}
-                {/* <OrderCreateTab passedOrder={orders[currentTab]} orderableOptions={orderableOptions} /> */}
+            </div>
+            <div className="page-footer">
+                <button
+                    type="button"
+                    className="btn"
+                    disabled={saveDraftDisabled(orders)}
+                    onClick={() => updateOrders()}
+                >Save Draft</button>
+                <button
+                    type="button"
+                    className="btn primary"
+                    disabled={createOrderDisabled(orders)}
+                    onClick={() => sendOrders()}
+                >Create Order</button>
             </div>
         </div>
     );

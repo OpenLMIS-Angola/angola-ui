@@ -111,7 +111,7 @@ const OrderCreateForm = () => {
         if (selectedProgram && selectedRequestingFacilities) {
             supervisoryNodeResource.query({
                 programId: selectedProgram,
-                facilityId: selectedRequestingFacilities[0]
+                facilityId: selectedRequestingFacilities
             })
                 .then((page) => {
                     const nodes = page.content;
@@ -173,7 +173,7 @@ const OrderCreateForm = () => {
         [supplyingFacilityOptions]
     );
 
-    const createOrder = () => {
+    const createOrders = () => {
         const orders = selectedRequestingFacilities.map((facilityId) => ({
             emergency: true,
             createdBy: { id: userId },
@@ -274,7 +274,7 @@ const OrderCreateForm = () => {
                         type="button"
                         style={{ marginTop: '0.5em' }}
                         disabled={!selectedProgram || !selectedRequestingFacilities || !selectedSupplyingFacility}
-                        onClick={createOrder}
+                        onClick={createOrders}
                     >
                         Create Order
                     </button>
