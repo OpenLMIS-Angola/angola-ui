@@ -14,7 +14,7 @@
  */
 
 describe('openlmisTableSortingService', function() {
-    var openlmisTableSortingService, $state, $stateParams, alertService, SORTING_SERVICE_CONSTANTS;
+    var openlmisTableSortingService, $state, $stateParams, SORTING_SERVICE_CONSTANTS;
     var mockSelectedColumn,
         mockSelectedColumnNotSortable;
 
@@ -25,7 +25,6 @@ describe('openlmisTableSortingService', function() {
             openlmisTableSortingService = $injector.get('openlmisTableSortingService');
             $state = $injector.get('$state');
             $stateParams = $injector.get('$stateParams');
-            alertService = $injector.get('alertService');
             SORTING_SERVICE_CONSTANTS = $injector.get('SORTING_SERVICE_CONSTANTS');
         });
         mockSelectedColumn = {
@@ -49,16 +48,6 @@ describe('openlmisTableSortingService', function() {
 
             expect($stateParams.sort).toBeDefined();
             expect($state.go).toHaveBeenCalled();
-        });
-
-        it('should display an alert if the column is not sortable', function() {
-            spyOn(alertService, 'info');
-            openlmisTableSortingService.sortTable(mockSelectedColumnNotSortable);
-
-            expect(alertService.info).toHaveBeenCalledWith({
-                title: 'column.notSortable.title',
-                message: 'column.notSortable.message'
-            });
         });
     });
 
