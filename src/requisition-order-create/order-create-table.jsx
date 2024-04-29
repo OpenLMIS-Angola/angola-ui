@@ -18,7 +18,7 @@ import { useDispatch } from 'react-redux';
 import { useParams, useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import getService from '../react-components/utils/angular-utils';
-import { createOrderDisabled, pushNewOrder, saveDraftDisabled } from './order-create-helper-functions';
+import { createOrderDisabled, pushNewOrder, saveDraftDisabled } from './order-create-table-helper-functions';
 import OrderCreateTab from './order-create-tab';
 import { saveDraft, createOrder } from './reducers/orders.reducer';
 import { isOrderInvalid } from './order-create-validation-helper-functions';
@@ -34,26 +34,9 @@ const OrderCreateTable = () => {
     const dispatch = useDispatch();
     const history = useHistory();
 
-    const orderService = useMemo(
-        () => {
-            return getService('orderCreateService');
-        },
-        []
-    );
-
-    const notificationService = useMemo(
-        () => {
-            return getService('notificationService');
-        },
-        []
-    );
-
-    const offlineService = useMemo(
-        () => {
-            return getService('offlineService');
-        },
-        []
-    );
+    const orderService = useMemo(() => getService('orderCreateService'), []);
+    const notificationService = useMemo(() => getService('notificationService'), []);
+    const offlineService = useMemo(() => getService('offlineService'), []);
 
     const stockCardSummaryRepositoryImpl = useMemo(
         () => {
@@ -155,7 +138,7 @@ const OrderCreateTable = () => {
                 {
                     orders.map((order, index) => {
                         return (
-                            <li key={index} className={currentTab === index ? 'active' : ''}>
+                            <li key={order.id} className={currentTab === index ? 'active' : ''}>
                                 <a
                                     role='tab'
                                     data-toggle="tab"

@@ -10,7 +10,7 @@ export const pushNewOrder = (fetchedOrder, setOrderParams, stockCardSummaryRepos
         return lineItem.orderable.id;
     });
 
-    if (orderableIds && orderableIds.length) {
+    if (orderableIds?.length) {
         stockCardSummaryRepositoryImpl.query({
             programId: fetchedOrder.program.id,
             facilityId: fetchedOrder.requestingFacility.id,
@@ -68,7 +68,7 @@ export const getUpdatedOrder = (selectedOrderable, order) => {
 
 export const createOrderDisabled = (orders) => {
     const mappedOrders = orders
-        .map((order) => Boolean(order.orderLineItems && order.orderLineItems.length && order.id !== undefined));
+        .map((order) => Boolean(order?.orderLineItems.length && order.id !== undefined));
     return mappedOrders.length === 0 || mappedOrders.includes(false)
 }
 

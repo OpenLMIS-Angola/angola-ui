@@ -35,3 +35,17 @@ export const orderTableColumns = [
         )
     }
 ];
+
+export const orderCreateFormTableColumns = [
+    {
+        Header: 'Facility',
+        accessor: 'name'
+    },
+    {
+        Header: 'Actions',
+        accessor: 'value',
+        Cell: ({ row: { index }, deleteRow }) => (
+            <TrashButton onClick={() => deleteRow(index)} />
+        )
+    }
+];

@@ -18,7 +18,8 @@ import { useHistory } from 'react-router-dom';
 import getService from '../react-components/utils/angular-utils';
 import { SearchSelect } from './search-select';
 import EditableTable from '../react-components/table/editable-table';
-import TrashButton from '../react-components/buttons/trash-button';
+import { getMappedRequestingFacilities, goToOrderEdit, updateSupplyingFacilitiesValue } from './order-create-form-helper-functions';
+import { orderCreateFormTableColumns } from './order-create.constant';
 
 
 const OrderCreateForm = () => {
@@ -28,62 +29,63 @@ const OrderCreateForm = () => {
     const [programOptions, setProgramOptions] = useState([]);
     const [requestingFacilityOptions, setRequestingFacilityOptions] = useState([]);
     const [supplyingFacilityOptions, setSupplyingFacilityOptions] = useState([]);
-    const [selectedProgram, selectProgram] = useState('');
-    const [selectedRequestingFacilities, selectRequestingFacility] = useState([]);
-    const [selectedSupplyingFacility, selectSupplyingFacility] = useState('');
-    const [filteredRequestingFacilities, setFilteredFacilities] = useState([]);
+    const [selectedProgram, setSelectedProgram] = useState('');
+    const [selectedRequestingFacilities, setSelectedRequestingFacilities] = useState([]);
+    const [selectedSupplyingFacility, setSelectedSupplyingFacility] = useState('');
+    const [filteredRequestingFacilities, setFilteredRequestingFacilities] = useState([]);
 
-    const ADMINISTRATION_RIGHTS = useMemo(
-        () => {
-            return getService('ADMINISTRATION_RIGHTS');
-        },
-        []
-    );
+    const ADMINISTRATION_RIGHTS = useMemo(() => getService('ADMINISTRATION_RIGHTS'), []);
+    const programService = useMemo(() => getService('programService'), []);
+    const facilityService = useMemo(() => getService('facilityService'), []);
+    const orderService = useMemo(() => getService('orderCreateService'), []);
+    const columns = useMemo(() => orderCreateFormTableColumns, []);
 
     const userId = useMemo(
         () => {
             const authorizationService = getService('authorizationService');
             return authorizationService.getUser().user_id;
-        },
-        []
-    );
-
-    const programService = useMemo(
-        () => {
-            return getService('programService');
-        },
-        []
-    );
-
-    const facilityService = useMemo(
-        () => {
-            return getService('facilityService');
-        },
-        []
-    );
-
-    const orderService = useMemo(
-        () => {
-            return getService('orderCreateService');
-        },
-        []
+        }, []
     );
 
     const supervisoryNodeResource = useMemo(
         () => {
             const resource = getService('SupervisoryNodeResource');
             return new resource();
-        },
-        []
+        }, []
     );
 
     const supplyLineResource = useMemo(
         () => {
             const resource = getService('SupplyLineResource');
             return new resource();
-        },
-        []
+        }, []
     );
+
+    const createOrders = () => {
+        const orders = getMappedRequestingFacilities(selectedRequestingFacilities, userId, selectedProgram, selectedSupplyingFacility);
+        goToOrderEdit(orders, orderService, history);
+    };
+
+    const updateFilteredFacilities = () => {
+        const facilities = requestingFacilityOptions
+            .filter(facility => selectedRequestingFacilities.includes(facility.value));
+
+        setFilteredRequestingFacilities(facilities);
+    }
+
+    const updateTableData = (updatedData) => {
+        setFilteredRequestingFacilities(updatedData);
+        const updatedDataIds = updatedData.map(facility => facility.value)
+
+        setSelectedRequestingFacilities(prevState => {
+            return prevState.filter(id => updatedDataIds.includes(id));
+        });
+    }
+
+    const updateSupplyingFacilities = () => {
+        setSelectedSupplyingFacility('');
+        updateSupplyingFacilitiesValue(selectedProgram, selectedRequestingFacilities, supervisoryNodeResource, supplyLineResource, facilityService, setSupplyingFacilityOptions);
+    };
 
     useEffect(
         () => {
@@ -105,49 +107,6 @@ const OrderCreateForm = () => {
         [facilityService]
     );
 
-    const updateSupplyingFacilities = () => {
-        selectSupplyingFacility('');
-
-        if (selectedProgram && selectedRequestingFacilities) {
-            supervisoryNodeResource.query({
-                programId: selectedProgram,
-                facilityId: selectedRequestingFacilities
-            })
-                .then((page) => {
-                    const nodes = page.content;
-
-                    if (nodes.length > 0) {
-                        Promise.all(nodes.map((node) => (
-                            supplyLineResource.query({
-                                programId: selectedProgram,
-                                supervisoryNodeId: node.id
-                            })
-                        )))
-                            .then((results) => {
-                                const supplyLines = _.flatten(results.map((it) => (it.content)));
-                                const facilityIds = _.uniq(supplyLines.map((it) => (it.supplyingFacility.id)));
-
-                                if (facilityIds.length > 0) {
-                                    facilityService.query({
-                                        id: facilityIds
-                                    })
-                                        .then((resp) => {
-                                            const facilities = resp.content;
-                                            setSupplyingFacilityOptions(_.map(facilities, facility => ({ name: facility.name, value: facility.id })));
-                                        });
-                                } else {
-                                    setSupplyingFacilityOptions([]);
-                                }
-                            });
-                    } else {
-                        setSupplyingFacilityOptions([]);
-                    }
-                });
-        } else {
-            setSupplyingFacilityOptions([]);
-        }
-    };
-
     useEffect(
         () => {
             updateSupplyingFacilities();
@@ -158,7 +117,7 @@ const OrderCreateForm = () => {
     useEffect(
         () => {
             if (programOptions && programOptions.length === 1) {
-                selectProgram(programOptions[0].value);
+                setSelectedProgram(programOptions[0].value);
             }
         },
         [programOptions]
@@ -167,65 +126,15 @@ const OrderCreateForm = () => {
     useEffect(
         () => {
             if (supplyingFacilityOptions && supplyingFacilityOptions.length === 1) {
-                selectSupplyingFacility(supplyingFacilityOptions[0].value);
+                setSelectedSupplyingFacility(supplyingFacilityOptions[0].value);
             }
         },
         [supplyingFacilityOptions]
     );
 
-    const createOrders = () => {
-        const orders = selectedRequestingFacilities.map((facilityId) => ({
-            emergency: true,
-            createdBy: { id: userId },
-            program: { id: selectedProgram },
-            requestingFacility: { id: facilityId },
-            receivingFacility: { id: facilityId },
-            supplyingFacility: { id: selectedSupplyingFacility },
-            facility: { id: facilityId }
-        }));
-
-        const orderCreationPromises = orders.map(order => orderService.create(order));
-        Promise.all(orderCreationPromises).then((createdOrders) => {
-            const ordersIds = createdOrders.map(order => order.id).join(',');
-            history.push(`/requisitions/orderCreate/${ordersIds}`);
-        });
-    };
-
-    const updateFilteredFacilities = () => {
-        const facilities = requestingFacilityOptions
-            .filter(facility => selectedRequestingFacilities.includes(facility.value));
-
-        setFilteredFacilities(facilities);
-    }
-
-    const updateTableData = (updatedData) => {
-        setFilteredFacilities(updatedData);
-        const updatedDataIds = updatedData.map(facility => facility.value)
-
-        selectRequestingFacility(prevState => {
-            return prevState.filter(id => updatedDataIds.includes(id));
-        });
-    }
-
     useEffect(() => {
         updateFilteredFacilities();
     }, [selectedRequestingFacilities]);
-
-    const columns = useMemo(() => {
-        return [
-            {
-                Header: 'Facility',
-                accessor: 'name'
-            },
-            {
-                Header: 'Actions',
-                accessor: 'value',
-                Cell: ({ row: { index }, deleteRow }) => (
-                    <TrashButton onClick={() => deleteRow(index)} />
-                )
-            }
-        ];
-    })
 
     return (
         <div className="page-container">
@@ -238,7 +147,7 @@ const OrderCreateForm = () => {
                     <SearchSelect
                         options={programOptions}
                         value={selectedProgram}
-                        onChange={value => selectProgram(value)}
+                        onChange={value => setSelectedProgram(value)}
                         placeholder="Select program"
                     />
                 </div>
@@ -247,7 +156,7 @@ const OrderCreateForm = () => {
                     <SearchSelect
                         options={requestingFacilityOptions}
                         value={selectedRequestingFacilities.at(-1)}
-                        onChange={value => selectRequestingFacility(prevState => [...prevState, value])}
+                        onChange={value => setSelectedRequestingFacilities(prevState => [...prevState, value])}
                         placeholder="Select requesting facility"
                     />
                     <EditableTable
@@ -263,14 +172,14 @@ const OrderCreateForm = () => {
                     <SearchSelect
                         options={supplyingFacilityOptions}
                         value={selectedSupplyingFacility}
-                        onChange={value => selectSupplyingFacility(value)}
+                        onChange={value => setSelectedSupplyingFacility(value)}
                         placeholder="Select supplying facility"
                         disabled={!selectedProgram || !selectedRequestingFacilities}
                     />
                 </div>
                 <div>
                     <button
-                        className="primary"
+                        className="btn primary"
                         type="button"
                         style={{ marginTop: '0.5em' }}
                         disabled={!selectedProgram || !selectedRequestingFacilities || !selectedSupplyingFacility}
