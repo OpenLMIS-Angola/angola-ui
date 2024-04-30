@@ -1,15 +1,5 @@
 <form id="add-ward-form" ng-submit="vm.addWard()" reload-form>
   <div class="form-group">
-    <label for="wardCode">{{'adminFacilityView.code' | message}}</label>
-    <input
-      id="wardCode"
-      type="text"
-      ng-model="vm.newWard.code"
-      ng-disabled="vm.managedExternally"
-      required
-    />
-  </div>
-  <div class="form-group">
     <label for="wardName">{{'adminFacilityView.name' | message}}</label>
     <input
       id="wardName"
@@ -60,7 +50,7 @@
     <thead>
       <tr>
         <th
-          openlmis-popover="{{'adminFacilityView.uniqueCodePopover' | message}}"
+          openlmis-popover="{{'adminFacilityView.codePopover' | message}}"
         >
           {{'adminFacilityView.code' | message}}
         </th>
