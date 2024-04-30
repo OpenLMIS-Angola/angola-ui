@@ -2,7 +2,7 @@ import React from 'react';
 import TrashButton from '../react-components/buttons/trash-button';
 import InputCell from '../react-components/table/input-cell';
 
-export const orderTableColumns = [
+export const orderTableColumns = (isTableReadOnly) => [
     {
         Header: 'Product Code',
         accessor: 'orderable.productCode'
@@ -21,6 +21,7 @@ export const orderTableColumns = [
         accessor: 'orderedQuantity',
         Cell: (props) => (
             <InputCell
+                disabled={isTableReadOnly}
                 {...props}
                 numeric
                 key={`row-${_.get(props, ['row', 'original', 'orderable', 'id'])}`}
@@ -31,7 +32,9 @@ export const orderTableColumns = [
         Header: 'Actions',
         accessor: 'id',
         Cell: ({ row: { index }, deleteRow }) => (
-            <TrashButton onClick={() => deleteRow(index)} />
+            <TrashButton
+                disabled={isTableReadOnly}
+                onClick={() => deleteRow(index)} />
         )
     }
 ];
