@@ -164,7 +164,6 @@ const OrderCreateForm = () => {
                         updateData={updateTableData}
                         columns={columns}
                         data={filteredRequestingFacilities || []}
-                        displayPagination={false}
                     />
                 </div>
                 <div className={'section'}>

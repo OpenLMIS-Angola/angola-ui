@@ -2,7 +2,7 @@ import React from 'react';
 import TrashButton from '../react-components/buttons/trash-button';
 import InputCell from '../react-components/table/input-cell';
 
-export const orderTableColumns = (isTableReadOnly) => [
+const orderTableDefaultColumns = [
     {
         Header: 'Product Code',
         accessor: 'orderable.productCode'
@@ -21,7 +21,6 @@ export const orderTableColumns = (isTableReadOnly) => [
         accessor: 'orderedQuantity',
         Cell: (props) => (
             <InputCell
-                disabled={isTableReadOnly}
                 {...props}
                 numeric
                 key={`row-${_.get(props, ['row', 'original', 'orderable', 'id'])}`}
@@ -33,11 +32,34 @@ export const orderTableColumns = (isTableReadOnly) => [
         accessor: 'id',
         Cell: ({ row: { index }, deleteRow }) => (
             <TrashButton
-                disabled={isTableReadOnly}
                 onClick={() => deleteRow(index)} />
         )
     }
 ];
+
+const orderReadonlyTableColumns = [
+    {
+        Header: 'Product Code',
+        accessor: 'orderable.productCode'
+    },
+    {
+        Header: 'Product',
+        accessor: 'orderable.fullProductName'
+    },
+    {
+        Header: 'SOH',
+        accessor: 'soh',
+        Cell: ({ value }) => (<div className="text-right">{value}</div>)
+    },
+    {
+        Header: 'Quantity',
+        accessor: 'orderedQuantity',
+    }
+];
+
+export const orderTableColumns = (isTableReadOnly) => {
+    return isTableReadOnly ? orderReadonlyTableColumns : orderTableDefaultColumns;
+}
 
 export const orderCreateFormTableColumns = [
     {

@@ -20,7 +20,6 @@ import PrevPageButton from '../buttons/prev-page-button';
 import NextPageButton from '../buttons/next-page-button';
 import PageButton from '../buttons/page-button';
 
-const pageSize = 10;
 
 const Table = ({
     columns,
@@ -36,6 +35,7 @@ const Table = ({
     withScrollStyle = false,
     displayPagination = true,
     additionalTableClass = '',
+    pageSize = 10,
     ...props
 }) => {
     const {
