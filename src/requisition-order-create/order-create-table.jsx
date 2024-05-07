@@ -15,7 +15,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useHistory, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import getService from '../react-components/utils/angular-utils';
 import { createOrderDisabled, pushNewOrder, saveDraftDisabled } from './order-create-table-helper-functions';
@@ -24,12 +24,18 @@ import { saveDraft, createOrder } from './reducers/orders.reducer';
 import { isOrderInvalid } from './order-create-validation-helper-functions';
 
 const OrderCreateTable = () => {
-    const { orderIds } = useParams();
     const [orders, setOrders] = useState([]);
     const [orderParams, setOrderParams] = useState({ programId: null, requestingFacilityId: null });
     const [orderableOptions, setOrderableOptions] = useState([]);
     const [currentTab, setCurrentTab] = useState(0);
     const [showValidationErrors, setShowValidationErrors] = useState(false);
+
+    const { orderIds } = useParams();
+
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const isReadOnly = queryParams.get('isReadOnly');
+    const isTableReadOnly = isReadOnly ? isReadOnly === 'true' : false;
 
     const dispatch = useDispatch();
     const history = useHistory();
@@ -95,7 +101,7 @@ const OrderCreateTable = () => {
     }
 
     const sendOrders = () => {
-        if(isOrderInvalid(orders, setShowValidationErrors, toast)) {
+        if (isOrderInvalid(orders, setShowValidationErrors, toast)) {
             return;
         }
 
@@ -113,7 +119,7 @@ const OrderCreateTable = () => {
     };
 
     const updateOrders = () => {
-        if(isOrderInvalid(orders, setShowValidationErrors, toast)) {
+        if (isOrderInvalid(orders, setShowValidationErrors, toast)) {
             return;
         }
 
@@ -158,11 +164,12 @@ const OrderCreateTable = () => {
                         passedOrder={orders[currentTab]}
                         orderableOptions={orderableOptions}
                         showValidationErrors={showValidationErrors}
+                        isTableReadOnly={isTableReadOnly}
                         updateOrderArray={
                             (updatedOrder) => {
                                 onProductAdded(updatedOrder);
                             }
-                        }/>
+                        } />
                 ) : (
                     <p>Loading...</p>
                 )}
@@ -171,13 +178,13 @@ const OrderCreateTable = () => {
                 <button
                     type="button"
                     className="btn"
-                    disabled={saveDraftDisabled(orders)}
+                    disabled={saveDraftDisabled(orders) || isTableReadOnly}
                     onClick={() => updateOrders()}
                 >Save Draft</button>
                 <button
                     type="button"
                     className="btn primary"
-                    disabled={createOrderDisabled(orders)}
+                    disabled={createOrderDisabled(orders) || isTableReadOnly}
                     onClick={() => sendOrders()}
                 >Create Order</button>
             </div>

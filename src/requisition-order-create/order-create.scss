@@ -56,6 +56,18 @@
         justify-content: space-between;
         width: 100%;
         margin-bottom: 1em;
+
+        .buttons-container {
+          @include flex-layout(row, $gap: 1rem);
+
+          .order-print {
+            @include icon('print');
+
+            &::before {
+              margin-right: .5em;
+            }
+          }
+        }
       }
     }
   }
