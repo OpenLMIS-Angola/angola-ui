@@ -66,10 +66,19 @@ export const getUpdatedOrder = (selectedOrderable, order) => {
     return updatedOrder;
 };
 
+export const getIsOrderValidArray = (orders) => {
+    return orders.map((order) => {
+        if (!order?.orderLineItems.length) {
+            return false;
+        }
+        const mappedOrderLineItems = order.orderLineItems.map(item => item.orderedQuantity !== '' && item.orderedQuantity > 0);
+        return Boolean(!mappedOrderLineItems.includes(false) && order.id !== undefined)
+    });
+};
+
 export const createOrderDisabled = (orders) => {
-    const mappedOrders = orders
-        .map((order) => Boolean(order?.orderLineItems.length && order.id !== undefined));
-    return mappedOrders.length === 0 || mappedOrders.includes(false)
+    const mappedOrders = getIsOrderValidArray(orders);
+    return mappedOrders.length === 0 || mappedOrders.includes(false);
 }
 
 export const saveDraftDisabled = (orders) => {

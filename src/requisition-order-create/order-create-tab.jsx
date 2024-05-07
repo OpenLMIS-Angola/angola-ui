@@ -96,6 +96,7 @@ const OrderCreateTab = ({ passedOrder, orderableOptions, updateOrderArray, showV
                             validateRow={validateRow}
                             showValidationErrors={showValidationErrors}
                             isReadOnly={isTableReadOnly}
+                            pageSize={6}
                         />
                     </div>
                 </div>

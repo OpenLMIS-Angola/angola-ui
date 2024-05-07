@@ -18,10 +18,12 @@ import { useDispatch } from 'react-redux';
 import { useParams, useHistory, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import getService from '../react-components/utils/angular-utils';
-import { createOrderDisabled, pushNewOrder, saveDraftDisabled } from './order-create-table-helper-functions';
+import { createOrderDisabled, getIsOrderValidArray, pushNewOrder, saveDraftDisabled } from './order-create-table-helper-functions';
 import OrderCreateTab from './order-create-tab';
 import { saveDraft, createOrder } from './reducers/orders.reducer';
 import { isOrderInvalid } from './order-create-validation-helper-functions';
+import OrderCreateSummaryModal from './order-create-summary-modal';
+import TabNavigation from '../react-components/tab-navigation/tab-navigation';
 
 const OrderCreateTable = () => {
     const [orders, setOrders] = useState([]);
@@ -29,6 +31,7 @@ const OrderCreateTable = () => {
     const [orderableOptions, setOrderableOptions] = useState([]);
     const [currentTab, setCurrentTab] = useState(0);
     const [showValidationErrors, setShowValidationErrors] = useState(false);
+    const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
 
     const { orderIds } = useParams();
 
@@ -137,26 +140,38 @@ const OrderCreateTable = () => {
 
     return (
         <div className="page-container">
+            {
+                isSummaryModalOpen &&
+                <OrderCreateSummaryModal
+                    isOpen={isSummaryModalOpen}
+                    orders={orders}
+                    onSaveClick={sendOrders}
+                    onModalClose={() => setIsSummaryModalOpen(false)}
+                />
+            }
             <div className="page-header-responsive">
                 <h2>Create Order</h2>
             </div>
-            <ul className="nav nav-tabs tabs-container">
-                {
-                    orders.map((order, index) => {
-                        return (
-                            <li key={order.id} className={currentTab === index ? 'active' : ''}>
-                                <a
-                                    role='tab'
-                                    data-toggle="tab"
-                                    onClick={() => setCurrentTab(index)}
-                                    className='tabs-link'>
-                                    {order.facility.name}
-                                </a>
-                            </li>
-                        );
-                    })
-                }
-            </ul>
+            {
+                orders.length > 0 &&
+                <div className="tabs-container">
+                    <TabNavigation
+                        config={
+                            {
+                                data: orders.map((order, index) => ({
+                                    header: order.facility.name,
+                                    key: order.id,
+                                    isActive: currentTab === index
+                                })),
+                                onTabChange: (index) => {
+                                    setCurrentTab(index);
+                                },
+                                isTabValidArray: getIsOrderValidArray(orders)
+                            }
+                        }
+                    ></TabNavigation>
+                </div>
+            }
             <div className="currentTab">
                 {orders.length > 0 ? (
                     <OrderCreateTab
@@ -185,7 +200,7 @@ const OrderCreateTable = () => {
                     type="button"
                     className="btn primary"
                     disabled={createOrderDisabled(orders) || isTableReadOnly}
-                    onClick={() => sendOrders()}
+                    onClick={() => setIsSummaryModalOpen(true)}
                 >Create Order</button>
             </div>
         </div>
