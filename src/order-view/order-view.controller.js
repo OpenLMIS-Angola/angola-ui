@@ -408,6 +408,7 @@
                     {
                         header: 'orderView.lastUpdated',
                         propertyPath: 'lastUpdatedDate',
+                        sortable: false,
                         template: function(item) {
                             return item.lastUpdatedDate ?
                                 $filter('openlmisDate')(item.lastUpdatedDate) : '';
