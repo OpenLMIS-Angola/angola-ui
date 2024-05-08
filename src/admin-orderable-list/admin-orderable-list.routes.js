@@ -26,7 +26,7 @@
         $stateProvider.state('openlmis.administration.orderables', {
             showInNavigation: true,
             label: 'adminOrderableList.products',
-            url: '/orderables?code&name&description&program&page&size&sort',
+            url: '/orderables?code&name&quarantined&description&program&page&size&sort',
             controller: 'OrderableListController',
             templateUrl: 'admin-orderable-list/orderable-list.html',
             controllerAs: 'vm',
@@ -41,7 +41,11 @@
                 },
                 orderables: function(paginationService, OrderableResource, $stateParams) {
                     return paginationService.registerUrl($stateParams, function(stateParams) {
-                        return new OrderableResource().query(stateParams);
+                        var params = angular.copy(stateParams);
+
+                        params.quarantined = true;
+
+                        return new OrderableResource().query(params);
                     });
                 },
                 canAdd: function(authorizationService, permissionService, ADMINISTRATION_RIGHTS) {
