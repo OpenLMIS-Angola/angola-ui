@@ -32,7 +32,7 @@
             showInNavigation: true,
             templateUrl: 'order-view/order-view.html',
             url: '/view?supplyingFacilityId&requestingFacilityId&programId&periodStartDate&periodEndDate&page&size' +
-                '&status&sort',
+                '&status&sort&requisitionless',
             accessRights: [
                 FULFILLMENT_RIGHTS.PODS_MANAGE,
                 FULFILLMENT_RIGHTS.ORDERS_VIEW
