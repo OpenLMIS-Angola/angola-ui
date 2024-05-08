@@ -15,7 +15,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
-import { useParams, useHistory, useLocation } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import getService from '../react-components/utils/angular-utils';
 import { createOrderDisabled, getIsOrderValidArray, pushNewOrder, saveDraftDisabled } from './order-create-table-helper-functions';
@@ -25,7 +25,7 @@ import { isOrderInvalid } from './order-create-validation-helper-functions';
 import OrderCreateSummaryModal from './order-create-summary-modal';
 import TabNavigation from '../react-components/tab-navigation/tab-navigation';
 
-const OrderCreateTable = () => {
+const OrderCreateTable = ({isReadOnly}) => {
     const [orders, setOrders] = useState([]);
     const [orderParams, setOrderParams] = useState({ programId: null, requestingFacilityId: null });
     const [orderableOptions, setOrderableOptions] = useState([]);
@@ -34,11 +34,6 @@ const OrderCreateTable = () => {
     const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
 
     const { orderIds } = useParams();
-
-    const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
-    const isReadOnly = queryParams.get('isReadOnly');
-    const isTableReadOnly = isReadOnly ? isReadOnly === 'true' : false;
 
     const dispatch = useDispatch();
     const history = useHistory();
@@ -166,7 +161,7 @@ const OrderCreateTable = () => {
                                 onTabChange: (index) => {
                                     setCurrentTab(index);
                                 },
-                                isTabValidArray: getIsOrderValidArray(orders)
+                                isTabValidArray: !isReadOnly ? getIsOrderValidArray(orders) : undefined
                             }
                         }
                     ></TabNavigation>
@@ -179,7 +174,7 @@ const OrderCreateTable = () => {
                         passedOrder={orders[currentTab]}
                         orderableOptions={orderableOptions}
                         showValidationErrors={showValidationErrors}
-                        isTableReadOnly={isTableReadOnly}
+                        isTableReadOnly={isReadOnly}
                         updateOrderArray={
                             (updatedOrder) => {
                                 onProductAdded(updatedOrder);
@@ -190,18 +185,23 @@ const OrderCreateTable = () => {
                 )}
             </div>
             <div className="page-footer">
-                <button
-                    type="button"
-                    className="btn"
-                    disabled={saveDraftDisabled(orders) || isTableReadOnly}
-                    onClick={() => updateOrders()}
-                >Save Draft</button>
-                <button
-                    type="button"
-                    className="btn primary"
-                    disabled={createOrderDisabled(orders) || isTableReadOnly}
-                    onClick={() => setIsSummaryModalOpen(true)}
-                >Create Order</button>
+                {
+                    isReadOnly ||
+                    <>
+                        <button
+                            type="button"
+                            className="btn"
+                            disabled={saveDraftDisabled(orders)}
+                            onClick={() => updateOrders()}
+                        >Save Draft</button>
+                        <button
+                            type="button"
+                            className="btn primary"
+                            disabled={createOrderDisabled(orders)}
+                            onClick={() => setIsSummaryModalOpen(true)}
+                        >Create Order</button>
+                    </>
+                }
             </div>
         </div>
     );

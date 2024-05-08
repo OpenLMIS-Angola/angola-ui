@@ -14,36 +14,41 @@
  */
 
 import React from 'react';
-import { HashRouter as Router, Route, Switch } from 'react-router-dom';
-
+import { HashRouter as Router, Route, Switch, useLocation } from 'react-router-dom';
 import OrderCreateTable from './order-create-table';
 import OrderCreateForm from './order-create-form';
 import Breadcrumbs from '../react-components/breadcrumbs/breadcrumbs';
 
-const OrderCreatePage = () => {
+const OrderCreateRouting = () => {
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const isReadOnly = queryParams.get('isReadOnly') === 'true';
 
     return (
         <div className="page-responsive">
-            <Router
-                basename="/"
-                hashType="hashbang"
-            >
-                <Breadcrumbs
-                    routes={[
-                        { path: "/requisitions/orderCreate", breadcrumb: 'Create Order' },
-                        { path: "/requisitions/orderCreate/:orderIds", breadcrumb: 'Edit' }
-                        ]}
-                />
-                <Switch>
-                    <Route path="/requisitions/orderCreate/:orderIds">
-                        <OrderCreateTable />
-                    </Route>
-                    <Route path="/requisitions/orderCreate/">
-                        <OrderCreateForm />
-                    </Route>
-                </Switch>
-            </Router>
+            <Breadcrumbs
+                routes={[
+                    { path: "/requisitions/orderCreate", breadcrumb: 'Create Order' },
+                    { path: "/requisitions/orderCreate/:orderIds", breadcrumb: isReadOnly ? 'View' : 'Edit' }
+                ]}
+            />
+            <Switch>
+                <Route path="/requisitions/orderCreate/:orderIds">
+                    <OrderCreateTable isReadOnly={isReadOnly}/>
+                </Route>
+                <Route path="/requisitions/orderCreate/">
+                    <OrderCreateForm />
+                </Route>
+            </Switch>
         </div>
+    );
+};
+
+const OrderCreatePage = () => {
+    return (
+        <Router basename="/" hashType="hashbang">
+            <OrderCreateRouting />
+        </Router>
     );
 };
 
