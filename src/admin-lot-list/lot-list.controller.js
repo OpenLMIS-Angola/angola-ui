@@ -101,12 +101,10 @@
          * @ngdoc property
          * @propertyOf admin-lot-list.controller:LotListController
          * @name showQuarantined
-         * @type {Boolean}
+         * @type {String}
          * 
          * @description
-         * Flag to show quarantined lots
-         * When set to true, quarantined lots are visible
-         * When set to false, quarantined lots are not visible
+         * Indicates if quarantined lots should be visible
          */
         vm.showQuarantined = undefined;
 
