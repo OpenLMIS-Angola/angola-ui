@@ -1,31 +1,22 @@
-export const pushNewOrder = (fetchedOrder, setOrderParams, stockCardSummaryRepositoryImpl, setOrders) => {
-    const orderParams = {
-        programId: fetchedOrder.program.id,
-        facilityId: fetchedOrder.requestingFacility.id
-    };
-
-    setOrderParams(orderParams);
-
-    const orderableIds = fetchedOrder.orderLineItems.map((lineItem) => {
-        return lineItem.orderable.id;
-    });
+export const getOrderValue = (fetchedOrder, stockCardSummaryRepositoryImpl) => {
+    const orderableIds = fetchedOrder.orderLineItems.map((lineItem) => lineItem.orderable.id);
 
     if (orderableIds?.length) {
-        stockCardSummaryRepositoryImpl.query({
+        return stockCardSummaryRepositoryImpl.query({
             programId: fetchedOrder.program.id,
             facilityId: fetchedOrder.requestingFacility.id,
             orderableId: orderableIds
         }).then(function (page) {
-            setOrderWithSoh(page, fetchedOrder, setOrders);
+            return getOrdersWithSoh(page, fetchedOrder);
         }).catch(function () {
-            setOrders(prevState => [...prevState, fetchedOrder]);
+            return fetchedOrder;
         });
     } else {
-        setOrders(prevState => [...prevState, fetchedOrder]);
+        return Promise.resolve(fetchedOrder);
     }
 };
 
-const setOrderWithSoh = (page, fetchedOrder, setOrders) => {
+const getOrdersWithSoh = (page, fetchedOrder) => {
     const stockItems = page.content;
     const orderWithSoh = {
         ...fetchedOrder,
@@ -39,7 +30,7 @@ const setOrderWithSoh = (page, fetchedOrder, setOrders) => {
         })
     };
 
-    setOrders(prevState => [...prevState, orderWithSoh]);
+    return orderWithSoh;
 };
 
 export const getUpdatedOrder = (selectedOrderable, order) => {
