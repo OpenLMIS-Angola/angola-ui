@@ -100,6 +100,19 @@
         /**
          * @ngdoc property
          * @propertyOf admin-lot-list.controller:LotListController
+         * @name showQuarantined
+         * @type {Boolean}
+         * 
+         * @description
+         * Flag to show quarantined lots
+         * When set to true, quarantined lots are visible
+         * When set to false, quarantined lots are not visible
+         */
+        vm.showQuarantined = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf admin-lot-list.controller:LotListController
          * @name tableConfig
          * @type {Object}
          */
@@ -119,6 +132,7 @@
             stateParams.orderableId = vm.orderableId;
             stateParams.expirationDateFrom = vm.expirationDateFrom;
             stateParams.expirationDateTo = vm.expirationDateTo;
+            stateParams.quarantined = vm.showQuarantined;
             // ANGOLASUP-715: Filtering by lot code
             stateParams.lotCode = vm.lotCode;
             // ANGOLASUP-715: Ends here
@@ -140,9 +154,11 @@
             vm.lots = lots;
             vm.orderables = orderables;
 
+            vm.showQuarantined = $stateParams.quarantined;
             vm.orderableId = $stateParams.orderableId;
             vm.expirationDateFrom = $stateParams.expirationDateFrom;
             vm.expirationDateTo = $stateParams.expirationDateTo;
+
             // ANGOLASUP-715: Filtering by lot code
             vm.lotCode = $stateParams.lotCode;
             // ANGOLASUP-715: Ends here

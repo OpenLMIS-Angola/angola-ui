@@ -35,11 +35,14 @@
             accessRights: [ADMINISTRATION_RIGHTS.LOTS_MANAGE],
             resolve: {
                 paginatedLots: function($q, $stateParams, paginationService, lotService) {
-                    return paginationService.registerUrl($stateParams, function(stateParams) {
-                        var params = angular.copy(stateParams);
+                    return paginationService.registerUrl($stateParams, function() {
+                        if ($stateParams.quarantined === undefined) {
+                            $stateParams.quarantined = 'true';
+                        }
+
+                        var params = angular.copy($stateParams);
 
                         params.tradeItemIdIgnored = true;
-                        params.quarantined = true;
 
                         return lotService.query(params);
                     });

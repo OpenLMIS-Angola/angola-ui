@@ -1,0 +1,16 @@
+{
+    "adminLotList.lots": "Lots",
+    "adminLotList.expirationDateFrom": "Earliest Expiry Date",
+    "adminLotList.expirationDateTo": "Latest Expiry Date",
+    "adminLotList.product": "Product",
+    "adminLotList.search": "Search",
+    "adminLotList.noLots": "No lots found.",
+    "adminLotList.productCode": "Product Code",
+    "adminLotList.productName": "Product Name",
+    "adminLotList.lotCode": "Lot Code",
+    "adminLotList.expirationDate": "Expiry date",
+    "adminLotList.manufacturedDate": "Manufacture Date",
+    "adminLotList.actions": "Actions",
+    "adminLotList.edit": "Edit",
+    "adminLotList.showQuarantined": "Show Quarantined"
+}
