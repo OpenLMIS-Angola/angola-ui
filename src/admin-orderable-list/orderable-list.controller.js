@@ -62,6 +62,17 @@
         /**
          * @ngdoc property
          * @propertyOf admin-orderable-list.controller:OrderableListController
+         * @name showQuarantined
+         * @type {String}
+         * 
+         * @description
+         * Contains quarantined param for searching products.
+         */
+        vm.showQuarantined = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf admin-orderable-list.controller:OrderableListController
          * @name code
          * @type {String}
          *
@@ -114,9 +125,12 @@
         function onInit() {
             vm.orderables = orderables;
             vm.programs = programs;
+
+            vm.showQuarantined = $stateParams.quarantined;
             vm.code = $stateParams.code;
             vm.name = $stateParams.name;
             vm.program = $stateParams.program;
+
             vm.canAdd = canAdd;
             vm.tableConfig = getTableConfig();
         }
@@ -132,6 +146,7 @@
         function search() {
             var stateParams = angular.copy($stateParams);
 
+            stateParams.quarantined = vm.showQuarantined;
             stateParams.code = vm.code;
             stateParams.name = vm.name;
             stateParams.program = vm.program;

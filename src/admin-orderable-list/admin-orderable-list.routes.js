@@ -40,10 +40,12 @@
                     return new ProgramResource().query();
                 },
                 orderables: function(paginationService, OrderableResource, $stateParams) {
-                    return paginationService.registerUrl($stateParams, function(stateParams) {
-                        var params = angular.copy(stateParams);
+                    return paginationService.registerUrl($stateParams, function() {
+                        if ($stateParams.quarantined === undefined) {
+                            $stateParams.quarantined = 'true';
+                        }
 
-                        params.quarantined = true;
+                        var params = angular.copy($stateParams);
 
                         return new OrderableResource().query(params);
                     });
