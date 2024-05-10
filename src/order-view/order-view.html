@@ -20,8 +20,10 @@
                 <input id="periodStartDate" type="date" ng-model="vm.periodStartDate" max-date="vm.periodEndDate" />
                 <label for=periodEndDate>{{'orderView.periodEnd' | message}}</label>
                 <input id="periodEndDate" type="date" ng-model="vm.periodEndDate" min-date="vm.periodStartDate" />
-                <label for="">{{:: 'orderView.isRequisitionless' | message}}</label>
-                <input type="checkbox" id="isRequisitionless">
+                <div>
+                        <label for="requisitionless">{{:: 'orderView.requisitionless' | message}}</label>
+                        <input type="checkbox" ng-model="vm.requisitionless" id="requisitionless" ng-true-value="'true'" ng-false-value="'false'">
+                </div>
                 <input type="submit" class="btn btn-primary" value="{{'orderView.search' | message}}" />
         </form>
         <openlmis-table table-config="vm.tableConfig"></openlmis-table>

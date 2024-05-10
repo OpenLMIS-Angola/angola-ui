@@ -151,6 +151,17 @@
         vm.tableConfig = undefined;
 
         /**
+         * @ngdoc property
+         * @propertyOf order-view.controller:OrderViewController
+         * @name requisitionless
+         * @type {boolean}
+         *
+         * @description
+         * Sets requisitionless flag
+         */
+        vm.requisitionless = undefined;
+
+        /**
          * @ngdoc method
          * @methodOf order-view.controller:OrderViewController
          * @name $onInit
@@ -195,6 +206,10 @@
                 vm.periodEndDate = $stateParams.periodEndDate;
             }
 
+            if ($stateParams.requisitionless) {
+                vm.requisitionless = $stateParams.requisitionless;
+            }
+
             if ($stateParams.status) {
                 vm.status = vm.orderStatuses.filter(function(status) {
                     return $stateParams.status === status.value;
@@ -236,6 +251,7 @@
             stateParams.periodStartDate = vm.periodStartDate ? $filter('isoDate')(vm.periodStartDate) : null;
             stateParams.periodEndDate = vm.periodEndDate ? $filter('isoDate')(vm.periodEndDate) : null;
             stateParams.sort = 'createdDate,desc';
+            stateParams.requisitionless = vm.requisitionless;
 
             $state.go('openlmis.orders.view', stateParams, {
                 reload: true
