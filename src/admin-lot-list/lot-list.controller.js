@@ -188,6 +188,13 @@
                     {
                         header: 'adminLotList.manufacturedDate',
                         propertyPath: 'manufacturedDate'
+                    },
+                    {
+                        header: 'adminLotList.isQuarantined',
+                        propertyPath: 'quarantined',
+                        sortable: false,
+                        //TODO: Icon should appear if quarantined is true
+                        template: '<i ng-class="{\'icon-ok\': true}"></i>'
                     }
                 ],
                 actions: {

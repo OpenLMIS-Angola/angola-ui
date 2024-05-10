@@ -12,5 +12,6 @@
     "adminLotList.manufacturedDate": "Manufacture Date",
     "adminLotList.actions": "Actions",
     "adminLotList.edit": "Edit",
-    "adminLotList.showQuarantined": "Show Quarantined"
+    "adminLotList.showQuarantined": "Show Quarantined",
+    "adminLotList.isQuarantined": "Quarantined"
 }
