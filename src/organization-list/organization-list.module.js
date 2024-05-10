@@ -17,23 +17,23 @@
 
     'use strict';
 
-    angular
-        .module('supplier-add')
-        .config(routes);
-
-    routes.$inject = ['modalStateProvider'];
-
-    function routes(modalStateProvider) {
-
-        modalStateProvider.state('openlmis.administration.suppliers.add', {
-            controller: 'SupplierAddController',
-            controllerAs: 'vm',
-            //TODO: Clarify if resolve needed
-            resolve: {},
-            templateUrl: 'supplier-add/supplier-add.html',
-            url: '/add'
-        });
-
-    }
+    /**
+     * @module organization-list
+     *
+     * @description
+     * Provides a view for the list of organizations.
+     */
+    angular.module('organization-list', [
+        'openlmis-table',
+        'openlmis-admin',
+        'openlmis-cached-repository',
+        'openlmis-pagination',
+        'openlmis-rights',
+        'ui.router',
+        'referencedata-geographic-zone',
+        'openlmis-state-tracker',
+        'openlmis-uuid',
+        'openlmis-table'
+    ]);
 
 })();

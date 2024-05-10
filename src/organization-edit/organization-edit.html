@@ -2,20 +2,20 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1>{{'supplierAdd.addSupplier' | message}}</h1>
+        <h1>{{'organizationAdd.editOrganization' | message}}</h1>
       </div>
       <div class="modal-body">
-        <form id="add-supplier-form" ng-submit="vm.saveSupplier()">
-          <!-- TODO: Implement proper create form -->
+        <form id="edit-organization-form" ng-submit="vm.updateOrganization()">
+          <!-- TODO: Implement proper edit form -->
           <!-- <ng-include src="'admin-facility-add/facility-information.html'"></ng-include> -->
         </form>
       </div>
       <div class="modal-footer">
         <button id="cancel" ng-click="vm.goToPreviousState()">
-          {{'supplierAdd.cancel' | message}}
+          {{'organizationAdd.cancel' | message}}
         </button>
-        <button class="primary" form="add-supplier-form">
-          {{'supplierAdd.save' | message}}
+        <button class="primary" form="edit-organization-form">
+          {{'organizationAdd.update' | message}}
         </button>
       </div>
     </div>

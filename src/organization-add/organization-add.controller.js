@@ -18,33 +18,33 @@
     'use strict';
 
     angular
-        .module('supplier-add')
-        .controller('SupplierAddController', SupplierAddController);
+        .module('organization-add')
+        .controller('OrganizationAddController', OrganizationAddController);
 
-    SupplierAddController.$inject = ['stateTrackerService'];
+    OrganizationAddController.$inject = ['stateTrackerService'];
 
     /**
      * @ngdoc controller
-     * @name supplier-add.controller:SupplierAddController
+     * @name organization-add.controller:OrganizationAddController
      *
      * @description
-     * Controller for adding suppliers.
+     * Controller for adding organizations.
      */
-    function SupplierAddController(stateTrackerService) {
+    function OrganizationAddController(stateTrackerService) {
 
         var vm = this;
 
         vm.$onInit = onInit;
-        vm.saveSupplier = saveSupplier;
+        vm.saveOrganization = saveOrganization;
         vm.goToPreviousState = stateTrackerService.goToPreviousState;
 
         /**
          * @ngdoc method
-         * @methodOf supplier-add.controller:SupplierAddController
+         * @methodOf organization-add.controller:OrganizationAddController
          * @name $onInit
          *
          * @description
-         * Initialization method of the SupplierAddController.
+         * Initialization method of the OrganizationAddController.
          */
         function onInit() {
             console.log('onInit');
@@ -52,14 +52,14 @@
 
         /**
          * @ngdoc method
-         * @methodOf supplier-add.controller:SupplierAddController
-         * @name saveSupplier
+         * @methodOf organization-add.controller:OrganizationAddController
+         * @name saveOrganization
          *
          * @description
-         * Saves the supplier and takes user back to the previous state.
+         * Saves the organization and takes user back to the previous state.
          */
-        function saveSupplier() {
-            //TODO: Implement save supplier
+        function saveOrganization() {
+            //TODO: Implement save organization
             console.log('Saving...');
             stateTrackerService.goToPreviousState();
         }

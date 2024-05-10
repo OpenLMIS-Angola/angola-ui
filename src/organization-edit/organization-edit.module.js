@@ -17,27 +17,21 @@
 
     'use strict';
 
-    angular
-        .module('supplier-edit')
-        .config(routes);
-
-    routes.$inject = ['modalStateProvider'];
-
-    function routes(modalStateProvider) {
-
-        modalStateProvider.state('openlmis.administration.suppliers.edit', {
-            controller: 'SupplierEditController',
-            controllerAs: 'vm',
-            resolve: {
-                supplier: function() {
-                    //TODO: Implement fetching supplier by id after BE is ready
-                    return {};
-                }
-            },
-            templateUrl: 'supplier-edit/supplier-edit.html',
-            url: '/edit/:id'
-        });
-
-    }
+    /**
+     * @module organization-edit
+     *
+     * @description
+     * Provides a view (modal) for editing a organization.
+     */
+    angular.module('organization-edit', [
+        'referencedata-facility',
+        'referencedata-facility-type',
+        'referencedata-facility-operator',
+        'openlmis-modal',
+        'openlmis-templates',
+        'openlmis-state-tracker',
+        'openlmis-modal-state',
+        'openlmis-table'
+    ]);
 
 })();

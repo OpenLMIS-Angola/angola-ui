@@ -1,0 +1,13 @@
+{
+    "organizationList.navRoute": "Organizations",
+    "organizationList.pageHeader": "Organization List",
+    "organizationList.noOrganizations": "No Organizations found.",
+    "organizationList.filter.name": "Organization Name",
+    "organizationList.column.name": "Name",
+    "organizationList.column.code": "Code",
+    "organizationList.column.active": "Active",
+    "organizationList.column.actions": "Actions",
+    "organizationList.action.edit": "Edit",
+    "organizationList.addOrganization": "Add Organization",
+    "organizationList.deleteSelected": "Delete selected"
+}

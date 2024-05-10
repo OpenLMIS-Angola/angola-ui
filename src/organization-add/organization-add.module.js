@@ -18,12 +18,12 @@
     'use strict';
 
     /**
-     * @module supplier-edit
+     * @module organization-add
      *
      * @description
-     * Provides a view (modal) for editing a supplier.
+     * Provides a view (modal) for adding a new organization.
      */
-    angular.module('supplier-edit', [
+    angular.module('organization-add', [
         'referencedata-facility',
         'referencedata-facility-type',
         'referencedata-facility-operator',

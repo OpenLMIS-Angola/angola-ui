@@ -17,23 +17,27 @@
 
     'use strict';
 
-    /**
-     * @module supplier-list
-     *
-     * @description
-     * Provides a view for the list of suppliers.
-     */
-    angular.module('supplier-list', [
-        'openlmis-table',
-        'openlmis-admin',
-        'openlmis-cached-repository',
-        'openlmis-pagination',
-        'openlmis-rights',
-        'ui.router',
-        'referencedata-geographic-zone',
-        'openlmis-state-tracker',
-        'openlmis-uuid',
-        'openlmis-table'
-    ]);
+    angular
+        .module('organization-edit')
+        .config(routes);
+
+    routes.$inject = ['modalStateProvider'];
+
+    function routes(modalStateProvider) {
+
+        modalStateProvider.state('openlmis.administration.organizations.edit', {
+            controller: 'OrganizationEditController',
+            controllerAs: 'vm',
+            resolve: {
+                organization: function() {
+                    //TODO: Implement fetching organization by id after BE is ready
+                    return {};
+                }
+            },
+            templateUrl: 'organization-edit/organization-edit.html',
+            url: '/edit/:id'
+        });
+
+    }
 
 })();

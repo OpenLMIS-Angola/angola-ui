@@ -17,21 +17,23 @@
 
     'use strict';
 
-    /**
-     * @module supplier-add
-     *
-     * @description
-     * Provides a view (modal) for adding a new supplier.
-     */
-    angular.module('supplier-add', [
-        'referencedata-facility',
-        'referencedata-facility-type',
-        'referencedata-facility-operator',
-        'openlmis-modal',
-        'openlmis-templates',
-        'openlmis-state-tracker',
-        'openlmis-modal-state',
-        'openlmis-table'
-    ]);
+    angular
+        .module('organization-add')
+        .config(routes);
+
+    routes.$inject = ['modalStateProvider'];
+
+    function routes(modalStateProvider) {
+
+        modalStateProvider.state('openlmis.administration.organizations.add', {
+            controller: 'OrganizationAddController',
+            controllerAs: 'vm',
+            //TODO: Clarify if resolve needed
+            resolve: {},
+            templateUrl: 'organization-add/organization-add.html',
+            url: '/add'
+        });
+
+    }
 
 })();

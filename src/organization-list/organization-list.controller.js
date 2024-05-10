@@ -18,74 +18,74 @@
 
     /**
      * @ngdoc controller
-     * @name supplier-list.controller:SupplierListController
+     * @name organization-list.controller:OrganizationListController
      *
      * @description
-     * Controller for managing suppliers list view.
+     * Controller for managing organizations list view.
      */
 
     angular
-        .module('supplier-list')
-        .controller('SupplierListController', controller);
+        .module('organization-list')
+        .controller('OrganizationListController', controller);
 
-    controller.$inject = ['$state', '$stateParams', 'suppliersData', 'TABLE_CONSTANTS'];
+    controller.$inject = ['$state', '$stateParams', 'organizationsData', 'TABLE_CONSTANTS'];
 
-    function controller($state, $stateParams, suppliersData, TABLE_CONSTANTS) {
+    function controller($state, $stateParams, organizationsData, TABLE_CONSTANTS) {
         var vm = this;
 
         vm.$onInit = onInit;
         vm.onSearch = onSearch;
-        vm.redirectToAddSupplier = redirectToAddSupplier;
+        vm.redirectToAddOrganization = redirectToAddOrganization;
 
         /**
          * @ngdoc property
-         * @propertyOf supplier-list.controller:SupplierListController
+         * @propertyOf organization-list.controller:OrganizationListController
          * @name tableConfig
          * @type {Object}
          *
          * @description
-         * Holds table config for supplier list.
+         * Holds table config for organization list.
          */
         vm.tableConfig = undefined;
 
         /**
          * @ngdoc property
-         * @propertyOf supplier-list.controller:SupplierListController
-         * @name supplierName
+         * @propertyOf organization-list.controller:OrganizationListController
+         * @name organizationName
          * @type {String}
          *
          * @description
-         * Contains name param for searching suppliers.
+         * Contains name param for searching organization.
          */
-        vm.supplierName = undefined;
+        vm.organizationName = undefined;
 
         /**
          * @ngdoc property
-         * @propertyOf supplier-list.controller:SupplierListController
-         * @name suppliers
+         * @propertyOf organization-list.controller:OrganizationListController
+         * @name organizations
          * @type {Array}
          *
          * @description
-         * Contains list of suppliers.
+         * Contains list of organizations.
          */
-        vm.suppliers = undefined;
+        vm.organizations = undefined;
 
         /**
          * @ngdoc method
-         * @methodOf supplier-list.controller:SupplierListController
+         * @methodOf organization-list.controller:OrganizationListController
          * @name $onInit
          *
          * @description
-         * Method that is executed on initiating SupplierListController.
+         * Method that is executed on initiating OrganizationListController.
          */
         function onInit() {
-            vm.suppliers = suppliersData;
+            vm.organizations = organizationsData;
             vm.tableConfig = getTableConfig();
         }
 
         /**
          * @ngdoc method
-         * @methodOf supplier-list.controller:SupplierListController
+         * @methodOf organization-list.controller:OrganizationListController
          * @name onSearch
          *
          * @description
@@ -94,7 +94,7 @@
         function onSearch() {
             var stateParams = angular.copy($stateParams);
 
-            stateParams.name = vm.supplierName;
+            stateParams.name = vm.organizationName;
 
             $state.go($state.current, stateParams, {
                 reload: true
@@ -103,64 +103,64 @@
 
         /**
          * @ngdoc method
-         * @methodOf supplier-list.controller:SupplierListController
-         * @name redirectToAddSupplier
+         * @methodOf organization-list.controller:OrganizationListController
+         * @name redirectToAddOrganization
          *
          * @description
-         * Redirects the user to the add supplier page.
+         * Redirects the user to the add organization page.
          */
-        function redirectToAddSupplier() {
-            $state.go('openlmis.administration.suppliers.add');
+        function redirectToAddOrganization() {
+            $state.go('openlmis.administration.organizations.add');
         }
 
         /**
          * @ngdoc method
-         * @methodOf supplier-list.controller:SupplierListController
+         * @methodOf organization-list.controller:OrganizationListController
          * @name getTableConfig
          *
          * @description
-         * Returns the configuration for the supplier list table.
+         * Returns the configuration for the organization list table.
          */
         function getTableConfig() {
             return {
-                caption: 'supplierList.noSuppliers',
-                displayCaption: !vm.suppliers || vm.suppliers.length === 0,
+                caption: 'organizationList.noOrganizations',
+                displayCaption: !vm.organizations || vm.organizations.length === 0,
                 isSelectable: false,
                 //TODO: Adjust columns after BE is ready
                 columns: [
                     {
-                        header: 'supplierList.column.name',
+                        header: 'organizationList.column.name',
                         propertyPath: 'name',
                         template: function(item) {
                             return item.name;
                         }
                     },
                     {
-                        header: 'supplierList.column.code',
+                        header: 'organizationList.column.code',
                         propertyPath: 'code',
                         template: function(item) {
                             return item.code;
                         }
                     },
                     {
-                        header: 'supplierList.column.active',
+                        header: 'organizationList.column.active',
                         propertyPath: 'isActive',
                         template: '<i ng-class="{\'icon-ok\': item.active}"></i>'
                     }
                 ],
                 actions: {
-                    header: 'supplierList.column.actions',
+                    header: 'organizationList.column.actions',
                     data: [
                         {
                             type: TABLE_CONSTANTS.actionTypes.REDIRECT,
                             redirectLink: function(item) {
-                                return 'openlmis.administration.suppliers.edit({id:\'' + item.id + '\'})';
+                                return 'openlmis.administration.organizations.edit({id:\'' + item.id + '\'})';
                             },
-                            text: 'supplierList.action.edit'
+                            text: 'organizationList.action.edit'
                         }
                     ]
                 },
-                data: vm.suppliers
+                data: vm.organizations
             };
         }
     }

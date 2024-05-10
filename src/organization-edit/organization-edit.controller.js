@@ -18,33 +18,33 @@
     'use strict';
 
     angular
-        .module('supplier-edit')
-        .controller('SupplierEditController', SupplierEditController);
+        .module('organization-edit')
+        .controller('OrganizationEditController', OrganizationEditController);
 
-    SupplierEditController.$inject = ['stateTrackerService'];
+    OrganizationEditController.$inject = ['stateTrackerService'];
 
     /**
      * @ngdoc controller
-     * @name supplier-edit.controller:SupplierEditController
+     * @name organization-edit.controller:OrganizationEditController
      *
      * @description
-     * Controller for editing suppliers.
+     * Controller for editing organizations.
      */
-    function SupplierEditController(stateTrackerService) {
+    function OrganizationEditController(stateTrackerService) {
 
         var vm = this;
 
         vm.$onInit = onInit;
-        vm.saveSupplier = saveSupplier;
+        vm.saveOrganization = saveOrganization;
         vm.goToPreviousState = stateTrackerService.goToPreviousState;
 
         /**
          * @ngdoc method
-         * @methodOf supplier-edit.controller:SupplierEditController
+         * @methodOf organization-edit.controller:OrganizationEditController
          * @name $onInit
          *
          * @description
-         * Initialization method of the SupplierEditController.
+         * Initialization method of the OrganizationEditController.
          */
         function onInit() {
             console.log('onInit');
@@ -52,14 +52,14 @@
 
         /**
          * @ngdoc method
-         * @methodOf supplier-edit.controller:SupplierEditController
-         * @name saveSupplier
+         * @methodOf organization-edit.controller:OrganizationEditController
+         * @name saveorganization
          *
          * @description
-         * Saves the supplier and takes user back to the previous state.
+         * Saves the organization and takes user back to the previous state.
          */
-        function saveSupplier() {
-            console.log('saveSupplier');
+        function saveOrganization() {
+            console.log('saveOrganization');
         }
 
     }
