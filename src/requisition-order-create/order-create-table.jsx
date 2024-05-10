@@ -18,20 +18,19 @@ import { useDispatch } from 'react-redux';
 import { useParams, useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import getService from '../react-components/utils/angular-utils';
-import { createOrderDisabled, getIsOrderValidArray, pushNewOrder, saveDraftDisabled } from './order-create-table-helper-functions';
+import { createOrderDisabled, getIsOrderValidArray, getOrderValue, saveDraftDisabled } from './order-create-table-helper-functions';
 import OrderCreateTab from './order-create-tab';
 import { saveDraft, createOrder } from './reducers/orders.reducer';
 import { isOrderInvalid } from './order-create-validation-helper-functions';
 import OrderCreateSummaryModal from './order-create-summary-modal';
 import TabNavigation from '../react-components/tab-navigation/tab-navigation';
 
-const OrderCreateTable = ({isReadOnly}) => {
+const OrderCreateTable = ({ isReadOnly }) => {
     const [orders, setOrders] = useState([]);
-    const [orderParams, setOrderParams] = useState({ programId: null, requestingFacilityId: null });
-    const [orderableOptions, setOrderableOptions] = useState([]);
     const [currentTab, setCurrentTab] = useState(0);
     const [showValidationErrors, setShowValidationErrors] = useState(false);
     const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
+    const [cachedOrderableOptions, setCachedOrderableOptions] = useState([]);
 
     const { orderIds } = useParams();
 
@@ -55,35 +54,18 @@ const OrderCreateTable = ({isReadOnly}) => {
             if (orderIds) {
                 const orderIdsArray = orderIds.split(',');
                 const ordersPromises = orderIdsArray.map(orderId => orderService.get(orderId));
+                setCachedOrderableOptions(orderIdsArray.map(() => []));
                 Promise.all(ordersPromises)
                     .then((orders) => {
-                        orders.forEach((fetchedOrder) => {
-                            pushNewOrder(fetchedOrder, setOrderParams, stockCardSummaryRepositoryImpl, setOrders);
-                        });
+                        const orderValuePromisses = orders.map(order => getOrderValue(order, stockCardSummaryRepositoryImpl));
+                        Promise.all(orderValuePromisses)
+                            .then((orders) => {
+                                setOrders(orders);
+                            });
                     });
             }
         },
         [orderService]
-    );
-
-    useEffect(
-        () => {
-            if (orderParams.programId !== null && orderParams.requestingFacilityId !== null) {
-                stockCardSummaryRepositoryImpl.query({
-                    programId: orderParams.programId,
-                    facilityId: orderParams.facilityId
-                })
-                    .then(function (page) {
-                        const stockItems = page.content;
-
-                        setOrderableOptions(_.map(stockItems, stockItem => ({
-                            name: stockItem.orderable.fullProductName,
-                            value: { ...stockItem.orderable, soh: stockItem.stockOnHand }
-                        })));
-                    });
-            }
-        },
-        [orderParams]
     );
 
     const onProductAdded = (updatedOrder) => {
@@ -168,13 +150,20 @@ const OrderCreateTable = ({isReadOnly}) => {
                 </div>
             }
             <div className="currentTab">
-                {orders.length > 0 ? (
+                {(orders.length > 0) ? (
                     <OrderCreateTab
                         key={currentTab}
                         passedOrder={orders[currentTab]}
-                        orderableOptions={orderableOptions}
+                        stockCardSummaryRepositoryImpl={stockCardSummaryRepositoryImpl}
                         showValidationErrors={showValidationErrors}
                         isTableReadOnly={isReadOnly}
+                        tabIndex={currentTab}
+                        cachedOrderableOptions={cachedOrderableOptions[currentTab]}
+                        cacheOrderableOptions={(orderableOptions, tabIndex) => {
+                            const updatedCachedOrderableOptions = cachedOrderableOptions;
+                            updatedCachedOrderableOptions[tabIndex] = orderableOptions;
+                            setCachedOrderableOptions(updatedCachedOrderableOptions);
+                        }}
                         updateOrderArray={
                             (updatedOrder) => {
                                 onProductAdded(updatedOrder);
