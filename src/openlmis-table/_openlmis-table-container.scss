@@ -109,7 +109,7 @@ the current table sort order is recommended.*
 Styleguide 4.1
 */
 
-@mixin sortedColumn {
+@mixin sortableColumn {
   position: relative;
   padding-left: 2rem;
 
@@ -119,6 +119,24 @@ Styleguide 4.1
     padding-left: .5rem;
     font-weight: 300;
     margin-right: .2rem;
+  }
+}
+
+@mixin sortedColumnAsc {
+  @include sortableColumn();
+  @include icon('sort-up');
+
+  &::before {
+    transform: translateY(.25rem);
+  }
+}
+
+@mixin sortedColumnDesc {
+  @include sortableColumn();
+  @include icon('sort-down');
+
+  &::before {
+    transform: translateY(-0.25rem);
   }
 }
 
@@ -188,19 +206,21 @@ Styleguide 4.1
       thead {
         tr {
           .header-sortable {
+            @include icon('sort');
+            @include sortableColumn();
+
             &:hover {
               cursor: pointer;
             }
           }
 
           .sorted-ascending {
-            @include icon('arrow-up');
-            @include sortedColumn();
+            @include icon('sort-up');
+            @include sortedColumnAsc();
           }
 
           .sorted-descending {
-            @include icon('arrow-down');
-            @include sortedColumn();
+            @include sortedColumnDesc();
           }
         }
       }

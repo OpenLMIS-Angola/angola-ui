@@ -328,11 +328,12 @@
          *
          * @param  {String} orderId
          */
-        function redirectToOrderEdit(orderId) {
+        function redirectToOrderEdit(orderId, isReadOnly) {
             $state.go(
                 'openlmis.requisitions.orderCreate.table',
                 {
-                    orderId: orderId
+                    orderId: orderId,
+                    isReadOnly: isReadOnly
                 }
             );
         }
@@ -458,9 +459,17 @@
                             },
                             classes: 'order-edit',
                             onClick: function(item) {
-                                vm.redirectToOrderEdit(item.id);
+                                vm.redirectToOrderEdit(item.id, false);
                             },
                             text: 'orderView.edit'
+                        },
+                        {
+                            type: TABLE_CONSTANTS.actionTypes.CLICK,
+                            classes: 'order-view',
+                            onClick: function(item) {
+                                vm.redirectToOrderEdit(item.id, true);
+                            },
+                            text: 'orderView.view'
                         }
                     ]
                 },

@@ -261,9 +261,16 @@ describe('FacilityViewController', function() {
                 id: 'facility-id'
             };
             this.vm.newWard = {
-                code: 'ward-code',
                 disabled: false
             };
+            spyOn(this.vm, 'generateWardCode').andReturn('generated-code');
+        });
+
+        it('should generate ward code', function() {
+            this.vm.addWard();
+
+            expect(this.vm.generateWardCode).toHaveBeenCalled();
+            expect(this.vm.wards[0].code).toEqual('generated-code');
         });
 
         it('should add new ward to the list', function() {
@@ -271,6 +278,7 @@ describe('FacilityViewController', function() {
             newWard.facility = {
                 id: this.vm.facility.id
             };
+            newWard.code = 'generated-code';
 
             spyOn(this.wardService, 'getAllWards').andReturn(this.$q.when({
                 content: []
@@ -293,40 +301,6 @@ describe('FacilityViewController', function() {
             expect(this.vm.newWard).toEqual({
                 disabled: false
             });
-        });
-
-        it('should not add new ward if it exists in db', function() {
-            var existingWard = angular.copy(this.vm.newWard);
-            existingWard.facility = {
-                id: this.vm.facility.id
-            };
-
-            spyOn(this.wardService, 'getAllWards').andReturn(this.$q.when({
-                content: [existingWard]
-            }));
-
-            this.vm.addWard();
-            this.$rootScope.$apply();
-
-            expect(this.vm.wards.length).toBe(0);
-        });
-
-        it('should not add new ward if it exists in local state', function() {
-            var existingWard = angular.copy(this.vm.newWard);
-            existingWard.facility = {
-                id: this.vm.facility.id
-            };
-
-            this.vm.wards.push(existingWard);
-
-            spyOn(this.wardService, 'getAllWards').andReturn(this.$q.when({
-                content: []
-            }));
-
-            this.vm.addWard();
-            this.$rootScope.$apply();
-
-            expect(this.vm.wards.length).toBe(1);
         });
     });
 

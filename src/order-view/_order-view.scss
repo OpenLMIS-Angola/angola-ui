@@ -1,0 +1,29 @@
+.order-view {
+
+	@mixin button-icon-inherit($icon) {
+		@include button-icon-only($icon);
+		height: inherit;
+		width: inherit;
+		line-height: inherit;
+	}
+
+	button.print {
+		@include button-icon-inherit('print');
+	}
+
+	button.download {
+		@include button-icon-inherit('download');
+	}
+
+	button.retry {
+		@include button-icon-inherit('refresh');
+	}
+
+	button.order-edit {
+		@include button-icon-inherit('edit');
+	}
+
+	button.order-view {
+		@include button-icon-inherit('eye');
+	}
+}

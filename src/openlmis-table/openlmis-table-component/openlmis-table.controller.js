@@ -56,7 +56,9 @@
         }
 
         function sortTable(chosenColumn) {
-            openlmisTableSortingService.sortTable(chosenColumn);
+            if (isColumnSortable(chosenColumn)) {
+                openlmisTableSortingService.sortTable(chosenColumn);
+            }
         }
 
         function isColumnSortable(selectedColumn) {

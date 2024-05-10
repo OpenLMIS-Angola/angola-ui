@@ -27,9 +27,9 @@
         .module('openlmis-table')
         .service('openlmisTableSortingService', openlmisTableSortingService);
 
-    openlmisTableSortingService.$inject = ['SORTING_SERVICE_CONSTANTS', '$state', '$stateParams', 'alertService'];
+    openlmisTableSortingService.$inject = ['SORTING_SERVICE_CONSTANTS', '$state', '$stateParams'];
 
-    function openlmisTableSortingService(SORTING_SERVICE_CONSTANTS, $state, $stateParams, alertService) {
+    function openlmisTableSortingService(SORTING_SERVICE_CONSTANTS, $state, $stateParams) {
         var EMPTY_SORTING_PROPERTIES = {
             isSortedBy: undefined,
             sortingOrder: '',
@@ -55,31 +55,11 @@
          * @param {Object} selectedColumn
          */
         function sortTable(selectedColumn) {
-            if (isColumnSortable(selectedColumn)) {
-                var propertyPathParts = selectedColumn.propertyPath.split('.');
-                if (isNestedProperty(propertyPathParts)) {
-                    return;
-                }
-
-                var propertyToOrder = propertyPathParts[0];
-                var stateParams = JSON.parse(JSON.stringify($stateParams));
-                setSortingProperties(propertyToOrder);
-                stateParams.sort = getSortingParamValue(propertyToOrder);
-                $state.go($state.current.name, stateParams);
-            } else {
-                alertService.info({
-                    title: 'column.notSortable.title',
-                    message: 'column.notSortable.message'
-                });
-            }
-        }
-
-        function isNestedProperty(propertyPathParts) {
-            if (propertyPathParts.length > 1) {
-                alertService.error('sorting.error.nestedProperty.message');
-                return true;
-            }
-            return false;
+            var propertyToOrder = selectedColumn.propertyPath;
+            var stateParams = angular.copy($stateParams);
+            setSortingProperties(propertyToOrder);
+            stateParams.sort = getSortingParamValue(propertyToOrder);
+            $state.go($state.current.name, stateParams);
         }
 
         function getSortingParamValue(propertyToOrder) {
@@ -173,6 +153,11 @@
             return propertyPath === sortingProperties.isSortedBy;
         }
 
+        function hasNestedProperties(column) {
+            var propertyPathParts = column.propertyPath.split('.');
+            return propertyPathParts.length > 1;
+        }
+
         /**
          * @ngdoc method
          * @methodOf openlmis-table:openlmisTableSortingService
@@ -183,7 +168,9 @@
          * @param  {Object} column
          */
         function isColumnSortable(column) {
-            return (column.sortable === undefined || column.sortable) && column.propertyPath !== undefined;
+            return (column.sortable === undefined || column.sortable) &&
+                column.propertyPath !== undefined &&
+                !hasNestedProperties(column);
         }
     }
 })();

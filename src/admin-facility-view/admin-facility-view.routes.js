@@ -62,9 +62,12 @@
                     return programService.getAll();
                 },
                 wards: function(wardService, facility) {
-                    return wardService.getWardsByFacility({
-                        facilityId: facility.id
-                    }).then(function(response) {
+                    var searchParams = {
+                        facilityId: facility.id,
+                        sort: 'code,asc'
+                    };
+
+                    return wardService.getWardsByFacility(searchParams).then(function(response) {
                         return response.content;
                     });
                 }

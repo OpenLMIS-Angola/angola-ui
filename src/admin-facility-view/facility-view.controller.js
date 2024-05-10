@@ -158,6 +158,7 @@
             vm.wards = wards;
             vm.selectedTab = 0;
             vm.managedExternally = facility.isManagedExternally();
+            vm.generateWardCode = generateWardCode;
 
             if (!vm.facilityWithPrograms.supportedPrograms) {
                 vm.facilityWithPrograms.supportedPrograms = [];
@@ -286,36 +287,48 @@
          */
         function addWard() {
             var newWard = angular.copy(vm.newWard);
+
+            newWard.code = vm.generateWardCode(vm.facility.code);
             newWard.facility = {
                 id: vm.facility.id
             };
 
-            return wardService.getAllWards().then(function(dbWards) {
-                var wardExistsInDb = wardExists(dbWards.content, newWard);
-                var wardExistsInLocalState = wardExists(vm.wards, newWard);
+            vm.wards.push(newWard);
 
-                if (wardExistsInDb || wardExistsInLocalState) {
-                    return notifyAndReturn('adminFacilityView.wardExists');
-                }
+            vm.newWard = {
+                disabled: false
+            };
 
-                vm.wards.push(newWard);
-                vm.newWard = {
-                    disabled: false
-                };
+            return $q.when();
+        }
 
-                return $q.when();
-            });
+        /**
+         * @ngdoc method
+         * @methodOf admin-facility-view.controller:FacilityViewController
+         * @name generateWardCode
+         * 
+         * @description
+         * Generates ward code based on the facility code.
+         */
+        function generateWardCode(facilityCode) {
+            var serialNumber = padNumber(vm.wards.length + 1, 4);
 
-            function wardExists(wards, wardToCheck) {
-                return wards.some(function(ward) {
-                    return wardToCheck.code === ward.code;
-                });
-            }
+            return facilityCode + '.' + serialNumber;
+        }
 
-            function notifyAndReturn(message) {
-                notificationService.error(message);
-                return $q.when();
-            }
+        /**
+         * @ngdoc method
+         * @methodOf admin-facility-view.controller:FacilityViewController
+         * @name padNumber
+         * 
+         * @description
+         * Pads a number with leading zeros.
+         */
+        function padNumber(number, length) {
+            var numberString = number.toString();
+            var padding = length - numberString.length;
+
+            return '0'.repeat(padding) + numberString;
         }
 
         /**
