@@ -194,6 +194,13 @@
                     {
                         header: 'adminOrderableList.description',
                         propertyPath: 'description'
+                    },
+                    {
+                        header: 'adminOrderableList.isQuarantined',
+                        propertyPath: 'quarantined',
+                        sortable: false,
+                        //TODO: Icon should appear if quarantined is true
+                        template: '<i ng-class="{\'icon-ok\': true}"></i>'
                     }
                 ],
                 actions: {

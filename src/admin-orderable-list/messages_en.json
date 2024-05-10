@@ -1,4 +1,5 @@
 {
     "adminOrderableList.export": "Export",
-    "adminOrderableList.showQuarantined": "Show Quarantined"
+    "adminOrderableList.showQuarantined": "Show Quarantined",
+    "adminOrderableList.isQuarantined": "Quarantined"
 }
