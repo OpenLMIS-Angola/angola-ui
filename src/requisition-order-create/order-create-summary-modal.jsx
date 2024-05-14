@@ -16,10 +16,6 @@ const OrderCreateSummaryModal = ({ isOpen, orders, onSaveClick, onModalClose }) 
                 <>
                     <div className="react-modal-header">
                         <span className='modal-title'>Orders Summary</span>
-                        <span
-                            className="modal-close-button"
-                            onClick={() => onModalClose()}
-                        ></span>
                     </div>
                     <div className="react-modal-body">
                         <TabNavigation
