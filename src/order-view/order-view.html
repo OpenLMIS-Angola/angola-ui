@@ -1,32 +1,31 @@
 <h2>{{'orderView.viewOrders' | message}}</h2>
 <form class="sidebar" ng-submit="vm.loadOrders()">
-    <label for="supplyingFacility">{{'orderView.supplyingFacility' | message}}</label>
-    <select id="supplyingFacility"
-            ng-model="vm.supplyingFacility"
-            ng-options="facility.name for facility in vm.supplyingFacilities"
-            required></select>
-    <input type="submit" value="{{'orderView.search' | message}}" />
+        <label for="supplyingFacility">{{'orderView.supplyingFacility' | message}}</label>
+        <select id="supplyingFacility" ng-model="vm.supplyingFacility"
+                ng-options="facility.name for facility in vm.supplyingFacilities" required></select>
+        <input type="submit" value="{{'orderView.search' | message}}" />
 </form>
 <section class="openlmis-table-container order-view">
-        <form ng-submit="vm.loadOrders()" >
-        <label for="requestingFacility">{{'orderView.requestingFacility' | message}}</label>
-        <select id="requestingFacility"
-                ng-model="vm.requestingFacility"
-                ng-options="facility.name for facility in vm.requestingFacilities"></select>
-        <label>{{'orderView.program' | message}}</label>
-        <select id="program"
-                ng-model="vm.program"
-                ng-options="program.name for program in vm.programs"></select>
-        <label>{{'orderView.status' | message}}</label>
-        <select id="status"
-                ng-model="vm.status"
-                ng-options="status as status.name for status in vm.orderStatuses track by status.value"></select>
-        <label for=periodStartDate>{{'orderView.periodStart' | message}}</label>
-        <input id="periodStartDate" type="date" ng-model="vm.periodStartDate" max-date="vm.periodEndDate"/>
-        <label for=periodEndDate>{{'orderView.periodEnd' | message}}</label>
-        <input id="periodEndDate" type="date" ng-model="vm.periodEndDate" min-date="vm.periodStartDate"/>
-        <input type="submit" class="btn btn-primary" value="{{'orderView.search' | message}}"/>
-    </form>
-    <openlmis-table table-config="vm.tableConfig"></openlmis-table>
-    <openlmis-pagination/>
+        <form ng-submit="vm.loadOrders()">
+                <label for="requestingFacility">{{'orderView.requestingFacility' | message}}</label>
+                <select id="requestingFacility" ng-model="vm.requestingFacility"
+                        ng-options="facility.name for facility in vm.requestingFacilities"></select>
+                <label>{{'orderView.program' | message}}</label>
+                <select id="program" ng-model="vm.program"
+                        ng-options="program.name for program in vm.programs"></select>
+                <label>{{'orderView.status' | message}}</label>
+                <select id="status" ng-model="vm.status"
+                        ng-options="status as status.name for status in vm.orderStatuses track by status.value"></select>
+                <label for=periodStartDate>{{'orderView.periodStart' | message}}</label>
+                <input id="periodStartDate" type="date" ng-model="vm.periodStartDate" max-date="vm.periodEndDate" />
+                <label for=periodEndDate>{{'orderView.periodEnd' | message}}</label>
+                <input id="periodEndDate" type="date" ng-model="vm.periodEndDate" min-date="vm.periodStartDate" />
+                <div>
+                        <label for="requisitionless">{{:: 'orderView.requisitionless' | message}}</label>
+                        <input type="checkbox" ng-model="vm.requisitionless" id="requisitionless" ng-true-value="'true'" ng-false-value="'false'">
+                </div>
+                <input type="submit" class="btn btn-primary" value="{{'orderView.search' | message}}" />
+        </form>
+        <openlmis-table table-config="vm.tableConfig"></openlmis-table>
+        <openlmis-pagination />
 </section>

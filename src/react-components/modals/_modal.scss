@@ -19,16 +19,6 @@ $padding-value: 1rem;
       font-size: $font-size-h3;
       font-weight: $headings-font-weight;
     }
-
-    .modal-close-button {
-      color: red;
-      @include icon-only('times');
-      font-size: $font-size-h3;
-      &:hover {
-        cursor: pointer;
-        color: darken(red, 10%);
-      }
-    }
   }
 
   .react-modal-body {
