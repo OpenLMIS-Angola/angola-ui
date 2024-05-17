@@ -2,12 +2,6 @@
 <section class="openlmis-table-container">
     <form ng-submit="vm.search()">
         <fieldset class="form-group">
-            <label for="showQuarantined" class="checkbox">
-                <input type="checkbox" id="showQuarantined" ng-model="vm.showQuarantined" ng-true-value="'true'" ng-false-value="'false'" />
-                {{:: 'adminLotList.showQuarantined' | message}}
-            </label>
-        </fieldset>
-        <fieldset class="form-group">
             <label for="expirationDateFrom">{{'adminLotList.expirationDateFrom' | message}}</label>
             <input type="date" id="expirationDateFrom" ng-model="vm.expirationDateFrom"/>
         </fieldset>

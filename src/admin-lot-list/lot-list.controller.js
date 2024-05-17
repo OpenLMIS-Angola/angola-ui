@@ -100,17 +100,6 @@
         /**
          * @ngdoc property
          * @propertyOf admin-lot-list.controller:LotListController
-         * @name showQuarantined
-         * @type {String}
-         * 
-         * @description
-         * Indicates if quarantined lots should be visible
-         */
-        vm.showQuarantined = undefined;
-
-        /**
-         * @ngdoc property
-         * @propertyOf admin-lot-list.controller:LotListController
          * @name tableConfig
          * @type {Object}
          */
@@ -130,7 +119,6 @@
             stateParams.orderableId = vm.orderableId;
             stateParams.expirationDateFrom = vm.expirationDateFrom;
             stateParams.expirationDateTo = vm.expirationDateTo;
-            stateParams.quarantined = vm.showQuarantined;
             // ANGOLASUP-715: Filtering by lot code
             stateParams.lotCode = vm.lotCode;
             // ANGOLASUP-715: Ends here
@@ -152,7 +140,6 @@
             vm.lots = lots;
             vm.orderables = orderables;
 
-            vm.showQuarantined = $stateParams.quarantined;
             vm.orderableId = $stateParams.orderableId;
             vm.expirationDateFrom = $stateParams.expirationDateFrom;
             vm.expirationDateTo = $stateParams.expirationDateTo;
@@ -193,8 +180,9 @@
                         header: 'adminLotList.isQuarantined',
                         propertyPath: 'quarantined',
                         sortable: false,
-                        //TODO: Icon should appear if quarantined is true
-                        template: '<i ng-class="{\'icon-ok\': true}"></i>'
+                        template: function(lot) {
+                            return '<i ng-class="{\'icon-ok\': ' + lot.quarantined + '}"></i>';
+                        }
                     }
                 ],
                 actions: {

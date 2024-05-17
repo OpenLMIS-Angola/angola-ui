@@ -27,7 +27,7 @@
             showInNavigation: true,
             label: 'adminLotList.lots',
             // ANGOLASUP-715: Filtering by lot code
-            url: '/lots?orderableId&quarantined&expirationDateFrom&expirationDateTo&lotCode&page&size&sort',
+            url: '/lots?orderableId&expirationDateFrom&expirationDateTo&lotCode&page&size&sort',
             // ANGOLASUP-715: Ends here
             controller: 'LotListController',
             templateUrl: 'admin-lot-list/lot-list.html',
@@ -35,12 +35,8 @@
             accessRights: [ADMINISTRATION_RIGHTS.LOTS_MANAGE],
             resolve: {
                 paginatedLots: function($q, $stateParams, paginationService, lotService) {
-                    return paginationService.registerUrl($stateParams, function() {
-                        if ($stateParams.quarantined === undefined) {
-                            $stateParams.quarantined = 'true';
-                        }
-
-                        var params = angular.copy($stateParams);
+                    return paginationService.registerUrl($stateParams, function(stateParams) {
+                        var params = angular.copy(stateParams);
 
                         params.tradeItemIdIgnored = true;
 
@@ -68,6 +64,7 @@
                                 ? noProductMsg
                                 : orderable.fullProductName,
                             lotCode: lot.lotCode,
+                            quarantined: lot.quarantined,
                             expirationDate: lot.expirationDate,
                             manufacturedDate: lot.manufactureDate,
                             id: lot.id
