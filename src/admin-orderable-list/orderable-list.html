@@ -8,12 +8,6 @@
     <button ng-if="vm.canAdd" class="add" ui-sref='.add'>{{'adminOrderableList.addProduct' | message}}</button>
     <form ng-submit="vm.search()">
         <fieldset class="form-group">
-            <label for="showQuarantined" class="checkbox">
-                <input type="checkbox" id="showQuarantined" ng-model="vm.showQuarantined" ng-true-value="'true'" ng-false-value="'false'" />
-                {{:: 'adminOrderableList.showQuarantined' | message}}
-            </label>
-        </fieldset>
-        <fieldset class="form-group">
             <label for="code">{{'adminOrderableList.code' | message}}</label>
             <input type="text" id="code" ng-model="vm.code"/>
         </fieldset>
