@@ -143,6 +143,7 @@
             vm.orderableId = $stateParams.orderableId;
             vm.expirationDateFrom = $stateParams.expirationDateFrom;
             vm.expirationDateTo = $stateParams.expirationDateTo;
+
             // ANGOLASUP-715: Filtering by lot code
             vm.lotCode = $stateParams.lotCode;
             // ANGOLASUP-715: Ends here
@@ -174,6 +175,14 @@
                     {
                         header: 'adminLotList.manufacturedDate',
                         propertyPath: 'manufacturedDate'
+                    },
+                    {
+                        header: 'adminLotList.isQuarantined',
+                        propertyPath: 'quarantined',
+                        sortable: false,
+                        template: function(lot) {
+                            return '<i ng-class="{\'icon-ok\': ' + lot.quarantined + '}"></i>';
+                        }
                     }
                 ],
                 actions: {

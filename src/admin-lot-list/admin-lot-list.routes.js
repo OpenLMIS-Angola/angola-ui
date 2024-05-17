@@ -64,6 +64,7 @@
                                 ? noProductMsg
                                 : orderable.fullProductName,
                             lotCode: lot.lotCode,
+                            quarantined: lot.quarantined,
                             expirationDate: lot.expirationDate,
                             manufacturedDate: lot.manufactureDate,
                             id: lot.id
