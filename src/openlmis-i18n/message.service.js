@@ -140,6 +140,7 @@
                 }
 
             } else {
+                // eslint-disable-next-line no-console
                 console.error('[ERROR]: Translation message not found for: ' + key);
             }
 
