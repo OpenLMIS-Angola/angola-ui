@@ -1,4 +1,5 @@
 {
   "adminOrderableEdit.productCodeError": "Product code is not unique.",
-  "adminOrderableEdit.ftapExistsError": "Facility type with program already exists."
+  "adminOrderableEdit.ftapExistsError": "Facility type with program already exists.",
+  "adminOrderableEdit.isQuarantined": "Quarantined"
 }
