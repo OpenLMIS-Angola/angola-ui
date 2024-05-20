@@ -147,6 +147,7 @@
                     {
                         header: 'adminSystemNotificationList.isDisplayed',
                         propertyPath: 'isDisplayed',
+                        sortable: false,
                         template: function(item) {
                             return '<openlmis-ok-icon show="' + item.isDisplayed + '"></openlmis-ok-icon>';
                         }
