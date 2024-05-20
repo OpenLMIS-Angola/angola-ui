@@ -43,9 +43,15 @@
            ng-change="vm.validateField(vm.orderable.packRoundingThreshold, 'packRoundingThreshold')"
     />
     <fieldset class="form-group">
-        <label>
-            <input type="checkbox" ng-model="vm.orderable.roundToZero" />
+        <label for="roundToZero">
+            <input id="roundToZero" type="checkbox" ng-model="vm.orderable.roundToZero" />
             {{:: 'adminOrderableEdit.roundToZero' | message}}
         </label>
     </fieldset>
+    <fieldset class="form-group">
+       <label for="isQuarantined">
+            <input id="isQuarantined" type="checkbox" ng-model="vm.orderable.quarantined" />
+            {{:: 'adminOrderableEdit.isQuarantined' | message}}
+       </label>
+   </fieldset>
 </form>

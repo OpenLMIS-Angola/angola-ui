@@ -114,9 +114,11 @@
         function onInit() {
             vm.orderables = orderables;
             vm.programs = programs;
+
             vm.code = $stateParams.code;
             vm.name = $stateParams.name;
             vm.program = $stateParams.program;
+
             vm.canAdd = canAdd;
             vm.tableConfig = getTableConfig();
         }
@@ -179,6 +181,14 @@
                     {
                         header: 'adminOrderableList.description',
                         propertyPath: 'description'
+                    },
+                    {
+                        header: 'adminOrderableList.isQuarantined',
+                        propertyPath: 'quarantined',
+                        sortable: false,
+                        template: function(orderable) {
+                            return '<i ng-class="{\'icon-ok\': ' + orderable.quarantined + '}"></i>';
+                        }
                     }
                 ],
                 actions: {
