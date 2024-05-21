@@ -201,6 +201,7 @@
                     {
                         header: 'orderFulfillment.orderingFacility',
                         propertyPath: 'facility',
+                        sortable: false,
                         template: function(item) {
                             return $filter('facility')(item.facility);
                         }
