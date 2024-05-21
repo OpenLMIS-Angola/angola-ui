@@ -3,12 +3,5 @@
   <button id="add-organization" class="add" ng-click="vm.redirectToAddOrganization()">
     {{'organizationList.addOrganization' | message}}
   </button>
-  <form ng-submit="vm.onSearch()">
-    <fieldset class="form-group">
-      <label for="organizationName">{{'organizationList.filter.name' | message}}</label>
-      <input type="text" id="organizationName" ng-model="vm.organizationName" />
-    </fieldset>
-  </form>
   <openlmis-table table-config="vm.tableConfig"></openlmis-table>
-  <openlmis-pagination />
 </section>

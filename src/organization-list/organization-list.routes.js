@@ -33,26 +33,14 @@
             //TODO: Adjust access rights
             accessRights: [ADMINISTRATION_RIGHTS.STOCK_SOURCES_MANAGE],
             resolve: {
-                //TODO: Implement organizationService after BE is ready, for now using facilityService
-                organizationsData: function(paginationService, facilityService, $stateParams) {
-                    // return paginationService.registerUrl($stateParams, function(stateParams) {
-                    //     var params = angular.copy(stateParams),
-                    //         page = stateParams.page,
-                    //         size = stateParams.size,
-                    //         sort = stateParams.sort ? stateParams.sort : 'name,asc';
-
-                    //     delete params.page;
-                    //     delete params.size;
-                    //     delete params.sort;
-
-                    //     return facilityService.search({
-                    //         page: page,
-                    //         size: size,
-                    //         sort: sort
-                    //     }, params);
-                    // });
-                    console.log(paginationService, facilityService, $stateParams);
-                    return [];
+                organizationsData: function(organizationService, $stateParams) {
+                    return organizationService.getOrganizations($stateParams)
+                        .then(function(response) {
+                            return response;
+                        })
+                        .catch(function(error) {
+                            throw new Error('Error while fetching organizations: ' + error);
+                        });
                 }
             }
         });

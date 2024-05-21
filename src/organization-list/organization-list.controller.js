@@ -28,13 +28,12 @@
         .module('organization-list')
         .controller('OrganizationListController', controller);
 
-    controller.$inject = ['$state', '$stateParams', 'organizationsData', 'TABLE_CONSTANTS'];
+    controller.$inject = ['$state', 'organizationsData', 'TABLE_CONSTANTS'];
 
-    function controller($state, $stateParams, organizationsData, TABLE_CONSTANTS) {
+    function controller($state, organizationsData, TABLE_CONSTANTS) {
         var vm = this;
 
         vm.$onInit = onInit;
-        vm.onSearch = onSearch;
         vm.redirectToAddOrganization = redirectToAddOrganization;
 
         /**
@@ -86,24 +85,6 @@
         /**
          * @ngdoc method
          * @methodOf organization-list.controller:OrganizationListController
-         * @name onSearch
-         *
-         * @description
-         * Reloads page with new search parameters.
-         */
-        function onSearch() {
-            var stateParams = angular.copy($stateParams);
-
-            stateParams.name = vm.organizationName;
-
-            $state.go($state.current, stateParams, {
-                reload: true
-            });
-        }
-
-        /**
-         * @ngdoc method
-         * @methodOf organization-list.controller:OrganizationListController
          * @name redirectToAddOrganization
          *
          * @description
@@ -126,7 +107,6 @@
                 caption: 'organizationList.noOrganizations',
                 displayCaption: !vm.organizations || vm.organizations.length === 0,
                 isSelectable: false,
-                //TODO: Adjust columns after BE is ready
                 columns: [
                     {
                         header: 'organizationList.column.name',
@@ -136,16 +116,9 @@
                         }
                     },
                     {
-                        header: 'organizationList.column.code',
-                        propertyPath: 'code',
-                        template: function(item) {
-                            return item.code;
-                        }
-                    },
-                    {
                         header: 'organizationList.column.active',
                         propertyPath: 'isActive',
-                        template: '<i ng-class="{\'icon-ok\': item.active}"></i>'
+                        template: '<i ng-class="{\'icon-ok\': !item.disabled}"></i>'
                     }
                 ],
                 actions: {

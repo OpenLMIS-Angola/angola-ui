@@ -30,7 +30,6 @@
         'openlmis-pagination',
         'openlmis-rights',
         'ui.router',
-        'referencedata-geographic-zone',
         'openlmis-state-tracker',
         'openlmis-uuid',
         'openlmis-table'
