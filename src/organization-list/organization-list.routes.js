@@ -30,7 +30,6 @@
             controller: 'OrganizationListController',
             templateUrl: 'organization-list/organization-list.html',
             controllerAs: 'vm',
-            //TODO: Adjust access rights
             accessRights: [ADMINISTRATION_RIGHTS.STOCK_ORGANIZATIONS_MANAGE],
             resolve: {
                 organizationsData: function(organizationService, $stateParams) {
