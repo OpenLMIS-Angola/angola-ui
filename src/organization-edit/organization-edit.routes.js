@@ -47,8 +47,7 @@
             },
             templateUrl: 'organization-edit/organization-edit.html',
             url: '/edit/:id',
-            //TODO: Adjust rights
-            accessRights: [ADMINISTRATION_RIGHTS.LOTS_MANAGE]
+            accessRights: [ADMINISTRATION_RIGHTS.STOCK_ORGANIZATIONS_MANAGE]
         });
 
     }

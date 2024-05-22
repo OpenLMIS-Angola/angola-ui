@@ -31,7 +31,7 @@
             templateUrl: 'organization-list/organization-list.html',
             controllerAs: 'vm',
             //TODO: Adjust access rights
-            accessRights: [ADMINISTRATION_RIGHTS.STOCK_SOURCES_MANAGE],
+            accessRights: [ADMINISTRATION_RIGHTS.STOCK_ORGANIZATIONS_MANAGE],
             resolve: {
                 organizationsData: function(organizationService, $stateParams) {
                     return organizationService.getOrganizations($stateParams)

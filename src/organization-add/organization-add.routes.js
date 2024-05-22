@@ -21,15 +21,16 @@
         .module('organization-add')
         .config(routes);
 
-    routes.$inject = ['modalStateProvider'];
+    routes.$inject = ['modalStateProvider', 'ADMINISTRATION_RIGHTS'];
 
-    function routes(modalStateProvider) {
+    function routes(modalStateProvider, ADMINISTRATION_RIGHTS) {
 
         modalStateProvider.state('openlmis.administration.organizations.add', {
             controller: 'OrganizationAddController',
             controllerAs: 'vm',
             templateUrl: 'organization-add/organization-add.html',
-            url: '/add'
+            url: '/add',
+            accessRights: [ADMINISTRATION_RIGHTS.STOCK_ORGANIZATIONS_MANAGE]
         });
 
     }
