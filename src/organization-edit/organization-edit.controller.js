@@ -21,7 +21,14 @@
         .module('organization-edit')
         .controller('OrganizationEditController', OrganizationEditController);
 
-    OrganizationEditController.$inject = ['stateTrackerService'];
+    OrganizationEditController.$inject = [
+        'stateTrackerService',
+        'confirmService',
+        'organization',
+        'organizationService',
+        'notificationService',
+        'loadingModalService'
+    ];
 
     /**
      * @ngdoc controller
@@ -30,13 +37,31 @@
      * @description
      * Controller for editing organizations.
      */
-    function OrganizationEditController(stateTrackerService) {
+    function OrganizationEditController(
+        stateTrackerService,
+        confirmService,
+        organization,
+        organizationService,
+        notificationService,
+        loadingModalService
+    ) {
 
         var vm = this;
 
         vm.$onInit = onInit;
         vm.saveOrganization = saveOrganization;
         vm.goToPreviousState = stateTrackerService.goToPreviousState;
+
+        /**
+         * @ngdoc property
+         * @propertyOf organization-edit.controller:OrganizationEditController
+         * @name editedOrganization
+         * @type {Object}
+         * 
+         * @description
+         * Organization that is being edited.
+         */
+        vm.editedOrganization = undefined;
 
         /**
          * @ngdoc method
@@ -47,19 +72,33 @@
          * Initialization method of the OrganizationEditController.
          */
         function onInit() {
-            console.log('onInit');
+            vm.editedOrganization = organization;
         }
 
         /**
          * @ngdoc method
          * @methodOf organization-edit.controller:OrganizationEditController
-         * @name saveorganization
+         * @name saveOrganization
          *
          * @description
          * Saves the organization and takes user back to the previous state.
          */
         function saveOrganization() {
-            console.log('saveOrganization');
+            confirmService.confirm('organizationEdit.confirmationPrompt', 'organizationEdit.update')
+                .then(function() {
+                    loadingModalService.open();
+
+                    organizationService.updateOrganization(vm.editedOrganization)
+                        .then(function() {
+                            notificationService.success('organizationEdit.organizationSaved');
+                            loadingModalService.close();
+                            stateTrackerService.goToPreviousState();
+                        })
+                        .catch(function() {
+                            loadingModalService.close();
+                            notificationService.error('organizationEdit.organizationSaveError');
+                        });
+                });
         }
 
     }

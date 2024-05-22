@@ -1,5 +1,11 @@
 {
   "organizationAdd.addOrganization": "Add Organization",
   "organizationAdd.cancel": "Cancel",
-  "organizationAdd.save": "Save"
+  "organizationAdd.save": "Save",
+  "organizationAdd.create": "Create",
+  "organizationAdd.organizationName": "Organization Name",
+  "organizationAdd.disabled": "Disabled",
+  "organizationAdd.confirmationPrompt": "Are you sure you want to create organization?",
+  "organizationAdd.organizationCreated": "Organization created successfully.",
+  "organizationAdd.organizationCreateError": "Error while creating organization."
 }

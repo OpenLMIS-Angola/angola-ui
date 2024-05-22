@@ -42,7 +42,6 @@
                 method: 'POST'
             },
             updateOrganization: {
-                url: referencedataUrlFactory('/api/organizations/:id'),
                 method: 'PUT'
             }
         });
@@ -78,7 +77,7 @@
          * @returns {Promise} A promise that will be resolved with the created organization.
          */
         function createNewOrganization(organization) {
-            return resource.createNewOrganization(organization).$promise;
+            return resource.createNewOrganization(null, organization).$promise;
         }
 
         /**
@@ -94,7 +93,9 @@
          * @returns {Promise} A promise that will be resolved with the updated organization.
          */
         function updateOrganization(organization) {
-            return resource.updateOrganization(organization).$promise;
+            return resource.updateOrganization({
+                id: organization.id
+            }, organization).$promise;
         }
 
     }

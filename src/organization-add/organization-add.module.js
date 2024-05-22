@@ -25,8 +25,6 @@
      */
     angular.module('organization-add', [
         'referencedata-facility',
-        'referencedata-facility-type',
-        'referencedata-facility-operator',
         'openlmis-modal',
         'openlmis-templates',
         'openlmis-state-tracker',

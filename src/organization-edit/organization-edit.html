@@ -2,20 +2,26 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1>{{'organizationAdd.editOrganization' | message}}</h1>
+        <h1>{{'organizationEdit.editOrganization' | message}}</h1>
       </div>
       <div class="modal-body">
-        <form id="edit-organization-form" ng-submit="vm.updateOrganization()">
-          <!-- TODO: Implement proper edit form -->
-          <!-- <ng-include src="'admin-facility-add/facility-information.html'"></ng-include> -->
+        <form id="edit-organization-form" ng-submit="vm.saveOrganization()">
+          <label for="organization-name">{{:: 'organizationEdit.organizationName' | message}}</label>
+          <input type="text" id="organization-name" ng-model="vm.editedOrganization.name" required>
+          <fieldset class="form-group">
+            <label for="organization-disabled">
+                 <input id="organization-disabled" type="checkbox" ng-model="vm.editedOrganization.disabled" />
+                 {{:: 'organizationEdit.disabled' | message}}
+            </label>
+          </fieldset>
         </form>
       </div>
       <div class="modal-footer">
         <button id="cancel" ng-click="vm.goToPreviousState()">
-          {{'organizationAdd.cancel' | message}}
+          {{'organizationEdit.cancel' | message}}
         </button>
         <button class="primary" form="edit-organization-form">
-          {{'organizationAdd.update' | message}}
+          {{'organizationEdit.update' | message}}
         </button>
       </div>
     </div>

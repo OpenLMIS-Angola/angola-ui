@@ -28,8 +28,6 @@
         modalStateProvider.state('openlmis.administration.organizations.add', {
             controller: 'OrganizationAddController',
             controllerAs: 'vm',
-            //TODO: Clarify if resolve needed
-            resolve: {},
             templateUrl: 'organization-add/organization-add.html',
             url: '/add'
         });

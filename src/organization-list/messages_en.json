@@ -5,7 +5,7 @@
     "organizationList.filter.name": "Organization Name",
     "organizationList.column.name": "Name",
     "organizationList.column.code": "Code",
-    "organizationList.column.active": "Active",
+    "organizationList.column.disabled": "Disabled",
     "organizationList.column.actions": "Actions",
     "organizationList.action.edit": "Edit",
     "organizationList.addOrganization": "Add Organization",

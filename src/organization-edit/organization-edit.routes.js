@@ -21,21 +21,34 @@
         .module('organization-edit')
         .config(routes);
 
-    routes.$inject = ['modalStateProvider'];
+    routes.$inject = ['modalStateProvider', 'ADMINISTRATION_RIGHTS'];
 
-    function routes(modalStateProvider) {
+    function routes(modalStateProvider, ADMINISTRATION_RIGHTS) {
 
         modalStateProvider.state('openlmis.administration.organizations.edit', {
             controller: 'OrganizationEditController',
             controllerAs: 'vm',
             resolve: {
-                organization: function() {
-                    //TODO: Implement fetching organization by id after BE is ready
-                    return {};
+                organization: function($stateParams, organizationService) {
+                    return organizationService.getOrganizations($stateParams)
+                        .then(function(response) {
+                            var requestedOrganizationId = $stateParams.id;
+
+                            var organization = response.find(function(organization) {
+                                return organization.id === requestedOrganizationId;
+                            });
+
+                            return organization;
+                        })
+                        .catch(function(error) {
+                            throw new Error('Error while getting organization', error);
+                        });
                 }
             },
             templateUrl: 'organization-edit/organization-edit.html',
-            url: '/edit/:id'
+            url: '/edit/:id',
+            //TODO: Adjust rights
+            accessRights: [ADMINISTRATION_RIGHTS.LOTS_MANAGE]
         });
 
     }

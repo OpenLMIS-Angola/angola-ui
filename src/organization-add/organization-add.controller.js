@@ -21,7 +21,13 @@
         .module('organization-add')
         .controller('OrganizationAddController', OrganizationAddController);
 
-    OrganizationAddController.$inject = ['stateTrackerService'];
+    OrganizationAddController.$inject = [
+        'stateTrackerService',
+        'confirmService',
+        'organizationService',
+        'notificationService',
+        'loadingModalService'
+    ];
 
     /**
      * @ngdoc controller
@@ -30,38 +36,53 @@
      * @description
      * Controller for adding organizations.
      */
-    function OrganizationAddController(stateTrackerService) {
+    function OrganizationAddController(
+        stateTrackerService,
+        confirmService,
+        organizationService,
+        notificationService,
+        loadingModalService
+    ) {
 
         var vm = this;
 
-        vm.$onInit = onInit;
-        vm.saveOrganization = saveOrganization;
+        vm.createOrganization = createOrganization;
         vm.goToPreviousState = stateTrackerService.goToPreviousState;
 
         /**
-         * @ngdoc method
-         * @methodOf organization-add.controller:OrganizationAddController
-         * @name $onInit
-         *
+         * @ngdoc property
+         * @propertyOf organization-add.controller:OrganizationAddController
+         * @name createdOrganization
+         * 
          * @description
-         * Initialization method of the OrganizationAddController.
+         * Organization to be created.
          */
-        function onInit() {
-            console.log('onInit');
-        }
+        vm.organization = null;
 
         /**
          * @ngdoc method
          * @methodOf organization-add.controller:OrganizationAddController
-         * @name saveOrganization
+         * @name createOrganization
          *
          * @description
-         * Saves the organization and takes user back to the previous state.
+         * Creates the organization.
          */
-        function saveOrganization() {
-            //TODO: Implement save organization
-            console.log('Saving...');
-            stateTrackerService.goToPreviousState();
+        function createOrganization() {
+            confirmService.confirm('organizationAdd.confirmationPrompt', 'organizationAdd.create')
+                .then(function() {
+                    loadingModalService.open();
+
+                    organizationService.createNewOrganization(vm.createdOrganization)
+                        .then(function() {
+                            notificationService.success('organizationAdd.organizationCreated');
+                            loadingModalService.close();
+                            stateTrackerService.goToPreviousState();
+                        })
+                        .catch(function() {
+                            loadingModalService.close();
+                            notificationService.error('organizationAdd.organizationCreateError');
+                        });
+                });
         }
 
     }

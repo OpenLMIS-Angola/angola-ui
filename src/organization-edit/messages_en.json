@@ -1,5 +1,10 @@
 {
-  "organizationAdd.editOrganization": "Edit Organization",
-  "organizationAdd.cancel": "Cancel",
-  "organizationAdd.update": "Update"
+  "organizationEdit.editOrganization": "Edit Organization",
+  "organizationEdit.cancel": "Cancel",
+  "organizationEdit.update": "Update",
+  "organizationEdit.organizationName": "Organization Name",
+  "organizationEdit.disabled": "Disabled",
+  "organizationEdit.confirmationPrompt": "Are you sure you want to update this organization?",
+  "organizationEdit.organizationSaved": "Organization saved successfully.",
+  "organizationEdit.organizationSaveError": "Error while saving organization."
 }

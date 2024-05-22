@@ -5,9 +5,15 @@
           <h1>{{'organizationAdd.addOrganization' | message}}</h1>
         </div>
         <div class="modal-body">
-          <form id="add-organization-form" ng-submit="vm.saveOrganization()">
-            <!-- TODO: Implement proper create form -->
-            <!-- <ng-include src="'admin-facility-add/facility-information.html'"></ng-include> -->
+          <form id="add-organization-form" ng-submit="vm.createOrganization()">
+            <label for="organization-name">{{:: 'organizationAdd.organizationName' | message}}</label>
+            <input type="text" id="organization-name" ng-model="vm.createdOrganization.name" required>
+            <fieldset class="form-group">
+              <label for="organization-disabled">
+                   <input id="organization-disabled" type="checkbox" ng-model="vm.createdOrganization.disabled" />
+                   {{:: 'organizationAdd.disabled' | message}}
+              </label>
+            </fieldset>
           </form>
         </div>
         <div class="modal-footer">

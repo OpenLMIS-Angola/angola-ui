@@ -111,14 +111,16 @@
                     {
                         header: 'organizationList.column.name',
                         propertyPath: 'name',
+                        sortable: false,
                         template: function(item) {
                             return item.name;
                         }
                     },
                     {
-                        header: 'organizationList.column.active',
-                        propertyPath: 'isActive',
-                        template: '<i ng-class="{\'icon-ok\': !item.disabled}"></i>'
+                        header: 'organizationList.column.disabled',
+                        propertyPath: 'disabled',
+                        sortable: false,
+                        template: '<i ng-class="{\'icon-ok\': item.disabled}"></i>'
                     }
                 ],
                 actions: {
