@@ -57,11 +57,7 @@
         function organizationsResolve(OrganizationResource) {
             return new OrganizationResource().query()
                 .then(function(resource) {
-                    var activeOrgs = resource.content.filter(function(organization) {
-                        return !organization.disabled;
-                    });
-
-                    return activeOrgs;
+                    return resource.content;
                 });
         }
     }
