@@ -190,7 +190,8 @@
                     },
                     {
                         header: 'adminUserList.email',
-                        propertyPath: 'email'
+                        propertyPath: 'email',
+                        sortable: false
                     }
                 ],
                 actions: {
