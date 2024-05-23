@@ -36,10 +36,12 @@
             this.facility = {
                 id: 'facility-id' + WardDataBuilder.instanceNumber
             };
+            this.id = 'id' + WardDataBuilder.instanceNumber;
         }
 
         function build() {
             return {
+                id: this.id,
                 code: this.code,
                 name: this.name,
                 description: this.description,

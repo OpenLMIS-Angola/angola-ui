@@ -23,14 +23,14 @@
     <p class="note-warning">
       {{'adminFacilityView.wardIsDisabled.note' | message}}
     </p>
-    <label for="wardIsDisabled" class="checkbox">
+    <label for="wardIsActive" class="checkbox">
       <input
-        id="wardIsDisabled"
+        id="wardIsActive"
         type="checkbox"
         ng-model="vm.newWard.enabled"
         ng-disabled="vm.managedExternally"
       />
-      {{'adminFacilityView.disabled' | message}}
+      {{'adminFacilityView.enabled' | message}}
     </label>
   </div>
   <button type="submit" class="add">
@@ -57,12 +57,12 @@
         <th>{{'adminFacilityView.name' | message}}</th>
         <th>{{'adminFacilityView.description' | message}}</th>
         <th openlmis-popover="{{'adminFacilityView.statusPopover' | message}}">
-          {{'adminFacilityView.disabled' | message}}
+          {{'adminFacilityView.enabled' | message}}
         </th>
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="ward in vm.wards">
+      <tr ng-repeat="ward in vm.wards.concat(vm.addedWards)">
         <td><input type="text" disabled ng-model="ward.code" /></td>
         <td><input type="text" ng-model="ward.name" required /></td>
         <td><input type="text" ng-model="ward.description" /></td>
