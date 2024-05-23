@@ -323,12 +323,12 @@ describe('FacilityViewController', function() {
             expect(this.loadingModalService.open).toHaveBeenCalled();
         });
 
-        it('should call wardService.saveFacilityWards with correct parameters', function() {
+        it('should call wardService.updateFacilityWard with correct parameters', function() {
             this.confirmDeferred.resolve();
             this.vm.saveFacilityWards();
             this.$rootScope.$apply();
 
-            expect(this.wardService.saveFacilityWards).toHaveBeenCalledWith(this.vm.wards);
+            expect(this.wardService.updateFacilityWard).toHaveBeenCalledWith(this.vm.wards);
         });
 
         it('should show success notification and navigate to facility list if saved successfully', function() {

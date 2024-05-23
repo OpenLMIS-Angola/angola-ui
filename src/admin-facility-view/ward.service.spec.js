@@ -79,7 +79,7 @@ describe('wardService', function() {
             .respond(200, this.wards);
 
         var result;
-        this.wardService.saveFacilityWards(this.wards).then(function(response) {
+        this.wardService.updateFacilityWard(this.wards).then(function(response) {
             result = response;
         });
 
