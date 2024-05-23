@@ -1,22 +1,31 @@
-export const getOrderValue = (fetchedOrder, stockCardSummaryRepositoryImpl) => {
-    const orderableIds = fetchedOrder.orderLineItems.map((lineItem) => lineItem.orderable.id);
+export const pushNewOrder = (fetchedOrder, setOrderParams, stockCardSummaryRepositoryImpl, setOrders) => {
+    const orderParams = {
+        programId: fetchedOrder.program.id,
+        facilityId: fetchedOrder.requestingFacility.id
+    };
+
+    setOrderParams(orderParams);
+
+    const orderableIds = fetchedOrder.orderLineItems.map((lineItem) => {
+        return lineItem.orderable.id;
+    });
 
     if (orderableIds?.length) {
-        return stockCardSummaryRepositoryImpl.query({
+        stockCardSummaryRepositoryImpl.query({
             programId: fetchedOrder.program.id,
             facilityId: fetchedOrder.requestingFacility.id,
             orderableId: orderableIds
         }).then(function (page) {
-            return getOrdersWithSoh(page, fetchedOrder);
+            setOrderWithSoh(page, fetchedOrder, setOrders);
         }).catch(function () {
-            return fetchedOrder;
+            setOrders(prevState => [...prevState, fetchedOrder]);
         });
     } else {
-        return Promise.resolve(fetchedOrder);
+        setOrders(prevState => [...prevState, fetchedOrder]);
     }
 };
 
-const getOrdersWithSoh = (page, fetchedOrder) => {
+const setOrderWithSoh = (page, fetchedOrder, setOrders) => {
     const stockItems = page.content;
     const orderWithSoh = {
         ...fetchedOrder,
@@ -30,7 +39,7 @@ const getOrdersWithSoh = (page, fetchedOrder) => {
         })
     };
 
-    return orderWithSoh;
+    setOrders(prevState => [...prevState, orderWithSoh]);
 };
 
 export const getUpdatedOrder = (selectedOrderable, order) => {

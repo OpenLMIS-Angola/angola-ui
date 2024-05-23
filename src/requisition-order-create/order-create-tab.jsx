@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import Tippy from '@tippyjs/react';
 
 import EditableTable from '../react-components/table/editable-table';
@@ -10,45 +10,13 @@ import { getUpdatedOrder } from './order-create-table-helper-functions';
 import { orderTableColumns } from './order-create.constant';
 import { validateOrderItem } from './order-create-validation-helper-functions';
 
-const OrderCreateTab = ({ passedOrder,
-    updateOrderArray,
-    showValidationErrors,
-    isTableReadOnly,
-    stockCardSummaryRepositoryImpl,
-    tabIndex,
-    cacheOrderableOptions,
-    cachedOrderableOptions }) => {
+
+const OrderCreateTab = ({ passedOrder, orderableOptions, updateOrderArray, showValidationErrors, isTableReadOnly }) => {
     const [order, setOrder] = useState({ orderLineItems: [], ...passedOrder });
     const [selectedOrderable, setSelectedOrderable] = useState('');
-    const [orderableOptions, setOrderableOptions] = useState(cachedOrderableOptions);
+
     const columns = useMemo(() => orderTableColumns(isTableReadOnly), []);
     const orderCreatePrintService = useMemo(() => getService('orderCreatePrintService'), []);
-
-    useMemo(() => {
-        if (cachedOrderableOptions?.length) {
-            setOrderableOptions(cachedOrderableOptions);
-            return;
-        }
-
-        stockCardSummaryRepositoryImpl.query({
-            programId: order.program.id,
-            facilityId: order.requestingFacility.id
-        }).then((page) => {
-            const fetchedOrderableOptions = page.content
-            const orderableOptionsValue = fetchedOrderableOptions.map(stockItem => ({
-                name: stockItem.orderable.fullProductName,
-                value: { ...stockItem.orderable, soh: stockItem.stockOnHand }
-            }));
-
-            setOrderableOptions(orderableOptionsValue);
-        });
-    }, []);
-
-    useEffect(() => {
-        if (orderableOptions.length > 0) {
-            cacheOrderableOptions(orderableOptions, tabIndex);
-        }
-    }, [orderableOptions]);
 
     const updateData = (changedItems) => {
         const updatedOrder = {
