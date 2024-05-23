@@ -49,6 +49,7 @@
             ORDER_CREATE: 'ORDER_CREATE',
             DATA_EXPORT: 'DATA_EXPORT',
             DATA_IMPORT: 'DATA_IMPORT',
+            STOCK_ORGANIZATIONS_MANAGE: 'STOCK_ORGANIZATIONS_MANAGE',
             // AO-805: Allow users with proper rights to edit product prices
             EDIT_PRODUCT_PRICE_STOCK_MANAGEMENT: 'EDIT_PRODUCT_PRICE_STOCK_MANAGEMENT'
             // AO-805: Ends here

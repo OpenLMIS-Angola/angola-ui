@@ -1,0 +1,7 @@
+<h2>{{'organizationList.pageHeader' | message}}</h2>
+<section class="openlmis-table-container">
+  <button id="add-organization" class="add" ng-click="vm.redirectToAddOrganization()">
+    {{'organizationList.addOrganization' | message}}
+  </button>
+  <openlmis-table table-config="vm.tableConfig"></openlmis-table>
+</section>

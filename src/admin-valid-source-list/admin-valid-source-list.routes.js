@@ -38,7 +38,8 @@
                             size: params.size,
                             page: params.page,
                             programId: params.programId,
-                            facilityId: params.facilityId
+                            facilityId: params.facilityId,
+                            includeDisabled: true
                         });
                     });
                 },
