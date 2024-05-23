@@ -34,20 +34,14 @@
 
         var resource = $resource(referencedataUrlFactory('/api/facilities/'), {}, {
             getWardsByFacility: {
-                url: referencedataUrlFactory('/api/facilities'),
-                method: 'GET'
-            },
-            getAllWards: {
-                url: referencedataUrlFactory('/api/facilities'),
                 method: 'GET',
-                isArray: false
+                url: referencedataUrlFactory('/api/facilities/full')
             },
             updateFacilityWard: {
                 url: referencedataUrlFactory('/api/facilities/:id'),
                 method: 'PUT'
             },
             addNewWard: {
-                url: referencedataUrlFactory('/api/facilities'),
                 method: 'PUSH'
             }
         });
@@ -55,23 +49,8 @@
         return {
             getWardsByFacility: getWardsByFacility,
             updateFacilityWard: updateFacilityWard,
-            getAllWards: getAllWards,
             addNewWard: addNewWard
         };
-
-        /**
-         * @ngdoc method
-         * @methodOf admin-facility-view.wardService
-         * @name getAllWards
-         *
-         * @description
-         * Retrieves all available wards.
-         *
-         * @return {Promise}                   Array of all wards
-         */
-        function getAllWards() {
-            return resource.getAllWards().$promise;
-        }
 
         /**
          * @ngdoc method
@@ -91,21 +70,23 @@
         /**
          * @ngdoc method
          * @methodOf admin-facility-view.wardService
-         * @name saveFacilityWards
+         * @name updateFacilityWard
          *
          * @description
          * Saves facility wards.
          *
          * @return {Promise} Saved wards promise
          */
-        function updateFacilityWard(wards) {
-            return resource.saveFacilityWards(wards).$promise;
+        function updateFacilityWard(ward) {
+            return resource.updateFacilityWard({
+                id: ward.id
+            }, ward).$promise;
         }
 
         /**
          * @ngdoc method
          * @methodOf admin-facility-view.wardService
-         * @name saveFacilityWards
+         * @name addNewWard
          *
          * @description
          * Creates a new Ward

@@ -45,7 +45,7 @@ describe('FacilityViewController', function() {
         spyOn(this.confirmService, 'confirm').andReturn(this.confirmDeferred.promise);
 
         this.saveFacilityDetailsDeferred = this.$q.defer();
-        spyOn(this.wardService, 'saveFacilityWards').andReturn(this.saveFacilityDetailsDeferred.promise);
+        spyOn(this.wardService, 'updateFacilityWard').andReturn(this.saveFacilityDetailsDeferred.promise);
 
         var loadingModalPromise = this.$q.defer();
         spyOn(this.loadingModalService, 'close').andCallFake(loadingModalPromise.resolve);
@@ -256,12 +256,13 @@ describe('FacilityViewController', function() {
     describe('addWard', function() {
 
         beforeEach(function() {
-            this.vm.wards = [];
+            this.vm.addedWards = [];
             this.vm.facility = {
                 id: 'facility-id'
             };
             this.vm.newWard = {
-                disabled: false
+                enabled: true,
+                active: true
             };
             spyOn(this.vm, 'generateWardCode').andReturn('generated-code');
         });
@@ -270,36 +271,28 @@ describe('FacilityViewController', function() {
             this.vm.addWard();
 
             expect(this.vm.generateWardCode).toHaveBeenCalled();
-            expect(this.vm.wards[0].code).toEqual('generated-code');
+            expect(this.vm.addedWards[0].code).toEqual('generated-code');
         });
 
         it('should add new ward to the list', function() {
             var newWard = angular.copy(this.vm.newWard);
-            newWard.facility = {
-                id: this.vm.facility.id
-            };
             newWard.code = 'generated-code';
-
-            spyOn(this.wardService, 'getAllWards').andReturn(this.$q.when({
-                content: []
-            }));
 
             this.vm.addWard();
             this.$rootScope.$apply();
 
-            expect(this.vm.wards[0]).toEqual(newWard);
+            expect(this.vm.addedWards[0]).toEqual(newWard);
         });
 
         it('should clear newWard', function() {
-            spyOn(this.wardService, 'getAllWards').andReturn(this.$q.when({
-                content: []
-            }));
-
             this.vm.addWard();
             this.$rootScope.$apply();
 
             expect(this.vm.newWard).toEqual({
-                disabled: false
+                enabled: true,
+                active: true,
+                type: undefined,
+                geograpicZone: undefined
             });
         });
     });
@@ -323,14 +316,6 @@ describe('FacilityViewController', function() {
             expect(this.loadingModalService.open).toHaveBeenCalled();
         });
 
-        it('should call wardService.updateFacilityWard with correct parameters', function() {
-            this.confirmDeferred.resolve();
-            this.vm.saveFacilityWards();
-            this.$rootScope.$apply();
-
-            expect(this.wardService.updateFacilityWard).toHaveBeenCalledWith(this.vm.wards);
-        });
-
         it('should show success notification and navigate to facility list if saved successfully', function() {
             this.confirmDeferred.resolve();
             this.saveFacilityDetailsDeferred.resolve(this.wards);
@@ -341,16 +326,6 @@ describe('FacilityViewController', function() {
             expect(this.$state.go).toHaveBeenCalledWith('openlmis.administration.facilities', {}, {
                 reload: true
             });
-        });
-
-        it('should show error notification and close loading modal if wards save has failed', function() {
-            this.confirmDeferred.resolve();
-            this.saveFacilityDetailsDeferred.reject();
-            this.vm.saveFacilityWards();
-            this.$rootScope.$apply();
-
-            expect(this.notificationService.error).toHaveBeenCalledWith('adminFacilityView.saveWards.fail');
-            expect(this.loadingModalService.close).toHaveBeenCalled();
         });
     });
 });

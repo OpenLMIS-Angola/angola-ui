@@ -133,7 +133,7 @@
          * @type {Object}
          *
          * @description
-         * Contains new ward object. By default, active true.
+         * Contains new ward object.
          */
         vm.newWard = undefined;
 
@@ -177,7 +177,7 @@
             vm.facilityOperators = facilityOperators;
             vm.programs = programs;
             vm.wards = wards;
-            vm.initialWards = wards;
+            vm.initialWards = angular.copy(wards);
             vm.selectedTab = 0;
             vm.managedExternally = facility.isManagedExternally();
             vm.generateWardCode = generateWardCode;
@@ -312,7 +312,6 @@
             var newWard = angular.copy(vm.newWard);
 
             newWard.code = vm.generateWardCode(vm.facility.code);
-            newWard.active = newWard.enabled;
 
             vm.addedWards.push(newWard);
 
@@ -327,7 +326,7 @@
             });
 
             return {
-                active: true,
+                active: false,
                 enabled: true,
                 type: facilityType,
                 geographicZone: vm.facility.geographicZone
@@ -369,7 +368,7 @@
 
                 return ward.name !== initialWard.name ||
                     ward.description !== initialWard.description ||
-                    ward.disabled !== initialWard.disabled;
+                    ward.enabled !== initialWard.enabled;
             });
         }
 
