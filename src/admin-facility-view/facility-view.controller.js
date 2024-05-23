@@ -135,9 +135,30 @@
          * @description
          * Contains new ward object. By default, active true.
          */
-        vm.newWard = {
-            disabled: false
-        };
+        vm.newWard = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf admin-facility-view.controller:FacilityViewController
+         * @name addedWards
+         * @type {Object[]}
+         *
+         * @description
+         * Contains wards that are added through a form
+         */
+        vm.addedWards = [];
+
+        /**
+         * @ngdoc property
+         * @propertyOf admin-facility-view.controller:FacilityViewController
+         * @name initialWards
+         * @type {Object[]}
+         *
+         * @description
+         * Contains wards that are pulled from API at the beggining to compare it later
+         * with the ones changed in a form
+         */
+        vm.initialWards = [];
 
         /**
          * @ngdoc method
@@ -156,9 +177,11 @@
             vm.facilityOperators = facilityOperators;
             vm.programs = programs;
             vm.wards = wards;
+            vm.initialWards = wards;
             vm.selectedTab = 0;
             vm.managedExternally = facility.isManagedExternally();
             vm.generateWardCode = generateWardCode;
+            vm.newWard = getInitialNewWardValue();
 
             if (!vm.facilityWithPrograms.supportedPrograms) {
                 vm.facilityWithPrograms.supportedPrograms = [];
@@ -289,24 +312,33 @@
             var newWard = angular.copy(vm.newWard);
 
             newWard.code = vm.generateWardCode(vm.facility.code);
-            newWard.facility = {
-                id: vm.facility.id
-            };
+            newWard.active = newWard.enabled;
 
-            vm.wards.push(newWard);
+            vm.addedWards.push(newWard);
 
-            vm.newWard = {
-                disabled: false
-            };
+            vm.newWard = getInitialNewWardValue();
 
             return $q.when();
+        }
+
+        function getInitialNewWardValue() {
+            var facilityType = facilityTypes.find(function(type) {
+                return type.code === 'Wards&Services';
+            });
+
+            return {
+                active: true,
+                enabled: true,
+                type: facilityType,
+                geographicZone: vm.facility.geographicZone
+            };
         }
 
         /**
          * @ngdoc method
          * @methodOf admin-facility-view.controller:FacilityViewController
          * @name generateWardCode
-         * 
+         *
          * @description
          * Generates ward code based on the facility code.
          */
@@ -320,7 +352,7 @@
          * @ngdoc method
          * @methodOf admin-facility-view.controller:FacilityViewController
          * @name padNumber
-         * 
+         *
          * @description
          * Pads a number with leading zeros.
          */
@@ -329,6 +361,16 @@
             var padding = length - numberString.length;
 
             return '0'.repeat(padding) + numberString;
+        }
+
+        function getChangedWards() {
+            return vm.wards.filter(function(ward, index) {
+                var initialWard = vm.initialWards[index];
+
+                return ward.name !== initialWard.name ||
+                    ward.description !== initialWard.description ||
+                    ward.disabled !== initialWard.disabled;
+            });
         }
 
         /**
@@ -340,18 +382,27 @@
          * Saves facility wards and redirects to facility list screen.
          */
         function saveFacilityWards() {
-            var facilityWards = angular.copy(vm.wards);
+            var changedWards = getChangedWards();
 
             confirmService.confirm(
                 'adminFacilityView.savingConfirmation',
                 'adminFacilityView.save'
             ).then(function() {
                 loadingModalService.open();
-                return new wardService.saveFacilityWards(facilityWards)
-                    .then(function(facilityWards) {
+
+                var changedWardsPromisses = changedWards.map(function(ward) {
+                    return wardService.updateFacilityWard(ward);
+                });
+
+                var addedWardsPromisses = vm.addedWards.map(function(ward) {
+                    return new FacilityRepository().create(ward);
+                });
+
+                $q.all(changedWardsPromisses.concat(addedWardsPromisses))
+                    .then(function() {
                         notificationService.success('adminFacilityView.saveWards.success');
                         goToFacilityList();
-                        return $q.resolve(facilityWards);
+                        return $q.resolve();
                     })
                     .catch(function() {
                         notificationService.error('adminFacilityView.saveWards.fail');

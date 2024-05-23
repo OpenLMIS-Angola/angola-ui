@@ -63,12 +63,15 @@
                 },
                 wards: function(wardService, facility) {
                     var searchParams = {
-                        facilityId: facility.id,
+                        zoneId: facility.geographicZone.id,
                         sort: 'code,asc'
                     };
 
                     return wardService.getWardsByFacility(searchParams).then(function(response) {
-                        return response.content;
+                        return response.
+                            content.filter(function(responseFacility) {
+                                return responseFacility.id !== facility.id;
+                            });
                     });
                 }
             }
