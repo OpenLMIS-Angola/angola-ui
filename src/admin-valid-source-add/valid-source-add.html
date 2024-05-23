@@ -2,12 +2,12 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1>{{'adminValidSourceAdd.addValidSource' | message}}</h1>
+                <h1>{{:: 'adminValidSourceAdd.addValidSource' | message}}</h1>
             </div>
             <div class="modal-body">
                 <form id="add-valid-source-form" ng-submit="vm.submit()">
                     <label for="program">
-                        {{'adminValidSourceAdd.selectProgram' | message}}
+                        {{:: 'adminValidSourceAdd.selectProgram' | message}}
                     </label>
                     <select id="program"
                             ng-model="vm.program"
@@ -15,7 +15,7 @@
                     </select>
 
                     <label for="facilityType">
-                        {{'adminValidSourceAdd.facilityType' | message}}
+                        {{:: 'adminValidSourceAdd.facilityType' | message}}
                     </label>
 
                     <select id="facilityType"
@@ -30,7 +30,7 @@
                                 ng-model="vm.unitType"
                                 value="facility"
                                 required>
-                        {{'adminValidSourceAdd.isFacility' | message}}
+                        {{:: 'adminValidSourceAdd.isFacility' | message}}
                     </label>
 
                     <label for="organizationUnitType">
@@ -40,7 +40,7 @@
                                 ng-model="vm.unitType"
                                 value="organization"
                                 required>
-                        {{'adminValidSourceAdd.isOrganization' | message}}
+                        {{:: 'adminValidSourceAdd.isOrganization' | message}}
                     </label>
 
                     <div ng-if="vm.unitType === 'organization'">
@@ -56,7 +56,7 @@
 
                     <div ng-if="vm.unitType === 'facility'">
                         <label for="facility">
-                            {{'adminValidSourceAdd.facility' | message}}
+                            {{:: 'adminValidSourceAdd.facility' | message}}
                         </label>
 
                         <select id="facility"
@@ -66,7 +66,7 @@
                     </div>
 
                     <label for="geoLevelAffinity">
-                        {{'adminValidSourceAdd.geoLevelAffinity' | message}}
+                        {{:: 'adminValidSourceAdd.geoLevelAffinity' | message}}
                     </label>
 
                     <select id="geoLevelAffinity"
@@ -77,10 +77,10 @@
             </div>
             <div class="modal-footer">
                 <button id="cancel" ng-click="vm.goToPreviousState()">
-                    {{'adminValidSourceAdd.cancel' | message}}
+                    {{:: 'adminValidSourceAdd.cancel' | message}}
                 </button>
                 <button class="primary" form="add-valid-source-form">
-                    {{'adminValidSourceAdd.add' | message}}
+                    {{:: 'adminValidSourceAdd.add' | message}}
                 </button>
             </div>
         </div>

@@ -2,7 +2,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1>{{'organizationEdit.editOrganization' | message}}</h1>
+        <h1>{{:: 'organizationEdit.editOrganization' | message}}</h1>
       </div>
       <div class="modal-body">
         <form id="edit-organization-form" ng-submit="vm.saveOrganization()">
@@ -18,10 +18,10 @@
       </div>
       <div class="modal-footer">
         <button id="cancel" ng-click="vm.goToPreviousState()">
-          {{'organizationEdit.cancel' | message}}
+          {{:: 'organizationEdit.cancel' | message}}
         </button>
         <button class="primary" form="edit-organization-form">
-          {{'organizationEdit.update' | message}}
+          {{:: 'organizationEdit.update' | message}}
         </button>
       </div>
     </div>
