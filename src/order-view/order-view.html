@@ -26,10 +26,6 @@
                         ng-options="status.value as status.label | message for status in vm.requisitionStatuses"
                         ng-model="vm.requisitionStatus">
                 </select>
-                <!-- <div>
-                        <label for="requisitionless">{{:: 'orderView.requisitionless' | message}}</label>
-                        <input type="checkbox" ng-model="vm.requisitionless" id="requisitionless" ng-true-value="'true'" ng-false-value="'false'">
-                </div> -->
                 <input type="submit" class="btn btn-primary" value="{{'orderView.search' | message}}" />
         </form>
         <openlmis-table table-config="vm.tableConfig"></openlmis-table>
