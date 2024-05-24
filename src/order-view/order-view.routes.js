@@ -44,6 +44,9 @@
                         authorizationService.getUser().user_id
                     );
                 },
+                orderRequisitionStatus: function(ORDER_REQUISITION_STATUS) {
+                    return ORDER_REQUISITION_STATUS.toList();
+                },
                 requestingFacilities: function(requestingFacilityFactory, $stateParams) {
                     if ($stateParams.supplyingFacilityId) {
                         return requestingFacilityFactory.loadRequestingFacilities(
