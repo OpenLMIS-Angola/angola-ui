@@ -37,6 +37,8 @@ describe('OrderViewController', function() {
             this.loadingModalService = $injector.get('loadingModalService');
             this.ORDER_STATUS = $injector.get('ORDER_STATUS');
             this.orderStatusFactory = $injector.get('orderStatusFactory');
+            this.ORDER_REQUISITION_STATUS = $injector.get('ORDER_REQUISITION_STATUS');
+            this.orderRequisitionStatus = this.ORDER_REQUISITION_STATUS.toList();
         });
 
         this.supplyingFacilities = [
@@ -88,6 +90,7 @@ describe('OrderViewController', function() {
                 notificationService: this.notificationService,
                 loadingModalService: this.loadingModalService,
                 orderStatusFactory: this.orderStatusFactory,
+                orderRequisitionStatus: this.orderRequisitionStatus,
                 $scope: this.scope
             });
 
@@ -111,6 +114,10 @@ describe('OrderViewController', function() {
             this.vm.$onInit();
 
             expect(this.vm.supplyingFacilities).toEqual(this.supplyingFacilities);
+        });
+
+        it('should expose order requisition statuses', function() {
+            expect(this.orderRequisitionStatus).toEqual(this.ORDER_REQUISITION_STATUS.toList());
         });
 
         it('should expose requesting facilities', function() {
@@ -209,6 +216,7 @@ describe('OrderViewController', function() {
                 status: null,
                 periodStartDate: null,
                 periodEndDate: null,
+                requisitionless: null,
                 sort: 'createdDate,desc'
             }, {
                 reload: true
@@ -229,6 +237,7 @@ describe('OrderViewController', function() {
                 status: null,
                 periodStartDate: null,
                 periodEndDate: null,
+                requisitionless: null,
                 sort: 'createdDate,desc'
             }, {
                 reload: true
@@ -249,6 +258,7 @@ describe('OrderViewController', function() {
                 status: null,
                 periodStartDate: null,
                 periodEndDate: null,
+                requisitionless: null,
                 sort: 'createdDate,desc'
             }, {
                 reload: true
@@ -267,6 +277,7 @@ describe('OrderViewController', function() {
                 status: null,
                 periodStartDate: '2017-01-31',
                 periodEndDate: null,
+                requisitionless: null,
                 sort: 'createdDate,desc'
             }, {
                 reload: true
@@ -285,6 +296,7 @@ describe('OrderViewController', function() {
                 status: null,
                 periodStartDate: null,
                 periodEndDate: '2017-01-31',
+                requisitionless: null,
                 sort: 'createdDate,desc'
             }, {
                 reload: true
@@ -303,6 +315,7 @@ describe('OrderViewController', function() {
                 status: this.vm.orderStatuses[1].value,
                 periodStartDate: null,
                 periodEndDate: null,
+                requisitionless: null,
                 sort: 'createdDate,desc'
             }, {
                 reload: true
@@ -333,6 +346,7 @@ describe('OrderViewController', function() {
                 canRetryTransfer: this.canRetryTransfer,
                 fulfillmentUrlFactory: this.fulfillmentUrlFactoryMock,
                 orderStatusFactory: this.orderStatusFactory,
+                orderRequisitionStatus: this.orderRequisitionStatus,
                 $scope: this.scope
             });
         });
@@ -361,6 +375,7 @@ describe('OrderViewController', function() {
                 fulfillmentUrlFactory: this.fulfillmentUrlFactoryMock,
                 canRetryTransfer: this.canRetryTransfer,
                 orderStatusFactory: this.orderStatusFactory,
+                orderRequisitionStatus: this.orderRequisitionStatus,
                 $scope: this.scope
             });
         });
@@ -393,6 +408,7 @@ describe('OrderViewController', function() {
                 loadingModalService: this.loadingModalService,
                 fulfillmentUrlFactory: this.fulfillmentUrlFactoryMock,
                 orderStatusFactory: this.orderStatusFactory,
+                orderRequisitionStatus: this.orderRequisitionStatus,
                 $scope: this.scope
             });
             this.order = new this.BasicOrderResponseDataBuilder()
@@ -466,6 +482,7 @@ describe('OrderViewController', function() {
             loadingModalService: this.loadingModalService,
             orderService: this.orderService,
             orderStatusFactory: this.orderStatusFactory,
+            orderRequisitionStatus: this.orderRequisitionStatus,
             $scope: this.scope
         });
         this.vm.$onInit();
