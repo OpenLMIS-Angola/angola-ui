@@ -38,5 +38,12 @@
             templateUrl: 'openlmis-unit-add/openlmis-unit-add.html',
             url: '/addUnit'
         });
+
+        modalStateProvider.state('openlmis.administration.orderables.unitAdd', {
+            controller: 'openlmisUnitAddController',
+            controllerAs: '$ctrl',
+            templateUrl: 'openlmis-unit-add/openlmis-unit-add.html',
+            url: '/addUnit'
+        });
     }
 })();

@@ -18,17 +18,32 @@
 
     angular
         .module('openlmis-unit-add')
-        .service('openlmisUnitAddService', openlmisUnitAddService);
+        .service('unitOfOrderableService', service);
 
-    openlmisUnitAddService.$inject = ['unitOfOrderableService'];
+    service.$inject = ['$resource', 'referencedataUrlFactory'];
 
-    function openlmisUnitAddService(unitOfOrderableService) {
+    function service($resource, referencedataUrlFactory) {
+
+        var resource = $resource(referencedataUrlFactory('/api/unitOfOrderables'), {}, {
+            getAll: {
+                method: 'GET'
+            },
+            create: {
+                method: 'POST'
+            }
+        });
+
         return {
-            save: save
+            getAll: getAll,
+            create: create
         };
 
-        function save(unit) {
-            return unitOfOrderableService.create(unit);
+        function getAll() {
+            return resource.getAll().$promise;
+        }
+
+        function create(unit) {
+            return resource.create(unit).$promise;
         }
     }
 })();

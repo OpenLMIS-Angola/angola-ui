@@ -39,8 +39,9 @@
         'accessTokenFactory', '$window', 'stockmanagementUrlFactory',
         // ANGOLASUP-717: ends here
         // AO-805: Allow users with proper rights to edit product prices
-        'OrderableResource', 'permissionService', 'ADMINISTRATION_RIGHTS', 'authorizationService'
+        'OrderableResource', 'permissionService', 'ADMINISTRATION_RIGHTS', 'authorizationService',
         // AO-805: Ends here
+        'unitOfOrderableService'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -52,7 +53,7 @@
                         // ANGOLASUP-717: Create New Issue Report
                         // AO-805: Allow users with proper rights to edit product prices
                         accessTokenFactory, $window, stockmanagementUrlFactory, OrderableResource, permissionService,
-                        ADMINISTRATION_RIGHTS, authorizationService) {
+                        ADMINISTRATION_RIGHTS, authorizationService, unitOfOrderableService) {
         // ANGOLASUP-717: ends here
         // AO-805: Ends here
         var vm = this,
@@ -138,6 +139,17 @@
          */
         vm.newLot = undefined;
 
+        /**
+         * @ngdoc property
+         * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name unitsOfOrderable
+         * @type {Object}
+         *
+         * @description
+         * Holds possible units for orderable
+         */
+        vm.unitsOfOrderable = [];
+
         // OAM-5: Lot code filter UI improvements.
         /**
          * @ngdoc method
@@ -173,6 +185,10 @@
             $stateParams.displayItems = vm.displayItems;
             $stateParams.keyword = vm.keyword;
             $stateParams.page = getPageNumber();
+            unitOfOrderableService.getAll()
+                .then(function(response) {
+                    vm.unitsOfOrderable = response;
+                })
             $state.go($state.current.name, $stateParams, {
                 reload: true,
                 notify: false

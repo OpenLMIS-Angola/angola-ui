@@ -42,7 +42,25 @@
             <input type="submit" value="{{'stockCardSummaryList.search' | message}}"/>
         </fieldset>
     </form>
-    <button class="primary" ng-disabled="!vm.displayStockCardSummaries.length" ng-click="vm.print()">{{'stockCardSummaryList.print' | message}}</button>
+    <div class="buttons-group">
+        <button class="btn" ng-disabled="!vm.displayStockCardSummaries.length" ng-click="vm.print()">{{'stockCardSummaryList.print' | message}}</button>
+        <div class="units-package-switch">
+            <button
+                class="btn"
+                ng-click="vm.setActiveDisplayType(vm.UNITS_DISPLAY_TYPE)"
+                ng-class="{'primary': vm.activeDisplayType === vm.UNITS_DISPLAY_TYPE}"
+            >
+                {{:: 'stockCardSummaryList.units' | message}}
+            </button>
+            <button
+                class="btn"
+                ng-click="vm.setActiveDisplayType(vm.PACKS_DISPLAY_TYPE)"
+                ng-class="{'primary': vm.activeDisplayType === vm.PACKS_DISPLAY_TYPE}"
+            >
+                {{:: 'stockCardSummaryList.packs' | message}}
+            </button>
+        </div>
+    </div>
     <table>
         <caption ng-if="!vm.displayStockCardSummaries.length">
             {{'stockCardSummaryList.noProducts' | message}}

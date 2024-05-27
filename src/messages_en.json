@@ -48,6 +48,7 @@
     "stockAddProductsModal.newLotCode": "Lot Code",
     "stockAdjustmentCreation.newNotExpirationDate": "Expiration Date",
     "stockAdjustmentCreation.newLotCode": "Lot Code",
+    "stockAdjustmentCreation.unit": "Unit of orderable",
     "orderableGroupService.addMissingLot": "Add lot",
     "stockPhysicalInventoryDraft.addLotFailed": "Failed to add lot.",
     "digestConfiguration.requisition-actionRequired": "Requisition - Action Required",

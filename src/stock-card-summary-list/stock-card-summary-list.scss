@@ -1,0 +1,10 @@
+.buttons-group {
+    float: right !important;
+    display: flex !important;
+    gap: 1rem;
+    flex-direction: row;
+
+    .units-package-switch {
+        @include flex-layout(row);
+    }
+}

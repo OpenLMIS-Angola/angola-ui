@@ -1,6 +1,9 @@
 {
-    "openlmisUnitAdd.form.header": "Add New Unit",
+    "openlmisUnitAdd.form.header": "Create unit",
     "openlmisUnitAdd.form.label.name": "Name",
+    "openlmisUnitAdd.form.label.description": "Description",
+    "openlmisUnitAdd.form.label.displayOrder": "Display order",
+    "openlmisUnitAdd.form.label.factor": "Factor",
     "openlmisUnitAdd.cancel": "Cancel",
     "openlmisUnitAdd.save": "Save"
 }

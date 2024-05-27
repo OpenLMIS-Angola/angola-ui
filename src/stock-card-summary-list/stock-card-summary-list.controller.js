@@ -44,6 +44,10 @@
         vm.search = search;
         vm.offline = offlineService.isOffline;
         vm.goToPendingOfflineEventsPage = goToPendingOfflineEventsPage;
+        vm.setActiveDisplayType = setActiveDisplayType;
+        vm.PACKS_DISPLAY_TYPE = 'packs';
+        vm.UNITS_DISPLAY_TYPE = 'units';
+        vm.activeDisplayType = vm.UNITS_DISPLAY_TYPE;
 
         /**
          * @ngdoc property
@@ -275,5 +279,14 @@
             vm.totalCost = sum;
         }
         // AO-816: Ends here
+
+        function setActiveDisplayType(displayType) {
+            if (displayType === vm.PACKS_DISPLAY_TYPE || displayType === vm.UNITS_DISPLAY_TYPE) {
+                vm.activeDisplayType = displayType;
+                console.log(vm.activeDisplayType);
+            } else {
+                console.error('No such display type: ' + displayType);
+            }
+        }
     }
 })();

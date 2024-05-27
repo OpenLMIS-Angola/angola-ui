@@ -114,11 +114,9 @@
                 </td>
                 <td>
                     <!-- TODO: OAM-27 wait for BE -->
-                    <!-- <select ng-model=""
-                            ng-change=""
-                            ng-options="unit.name for unit in vm.units">
-                    </select> -->
-                    placeholder
+                    <select ng-model="lineItem.unitOfOrderable"
+                            ng-options="unit.name for unit in vm.unitsOfOrderable">
+                    </select>
                 </td>
                 <td openlmis-invalid="{{lineItem.$errors.quantityInvalid}}" class="digit-cell">
                     <input class="form-control" ng-model="lineItem.quantity"

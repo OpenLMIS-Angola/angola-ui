@@ -4,5 +4,5 @@
     "adjustmentCreation.totalPrice": "Total Price",
     "adjustmentCreation.numberEqualOrGreaterThan0": "You must input number equal or greater than 0",
     "adjustmentCreation.totalCost": "Total Cost",
-    "adjustmentCreation.addNewUnit": "Add New Unit"
+    "adjustmentCreation.addNewUnit": "Create unit"
 }

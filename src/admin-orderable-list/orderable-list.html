@@ -1,25 +1,20 @@
 <h2>{{'adminOrderableList.products' | message}}</h2>
 <section class="openlmis-table-container">
     <!-- AO-744: Extend Admin Products and Facilities pages with print option -->
-    <button id="print-facility" class="primary" ng-click="vm.goToPrintOrderablePage()">
-        {{'adminOrderableList.export' | message}}
-    </button>
     <!-- AO-744: ends here -->
-    <button ng-if="vm.canAdd" class="add" ui-sref='.add'>{{'adminOrderableList.addProduct' | message}}</button>
     <form ng-submit="vm.search()">
         <fieldset class="form-group">
             <label for="code">{{'adminOrderableList.code' | message}}</label>
-            <input type="text" id="code" ng-model="vm.code"/>
+            <input type="text" id="code" ng-model="vm.code" />
         </fieldset>
         <fieldset class="form-group">
             <label for="name">{{'adminOrderableList.name' | message}}</label>
-            <input type="text" id="name" ng-model="vm.name"/>
+            <input type="text" id="name" ng-model="vm.name" />
         </fieldset>
         <fieldset class="form-group">
             <label for="program">{{'adminOrderableList.program' | message}}</label>
-            <select id="program"
-                    ng-options="program.code as program.name for program in vm.programs"
-                    ng-model="vm.program">
+            <select id="program" ng-options="program.code as program.name for program in vm.programs"
+                ng-model="vm.program">
             </select>
         </fieldset>
         <fieldset class="form-group">
@@ -28,8 +23,15 @@
                 {{:: 'adminOrderableList.includeQuarantined' | message}}
             </label>
         </fieldset>
-        <input type="submit" value="{{'adminOrderableList.search' | message}}"/>
+        <input type="submit" value="{{'adminOrderableList.search' | message}}" />
     </form>
+    <div class="buttons-group">
+        <button ng-if="vm.canAdd" class="add" ui-sref='.add'>{{'adminOrderableList.addProduct' | message}}</button>
+        <button ng-click="vm.addNewUnit()">{{'adminOrderableList.createUnit' | message}}</button>
+        <button id="print-facility" class="primary" ng-click="vm.goToPrintOrderablePage()">
+            {{'adminOrderableList.export' | message}}
+        </button>
+    </div>
     <openlmis-table table-config="vm.tableConfig"></openlmis-table>
-    <openlmis-pagination/>
+    <openlmis-pagination />
 </section>
