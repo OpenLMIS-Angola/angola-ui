@@ -1,5 +1,5 @@
 {
     "adminOrderableList.export": "Export",
-    "adminOrderableList.showQuarantined": "Show Quarantined",
+    "adminOrderableList.includeQuarantined": "Include Quarantined Products",
     "adminOrderableList.isQuarantined": "Quarantined"
 }
