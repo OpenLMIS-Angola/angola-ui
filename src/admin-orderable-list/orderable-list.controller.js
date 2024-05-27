@@ -62,6 +62,16 @@
         /**
          * @ngdoc property
          * @propertyOf admin-orderable-list.controller:OrderableListController
+         * @name includeQuarantined
+         * 
+         * @description
+         * Contains flag for including quarantined orderables. By default, quarantined products are listed.
+         */
+        vm.includeQuarantined = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf admin-orderable-list.controller:OrderableListController
          * @name code
          * @type {String}
          *
@@ -118,6 +128,7 @@
             vm.code = $stateParams.code;
             vm.name = $stateParams.name;
             vm.program = $stateParams.program;
+            vm.includeQuarantined = $stateParams.includeQuarantined;
 
             vm.canAdd = canAdd;
             vm.tableConfig = getTableConfig();
@@ -137,6 +148,7 @@
             stateParams.code = vm.code;
             stateParams.name = vm.name;
             stateParams.program = vm.program;
+            stateParams.includeQuarantined = vm.includeQuarantined;
 
             $state.go('openlmis.administration.orderables', stateParams, {
                 reload: true
