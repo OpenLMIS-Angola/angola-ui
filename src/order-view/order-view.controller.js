@@ -193,7 +193,7 @@
 
             if ($stateParams.requisitionless) {
                 vm.requisitionStatus = $stateParams.requisitionless === 'true'
-                    ? vm.withRequisitionStatus : vm.withoutRequisitionStatus;
+                    ? vm.withoutRequisitionStatus : vm.withRequisitionStatus;
             }
 
             if ($stateParams.supplyingFacilityId) {
@@ -277,15 +277,15 @@
          * @name handleRequisitionStatus
          * @param {String} reqStatus the requisition status to handle
          * 
-         * @returns {Boolean} true if the requisition status is set to 'with requisition',
-         * false if set to 'without requisition', null otherwise
+         * @returns {Boolean} false if the requisition status is set to 'with requisition',
+         * true if set to 'without requisition', null otherwise
          */
         function handleRequisitionStatus(reqStatus) {
             switch (reqStatus) {
             case vm.withRequisitionStatus:
-                return true;
-            case vm.withoutRequisitionStatus:
                 return false;
+            case vm.withoutRequisitionStatus:
+                return true;
             default:
                 return null;
             }
