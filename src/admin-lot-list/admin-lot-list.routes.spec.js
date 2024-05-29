@@ -118,7 +118,8 @@ describe('openlmis.administration.lot state', function() {
             page: 0,
             size: 10,
             tradeItemIdIgnored: true,
-            expirationDateFrom: '1970-01-01'
+            expirationDateFrom: '1970-01-01',
+            includeQuarantined: 'true'
         });
 
         expect(paginatedLots.length).toEqual(1);
@@ -139,7 +140,8 @@ describe('openlmis.administration.lot state', function() {
             page: 0,
             size: 10,
             tradeItemIdIgnored: true,
-            expirationDateTo: '1970-01-01'
+            expirationDateTo: '1970-01-01',
+            includeQuarantined: 'true'
         });
 
         expect(paginatedLots.length).toEqual(1);
