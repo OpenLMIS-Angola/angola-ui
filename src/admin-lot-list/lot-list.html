@@ -22,6 +22,18 @@
             <input type="text" id="lotCode" ng-model="vm.lotCode"/>
         </fieldset>
         <!-- ANGOLASUP-715: Ends here -->
+        <fieldset class="form-group">
+            <label for="includeQuarantined" class="checkbox">
+                <input 
+                    type="checkbox"
+                    id="includeQuarantined"
+                    ng-model="vm.includeQuarantined"
+                    ng-true-value="'true'"
+                    ng-false-value="'false'"
+                />
+                {{:: 'adminLotList.includeQuarantined' | message}}
+            </label>
+        </fieldset>
         <input type="submit" value="{{'adminLotList.search' | message}}"/>
     </form>
     <openlmis-table table-config="vm.tableConfig"></openlmis-table>
