@@ -31,7 +31,6 @@
 
     function openlmisUnitAddController(openlmisUnitAddService, stateTrackerService) {
         var $ctrl = this;
-        $ctrl.$onInit = onInit;
         $ctrl.newUnit = {
             name: undefined,
             description: undefined,
@@ -42,10 +41,6 @@
         $ctrl.goToPreviousState = stateTrackerService.goToPreviousState;
         $ctrl.saveDisabled = saveDisabled;
 
-        function onInit() {
-
-        }
-
         function saveDisabled() {
             return !$ctrl.newUnit.name ||
                 !$ctrl.newUnit.factor ||
@@ -53,12 +48,10 @@
         }
 
         function save() {
-            // openlmisUnitAddService.save($ctrl.newUnit)
-            //     .then(function() {
-            //         $ctrl.goToPreviousState();
-            //     });
-            console.log('saving form');
-            console.log($ctrl.newUnit);
+            openlmisUnitAddService.save($ctrl.newUnit)
+                .then(function() {
+                    $ctrl.goToPreviousState();
+                });
         }
     }
 })();

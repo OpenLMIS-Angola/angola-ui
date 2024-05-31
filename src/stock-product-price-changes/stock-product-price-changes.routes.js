@@ -24,7 +24,7 @@
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.stockPriceChangesForSingleProduct', {
-            url: '/:singleProductId?facility&program&pricesListPage&pricesListSize',
+            url: 'singleProduct/:singleProductId?facility&program&pricesListPage&pricesListSize',
             label: 'stockPriceChanges.title',
             showInNavigation: false,
             views: {

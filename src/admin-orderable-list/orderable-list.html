@@ -25,7 +25,7 @@
         </fieldset>
         <input type="submit" value="{{'adminOrderableList.search' | message}}" />
     </form>
-    <div class="buttons-group">
+    <div class="orderable-list-buttons-group">
         <button ng-if="vm.canAdd" class="add" ui-sref='.add'>{{'adminOrderableList.addProduct' | message}}</button>
         <button ng-click="vm.addNewUnit()">{{'adminOrderableList.createUnit' | message}}</button>
         <button id="print-facility" class="primary" ng-click="vm.goToPrintOrderablePage()">

@@ -148,7 +148,7 @@
          * @description
          * Holds possible units for orderable
          */
-        vm.unitsOfOrderable = [];
+        vm.unitsOfOrderable = undefined;
 
         // OAM-5: Lot code filter UI improvements.
         /**
@@ -187,8 +187,8 @@
             $stateParams.page = getPageNumber();
             unitOfOrderableService.getAll()
                 .then(function(response) {
-                    vm.unitsOfOrderable = response;
-                })
+                    vm.unitsOfOrderable = response.content;
+                });
             $state.go($state.current.name, $stateParams, {
                 reload: true,
                 notify: false
@@ -642,6 +642,34 @@
             var productsWithPriceChanged = getProductsWithPriceChanged(addedLineItems);
             var lastProductWithPriceChanged = productsWithPriceChanged[productsWithPriceChanged.length - 1];
             var priceChangesPromises = [];
+
+            if (!lastProductWithPriceChanged) {
+                return stockAdjustmentCreationService.submitAdjustments(program.id, facility.id,
+                    // AO-668: Use username as signature for Issue, Receive and Adjustment
+                    addedLineItems, adjustmentType, user)
+                    // AO-668: ends here
+                    // ANGOLASUP-717: Create New Issue Report
+                    .then(function(stockEventId) {
+                        if (adjustmentType.state === ADJUSTMENT_TYPE.ISSUE.state) {
+                            confirmService.confirm('adjustmentCreation.printModal.label',
+                                'stockPhysicalInventoryDraft.printModal.yes',
+                                'stockPhysicalInventoryDraft.printModal.no')
+                                .then(function() {
+                                    $window.open(accessTokenFactory.addAccessToken(getPrintUrl(stockEventId)),
+                                        '_blank');
+                                })
+                                .finally(function() {
+                                    goToStockCardSummaries();
+                                });
+                        } else {
+                            goToStockCardSummaries();
+                        }
+                        // ANGOLASUP-717: ends here
+                    }, function(errorResponse) {
+                        loadingModalService.close();
+                        alertService.error(errorResponse.data.message);
+                    });
+            }
 
             setProductPriceForProgram(lastProductWithPriceChanged, program);
             priceChangesPromises.push(updateProductPrice(lastProductWithPriceChanged.orderable,

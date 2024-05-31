@@ -42,15 +42,15 @@
             <input type="submit" value="{{'stockCardSummaryList.search' | message}}"/>
         </fieldset>
     </form>
-    <div class="buttons-group">
+    <div class="stock-card-buttons-group">
         <button class="btn" ng-disabled="!vm.displayStockCardSummaries.length" ng-click="vm.print()">{{'stockCardSummaryList.print' | message}}</button>
         <div class="units-package-switch">
             <button
                 class="btn"
-                ng-click="vm.setActiveDisplayType(vm.UNITS_DISPLAY_TYPE)"
-                ng-class="{'primary': vm.activeDisplayType === vm.UNITS_DISPLAY_TYPE}"
+                ng-click="vm.setActiveDisplayType(vm.DOSES_DISPLAY_TYPE)"
+                ng-class="{'primary': vm.activeDisplayType === vm.DOSES_DISPLAY_TYPE}"
             >
-                {{:: 'stockCardSummaryList.units' | message}}
+                {{:: 'stockCardSummaryList.doses' | message}}
             </button>
             <button
                 class="btn"
@@ -67,17 +67,18 @@
         </caption>
         <thead>
         <tr>
-            <th>{{'stockCardSummaryList.productCode' | message}}</th>
-            <th>{{'stockCardSummaryList.product' | message}}</th>
-            <th>{{'stockCardSummaryList.lotCode' | message}}</th>
-            <th>{{'stockCardSummaryList.expiryDate' | message}}</th>
-            <th>{{'stockCardSummaryList.lastUpdate' | message}}</th>
-            <th>{{'stockCardSummaryList.stockOnHand' | message}}</th>
+            <th>{{:: 'stockCardSummaryList.productCode' | message}}</th>
+            <th>{{:: 'stockCardSummaryList.product' | message}}</th>
+            <th>{{:: 'stockCardSummaryList.lotCode' | message}}</th>
+            <th>{{:: 'stockCardSummaryList.expiryDate' | message}}</th>
+            <th>{{:: 'stockCardSummaryList.lastUpdate' | message}}</th>
+            <th ng-if="vm.activeDisplayType === vm.PACKS_DISPLAY_TYPE">{{:: 'stockCardSummaryList.unit' | message }}</th>
+            <th>{{:: 'stockCardSummaryList.stockOnHand' | message}}</th>
             <!-- AO-816: Add prices to the Stock On Hand view -->
-            <th>{{'stockCardSummaryList.unitPrice' | message}}</th>
-            <th>{{'stockCardSummaryList.totalPrice' | message}}</th>
+            <th>{{:: 'stockCardSummaryList.unitPrice' | message}}</th>
+            <th>{{:: 'stockCardSummaryList.totalPrice' | message}}</th>
             <!-- AO-816: Ends here -->
-            <th>{{'stockCardSummaryList.actions' | message}}</th>
+            <th>{{:: 'stockCardSummaryList.actions' | message}}</th>
         </tr>
         </thead>
         <tbody>
@@ -87,6 +88,7 @@
             <td></td>
             <td></td>
             <td></td>
+            <td ng-if="vm.activeDisplayType === vm.PACKS_DISPLAY_TYPE"></td>
             <td>{{summary.stockOnHand}}</td>
             <!-- AO-816: Add prices to the Stock On Hand view -->
             <td>{{summary.orderable.unitPrice | openlmisCurrency}}</td>
@@ -102,7 +104,9 @@
             <td>{{fulfills.lot ? fulfills.lot.lotCode : ('stockCardSummaryList.noLotDefined' | message)}}</td>
             <td>{{fulfills.lot ? (fulfills.lot.expirationDate | openlmisDate) : ''}}</td>
             <td>{{fulfills.occurredDate | openlmisDate}}</td>
-            <td>{{fulfills.stockOnHand}}</td>
+            <td ng-if="vm.activeDisplayType === vm.PACKS_DISPLAY_TYPE">{{ fulfills.orderable.unit.name }}</td>
+            <td ng-if="vm.activeDisplayType === vm.DOSES_DISPLAY_TYPE">{{fulfills.stockOnHand}}</td>
+            <td ng-if="vm.activeDisplayType === vm.PACKS_DISPLAY_TYPE">{{ vm.getSohForPacks(fulfills) }}</td>
             <!-- AO-816: Add prices to the Stock On Hand view -->
             <td></td>
             <td></td>
