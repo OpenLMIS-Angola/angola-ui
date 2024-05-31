@@ -10,7 +10,6 @@
                 <label for="search">{{vm.key('keyword') | message}}</label>
                 <input id="search" type="text" ng-model="vm.keyword" maxlength="50" />
             </fieldset>
-
             <input type="submit" value="{{vm.key('search') | message}}" />
         </form>
         <section class="is-primary">
@@ -18,28 +17,42 @@
                 <div>
                     <label for="productSelect">{{vm.key('product') | message}}</label>
                     <select id="productSelect" ng-model="vm.selectedOrderableGroup"
-                        ng-options="orderableGroup[0].orderable.fullProductName for orderableGroup in vm.orderableGroups"
-                        ng-change="vm.orderableSelectionChanged()" required>
+                            ng-options="orderableGroup[0].orderable.fullProductName for orderableGroup in vm.orderableGroups"
+                            ng-change="vm.orderableSelectionChanged()"
+                            required>
                     </select>
                 </div>
                 <div ng-if="vm.selectedOrderableHasLots">
-                    <label for="lotSelect">{{:: 'stockAddProductsModal.lotCode' | message}}</label>
+                    <label for="lotSelect">{{'stockAddProductsModal.lotCode' | message}}</label>
                     <!-- OAM-5: Lot code filter UI improvements. -->
-                    <select id="lotSelect" ng-model="vm.selectedLot" ng-options="lot as (vm.isExpired(lot) ? '[EXP] ' : '')
+                    <select id="lotSelect" ng-model="vm.selectedLot"
+                            ng-options="lot as (vm.isExpired(lot) ? '[EXP] ' : '')
                             + lot.lotCode
                             + ((lot.lotCode !== 'Add lot' && lot.expirationDate != undefined) ? ' | ' + (lot.expirationDate | date:'dd.MM.yyyy') : '')
-                            for lot in vm.lots" ng-change="vm.lotChanged()" required>
+                            for lot in vm.lots"
+                            ng-change="vm.lotChanged()"
+                            required>
                     </select>
                     <!-- OAM-5: ends here -->
                 </div>
                 <div ng-if="vm.hasPermissionToAddNewLot && vm.canAddNewLot">
-                    <label for="lotCode">{{:: 'stockAddProductsModal.newLotCode' | message}}</label>
-                    <input id="lotCode" type="text" ng-model="vm.newLot.lotCode" ng-change="vm.newLotCodeChanged()"
-                        openlmis-invalid="{{vm.newLot.lotCodeInvalid | message}}" required>
-                    <label for="expirationDate">{{:: 'stockAddProductsModal.newLotExpirationDate' | message}}</label>
+                    <label for="lotCode">{{'stockAddProductsModal.newLotCode' | message}}</label>
+                    <input id="lotCode" type="text" ng-model="vm.newLot.lotCode"
+                           ng-change="vm.newLotCodeChanged()"
+                           openlmis-invalid="{{vm.newLot.lotCodeInvalid | message}}"
+                           required>
+                    <label for="expirationDate">{{'stockAddProductsModal.newLotExpirationDate' | message}}</label>
                     <input id="expirationDate" type="date" ng-model="vm.newLot.expirationDate"
-                        ng-change="vm.expirationDateChanged()"
-                        openlmis-invalid="{{vm.newLot.expirationDateInvalid | message}}" />
+                           ng-change="vm.expirationDateChanged()"
+                           openlmis-invalid="{{vm.newLot.expirationDateInvalid | message}}"/>
+                </div>
+                <div ng-if="vm.selectedLot && vm.unitsOfOrderable">
+                    <label for="newItemUnit">
+                        {{:: 'adjustmentCreation.unit' | message }}
+                    </label>
+                    <select id="newItemUnit" ng-options="unit.id as unit.name for unit in vm.unitsOfOrderable"
+                        ng-model="vm.newItemUnitUUID">
+                    </select>
                 </div>
                 <button type="submit" class="add">{{vm.key('add') | message}}</button>
             </form>
@@ -62,9 +75,7 @@
                     <th ng-show="vm.srcDstAssignments">{{vm.key('srcDstComments') | message}}</th>
                     <th ng-if="vm.showReasonDropdown">{{vm.key('reason') | message}}</th>
                     <th ng-if="vm.showReasonDropdown">{{vm.key('reasonComments') | message}}</th>
-                    <th>
-                        {{:: 'adjustmentCreation.unit' | message }}
-                    </th>
+                    <th>{{:: 'adjustmentCreation.unit' | message}}</th>
                     <th>{{vm.key('quantity') | message}}</th>
                     <!-- AO-804: Display product prices on Stock Issues, Adjustments and Receives Page-->
                     <th>{{:: 'adjustmentCreation.price' | message}}</th>
@@ -114,9 +125,7 @@
                             ng-model="lineItem.reasonFreeText" rows="1" cols="15"></input>
                     </td>
                     <td>
-                        <select ng-model="lineItem.unitOfOrderableUUID"
-                            ng-options="unit.id as unit.name for unit in vm.unitsOfOrderable">
-                        </select>
+                        {{ lineItem.unitName }}
                     </td>
                     <td openlmis-invalid="{{lineItem.$errors.quantityInvalid}}" class="digit-cell">
                         <input class="form-control" ng-model="lineItem.quantity"

@@ -1,5 +1,8 @@
-.is-primary {
-    display: flex;
-    font-display: row;
-    gap: .5rem;
+.stock-adjustment-creation {
+    .is-primary {
+        @include flex-layout(row, $gap: 0.5rem);
+        .inline-form{
+            flex-wrap: wrap;
+        }
+    }
 }

@@ -142,8 +142,20 @@
         /**
          * @ngdoc property
          * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name newItemUnitUUID
+         * @type {string}
+         *
+         * @description
+         * Holds id of a unit which is added to a new product
+         *
+         */
+        vm.newItemUnitUUID = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
          * @name unitsOfOrderable
-         * @type {Object}
+         * @type {Object[]}
          *
          * @description
          * Holds possible units for orderable
@@ -185,15 +197,18 @@
             $stateParams.displayItems = vm.displayItems;
             $stateParams.keyword = vm.keyword;
             $stateParams.page = getPageNumber();
-            unitOfOrderableService.getAll()
-                .then(function(response) {
-                    vm.unitsOfOrderable = response.content;
-                });
             $state.go($state.current.name, $stateParams, {
                 reload: true,
                 notify: false
             });
         };
+
+        function getUnitNameById(unitId) {
+            var unit = vm.unitsOfOrderable.find(function(unit) {
+                return unit.id === unitId;
+            });
+            return unit.name;
+        }
 
         /**
          * @ngdoc method
@@ -232,6 +247,8 @@
                 vm.addedLineItems.unshift(_.extend({
                     $errors: {},
                     $previewSOH: selectedItem.stockOnHand,
+                    unitOfOrderableUUID: vm.newItemUnitUUID,
+                    unitName: getUnitNameById(vm.newItemUnitUUID),
                     price: getProductPrice(selectedItem),
                     totalPrice: 0
                 },
@@ -819,6 +836,11 @@
                 facilityName: facility.name,
                 program: program.name
             });
+
+            unitOfOrderableService.getAll()
+                .then(function(response) {
+                    vm.unitsOfOrderable = response.content;
+                });
 
             initViewModel();
             initStateParams();
