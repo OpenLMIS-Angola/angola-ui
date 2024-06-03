@@ -60,6 +60,16 @@
         /**
          * @ngdoc property
          * @propertyOf admin-lot-list.controller:LotListController
+         * @name includeQuarantined
+         * 
+         * @description
+         * Include quarantined lots in the list. By default, quarantined lots are included.
+         */
+        vm.includeQuarantined = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf admin-lot-list.controller:LotListController
          * @name orderableId
          * @type {String}
          *
@@ -116,6 +126,7 @@
         vm.search = function() {
             var stateParams = angular.copy($stateParams);
 
+            stateParams.includeQuarantined = vm.includeQuarantined;
             stateParams.orderableId = vm.orderableId;
             stateParams.expirationDateFrom = vm.expirationDateFrom;
             stateParams.expirationDateTo = vm.expirationDateTo;
@@ -140,6 +151,7 @@
             vm.lots = lots;
             vm.orderables = orderables;
 
+            vm.includeQuarantined = $stateParams.includeQuarantined;
             vm.orderableId = $stateParams.orderableId;
             vm.expirationDateFrom = $stateParams.expirationDateFrom;
             vm.expirationDateTo = $stateParams.expirationDateTo;

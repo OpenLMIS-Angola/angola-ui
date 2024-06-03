@@ -43,7 +43,7 @@
   ng-submit="vm.saveFacilityWards()"
 >
   <table>
-    <caption ng-if="!vm.wards || vm.wards.length === 0">
+    <caption ng-if="(!vm.wards || vm.wards.length === 0) && vm.addedWards.length === 0">
       {{'adminFacilityView.noAssociatedWards' | message: {facility:
       vm.facility.name} }}
     </caption>

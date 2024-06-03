@@ -1,4 +1,6 @@
 {
     "orderView.view": "View details",
-    "orderView.requisitionless": "Requisitionless"
+    "orderView.requisitionStatus": "Order Type",
+    "orderView.withoutRequisition": "Without Requisition",
+    "orderView.withRequisition": "With Requisition"
 }

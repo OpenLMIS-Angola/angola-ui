@@ -33,13 +33,13 @@
         'supplyingFacilities', 'requestingFacilities', 'programs', 'requestingFacilityFactory',
         'loadingModalService', 'notificationService', 'fulfillmentUrlFactory', 'orders',
         'orderService', 'orderStatusFactory', 'canRetryTransfer', '$stateParams', '$filter', '$state', '$scope',
-        'ORDER_STATUSES', 'TABLE_CONSTANTS'
+        'ORDER_STATUSES', 'TABLE_CONSTANTS', 'orderRequisitionStatus'
     ];
 
     function controller(supplyingFacilities, requestingFacilities, programs, requestingFacilityFactory,
                         loadingModalService, notificationService, fulfillmentUrlFactory, orders, orderService,
                         orderStatusFactory, canRetryTransfer, $stateParams, $filter, $state, $scope, ORDER_STATUSES,
-                        TABLE_CONSTANTS) {
+                        TABLE_CONSTANTS, orderRequisitionStatus) {
 
         var vm = this;
 
@@ -153,13 +153,22 @@
         /**
          * @ngdoc property
          * @propertyOf order-view.controller:OrderViewController
-         * @name requisitionless
-         * @type {boolean}
-         *
+         * @name requisitionStatuses
+         * 
          * @description
-         * Sets requisitionless flag
+         * An array of order requisition statuses.
          */
-        vm.requisitionless = undefined;
+        vm.requisitionStatuses = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf order-view.controller:OrderViewController
+         * @name requisitionStatus
+         * 
+         * @description
+         * Filter for requisition status.
+         */
+        vm.requisitionStatus = undefined;
 
         /**
          * @ngdoc method
@@ -176,8 +185,16 @@
             vm.canRetryTransfer = canRetryTransfer;
             vm.programs = programs;
             vm.orderStatuses = orderStatusFactory.getAll();
+            vm.requisitionStatuses = orderRequisitionStatus;
+            vm.withRequisitionStatus = vm.requisitionStatuses[0].value;
+            vm.withoutRequisitionStatus = vm.requisitionStatuses[1].value;
 
             vm.orders = orders;
+
+            if ($stateParams.requisitionless) {
+                vm.requisitionStatus = $stateParams.requisitionless === 'true'
+                    ? vm.withoutRequisitionStatus : vm.withRequisitionStatus;
+            }
 
             if ($stateParams.supplyingFacilityId) {
                 vm.supplyingFacility = $filter('filter')(vm.supplyingFacilities, {
@@ -204,10 +221,6 @@
 
             if ($stateParams.periodEndDate) {
                 vm.periodEndDate = $stateParams.periodEndDate;
-            }
-
-            if ($stateParams.requisitionless) {
-                vm.requisitionless = $stateParams.requisitionless;
             }
 
             if ($stateParams.status) {
@@ -251,11 +264,31 @@
             stateParams.periodStartDate = vm.periodStartDate ? $filter('isoDate')(vm.periodStartDate) : null;
             stateParams.periodEndDate = vm.periodEndDate ? $filter('isoDate')(vm.periodEndDate) : null;
             stateParams.sort = 'createdDate,desc';
-            stateParams.requisitionless = vm.requisitionless;
+            stateParams.requisitionless = handleRequisitionStatus(vm.requisitionStatus);
 
             $state.go('openlmis.orders.view', stateParams, {
                 reload: true
             });
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf order-view.controller:OrderViewController
+         * @name handleRequisitionStatus
+         * @param {String} reqStatus the requisition status to handle
+         * 
+         * @returns {Boolean} false if the requisition status is set to 'with requisition',
+         * true if set to 'without requisition', null otherwise
+         */
+        function handleRequisitionStatus(reqStatus) {
+            switch (reqStatus) {
+            case vm.withRequisitionStatus:
+                return false;
+            case vm.withoutRequisitionStatus:
+                return true;
+            default:
+                return null;
+            }
         }
 
         /**
