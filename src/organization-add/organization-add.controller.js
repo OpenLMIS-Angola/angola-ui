@@ -22,11 +22,17 @@
         .controller('OrganizationAddController', OrganizationAddController);
 
     OrganizationAddController.$inject = [
+        '$q',
+        'ValidDestinationResource',
+        'ValidSourceResource',
         'stateTrackerService',
         'confirmService',
         'organizationService',
         'notificationService',
-        'loadingModalService'
+        'loadingModalService',
+        'programs',
+        'facilityTypes',
+        'geoLevels'
     ];
 
     /**
@@ -37,17 +43,49 @@
      * Controller for adding organizations.
      */
     function OrganizationAddController(
+        $q,
+        ValidDestinationResource,
+        ValidSourceResource,
         stateTrackerService,
         confirmService,
         organizationService,
         notificationService,
-        loadingModalService
+        loadingModalService,
+        programs,
+        facilityTypes,
+        geoLevels
     ) {
 
         var vm = this;
 
+        vm.$onInit = onInit;
+        vm.onSubmit = onSubmit;
         vm.createOrganization = createOrganization;
+        vm.createValidSource = createValidSource;
+        vm.createValidDestination = createValidDestination;
         vm.goToPreviousState = stateTrackerService.goToPreviousState;
+
+        /**
+         * @ngdoc property
+         * @propertyOf organization-add.controller:OrganizationAddController
+         * @type {ValidSourceResource}
+         * @name validSourceResource
+         * 
+         * @description
+         * Resource for handling valid sources.
+         */
+        vm.validSourceResource = null;
+
+        /**
+         * @ngdoc property
+         * @propertyOf organization-add.controller:OrganizationAddController
+         * @type {ValidDestinationResource}
+         * @name validDestinationResource
+         * 
+         * @description
+         * Resource for handling valid destinations.
+         */
+        vm.validDestinationResource = null;
 
         /**
          * @ngdoc property
@@ -57,7 +95,89 @@
          * @description
          * Organization to be created.
          */
-        vm.organization = null;
+        vm.createdOrganization = null;
+
+        /**
+         * @ngdoc property
+         * @propertyOf organization-add.controller:OrganizationAddController
+         * @type {Array}
+         * @name programs
+         * 
+         * @description
+         * List of available programs.
+         */
+        vm.programs = [];
+
+        /**
+         * @ngdoc property
+         * @propertyOf organization-add.controller:OrganizationAddController
+         * @type {Array}
+         * @name facilityTypes
+         * 
+         * @description
+         * List of available facility types.
+         */
+        vm.facilityTypes = [];
+
+        /**
+         * @ngdoc property
+         * @propertyOf organization-add.controller:OrganizationAddController
+         * @type {Array}
+         * @name geoLevels
+         * 
+         * @description
+         * List of available geo levels.
+         */
+        vm.geoLevels = [];
+
+        /**
+         * @ngdoc property
+         * @propertyOf organization-add.controller:OrganizationAddController
+         * @type {Object}
+         * @name program
+         * 
+         * @description
+         * Selected program.
+         */
+        vm.program = null;
+
+        /**
+         * @ngdoc property
+         * @propertyOf organization-add.controller:OrganizationAddController
+         * @type {Object}
+         * @name facilityType
+         * 
+         * @description
+         * Selected facility type.
+         */
+        vm.facilityType = null;
+
+        /**
+         * @ngdoc property
+         * @propertyOf organization-add.controller:OrganizationAddController
+         * @type {Object}
+         * @name geoLevel
+         * 
+         * @description
+         * Selected geo level.
+         */
+        vm.geoLevel = null;
+
+        /**
+         * @ngdoc method
+         * @methodOf organization-add.controller:OrganizationAddController
+         * @name onInit
+         * 
+         * @description
+         * Initialization method of the OrganizationAddController.
+         */
+        function onInit() {
+            vm.validSourceResource = new ValidSourceResource();
+            vm.validDestinationResource = new ValidDestinationResource();
+            vm.programs = programs;
+            vm.facilityTypes = facilityTypes;
+            vm.geoLevels = geoLevels;
+        }
 
         /**
          * @ngdoc method
@@ -68,19 +188,75 @@
          * Creates the organization.
          */
         function createOrganization() {
+            return organizationService.createNewOrganization(vm.createdOrganization)
+                .then(function(organization) {
+                    return organization;
+                })
+                .catch(function() {
+                    notificationService.error('organizationAdd.organizationCreateError');
+                });
+        }
+
+        function createPayload(refId) {
+            var payload = {
+                programId: vm.program.id,
+                facilityTypeId: vm.facilityType.id,
+                node: {
+                    referenceId: refId
+                }
+            };
+
+            if (vm.geoLevel) {
+                payload.geoLevelAffinityId = vm.geoLevel.id;
+            }
+
+            return payload;
+        }
+
+        function createValidSource(refId) {
+            var payload = createPayload(refId);
+
+            return vm.validSourceResource.create(payload)
+                .then(function(validSource) {
+                    return validSource;
+                })
+                .catch(function() {
+                    notificationService.error('organizationAdd.validSourceCreateError');
+                });
+        }
+
+        function createValidDestination(refId) {
+            var payload = createPayload(refId);
+
+            return vm.validDestinationResource.create(payload)
+                .then(function(validDestination) {
+                    return validDestination;
+                })
+                .catch(function() {
+                    notificationService.error('organizationAdd.validDestinationCreateError');
+                });
+        }
+
+        function onSubmit() {
             confirmService.confirm('organizationAdd.confirmationPrompt', 'organizationAdd.create')
                 .then(function() {
                     loadingModalService.open();
 
-                    organizationService.createNewOrganization(vm.createdOrganization)
-                        .then(function() {
-                            notificationService.success('organizationAdd.organizationCreated');
-                            loadingModalService.close();
-                            stateTrackerService.goToPreviousState();
+                    createOrganization()
+                        .then(function(organization) {
+                            $q.all([
+                                createValidSource(organization.id),
+                                createValidDestination(organization.id)
+                            ])
+                                .then(function() {
+                                    notificationService.success('organizationAdd.organizationCreated');
+                                    loadingModalService.close();
+                                    stateTrackerService.goToPreviousState();
+                                });
                         })
                         .catch(function() {
-                            loadingModalService.close();
                             notificationService.error('organizationAdd.organizationCreateError');
+                            loadingModalService.close();
                         });
                 });
         }

@@ -30,8 +30,37 @@
             controllerAs: 'vm',
             templateUrl: 'organization-add/organization-add.html',
             url: '/add',
+            resolve: {
+                programs: programsResolve,
+                facilityTypes: facilityTypesResolve,
+                geoLevels: geoLevelsResolve
+            },
             accessRights: [ADMINISTRATION_RIGHTS.STOCK_ORGANIZATIONS_MANAGE]
         });
+
+        programsResolve.$inject = ['programService'];
+        facilityTypesResolve.$inject = ['facilityTypeService'];
+        geoLevelsResolve.$inject = ['GeoLevelResource'];
+
+        function programsResolve(programService) {
+            return programService.getAll();
+        }
+
+        function facilityTypesResolve(facilityTypeService) {
+            return facilityTypeService.query({
+                active: true
+            })
+                .then(function(response) {
+                    return response.content;
+                });
+        }
+
+        function geoLevelsResolve(GeoLevelResource) {
+            return new GeoLevelResource().query()
+                .then(function(resource) {
+                    return resource.content;
+                });
+        }
 
     }
 

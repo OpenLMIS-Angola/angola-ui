@@ -5,7 +5,12 @@
   "organizationAdd.create": "Create",
   "organizationAdd.organizationName": "Organization Name",
   "organizationAdd.disabled": "Disabled",
-  "organizationAdd.confirmationPrompt": "Are you sure you want to create organization?",
+  "organizationAdd.confirmationPrompt": "Are you sure you want to create this organization? This action will also automatically create a Valid Destination and a Valid Source.",
   "organizationAdd.organizationCreated": "Organization created successfully.",
-  "organizationAdd.organizationCreateError": "Error while creating organization."
+  "organizationAdd.organizationCreateError": "Error while creating organization.",
+  "organizationAdd.validSourceCreateError": "Error while creating Valid Source.",
+  "organizationAdd.validDestinationCreateError": "Error while creating Valid Destination.",
+  "organizationAdd.program": "Program",
+  "organizationAdd.facilityType": "Facility Type",
+  "organizationAdd.geoLevelAffinity": "Geo Level Affinity"
 }
