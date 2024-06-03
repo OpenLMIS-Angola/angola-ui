@@ -328,7 +328,6 @@
             var newWard = angular.copy(vm.newWard);
 
             newWard.code = vm.generateWardCode(vm.facility.code);
-            console.log(newWard.type.code);
 
             vm.addedWards.push(newWard);
 
