@@ -19,9 +19,9 @@
 
     angular.module('admin-facility-view').config(routes);
 
-    routes.$inject = ['$stateProvider', 'ADMINISTRATION_RIGHTS'];
+    routes.$inject = ['$stateProvider', 'ADMINISTRATION_RIGHTS', 'WARDS_CONSTANTS'];
 
-    function routes($stateProvider, ADMINISTRATION_RIGHTS) {
+    function routes($stateProvider, ADMINISTRATION_RIGHTS, WARDS_CONSTANTS) {
 
         $stateProvider.state('openlmis.administration.facilities.edit', {
             label: 'adminFacilityView.editFacility',
@@ -64,7 +64,8 @@
                 wards: function(wardService, facility) {
                     var searchParams = {
                         zoneId: facility.geographicZone.id,
-                        sort: 'code,asc'
+                        sort: 'code,asc',
+                        type: WARDS_CONSTANTS.WARD_TYPE_CODE
                     };
 
                     return wardService.getWardsByFacility(searchParams).then(function(response) {

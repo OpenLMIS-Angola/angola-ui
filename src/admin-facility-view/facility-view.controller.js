@@ -31,12 +31,14 @@
     controller.$inject = [
         '$q', '$state', 'facility', 'facilityTypes', 'geographicZones', 'facilityOperators',
         'programs', 'FacilityRepository', 'loadingModalService', 'notificationService',
-        'tzPeriodService', 'messageService', 'confirmService', 'wards', 'wardService'
+        'tzPeriodService', 'messageService', 'confirmService', 'wards', 'wardService',
+        'WARDS_CONSTANTS'
     ];
 
     function controller($q, $state, facility, facilityTypes, geographicZones, facilityOperators,
                         programs, FacilityRepository, loadingModalService, notificationService,
-                        tzPeriodService, messageService, confirmService, wards, wardService) {
+                        tzPeriodService, messageService, confirmService, wards, wardService,
+                        WARDS_CONSTANTS) {
 
         var vm = this;
 
@@ -48,6 +50,7 @@
         vm.addProgram = addProgram;
         vm.addWard = addWard;
         vm.deleteProgramAssociate = deleteProgramAssociate;
+        vm.generateWardCode = generateWardCode;
 
         /**
          * @ngdoc property
@@ -161,6 +164,17 @@
         vm.initialWards = [];
 
         /**
+         * @ngdoc property
+         * @propertyOf admin-facility-view.controller:FacilityViewController
+         * @name wardFacilityType
+         * @type {Object}
+         *
+         * @description
+         * Contains type passed to ward/service
+         */
+        vm.wardFacilityType = undefined;
+
+        /**
          * @ngdoc method
          * @propertyOf admin-facility-view.controller:FacilityViewController
          * @name $onInit
@@ -180,7 +194,9 @@
             vm.initialWards = angular.copy(wards);
             vm.selectedTab = 0;
             vm.managedExternally = facility.isManagedExternally();
-            vm.generateWardCode = generateWardCode;
+            vm.wardFacilityType = facilityTypes.find(function(type) {
+                return type.code === WARDS_CONSTANTS.WARD_TYPE_CODE;
+            });
             vm.newWard = getInitialNewWardValue();
 
             if (!vm.facilityWithPrograms.supportedPrograms) {
@@ -312,6 +328,7 @@
             var newWard = angular.copy(vm.newWard);
 
             newWard.code = vm.generateWardCode(vm.facility.code);
+            console.log(newWard.type.code);
 
             vm.addedWards.push(newWard);
 
@@ -321,14 +338,10 @@
         }
 
         function getInitialNewWardValue() {
-            var facilityType = facilityTypes.find(function(type) {
-                return type.code === 'Wards&Services';
-            });
-
             return {
                 active: false,
                 enabled: true,
-                type: facilityType,
+                type: vm.wardFacilityType,
                 geographicZone: vm.facility.geographicZone
             };
         }
