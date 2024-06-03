@@ -25,8 +25,20 @@ describe('wardService', function() {
             this.WardDataBuilder = $injector.get('WardDataBuilder');
         });
 
+        this.facility = {
+            zoneId: '123',
+            id: '123'
+        };
+
         this.ward1 = new this.WardDataBuilder().build();
         this.ward2 = new this.WardDataBuilder().build();
+
+        this.ward1.geographicZone = {
+            id: '123'
+        };
+        this.ward2.geographicZone = {
+            id: '123'
+        };
 
         this.wards = [
             this.ward1,
@@ -34,35 +46,17 @@ describe('wardService', function() {
         ];
     });
 
-    it('should get all wards', function() {
-        this.$httpBackend
-            .expectGET(this.referencedataUrlFactory('/api/wards'))
-            .respond(200, {
-                content: this.wards
-            });
-
-        var result;
-        this.wardService.getAllWards().then(function(response) {
-            result = response.content;
-        });
-
-        this.$httpBackend.flush();
-        this.$rootScope.$apply();
-
-        expect(angular.toJson(result)).toEqual(angular.toJson(this.wards));
-    });
-
     it('should get wards by facility', function() {
-        var facilityId = '123';
         this.$httpBackend
-            .expectGET(this.referencedataUrlFactory('/api/wards?facilityId=' + facilityId))
+            .expectGET(this.referencedataUrlFactory('/api/facilities/full?zoneId=123&sort=code,asc'))
             .respond(200, {
                 content: this.wards
             });
 
         var result;
         this.wardService.getWardsByFacility({
-            facilityId: facilityId
+            zoneId: this.facility.zoneId,
+            sort: 'code,asc'
         }).then(function(response) {
             result = response.content;
         });
@@ -74,18 +68,22 @@ describe('wardService', function() {
     });
 
     it('should save facility wards', function() {
+        var changedWard = angular.copy(this.ward1);
+        changedWard.description = 'changed';
+
         this.$httpBackend
-            .expectPUT(this.referencedataUrlFactory('/api/wards/saveAll'), this.wards)
-            .respond(200, this.wards);
+            .expectPUT(this.referencedataUrlFactory('/api/facilities/' + changedWard.id), changedWard)
+            .respond(200, changedWard);
 
         var result;
-        this.wardService.saveFacilityWards(this.wards).then(function(response) {
+        this.wardService.updateFacilityWard(changedWard).then(function(response) {
             result = response;
         });
 
         this.$httpBackend.flush();
         this.$rootScope.$apply();
 
-        expect(angular.toJson(result)).toEqual(angular.toJson(this.wards));
+        expect(angular.toJson(result)).toEqual(angular.toJson(changedWard));
     });
+
 });

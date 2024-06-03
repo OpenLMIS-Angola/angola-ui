@@ -32,43 +32,25 @@
 
     function service($resource, referencedataUrlFactory) {
 
-        var resource = $resource(referencedataUrlFactory('/api/wards/:id'), {}, {
+        var resource = $resource(referencedataUrlFactory('/api/facilities/'), {}, {
             getWardsByFacility: {
-                url: referencedataUrlFactory('/api/wards'),
                 method: 'GET',
-                isArray: false
+                url: referencedataUrlFactory('/api/facilities/full')
             },
-            getAllWards: {
-                url: referencedataUrlFactory('/api/wards'),
-                method: 'GET',
-                isArray: false
+            updateFacilityWard: {
+                url: referencedataUrlFactory('/api/facilities/:id'),
+                method: 'PUT'
             },
-            saveFacilityWards: {
-                url: referencedataUrlFactory('/api/wards/saveAll'),
-                method: 'PUT',
-                isArray: true
+            addNewWard: {
+                method: 'PUSH'
             }
         });
 
         return {
             getWardsByFacility: getWardsByFacility,
-            saveFacilityWards: saveFacilityWards,
-            getAllWards: getAllWards
+            updateFacilityWard: updateFacilityWard,
+            addNewWard: addNewWard
         };
-
-        /**
-         * @ngdoc method
-         * @methodOf admin-facility-view.wardService
-         * @name getAllWards
-         *
-         * @description
-         * Retrieves all available wards.
-         *
-         * @return {Promise}                   Array of all wards
-         */
-        function getAllWards() {
-            return resource.getAllWards().$promise;
-        }
 
         /**
          * @ngdoc method
@@ -88,15 +70,31 @@
         /**
          * @ngdoc method
          * @methodOf admin-facility-view.wardService
-         * @name saveFacilityWards
+         * @name updateFacilityWard
          *
          * @description
          * Saves facility wards.
          *
-         * @return {Promise}                   Saved wards promise
+         * @return {Promise} Saved wards promise
          */
-        function saveFacilityWards(wards) {
-            return resource.saveFacilityWards(wards).$promise;
+        function updateFacilityWard(ward) {
+            return resource.updateFacilityWard({
+                id: ward.id
+            }, ward).$promise;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf admin-facility-view.wardService
+         * @name addNewWard
+         *
+         * @description
+         * Creates a new Ward
+         *
+         * @return {Promise}
+         */
+        function addNewWard(ward) {
+            return resource.addNewWard(ward).$promise;
         }
     }
 })();
