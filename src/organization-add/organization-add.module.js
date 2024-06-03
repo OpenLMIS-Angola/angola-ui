@@ -29,7 +29,10 @@
         'openlmis-templates',
         'openlmis-state-tracker',
         'openlmis-modal-state',
-        'openlmis-table'
+        'openlmis-table',
+        'organization-list',
+        'admin-valid-destination-add',
+        'admin-valid-source-add'
     ]);
 
 })();
