@@ -109,6 +109,16 @@
             return facilitiesPromise;
         }
 
+        /**
+         * @ngdoc method
+         * @methodOf referencedata-facility.facilityService
+         * @name getFacilitiesWithoutWards
+         *
+         * @description
+         * Retrieves all facilities that are not a ward type
+         *
+         * @return {Promise} Array of facilities
+         */
         function getFacilitiesWithoutWards() {
             return resource.getAll().$promise
                 .then(function(response) {
