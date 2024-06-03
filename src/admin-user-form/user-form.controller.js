@@ -124,9 +124,7 @@
             vm.initialUsername = vm.user.username;
             vm.homeFacility = getHomeFacility();
             vm.initialHomeFacility = vm.homeFacility;
-            vm.facilities = facilities.filter(function(facility) {
-                return facility.type.code !== 'WS';
-            });
+            vm.facilities = facilities;
             vm.pendingVerificationEmail = pendingVerificationEmail;
         }
 

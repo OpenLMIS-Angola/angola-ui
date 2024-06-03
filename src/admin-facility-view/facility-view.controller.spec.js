@@ -262,7 +262,7 @@ describe('FacilityViewController', function() {
             };
             this.vm.newWard = {
                 enabled: true,
-                active: true
+                active: false
             };
             spyOn(this.vm, 'generateWardCode').andReturn('generated-code');
         });
@@ -290,7 +290,7 @@ describe('FacilityViewController', function() {
 
             expect(this.vm.newWard).toEqual({
                 enabled: true,
-                active: true,
+                active: false,
                 type: undefined,
                 geograpicZone: undefined
             });
