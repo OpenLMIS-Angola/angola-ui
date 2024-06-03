@@ -66,6 +66,7 @@
                         zoneId: facility.geographicZone.id,
                         sort: 'code,asc',
                         type: WARDS_CONSTANTS.WARD_TYPE_CODE
+
                     };
 
                     return wardService.getWardsByFacility(searchParams).then(function(response) {
