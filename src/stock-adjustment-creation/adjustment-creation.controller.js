@@ -1077,7 +1077,8 @@
 
         // AO-805: Allow users with proper rights to edit product prices
         function calculateTotalPrice(lineItem) {
-            return lineItem.price && lineItem.quantity ? lineItem.price * lineItem.quantity : 0;
+            var lineItemTotalQuantity = vm.getLineItemTotalQuantity(lineItem);
+            return lineItem.price && lineItem.quantity ? lineItem.price * lineItemTotalQuantity : 0;
         }
 
         function hasPermissionToEditProductPrices() {

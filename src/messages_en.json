@@ -67,7 +67,7 @@
     "shipmentView.fillQuantityInPack": "Fill Quantity (in Packs)",
     "shipmentView.packs": "Packs",
     "shipmentView.doses": "Doses",
-    "stockAdjustmentCreation.quantityGreaterThanStockOnHand": "Quantity cannot be greater than stock on hand value.",
+    "stockAdjustmentCreation.quantityGreaterThanStockOnHand": "Total quantity cannot be greater than stock on hand value.",
     "adminRoleForm.reportedAndOrderedProducts": "View Reported and Ordered Products Report",
     "adminRoleForm.submissionOfMonthlyReports": "View Submission of Monthly Reports",
     "adminRoleForm.aggregateConsumption": "View Aggregate Consumption Report",
