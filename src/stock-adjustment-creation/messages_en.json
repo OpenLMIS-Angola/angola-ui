@@ -7,5 +7,6 @@
     "adjustmentCreation.addNewUnit": "Create unit",
     "adjustmentCreation.addProduct": "Add product",
     "adjustmentCreation.unit": "Unit",
-    "adjustmentCreation.unitQuantity": "Unit quantity"
+    "adjustmentCreation.itemQuantity": "Item quantity",
+    "adjustmentCreation.totalQuantity": "Total quantity"
 }

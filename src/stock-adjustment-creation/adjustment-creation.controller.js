@@ -203,11 +203,11 @@
             });
         };
 
-        function getUnitNameById(unitId) {
+        function getUnitOfOrderableById(unitId) {
             var unit = vm.unitsOfOrderable.find(function(unit) {
                 return unit.id === unitId;
             });
-            return unit.name;
+            return unit;
         }
 
         /**
@@ -248,7 +248,7 @@
                     $errors: {},
                     $previewSOH: selectedItem.stockOnHand,
                     unitOfOrderableUUID: vm.newItemUnitUUID,
-                    unitName: getUnitNameById(vm.newItemUnitUUID),
+                    unit: getUnitOfOrderableById(vm.newItemUnitUUID),
                     price: getProductPrice(selectedItem),
                     totalPrice: 0
                 },
@@ -317,6 +317,20 @@
         /**
          * @ngdoc method
          * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name getLineItemTotalQuantity
+         *
+         * @description
+         * Calculates the total quantity of a line item. (mulitiplied by item quantity)
+         */
+        vm.getLineItemTotalQuantity = function(lineItem) {
+            var itemQuantity = lineItem.quantity ? lineItem.quantity : 0;
+            var factor = lineItem.unit ? lineItem.unit.factor : 1;
+            return itemQuantity * factor;
+        };
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
          * @name validateQuantity
          *
          * @description
@@ -328,13 +342,14 @@
             // AO-804: Display product prices on Stock Issues, Adjustments and Receives Page
             lineItem.totalPrice = 0;
             // AO-804: Ends here
-            if (lineItem.quantity > lineItem.$previewSOH && lineItem.reason
+            var validatedQuantity = vm.getLineItemTotalQuantity(lineItem);
+            if (validatedQuantity > lineItem.$previewSOH && lineItem.reason
                     && lineItem.reason.reasonType === REASON_TYPES.DEBIT) {
                 lineItem.$errors.quantityInvalid = messageService
                     .get('stockAdjustmentCreation.quantityGreaterThanStockOnHand');
-            } else if (lineItem.quantity > MAX_INTEGER_VALUE) {
+            } else if (validatedQuantity > MAX_INTEGER_VALUE) {
                 lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
-            } else if (lineItem.quantity >= 1) {
+            } else if (validatedQuantity >= 1) {
                 lineItem.$errors.quantityInvalid = false;
                 // AO-804: Display product prices on Stock Issues, Adjustments and Receives Page
                 lineItem.totalPrice = calculateTotalPrice(lineItem);
