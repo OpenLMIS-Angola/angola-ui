@@ -56,9 +56,9 @@
                         ADMINISTRATION_RIGHTS, authorizationService, unitOfOrderableService) {
         // ANGOLASUP-717: ends here
         // AO-805: Ends here
-        var vm = this,
-            previousAdded = {};
+        var vm = this;
 
+        vm.previousAdded = {};
         vm.expirationDateChanged = expirationDateChanged;
         vm.newLotCodeChanged = newLotCodeChanged;
         vm.validateExpirationDate = validateExpirationDate;
@@ -142,14 +142,14 @@
         /**
          * @ngdoc property
          * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-         * @name newItemUnitUUID
+         * @name newItemUnitId
          * @type {string}
          *
          * @description
          * Holds id of a unit which is added to a new product
          *
          */
-        vm.newItemUnitUUID = undefined;
+        vm.newItemUnitId = undefined;
 
         /**
          * @ngdoc property
@@ -161,6 +161,18 @@
          * Holds possible units for orderable
          */
         vm.unitsOfOrderable = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name lotAlreadyAdded
+         * @type {boolean}
+         *
+         * @description
+         * flag which specifies if the lot from add product form was already added to table
+         *  if yes then unit for new item is fixed
+         */
+        vm.lotAlreadyAdded = false;
 
         // OAM-5: Lot code filter UI improvements.
         /**
@@ -201,6 +213,10 @@
                 reload: true,
                 notify: false
             });
+        };
+
+        vm.getAddedUnitName = function() {
+            return getUnitOfOrderableById(vm.newItemUnitId).name;
         };
 
         function getUnitOfOrderableById(unitId) {
@@ -247,36 +263,36 @@
                 vm.addedLineItems.unshift(_.extend({
                     $errors: {},
                     $previewSOH: selectedItem.stockOnHand,
-                    unitOfOrderableUUID: vm.newItemUnitUUID,
-                    unit: getUnitOfOrderableById(vm.newItemUnitUUID),
+                    unitOfOrderableId: vm.newItemUnitId,
+                    unit: getUnitOfOrderableById(vm.newItemUnitId),
                     price: getProductPrice(selectedItem),
                     totalPrice: 0
                 },
                 selectedItem, copyDefaultValue()));
                 // AO-804: Ends here
 
-                previousAdded = vm.addedLineItems[0];
-
+                vm.previousAdded = vm.addedLineItems[0];
+                setLotAlreadyAdded(vm.addedLineItems[0].lot.lotCode);
                 vm.search();
             }
         }
 
         function copyDefaultValue() {
             var defaultDate;
-            if (previousAdded.occurredDate) {
-                defaultDate = previousAdded.occurredDate;
+            if (vm.previousAdded.occurredDate) {
+                defaultDate = vm.previousAdded.occurredDate;
             } else {
                 defaultDate = dateUtils.toStringDate(new Date());
             }
 
             return {
-                assignment: previousAdded.assignment,
-                srcDstFreeText: previousAdded.srcDstFreeText,
+                assignment: vm.previousAdded.assignment,
+                srcDstFreeText: vm.previousAdded.srcDstFreeText,
                 reason: (adjustmentType.state === ADJUSTMENT_TYPE.KIT_UNPACK.state)
                     ? {
                         id: UNPACK_REASONS.KIT_UNPACK_REASON_ID
-                    } : previousAdded.reason,
-                reasonFreeText: previousAdded.reasonFreeText,
+                    } : vm.previousAdded.reason,
+                reasonFreeText: vm.previousAdded.reasonFreeText,
                 occurredDate: defaultDate
             };
         }
@@ -343,8 +359,8 @@
             lineItem.totalPrice = 0;
             // AO-804: Ends here
             var validatedQuantity = vm.getLineItemTotalQuantity(lineItem);
-            if (validatedQuantity > lineItem.$previewSOH && lineItem.reason
-                    && lineItem.reason.reasonType === REASON_TYPES.DEBIT) {
+            if (validatedQuantity > lineItem.$previewSOH && ((lineItem.reason
+                    && lineItem.reason.reasonType === REASON_TYPES.DEBIT) || !lineItem.reason)) {
                 lineItem.$errors.quantityInvalid = messageService
                     .get('stockAdjustmentCreation.quantityGreaterThanStockOnHand');
             } else if (validatedQuantity > MAX_INTEGER_VALUE) {
@@ -421,6 +437,27 @@
             return lineItem;
         };
 
+        function setLotAlreadyAdded(lotCode) {
+            var matchingLineItem = vm.addedLineItems.find(function(item) {
+                return item.lot.lotCode === lotCode;
+            });
+
+            if (!matchingLineItem) {
+                vm.lotAlreadyAdded = false;
+                return;
+            }
+
+            var matchingUnit = vm.unitsOfOrderable.find(function(unit) {
+                return unit.id === matchingLineItem.unitOfOrderableId;
+            });
+
+            if (matchingUnit) {
+                vm.newItemUnitId = matchingUnit.id;
+            }
+
+            vm.lotAlreadyAdded = true;
+        }
+
         /**
          * @ngdoc method
          * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
@@ -430,6 +467,8 @@
          * Allows inputs to add missing lot to be displayed.
          */
         function lotChanged() {
+            setLotAlreadyAdded(vm.selectedLot.lotCode);
+
             vm.canAddNewLot = vm.selectedLot
                 && vm.selectedLot.lotCode === messageService.get('orderableGroupService.addMissingLot');
             initiateNewLotObject();
@@ -639,6 +678,8 @@
             var distinctLots = [];
             var lotResource = new LotResource();
             addedLineItems.forEach(function(lineItem) {
+                lineItem.quantity = vm.getLineItemTotalQuantity(lineItem);
+
                 if (lineItem.lot && lineItem.$isNewItem && _.isUndefined(lineItem.lot.id) &&
                 !listContainsTheSameLot(distinctLots, lineItem.lot)) {
                     distinctLots.push(lineItem.lot);

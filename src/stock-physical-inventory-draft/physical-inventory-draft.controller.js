@@ -440,9 +440,9 @@
 
         function multiplyUnitsByFactor(lineItems) {
             lineItems.forEach(function(lineItem) {
-                if (lineItem.unitOfOrderableUUID) {
+                if (lineItem.unitOfOrderableId) {
                     var assignedUnit = vm.unitsOfOrderable.find(function(unit) {
-                        return unit.id === lineItem.unitOfOrderableUUID;
+                        return unit.id === lineItem.unitOfOrderableId;
                     });
 
                     if (assignedUnit && lineItem.quantity) {

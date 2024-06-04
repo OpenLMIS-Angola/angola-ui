@@ -91,7 +91,7 @@
                 return lineItem.lot && (lineItem.lot.lotCode && !lineItem.lot.id) &&
                 (existingItemsWithNewLots.filter(function(lineItemWithNewLot) {
                     return lineItemWithNewLot.displayLotMessage === lineItem.displayLotMessage &&
-                        lineItemWithNewLot.orderable.id === lineItem.orderable.id;
+                        lineItemWithNewLot.orderable.id === lineItem.orderable.id && lineItemWithNewLot.stockCardId;
                 }).length === 0);
             });
 

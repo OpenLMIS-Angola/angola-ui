@@ -151,7 +151,7 @@
                     stockCardSummary.orderable.unitPrice = getProductPrice(stockCardSummary);
                     stockCardSummary.orderable.totalPrice = stockCardSummary.orderable.unitPrice *
                         stockCardSummary.stockOnHand;
-                    stockCardSummary.orderable.unit = getOrderableUnit(stockCardSummary.orderable.unitOfOrderableUUID);
+                    stockCardSummary.orderable.unit = getOrderableUnit(stockCardSummary.orderable.unitOfOrderableId);
                 });
             });
 

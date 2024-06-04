@@ -70,7 +70,7 @@
                         throw 'stockPhysicalInventoryDraft.submitInvalidActive';
                     }
 
-                    if (item.unitOfOrderableUUID) {
+                    if (item.unitOfOrderableId) {
                         console.log('this one has unit: ' + item);
                     }
 
@@ -79,7 +79,7 @@
                         item.quantity, physicalInventory.occurredDate,
                         {
                             vvmStatus: item.vvmStatus
-                        }, stockAdjustments, item.unitOfOrderableUUID
+                        }, stockAdjustments, item.unitOfOrderableId
                     );
                 });
 

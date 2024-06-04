@@ -51,7 +51,7 @@
                         {{:: 'adjustmentCreation.unit' | message }}
                     </label>
                     <select id="newItemUnit" ng-options="unit.id as unit.name for unit in vm.unitsOfOrderable"
-                        ng-model="vm.newItemUnitUUID">
+                        ng-model="vm.newItemUnitId" ng-disabled="vm.lotAlreadyAdded">
                     </select>
                 </div>
                 <button type="submit" class="add">{{vm.key('add') | message}}</button>

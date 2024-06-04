@@ -131,7 +131,7 @@
                     openlmis-invalid="{{lineItem.unaccountedQuantityInvalid | message}}">{{lineItem.unaccountedQuantity}}</td>
                 </td>
                 <td align="right">
-                    <select ng-model="lineItem.unitOfOrderableUUID"
+                    <select ng-model="lineItem.unitOfOrderableId"
                             ng-options="unit.id as unit.name for unit in vm.unitsOfOrderable">
                     </select>
                 </td>

@@ -101,7 +101,8 @@
                     },
                     occurredDate: item.occurredDate,
                     reasonId: item.reason ? item.reason.id : null,
-                    reasonFreeText: item.reasonFreeText
+                    reasonFreeText: item.reasonFreeText,
+                    unitOfOrderableId: item.unitOfOrderableId
                 }, buildSourceDestinationInfo(item, adjustmentType));
             });
             // ANGOLASUP-717: Create New Issue Report

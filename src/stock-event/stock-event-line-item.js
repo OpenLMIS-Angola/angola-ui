@@ -46,18 +46,18 @@
          * @param  {String}    occurredDate        the occured date
          * @param  {Object}    extraData           the extra data
          * @param  {Array}     stockAdjustments    the stock adjustment list
-         * @param {string}     unitOfOrderableUUID id of a unit
+         * @param {string}     unitOfOrderableId id of a unit
          * @return {StockEventLineItem}            the Stock Event Line Item object
          */
         function StockEventLineItem(orderableId, lotId, quantity, occurredDate, extraData, stockAdjustments,
-                                    unitOfOrderableUUID) {
+                                    unitOfOrderableId) {
             this.orderableId = orderableId;
             this.lotId = lotId;
             this.quantity = quantity;
             this.occurredDate = occurredDate;
             this.extraData = extraData;
             this.stockAdjustments = stockAdjustments;
-            this.unitOfOrderableUUID  = unitOfOrderableUUID;
+            this.unitOfOrderableId  = unitOfOrderableId;
         }
     }
 })();
