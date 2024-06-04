@@ -14,21 +14,27 @@
  */
 
 (function() {
+
     'use strict';
 
     /**
-   * @module report-embedded-add
-   *
-   * @description
-   * Responsible for add reports screen.
-   */
-    angular.module('report-embedded-add', [
+     * @module report-embedded-list
+     *
+     * @description
+     * Provides a view for the list of embedded reports.
+     */
+    angular.module('report-embedded-list', [
+        'openlmis-table',
+        'openlmis-admin',
+        'openlmis-cached-repository',
+        'openlmis-pagination',
+        'openlmis-rights',
+        'ui.router',
         'ngResource',
         'openlmis-i18n',
         'openlmis-rights',
         'openlmis-urls',
-        'openlmis-permissions',
-        'openlmis-pagination',
-        'ui.router'
+        'openlmis-permissions'
     ]);
+
 })();

@@ -17,12 +17,12 @@
     'use strict';
 
     /**
-   * @module report-embedded-add
+   * @module report-embedded-edit
    *
    * @description
-   * Responsible for add reports screen.
+   * Responsible for edit reports screen.
    */
-    angular.module('report-embedded-add', [
+    angular.module('report-embedded-edit', [
         'ngResource',
         'openlmis-i18n',
         'openlmis-rights',

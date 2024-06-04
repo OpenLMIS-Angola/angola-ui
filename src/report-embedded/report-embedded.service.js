@@ -38,13 +38,33 @@
                 method: 'POST',
                 url: openlmisUrlFactory('/api/reports/embeddedReports')
             },
+            edit: {
+                method: 'PUT',
+                url: openlmisUrlFactory('/api/reports/embeddedReports/:id')
+            },
             remove: {
-                method: 'POST',
+                method: 'DELETE',
                 url: openlmisUrlFactory('/api/reports/embeddedReports/:id')
             },
             getAllByCategory: {
                 method: 'POST',
                 url: openlmisUrlFactory('/api/reports/embeddedReports?category=:categoryName')
+            },
+            addReportCategory: {
+                method: 'POST',
+                url: openlmisUrlFactory('/api/reports/embeddedReportCategories')
+            },
+            getReportCategories: {
+                method: 'GET',
+                url: openlmisUrlFactory('/api/reports/embeddedReportCategories')
+            },
+            getReportCategory: {
+                method: 'GET',
+                url: openlmisUrlFactory('/api/reports/embeddedReportCategories?category_id=:categoryId')
+            },
+            deleteReportCategory: {
+                method: 'DELETE',
+                url: openlmisUrlFactory('/api/reports/embeddedReportCategories?category_id=:categoryId')
             }
         });
 
@@ -52,12 +72,17 @@
             get: get,
             getAll: getAll,
             add: add,
+            edit: edit,
             remove: remove,
-            getAllByCategory: getAllByCategory
+            getAllByCategory: getAllByCategory,
+            addReportCategory: addReportCategory,
+            getReportCategories: getReportCategories,
+            getReportCategory: getReportCategory,
+            deleteReportCategory: deleteReportCategory
         };
 
-        function getAll() {
-            return resource.getAll().$promise;
+        function getAll(searchParams) {
+            return resource.getAll(searchParams).$promise;
         }
 
         function get(id) {
@@ -70,6 +95,12 @@
             return resource.add(report).$promise;
         }
 
+        function edit(report) {
+            return resource.edit({
+                id: report.id
+            }, report).$promise;
+        }
+
         function remove(id) {
             return resource.remove({
                 id: id
@@ -77,8 +108,26 @@
         }
 
         function getAllByCategory(categoryName) {
-            return resource.remove({
+            return resource.getAllByCategory({
                 categoryName: categoryName
+            }).$promise;
+        }
+
+        function addReportCategory(category) {
+            return resource.addReportCategory(category).$promise;
+        }
+
+        function getReportCategories() {
+            return resource.getReportCategories().$promise;
+        }
+
+        function getReportCategory(category) {
+            return resource.getReportCategory(category).$promise;
+        }
+
+        function deleteReportCategory(categoryId) {
+            return resource.deleteReportCategory({
+                categoryId: categoryId
             }).$promise;
         }
 

@@ -17,41 +17,46 @@
     'use strict';
     /**
      * @ngdoc controller
-     * @name report-embedded-add.controller:ReportEmbeddedAddController
+     * @name report-embedded-edit.controller:ReportEmbeddedEditController
      *
      * @description
-     * Allows user to add new reports
+     * Allows user to edit new reports
      */
     angular
-        .module('report-embedded-add')
-        .controller('ReportEmbeddedAddController', ReportEmbeddedAddController);
+        .module('report-embedded-edit')
+        .controller('ReportEmbeddedEditController', ReportEmbeddedEditController);
 
-    ReportEmbeddedAddController.$inject = ['reportEmbeddedService', 'loadingModalService', '$state'];
+    ReportEmbeddedEditController.$inject = ['reportEmbeddedService', 'loadingModalService', '$state', 'embeddedReport',
+        'categories'];
 
-    function ReportEmbeddedAddController(reportEmbeddedService, loadingModalService, $state) {
+    function ReportEmbeddedEditController(reportEmbeddedService, loadingModalService, $state, embeddedReport,
+                                          categories) {
         var vm = this;
 
         vm.$onInit = onInit;
 
         vm.goBack = goBack;
-        vm.add = add;
+        vm.edit = edit;
         vm.validateField = validateField;
         vm.invalidFields = new Set();
-        vm.report = {};
 
-        vm.categories = undefined;
+        vm.categories = categories;
+        vm.report = embeddedReport;
 
         function onInit() {
-            reportEmbeddedService.getReportCategories().then(function(categories) {
-                vm.categories = categories.content;
+            categories.content.map(function(category) {
+                if (category.id === embeddedReport.category.id) {
+                    vm.report.category = category;
+                }
             });
+
         }
 
-        function add() {
+        function edit() {
             loadingModalService.open();
 
-            if (validateAddReport()) {
-                reportEmbeddedService.add(vm.report)
+            if (validateEditReport()) {
+                reportEmbeddedService.edit(vm.report)
                     .then(function() {
                         loadingModalService.close();
                         $state.reload('openlmis.administration.embeddedReportsList');
@@ -65,7 +70,7 @@
             window.history.back();
         }
 
-        function validateAddReport() {
+        function validateEditReport() {
             var fieldsToValidate = ['name', 'url', 'category'];
             fieldsToValidate.forEach(function(fieldName) {
                 validateField(vm.report[fieldName], fieldName);

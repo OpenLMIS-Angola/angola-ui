@@ -33,7 +33,6 @@
     function controller(reportEmbeddedService, loadingModalService, $state) {
         var vm = this;
 
-        vm.add = add;
         vm.openEmbeddedReport = openEmbeddedReport;
 
         vm.reportsList = undefined;
@@ -55,16 +54,16 @@
             reportEmbeddedService.getAll()
                 .then(function(reports) {
                     reports.content.forEach(function(report) {
-                        if (report.category === 'Stock') {
+                        if (report.category.name === 'Stock') {
                             reportsList.stocks.push(report);
                         }
-                        if (report.category === 'Requisition') {
+                        if (report.category.name === 'Requisition') {
                             reportsList.requisitions.push(report);
                         }
-                        if (report.category === 'Order') {
+                        if (report.category.name === 'Order') {
                             reportsList.orders.push(report);
                         }
-                        if (report.category === 'Administration') {
+                        if (report.category.name === 'Administration') {
                             reportsList.administrations.push(report);
                         }
                     });
@@ -72,10 +71,6 @@
                     vm.reportsList = reportsList;
                     loadingModalService.close();
                 });
-        }
-
-        function add() {
-            $state.go('openlmis.reports.embedded.add');
         }
 
         function openEmbeddedReport(id) {
