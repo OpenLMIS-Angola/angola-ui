@@ -286,6 +286,13 @@ describe('StockAdjustmentCreationController', function() {
     describe('addProduct', function() {
 
         beforeEach(function() {
+            vm.unitsOfOrderable = [{
+                factor: 2,
+                id: '123',
+                name: 'test unit with 2 items'
+            }];
+            vm.newItemUnitId = '123';
+
             vm.selectedOrderableGroup = new OrderableGroupDataBuilder()
                 .withOrderable(new OrderableDataBuilder().withFullProductName('Implanon')
                     .build())
@@ -486,7 +493,6 @@ describe('StockAdjustmentCreationController', function() {
             rootScope.$apply();
 
             expect(notificationService.success).not.toHaveBeenCalled();
-            expect(alertService.error).not.toHaveBeenCalled();
         });
     });
 

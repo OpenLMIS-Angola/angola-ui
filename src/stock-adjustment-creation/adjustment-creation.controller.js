@@ -272,7 +272,10 @@
                 // AO-804: Ends here
 
                 vm.previousAdded = vm.addedLineItems[0];
-                setLotAlreadyAdded(vm.addedLineItems[0].lot.lotCode);
+
+                if (vm.addedLineItems[0].lot) {
+                    setLotAlreadyAdded(vm.addedLineItems[0].lot.lotCode);
+                }
                 vm.search();
             }
         }
@@ -467,7 +470,9 @@
          * Allows inputs to add missing lot to be displayed.
          */
         function lotChanged() {
-            setLotAlreadyAdded(vm.selectedLot.lotCode);
+            if (vm.selectedLot) {
+                setLotAlreadyAdded(vm.selectedLot.lotCode);
+            }
 
             vm.canAddNewLot = vm.selectedLot
                 && vm.selectedLot.lotCode === messageService.get('orderableGroupService.addMissingLot');
