@@ -35,7 +35,7 @@
         'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
         'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter', '$q',
         'offlineService', 'physicalInventoryDraftCacheService', 'stockCardService', 'LotResource',
-        'editLotModalService'];
+        'editLotModalService', 'unitOfOrderableService'];
 
     function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                         physicalInventoryFactory, notificationService, alertService,
@@ -44,7 +44,7 @@
                         reasons, stockReasonsCalculations, loadingModalService, $window,
                         stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter, $q,
                         offlineService, physicalInventoryDraftCacheService, stockCardService,
-                        LotResource, editLotModalService) {
+                        LotResource, editLotModalService, unitOfOrderableService) {
 
         var vm = this;
         vm.$onInit = onInit;
@@ -247,6 +247,17 @@
         vm.dataChanged = false;
 
         /**
+         * @ngdoc property
+         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name unitsOfOrderable
+         * @type {boolean}
+         *
+         * @description
+         * Holds possible units for orderable
+         */
+        vm.unitsOfOrderable = undefined;
+
+        /**
          * @ngdoc method
          * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
          * @name getStatusDisplay
@@ -427,6 +438,20 @@
             });
         };
 
+        function multiplyUnitsByFactor(lineItems) {
+            lineItems.forEach(function(lineItem) {
+                if (lineItem.unitOfOrderableId) {
+                    var assignedUnit = vm.unitsOfOrderable.find(function(unit) {
+                        return unit.id === lineItem.unitOfOrderableId;
+                    });
+
+                    if (assignedUnit && lineItem.quantity) {
+                        lineItem.quantity *= assignedUnit.factor;
+                    }
+                }
+            });
+        }
+
         /**
          * @ngdoc method
          * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
@@ -436,6 +461,7 @@
          * Save physical inventory draft.
          */
         vm.saveDraft = function(withNotification) {
+            multiplyUnitsByFactor(draft.lineItems);
             loadingModalService.open();
             return physicalInventoryFactory.saveDraft(draft).then(function() {
                 if (!withNotification) {
@@ -725,6 +751,11 @@
             vm.stateParams = $stateParams;
             $stateParams.program = undefined;
             $stateParams.facility = undefined;
+
+            unitOfOrderableService.getAll()
+                .then(function(response) {
+                    vm.unitsOfOrderable = response.content;
+                });
 
             // ANGOLASUP-806: Implement adding default reason in physical inventory
             if (vm.stateParams.defaultReason !== null) {

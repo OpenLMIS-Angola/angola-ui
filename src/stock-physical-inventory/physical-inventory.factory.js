@@ -202,6 +202,9 @@
             angular.forEach(draft.lineItems, function(item) {
                 // ANGOLASUP-825: Fixed inventory saving functionality
                 if (!(item.lot && (item.lot.lotCode && !item.lot.id))) {
+                    if (item.unitOfOrderableId) {
+                        console.log(item);
+                    }
                     physicalInventory.lineItems.push({
                         orderableId: item.orderable.id,
                         lotId: (item.lot && item) ? item.lot.id : null,
@@ -209,7 +212,8 @@
                         extraData: {
                             vvmStatus: item.vvmStatus
                         },
-                        stockAdjustments: item.stockAdjustments
+                        stockAdjustments: item.stockAdjustments,
+                        unitOfOrderableId: item.unitOfOrderableId
                     });
                 }
                 // ANGOLASUP-825: Ends here

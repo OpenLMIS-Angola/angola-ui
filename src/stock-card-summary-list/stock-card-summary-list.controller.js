@@ -30,11 +30,12 @@
 
     controller.$inject = [
         'loadingModalService', '$state', '$stateParams', 'StockCardSummaryRepositoryImpl', 'stockCardSummaries',
-        'offlineService', '$scope', 'STOCKCARD_STATUS', 'messageService', 'paginationService'
+        'offlineService', '$scope', 'STOCKCARD_STATUS', 'messageService', 'paginationService', 'unitOfOrderableService'
     ];
 
     function controller(loadingModalService, $state, $stateParams, StockCardSummaryRepositoryImpl, stockCardSummaries,
-                        offlineService, $scope, STOCKCARD_STATUS, messageService, paginationService) {
+                        offlineService, $scope, STOCKCARD_STATUS, messageService, paginationService,
+                        unitOfOrderableService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -44,6 +45,10 @@
         vm.search = search;
         vm.offline = offlineService.isOffline;
         vm.goToPendingOfflineEventsPage = goToPendingOfflineEventsPage;
+        vm.setActiveDisplayType = setActiveDisplayType;
+        vm.PACKS_DISPLAY_TYPE = 'packs';
+        vm.DOSES_DISPLAY_TYPE = 'doses';
+        vm.activeDisplayType = vm.DOSES_DISPLAY_TYPE;
 
         /**
          * @ngdoc property
@@ -119,6 +124,17 @@
         // AO-816: Ends here
 
         /**
+         * @ngdoc property
+         * @propertyOf stock-card-summary-list.controller:StockCardSummaryListController
+         * @name allUnitsOfOrderable
+         * @type {Object[]}
+         *
+         * @description
+         * Holds all available units of orderable
+         */
+        vm.allUnitsOfOrderable = undefined;
+
+        /**
          * @ngdoc method
          * @methodOf stock-card-summary-list.controller:StockCardSummaryListController
          * @name getStockSummaries
@@ -128,11 +144,17 @@
          */
         function onInit() {
             // AO-816: Add prices to the Stock On Hand view
-            stockCardSummaries.forEach(function(stockCardSummary) {
-                stockCardSummary.orderable.unitPrice = getProductPrice(stockCardSummary);
-                stockCardSummary.orderable.totalPrice = stockCardSummary.orderable.unitPrice *
-                    stockCardSummary.stockOnHand;
+            unitOfOrderableService.getAll().then(function(response) {
+                vm.allUnitsOfOrderable = response.content;
+
+                stockCardSummaries.forEach(function(stockCardSummary) {
+                    stockCardSummary.orderable.unitPrice = getProductPrice(stockCardSummary);
+                    stockCardSummary.orderable.totalPrice = stockCardSummary.orderable.unitPrice *
+                        stockCardSummary.stockOnHand;
+                    stockCardSummary.orderable.unit = getOrderableUnit(stockCardSummary.orderable.unitOfOrderableId);
+                });
             });
+
             calculateTotalCost(stockCardSummaries);
             // AO-816: Ends here
             vm.stockCardSummaries = stockCardSummaries;
@@ -150,6 +172,31 @@
                     vm.displayStockCardSummaries = newList;
                 }
             }, true);
+        }
+
+        vm.getSohForPacks = function(fulfills) {
+            var factor = fulfills.orderable.unit ? fulfills.orderable.unit.factor : 1;
+            return fulfills.stockOnHand / factor;
+        };
+
+        function getOrderableUnit(orderableUnitId) {
+            var defaultOrderableUnit = {
+                name: '',
+                factor: 1
+            };
+
+            if (!orderableUnitId) {
+                return angular.copy(defaultOrderableUnit);
+            }
+
+            var unitOfOrderable = vm.allUnitsOfOrderable.find(function(unit) {
+                return unit.id === orderableUnitId;
+            });
+
+            return unitOfOrderable ? {
+                name: unitOfOrderable.name,
+                factor: unitOfOrderable.factor
+            } : angular.copy(defaultOrderableUnit);
         }
 
         /**
@@ -274,6 +321,14 @@
 
             vm.totalCost = sum;
         }
-        // AO-816: Ends here
+
+        function setActiveDisplayType(displayType) {
+            if (displayType === vm.PACKS_DISPLAY_TYPE || displayType === vm.DOSES_DISPLAY_TYPE) {
+                vm.activeDisplayType = displayType;
+            } else {
+                // eslint-disable-next-line no-console
+                console.error('No such display type: ' + displayType);
+            }
+        }
     }
 })();

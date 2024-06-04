@@ -3,5 +3,10 @@
     "adjustmentCreation.price": "Unit Price",
     "adjustmentCreation.totalPrice": "Total Price",
     "adjustmentCreation.numberEqualOrGreaterThan0": "You must input number equal or greater than 0",
-    "adjustmentCreation.totalCost": "Total Cost"
+    "adjustmentCreation.totalCost": "Total Cost",
+    "adjustmentCreation.addNewUnit": "Create unit",
+    "adjustmentCreation.addProduct": "Add product",
+    "adjustmentCreation.unit": "Unit",
+    "adjustmentCreation.itemQuantity": "Item quantity",
+    "adjustmentCreation.totalQuantity": "Total quantity"
 }

@@ -1,0 +1,40 @@
+<div class="modal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1>{{:: 'openlmisUnitAdd.form.header' | message}}</h1>
+            </div>
+            <div class="modal-body">
+                <form id="add-unit-form" ng-submit="$ctrl.save()">
+                    <div class="form-group">
+                        <label for="unit-name">{{:: 'openlmisUnitAdd.form.label.name' | message}}</label>
+                        <input id="unit-name" type="text" ng-model="$ctrl.newUnit.name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="unit-description">{{:: 'openlmisUnitAdd.form.label.description' | message}}</label>
+                        <input id="unit-description" type="text" ng-model="$ctrl.newUnit.description">
+                    </div>
+                    <div class="form-group">
+                        <label for="unit-display-order">{{:: 'openlmisUnitAdd.form.label.displayOrder' | message}}</label>
+                        <input id="unit-display-order" type="number" ng-model="$ctrl.newUnit.displayOrder" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="unit-factor">{{:: 'openlmisUnitAdd.form.label.factor' | message}}</label>
+                        <input id="unit-factor" type="number" ng-model="$ctrl.newUnit.factor" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="cancel" ng-click="$ctrl.goToPreviousState()">{{'openlmisUnitAdd.cancel' | message}}</button>
+                <button
+                    class="btn primary"
+                    ng-disabled="$ctrl.saveDisabled()"
+                    ng-class="{'btn-disabled': $ctrl.saveDisabled()}"
+                    form="add-unit-form"
+                >
+                    {{'openlmisUnitAdd.save' | message}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

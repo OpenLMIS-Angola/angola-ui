@@ -3,5 +3,8 @@
     "stockCardSummaryList.lotCode": "Lot code",
     "stockCardSummaryList.productCode": "Product Code",
     "stockCardSummaryList.unitPrice": "Unit Price",
-    "stockCardSummaryList.totalPrice": "Total Price"
+    "stockCardSummaryList.totalPrice": "Total Price",
+    "stockCardSummaryList.packs": "Packs",
+    "stockCardSummaryList.doses": "Doses",
+    "stockCardSummaryList.unit": "Unit"
 }

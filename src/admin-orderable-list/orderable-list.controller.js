@@ -134,6 +134,10 @@
             vm.tableConfig = getTableConfig();
         }
 
+        vm.addNewUnit = function() {
+            $state.go('openlmis.administration.orderables.unitAdd');
+        };
+
         /**
          * @ngdoc method
          * @methodOf admin-orderable-list.controller:OrderableListController

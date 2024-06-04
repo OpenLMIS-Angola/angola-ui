@@ -1,0 +1,8 @@
+.stock-adjustment-creation {
+    .is-primary {
+        @include flex-layout(row, $gap: 0.5rem);
+        .form-inline{
+            flex-wrap: wrap;
+        }
+    }
+}

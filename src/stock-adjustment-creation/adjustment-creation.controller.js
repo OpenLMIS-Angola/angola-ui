@@ -39,8 +39,9 @@
         'accessTokenFactory', '$window', 'stockmanagementUrlFactory',
         // ANGOLASUP-717: ends here
         // AO-805: Allow users with proper rights to edit product prices
-        'OrderableResource', 'permissionService', 'ADMINISTRATION_RIGHTS', 'authorizationService'
+        'OrderableResource', 'permissionService', 'ADMINISTRATION_RIGHTS', 'authorizationService',
         // AO-805: Ends here
+        'unitOfOrderableService'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -52,12 +53,12 @@
                         // ANGOLASUP-717: Create New Issue Report
                         // AO-805: Allow users with proper rights to edit product prices
                         accessTokenFactory, $window, stockmanagementUrlFactory, OrderableResource, permissionService,
-                        ADMINISTRATION_RIGHTS, authorizationService) {
+                        ADMINISTRATION_RIGHTS, authorizationService, unitOfOrderableService) {
         // ANGOLASUP-717: ends here
         // AO-805: Ends here
-        var vm = this,
-            previousAdded = {};
+        var vm = this;
 
+        vm.previousAdded = {};
         vm.expirationDateChanged = expirationDateChanged;
         vm.newLotCodeChanged = newLotCodeChanged;
         vm.validateExpirationDate = validateExpirationDate;
@@ -138,6 +139,41 @@
          */
         vm.newLot = undefined;
 
+        /**
+         * @ngdoc property
+         * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name newItemUnitId
+         * @type {string}
+         *
+         * @description
+         * Holds id of a unit which is added to a new product
+         *
+         */
+        vm.newItemUnitId = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name unitsOfOrderable
+         * @type {Object[]}
+         *
+         * @description
+         * Holds possible units for orderable
+         */
+        vm.unitsOfOrderable = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name lotAlreadyAdded
+         * @type {boolean}
+         *
+         * @description
+         * flag which specifies if the lot from add product form was already added to table
+         *  if yes then unit for new item is fixed
+         */
+        vm.lotAlreadyAdded = false;
+
         // OAM-5: Lot code filter UI improvements.
         /**
          * @ngdoc method
@@ -179,6 +215,17 @@
             });
         };
 
+        vm.getAddedUnitName = function() {
+            return getUnitOfOrderableById(vm.newItemUnitId).name;
+        };
+
+        function getUnitOfOrderableById(unitId) {
+            var unit = vm.unitsOfOrderable.find(function(unit) {
+                return unit.id === unitId;
+            });
+            return unit;
+        }
+
         /**
          * @ngdoc method
          * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
@@ -216,34 +263,36 @@
                 vm.addedLineItems.unshift(_.extend({
                     $errors: {},
                     $previewSOH: selectedItem.stockOnHand,
+                    unitOfOrderableId: vm.newItemUnitId,
+                    unit: getUnitOfOrderableById(vm.newItemUnitId),
                     price: getProductPrice(selectedItem),
                     totalPrice: 0
                 },
                 selectedItem, copyDefaultValue()));
                 // AO-804: Ends here
 
-                previousAdded = vm.addedLineItems[0];
-
+                vm.previousAdded = vm.addedLineItems[0];
+                setLotAlreadyAdded(vm.addedLineItems[0].lot.lotCode);
                 vm.search();
             }
         }
 
         function copyDefaultValue() {
             var defaultDate;
-            if (previousAdded.occurredDate) {
-                defaultDate = previousAdded.occurredDate;
+            if (vm.previousAdded.occurredDate) {
+                defaultDate = vm.previousAdded.occurredDate;
             } else {
                 defaultDate = dateUtils.toStringDate(new Date());
             }
 
             return {
-                assignment: previousAdded.assignment,
-                srcDstFreeText: previousAdded.srcDstFreeText,
+                assignment: vm.previousAdded.assignment,
+                srcDstFreeText: vm.previousAdded.srcDstFreeText,
                 reason: (adjustmentType.state === ADJUSTMENT_TYPE.KIT_UNPACK.state)
                     ? {
                         id: UNPACK_REASONS.KIT_UNPACK_REASON_ID
-                    } : previousAdded.reason,
-                reasonFreeText: previousAdded.reasonFreeText,
+                    } : vm.previousAdded.reason,
+                reasonFreeText: vm.previousAdded.reasonFreeText,
                 occurredDate: defaultDate
             };
         }
@@ -284,6 +333,20 @@
         /**
          * @ngdoc method
          * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name getLineItemTotalQuantity
+         *
+         * @description
+         * Calculates the total quantity of a line item. (mulitiplied by item quantity)
+         */
+        vm.getLineItemTotalQuantity = function(lineItem) {
+            var itemQuantity = lineItem.quantity ? lineItem.quantity : 0;
+            var factor = lineItem.unit ? lineItem.unit.factor : 1;
+            return itemQuantity * factor;
+        };
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
          * @name validateQuantity
          *
          * @description
@@ -295,13 +358,14 @@
             // AO-804: Display product prices on Stock Issues, Adjustments and Receives Page
             lineItem.totalPrice = 0;
             // AO-804: Ends here
-            if (lineItem.quantity > lineItem.$previewSOH && lineItem.reason
-                    && lineItem.reason.reasonType === REASON_TYPES.DEBIT) {
+            var validatedQuantity = vm.getLineItemTotalQuantity(lineItem);
+            if (validatedQuantity > lineItem.$previewSOH && ((lineItem.reason
+                    && lineItem.reason.reasonType === REASON_TYPES.DEBIT) || !lineItem.reason)) {
                 lineItem.$errors.quantityInvalid = messageService
                     .get('stockAdjustmentCreation.quantityGreaterThanStockOnHand');
-            } else if (lineItem.quantity > MAX_INTEGER_VALUE) {
+            } else if (validatedQuantity > MAX_INTEGER_VALUE) {
                 lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
-            } else if (lineItem.quantity >= 1) {
+            } else if (validatedQuantity >= 1) {
                 lineItem.$errors.quantityInvalid = false;
                 // AO-804: Display product prices on Stock Issues, Adjustments and Receives Page
                 lineItem.totalPrice = calculateTotalPrice(lineItem);
@@ -373,6 +437,27 @@
             return lineItem;
         };
 
+        function setLotAlreadyAdded(lotCode) {
+            var matchingLineItem = vm.addedLineItems.find(function(item) {
+                return item.lot.lotCode === lotCode;
+            });
+
+            if (!matchingLineItem) {
+                vm.lotAlreadyAdded = false;
+                return;
+            }
+
+            var matchingUnit = vm.unitsOfOrderable.find(function(unit) {
+                return unit.id === matchingLineItem.unitOfOrderableId;
+            });
+
+            if (matchingUnit) {
+                vm.newItemUnitId = matchingUnit.id;
+            }
+
+            vm.lotAlreadyAdded = true;
+        }
+
         /**
          * @ngdoc method
          * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
@@ -382,6 +467,8 @@
          * Allows inputs to add missing lot to be displayed.
          */
         function lotChanged() {
+            setLotAlreadyAdded(vm.selectedLot.lotCode);
+
             vm.canAddNewLot = vm.selectedLot
                 && vm.selectedLot.lotCode === messageService.get('orderableGroupService.addMissingLot');
             initiateNewLotObject();
@@ -591,6 +678,8 @@
             var distinctLots = [];
             var lotResource = new LotResource();
             addedLineItems.forEach(function(lineItem) {
+                lineItem.quantity = vm.getLineItemTotalQuantity(lineItem);
+
                 if (lineItem.lot && lineItem.$isNewItem && _.isUndefined(lineItem.lot.id) &&
                 !listContainsTheSameLot(distinctLots, lineItem.lot)) {
                     distinctLots.push(lineItem.lot);
@@ -626,6 +715,34 @@
             var productsWithPriceChanged = getProductsWithPriceChanged(addedLineItems);
             var lastProductWithPriceChanged = productsWithPriceChanged[productsWithPriceChanged.length - 1];
             var priceChangesPromises = [];
+
+            if (!lastProductWithPriceChanged) {
+                return stockAdjustmentCreationService.submitAdjustments(program.id, facility.id,
+                    // AO-668: Use username as signature for Issue, Receive and Adjustment
+                    addedLineItems, adjustmentType, user)
+                    // AO-668: ends here
+                    // ANGOLASUP-717: Create New Issue Report
+                    .then(function(stockEventId) {
+                        if (adjustmentType.state === ADJUSTMENT_TYPE.ISSUE.state) {
+                            confirmService.confirm('adjustmentCreation.printModal.label',
+                                'stockPhysicalInventoryDraft.printModal.yes',
+                                'stockPhysicalInventoryDraft.printModal.no')
+                                .then(function() {
+                                    $window.open(accessTokenFactory.addAccessToken(getPrintUrl(stockEventId)),
+                                        '_blank');
+                                })
+                                .finally(function() {
+                                    goToStockCardSummaries();
+                                });
+                        } else {
+                            goToStockCardSummaries();
+                        }
+                        // ANGOLASUP-717: ends here
+                    }, function(errorResponse) {
+                        loadingModalService.close();
+                        alertService.error(errorResponse.data.message);
+                    });
+            }
 
             setProductPriceForProgram(lastProductWithPriceChanged, program);
             priceChangesPromises.push(updateProductPrice(lastProductWithPriceChanged.orderable,
@@ -776,6 +893,11 @@
                 program: program.name
             });
 
+            unitOfOrderableService.getAll()
+                .then(function(response) {
+                    vm.unitsOfOrderable = response.content;
+                });
+
             initViewModel();
             initStateParams();
 
@@ -905,6 +1027,10 @@
             return vm.hasPermissionToAddNewLot && lineItem.lot && lineItem.$isNewItem;
         };
 
+        vm.addNewUnit = function() {
+            $state.go('openlmis.stockmanagement.adjustment.creation.unitAdd');
+        };
+
         /**
          * @ngdoc method
          * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
@@ -992,7 +1118,8 @@
 
         // AO-805: Allow users with proper rights to edit product prices
         function calculateTotalPrice(lineItem) {
-            return lineItem.price && lineItem.quantity ? lineItem.price * lineItem.quantity : 0;
+            var lineItemTotalQuantity = vm.getLineItemTotalQuantity(lineItem);
+            return lineItem.price && lineItem.quantity ? lineItem.price * lineItemTotalQuantity : 0;
         }
 
         function hasPermissionToEditProductPrices() {
