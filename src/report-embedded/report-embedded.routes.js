@@ -34,7 +34,19 @@
                     templateUrl: 'report-embedded/report-embedded.html'
                 }
             },
-            accessRights: [REPORT_RIGHTS.EMBEDDED_REPORTS_VIEW]
+            accessRights: [REPORT_RIGHTS.EMBEDDED_REPORTS_VIEW],
+            resolve: {
+                Categories: function(reportEmbeddedService) {
+                    return reportEmbeddedService.getReportCategories().then(function(categories) {
+                        return categories.content;
+                    });
+                },
+                Reports: function(reportEmbeddedService) {
+                    return reportEmbeddedService.getAll().then(function(reports) {
+                        return reports.content;
+                    });
+                }
+            }
         });
     }
 })();

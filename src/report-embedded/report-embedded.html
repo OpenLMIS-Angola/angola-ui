@@ -2,75 +2,18 @@
     <h2>{{'reports.embedded.label' | message}}</h2>
 </header>
 <div style="display:flex">
-    <div class="openlmis-table-container">
+    <div class="openlmis-table-container" ng-repeat="(categoryName, reports) in vm.result">
         <table>
-            <caption class="error" ng-show="vm.reportsList.stocks.length === 0">
+            <caption class="error" ng-show="reports.length === 0">
                 {{'report.noReports' | message}}
             </caption>
             <thead>
             <tr>
-                <th>{{'report.stockReports' | message}}</th>
+                <th>{{categoryName}}</th>
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="report in vm.reportsList.stocks">
-                <td>
-                    <a ng-click="vm.openEmbeddedReport(report.id)">{{report.name | message}}</a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="openlmis-table-container">
-        <table>
-            <caption class="error" ng-show="vm.reportsList.requisitions.length  === 0">
-                {{'report.noReports' | message}}
-            </caption>
-            <thead>
-            <tr>
-                <th>{{'report.requisitionReports' | message}}</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="report in vm.reportsList.requisitions">
-                <td>
-                    <a ng-click="vm.openEmbeddedReport(report.id)">{{report.name | message}}</a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="openlmis-table-container">
-        <table>
-            <caption class="error" ng-show="vm.reportsList.orders.length === 0">
-                {{'report.noReports' | message}}
-            </caption>
-            <thead>
-            <tr>
-                <th>{{'report.orderReports' | message}}</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="report in vm.reportsList.orders">
-                <td>
-                    <a ng-click="vm.openEmbeddedReport(report.id)">{{report.name | message}}</a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="openlmis-table-container">
-        <table>
-            <caption class="error" ng-show="vm.reportsList.administrations === 0">
-                {{'report.noReports' | message}}
-            </caption>
-            <thead>
-            <tr>
-                <th>{{'report.administrationReports' | message}}</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="report in vm.reportsList.administrations">
+            <tr ng-repeat="report in reports">
                 <td>
                     <a ng-click="vm.openEmbeddedReport(report.id)">{{report.name | message}}</a>
                 </td>

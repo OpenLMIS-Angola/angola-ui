@@ -28,49 +28,37 @@
         .module('report-embedded')
         .controller('reportEmbeddedController', controller);
 
-    controller.$inject = ['reportEmbeddedService', 'loadingModalService', '$state'];
+    controller.$inject = ['loadingModalService', '$state', 'Categories', 'Reports'];
 
-    function controller(reportEmbeddedService, loadingModalService, $state) {
+    function controller(loadingModalService, $state, Categories, Reports) {
         var vm = this;
+
+        vm.$onInit = onInit;
 
         vm.openEmbeddedReport = openEmbeddedReport;
 
-        vm.reportsList = undefined;
+        vm.categories = Categories;
+        vm.reports = Reports;
+        vm.result = {};
 
         function onInit() {
             loadingModalService.open();
-            loadReports();
+            sortReports();
         }
 
-        function loadReports() {
+        function sortReports() {
+            vm.categories.forEach(function(category) {
+                vm.result[category.name] = [];
+            });
 
-            var reportsList = {
-                stocks: [],
-                requisitions: [],
-                orders: [],
-                administrations: []
-            };
+            vm.reports.forEach(function(element) {
+                var categoryName = element.category.name;
+                if (vm.result[categoryName] && element.enabled) {
+                    vm.result[categoryName].push(element);
+                }
+            });
 
-            reportEmbeddedService.getAll()
-                .then(function(reports) {
-                    reports.content.forEach(function(report) {
-                        if (report.category.name === 'Stock') {
-                            reportsList.stocks.push(report);
-                        }
-                        if (report.category.name === 'Requisition') {
-                            reportsList.requisitions.push(report);
-                        }
-                        if (report.category.name === 'Order') {
-                            reportsList.orders.push(report);
-                        }
-                        if (report.category.name === 'Administration') {
-                            reportsList.administrations.push(report);
-                        }
-                    });
-
-                    vm.reportsList = reportsList;
-                    loadingModalService.close();
-                });
+            loadingModalService.close();
         }
 
         function openEmbeddedReport(id) {
@@ -78,7 +66,5 @@
                 id: id
             });
         }
-
-        vm.$onInit = onInit;
     }
 })();
