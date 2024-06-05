@@ -26,9 +26,11 @@
         .module('report-embedded-category-add')
         .controller('ReportEmbeddedCategoryAddController', ReportEmbeddedCategoryAddController);
 
-    ReportEmbeddedCategoryAddController.$inject = ['reportEmbeddedService', 'loadingModalService', '$state'];
+    ReportEmbeddedCategoryAddController.$inject = ['reportEmbeddedService', 'loadingModalService', '$state',
+        'notificationService'];
 
-    function ReportEmbeddedCategoryAddController(reportEmbeddedService, loadingModalService, $state) {
+    function ReportEmbeddedCategoryAddController(reportEmbeddedService, loadingModalService, $state,
+                                                 notificationService) {
         var vm = this;
 
         vm.goBack = goBack;
@@ -43,9 +45,14 @@
             if (validateAddReport()) {
                 reportEmbeddedService.addReportCategory(vm.category)
                     .then(function() {
+                        notificationService.success('adminEmbeddedReportCategoryAdd.success');
                         $state.go('openlmis.administration.embeddedReportsCategoriesList', {}, {
                             reload: true
-                        });
+                        })
+                    })
+                    .catch(function() {
+                        notificationService.error('adminEmbeddedReportCategoryAdd.error');
+                        loadingModalService.close();
                     });
             } else {
                 loadingModalService.close();

@@ -135,7 +135,7 @@
          */
         function getTableConfig() {
             return {
-                caption: 'reportEmbeddedCategoriesList.noEmbeddedReport',
+                caption: 'reportEmbeddedCategoriesList.noEmbeddedReportCategory',
                 displayCaption: !vm.reportCategoriesList || vm.reportCategoriesList.length === 0,
                 isSelectable: false,
                 columns: [

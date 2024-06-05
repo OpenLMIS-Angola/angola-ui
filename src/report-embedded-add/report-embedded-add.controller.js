@@ -26,9 +26,10 @@
         .module('report-embedded-add')
         .controller('ReportEmbeddedAddController', ReportEmbeddedAddController);
 
-    ReportEmbeddedAddController.$inject = ['reportEmbeddedService', 'loadingModalService', '$state'];
+    ReportEmbeddedAddController.$inject = ['reportEmbeddedService', 'loadingModalService', '$state',
+        'notificationService'];
 
-    function ReportEmbeddedAddController(reportEmbeddedService, loadingModalService, $state) {
+    function ReportEmbeddedAddController(reportEmbeddedService, loadingModalService, $state, notificationService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -53,9 +54,14 @@
             if (validateAddReport()) {
                 reportEmbeddedService.add(vm.report)
                     .then(function() {
+                        notificationService.success('adminReportAdd.success');
                         $state.go('openlmis.administration.embeddedReportsList', {}, {
                             reload: true
                         });
+                    })
+                    .catch(function() {
+                        notificationService.error('adminReportAdd.error');
+                        loadingModalService.close();
                     });
             } else {
                 loadingModalService.close();

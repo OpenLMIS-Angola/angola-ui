@@ -7,13 +7,6 @@
     "adminReportAdd.add": "Add",
     "adminReportAdd.cancel": "Cancel",
     "adminReportAdd.fieldRequired": "This field is required",
-    "adminReportAdd.update.confirm": "Do you really want to add the Report?",
-    "adminReportAdd.supplyLineUpdatedSuccessfully": "Report has been added successfully.",
-    "adminReportAdd.failure": "Failed to add the Report.",
-
-    "embeddedReports.title": "Embedded Reports",
-
-    "embeddedReports.category.title": "Categories",
-
-    "embeddedReports.list.title": "Reports"
+    "adminReportAdd.success": "Embedded report created successfully",
+    "adminReportAdd.error": "Failed to create embedded report"
 }

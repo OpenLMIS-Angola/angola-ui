@@ -7,13 +7,6 @@
     "adminReportEdit.edit": "Edit",
     "adminReportEdit.cancel": "Cancel",
     "adminReportEdit.fieldRequired": "This field is required",
-    "adminReportEdit.update.confirm": "Do you really want to edit the Report?",
-    "adminReportEdit.supplyLineUpdatedSuccessfully": "Report has been edited successfully.",
-    "adminReportEdit.failure": "Failed to edit the Report.",
-
-    "embeddedReports.title": "Embedded Reports",
-
-    "embeddedReports.category.title": "Categories",
-
-    "embeddedReports.list.title": "Reports"
+    "adminReportEdit.success": "Embedded report edited successfully",
+    "adminReportEdit.error": "Failed to edit embedded report"
 }

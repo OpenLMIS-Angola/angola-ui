@@ -20,17 +20,17 @@
      * @name report-embedded-edit.controller:ReportEmbeddedEditController
      *
      * @description
-     * Allows user to edit new reports
+     * Allows user to edit reports
      */
     angular
         .module('report-embedded-edit')
         .controller('ReportEmbeddedEditController', ReportEmbeddedEditController);
 
     ReportEmbeddedEditController.$inject = ['reportEmbeddedService', 'loadingModalService', '$state', 'embeddedReport',
-        'categories'];
+        'categories', 'notificationService'];
 
     function ReportEmbeddedEditController(reportEmbeddedService, loadingModalService, $state, embeddedReport,
-                                          categories) {
+                                          categories, notificationService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -58,9 +58,14 @@
             if (validateEditReport()) {
                 reportEmbeddedService.edit(vm.report)
                     .then(function() {
+                        notificationService.success('adminReportEdit.success');
                         $state.go('openlmis.administration.embeddedReportsList', {}, {
                             reload: true
                         });
+                    })
+                    .catch(function() {
+                        notificationService.error('adminReportEdit.error');
+                        loadingModalService.close();
                     });
             } else {
                 loadingModalService.close();

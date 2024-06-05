@@ -3,5 +3,7 @@
     "adminEmbeddedReportCategoryAdd.name": "Name",
     "adminEmbeddedReportCategoryAdd.add": "Add",
     "adminEmbeddedReportCategoryAdd.cancel": "Cancel",
-    "adminEmbeddedReportCategoryAdd.fieldRequired": "This field is required"
+    "adminEmbeddedReportCategoryAdd.fieldRequired": "This field is required",
+    "adminEmbeddedReportCategoryAdd.success": "Embedded report category created successfully",
+    "adminEmbeddedReportCategoryAdd.error": "Failed to create embedded report category"
 }
