@@ -32,13 +32,15 @@
     FacilityAddController.$inject = [
         'facility', 'facilityTypes', 'geographicZones', 'facilityOperators', 'confirmService',
         'FacilityRepository', 'stateTrackerService', '$state', 'loadingModalService',
-        'notificationService', 'messageService', 'requisitionGroupService', 'TABLE_CONSTANTS'
+        'notificationService', 'messageService', 'requisitionGroupService', 'TABLE_CONSTANTS',
+        'geographicZoneService', 'WARDS_CONSTANTS'
     ];
 
     function FacilityAddController(facility, facilityTypes, geographicZones, facilityOperators,
                                    confirmService, FacilityRepository, stateTrackerService,
                                    $state, loadingModalService, notificationService,
-                                   messageService, requisitionGroupService, TABLE_CONSTANTS) {
+                                   messageService, requisitionGroupService, TABLE_CONSTANTS,
+                                   geographicZoneService, WARDS_CONSTANTS) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -62,7 +64,11 @@
          */
         function onInit() {
             vm.facility = angular.copy(facility);
-            vm.facilityTypes = facilityTypes;
+            if (facilityTypes) {
+                vm.facilityTypes = facilityTypes.filter(function(facilityType) {
+                    return facilityType.code !== WARDS_CONSTANTS.WARD_TYPE_CODE;
+                });
+            }
             vm.geographicZones = geographicZones;
             vm.facilityOperators = facilityOperators;
             vm.facility.active = facility.active !== false;
@@ -96,17 +102,38 @@
 
         function doSave() {
             loadingModalService.open();
-            return new FacilityRepository().create(vm.facility)
-                .then(function(facility) {
-                    notificationService.success('adminFacilityAdd.facilityHasBeenSaved');
-                    stateTrackerService.goToPreviousState();
 
-                    angular.forEach(vm.selectedRequisitionGroups, function(requisitionGroup) {
-                        requisitionGroup.memberFacilities.push(facility);
+            var newGeoZone = {
+                name: vm.facility.name,
+                parent: vm.facility.geographicZone,
+                code: vm.facility.geographicZone.code + '_' + vm.facility.name,
+                level: {
+                    id: '533a0771-bf2b-414a-91b2-6824d7df281d',
+                    name: 'local',
+                    code: 'local',
+                    levelNumber: vm.facility.geographicZone.level.levelNumber + 1
+                }
+            };
 
-                        requisitionGroupService.update(requisitionGroup);
-                    });
-                    return facility;
+            return geographicZoneService.create(newGeoZone)
+                .then(function(facilityGeoZone) {
+                    vm.facility.geographicZone = facilityGeoZone;
+                    return new FacilityRepository().create(vm.facility)
+                        .then(function(facility) {
+                            notificationService.success('adminFacilityAdd.facilityHasBeenSaved');
+                            stateTrackerService.goToPreviousState();
+
+                            angular.forEach(vm.selectedRequisitionGroups, function(requisitionGroup) {
+                                requisitionGroup.memberFacilities.push(facility);
+
+                                requisitionGroupService.update(requisitionGroup);
+                            });
+                            return facility;
+                        })
+                        .catch(function() {
+                            notificationService.error('adminFacilityAdd.failedToSaveFacility');
+                            loadingModalService.close();
+                        });
                 })
                 .catch(function() {
                     notificationService.error('adminFacilityAdd.failedToSaveFacility');

@@ -70,10 +70,6 @@
                         throw 'stockPhysicalInventoryDraft.submitInvalidActive';
                     }
 
-                    if (item.unitOfOrderableId) {
-                        console.log('this one has unit: ' + item);
-                    }
-
                     return new StockEventLineItem(
                         item.orderable.id, item.lot ? item.lot.id : null,
                         item.quantity, physicalInventory.occurredDate,

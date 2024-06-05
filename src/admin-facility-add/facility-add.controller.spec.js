@@ -23,6 +23,7 @@ describe('FacilityAddController', function() {
             this.$rootScope = $injector.get('$rootScope');
             this.confirmService = $injector.get('confirmService');
             this.$q = $injector.get('$q');
+            this.geographicZoneService = $injector.get('geographicZoneService');
             this.FacilityRepository = $injector.get('FacilityRepository');
             this.stateTrackerService = $injector.get('stateTrackerService');
             this.$state = $injector.get('$state');
@@ -61,6 +62,7 @@ describe('FacilityAddController', function() {
 
         spyOn(this.confirmService, 'confirm').andReturn(this.confirmDeferred.promise);
         spyOn(this.stateTrackerService, 'goToPreviousState').andCallFake(loadingDeferred.resolve);
+        // spyOn(this.geographicZoneService.prototype, 'create').andReturn(this.saveDeferred.promise);
         spyOn(this.FacilityRepository.prototype, 'create').andReturn(this.saveDeferred.promise);
         spyOn(this.$state, 'go');
         spyOn(this.loadingModalService, 'open').andReturn(loadingDeferred.promise);
@@ -73,12 +75,20 @@ describe('FacilityAddController', function() {
             }
         });
 
+        this.facility.geographicZone = {
+            code: 'test_code',
+            level: {
+                levelNumber: 3
+            }
+        };
+
         this.vm = this.$controller('FacilityAddController', {
             facility: this.facility,
             facilityTypes: this.facilityTypes,
             geographicZones: this.geographicZones,
             facilityOperators: this.facilityOperators
         });
+
         this.vm.$onInit();
 
         this.$rootScope.$apply();
