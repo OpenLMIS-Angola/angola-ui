@@ -1,0 +1,12 @@
+{
+    "adminReportEdit.title": "Edit Embedded Report",
+    "adminReportEdit.URL": "URL",
+    "adminReportEdit.name": "Name",
+    "adminReportEdit.category": "Category",
+    "adminReportEdit.enabled": "Enabled",
+    "adminReportEdit.edit": "Edit",
+    "adminReportEdit.cancel": "Cancel",
+    "adminReportEdit.fieldRequired": "This field is required",
+    "adminReportEdit.success": "Embedded report edited successfully",
+    "adminReportEdit.error": "Failed to edit embedded report"
+}

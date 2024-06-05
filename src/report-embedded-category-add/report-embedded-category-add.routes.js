@@ -16,19 +16,19 @@
 (function() {
     'use strict';
 
-    /**
-   * @module report-embedded-add
-   *
-   * @description
-   * Responsible for add reports screen.
-   */
-    angular.module('report-embedded-add', [
-        'ngResource',
-        'openlmis-i18n',
-        'openlmis-rights',
-        'openlmis-urls',
-        'openlmis-permissions',
-        'openlmis-pagination',
-        'ui.router'
-    ]);
+    angular
+        .module('report-embedded-category-add')
+        .config(routes);
+
+    routes.$inject = ['$stateProvider', 'modalStateProvider'];
+
+    function routes($stateProvider, modalStateProvider) {
+        modalStateProvider.state('openlmis.administration.embeddedReportsCategoriesList.add', {
+            url: '/add',
+            label: 'adminEmbeddedReportCategoryAdd.title',
+            controller: 'ReportEmbeddedCategoryAddController',
+            controllerAs: 'vm',
+            templateUrl: 'report-embedded-category-add/report-embedded-category-add.html'
+        });
+    }
 })();

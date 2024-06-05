@@ -17,18 +17,34 @@
     'use strict';
 
     angular
-        .module('report-embedded-add')
+        .module('report-embedded-edit')
         .config(routes);
 
     routes.$inject = ['$stateProvider', 'modalStateProvider'];
 
     function routes($stateProvider, modalStateProvider) {
-        modalStateProvider.state('openlmis.administration.embeddedReportsList.add', {
-            url: '/add',
-            label: 'adminReportAdd.title',
-            controller: 'ReportEmbeddedAddController',
+        modalStateProvider.state('openlmis.administration.embeddedReportsList.edit', {
+            url: '/edit/:id',
+            label: 'adminReportEdit.title',
+            controller: 'ReportEmbeddedEditController',
             controllerAs: 'vm',
-            templateUrl: 'report-embedded-add/report-embedded-add.html'
+            templateUrl: 'report-embedded-edit/report-embedded-edit.html',
+            resolve: {
+                embeddedReport: function($stateParams, reportEmbeddedService) {
+                    return reportEmbeddedService.get($stateParams.id)
+                        .then(function(response) {
+                            return response;
+                        })
+                        .catch(function(error) {
+                            throw new Error('Error while getting embedded report', error);
+                        });
+                },
+                categories: function(reportEmbeddedService) {
+                    return reportEmbeddedService.getReportCategories().then(function(categories) {
+                        return categories;
+                    });
+                }
+            }
         });
     }
 })();

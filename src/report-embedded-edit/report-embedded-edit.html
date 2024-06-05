@@ -2,13 +2,13 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h2>{{:: 'adminReportAdd.title' | message}}</h2>
+        <h2>{{:: 'adminReportEdit.title' | message}}</h2>
       </div>
       <div class="modal-body">
-        <form id="addReport">
+        <form id="editReport">
           <fieldset class="form-group">
             <label for="name" class="is-required"
-            >{{:: 'adminReportAdd.name' | message}}</label
+            >{{:: 'adminReportEdit.name' | message}}</label
             >
             <div
                     class="input-control"
@@ -24,12 +24,12 @@
               />
             </div>
             <ul class="openlmis-invalid" ng-if="vm.invalidFields.has('name')">
-              <li>{{'adminReportAdd.fieldRequired' | message}}</li>
+              <li>{{'adminReportEdit.fieldRequired' | message}}</li>
             </ul>
           </fieldset>
           <fieldset class="form-group">
             <label for="URL" class="is-required"
-            >{{:: 'adminReportAdd.URL' | message}}</label
+            >{{:: 'adminReportEdit.URL' | message}}</label
             >
             <div
                     class="input-control"
@@ -45,12 +45,12 @@
               />
             </div>
             <ul class="openlmis-invalid" ng-if="vm.invalidFields.has('url')">
-              <li>{{'adminReportAdd.fieldRequired' | message}}</li>
+              <li>{{'adminReportEdit.fieldRequired' | message}}</li>
             </ul>
           </fieldset>
           <fieldset class="form-group">
             <label for="category" class="is-required"
-            >{{:: 'adminReportAdd.category' | message}}</label
+            >{{:: 'adminReportEdit.category' | message}}</label
             >
             <div
                     class="input-control"
@@ -60,28 +60,28 @@
                       id="category"
                       ng-change="vm.validateField(vm.report.category, 'category')"
                       ng-model="vm.report.category"
-                      ng-options="category.name for category in vm.categories"
+                      ng-options="category.name for category in vm.categories.content"
                       required
               ></select>
             </div>
             <ul class="openlmis-invalid" ng-if="vm.invalidFields.has('category')">
-              <li>{{'adminReportAdd.fieldRequired' | message}}</li>
+              <li>{{'adminReportEdit.fieldRequired' | message}}</li>
             </ul>
           </fieldset>
           <fieldset class="form-group">
-            <label for="enabled">
+            <label for="enabled" class="is-required">
               <input id="enabled" type="checkbox" ng-model="vm.report.enabled"/>
-              {{:: 'adminReportAdd.enabled' | message}}
+              {{:: 'adminReportEdit.enabled' | message}}
             </label>
           </fieldset>
         </form>
       </div>
       <div class="modal-footer">
         <button id="cancel" ng-click="vm.goBack()">
-          {{:: 'adminReportAdd.cancel' | message}}
+          {{:: 'adminReportEdit.cancel' | message}}
         </button>
-        <button class="primary" ng-click="vm.add()">
-          {{:: 'adminReportAdd.add' | message}}
+        <button class="primary" ng-click="vm.edit()">
+          {{:: 'adminReportEdit.edit' | message}}
         </button>
       </div>
     </div>

@@ -12,41 +12,37 @@
  * the GNU Affero General Public License along with this program. If not, see
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
+
 (function() {
+
     'use strict';
 
-    angular
-        .module('report-embedded')
-        .config(routes);
+    angular.module('report-embedded-list').config(routes);
 
     routes.$inject = ['$stateProvider', 'REPORT_RIGHTS'];
 
     function routes($stateProvider, REPORT_RIGHTS) {
-        $stateProvider.state('openlmis.reports.embedded', {
-            url: '/embedded-reports',
+
+        $stateProvider.state('openlmis.administration.embeddedReportsList', {
             showInNavigation: true,
-            priority: 10,
-            label: 'reports.embedded.label',
-            views: {
-                '@openlmis': {
-                    controller: 'reportEmbeddedController',
-                    controllerAs: 'vm',
-                    templateUrl: 'report-embedded/report-embedded.html'
-                }
-            },
+            label: 'reportEmbeddedList.navRoute',
+            url: '/reports?page&size&sort=name,asc',
+            controller: 'reportEmbeddedListController',
+            templateUrl: 'report-embedded-list/report-embedded-list.html',
+            controllerAs: 'vm',
             accessRights: [REPORT_RIGHTS.EMBEDDED_REPORTS_VIEW],
             resolve: {
-                Categories: function(reportEmbeddedService) {
-                    return reportEmbeddedService.getReportCategories().then(function(categories) {
-                        return categories.content;
-                    });
-                },
-                Reports: function(reportEmbeddedService) {
-                    return reportEmbeddedService.getAll().then(function(reports) {
-                        return reports.content;
-                    });
+                EmbeddedReportsList: function(reportEmbeddedService, $stateParams) {
+                    return reportEmbeddedService.getAll($stateParams)
+                        .then(function(response) {
+                            return response.content;
+                        })
+                        .catch(function(error) {
+                            throw new Error('Error while fetching embedded reports: ' + error);
+                        });
                 }
             }
         });
     }
+
 })();
