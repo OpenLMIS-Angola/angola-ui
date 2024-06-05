@@ -32,6 +32,7 @@
         'referencedata-geographic-zone',
         'openlmis-admin',
         'ui.router',
-        'openlmis-table'
+        'openlmis-table',
+        'admin-facility-view'
     ]);
 })();

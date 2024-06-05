@@ -17,12 +17,14 @@ describe('FacilityAddController', function() {
 
     beforeEach(function() {
         module('admin-facility-add');
+        module('referencedata-geographic-zone');
 
         inject(function($injector) {
             this.$controller = $injector.get('$controller');
             this.$rootScope = $injector.get('$rootScope');
             this.confirmService = $injector.get('confirmService');
             this.$q = $injector.get('$q');
+            this.geographicZoneService = $injector.get('geographicZoneService');
             this.FacilityRepository = $injector.get('FacilityRepository');
             this.stateTrackerService = $injector.get('stateTrackerService');
             this.$state = $injector.get('$state');
@@ -59,8 +61,19 @@ describe('FacilityAddController', function() {
         this.saveDeferred = this.$q.defer();
         var loadingDeferred = this.$q.defer();
 
+        this.newGeoZone = {
+            code: 'xxx',
+            level: {
+                id: '533a0771-bf2b-414a-91b2-6824d7df281d',
+                name: 'local',
+                code: 'local',
+                levelNumber: 2
+            }
+        };
+
         spyOn(this.confirmService, 'confirm').andReturn(this.confirmDeferred.promise);
         spyOn(this.stateTrackerService, 'goToPreviousState').andCallFake(loadingDeferred.resolve);
+        spyOn(this.geographicZoneService, 'create').andReturn(this.saveDeferred.promise);
         spyOn(this.FacilityRepository.prototype, 'create').andReturn(this.saveDeferred.promise);
         spyOn(this.$state, 'go');
         spyOn(this.loadingModalService, 'open').andReturn(loadingDeferred.promise);
@@ -73,12 +86,20 @@ describe('FacilityAddController', function() {
             }
         });
 
+        this.facility.geographicZone = {
+            code: 'test_code',
+            level: {
+                levelNumber: 3
+            }
+        };
+
         this.vm = this.$controller('FacilityAddController', {
             facility: this.facility,
             facilityTypes: this.facilityTypes,
             geographicZones: this.geographicZones,
             facilityOperators: this.facilityOperators
         });
+
         this.vm.$onInit();
 
         this.$rootScope.$apply();
@@ -128,6 +149,7 @@ describe('FacilityAddController', function() {
     describe('save', function() {
 
         it('should prompt user to add programs', function() {
+            this.geographicZoneService.create.andReturn(this.$q.when(this.newGeoZone));
             this.FacilityRepository.prototype.create.andReturn(this.$q.when(this.facility));
             this.vm.save();
             this.$rootScope.$apply();
@@ -173,6 +195,7 @@ describe('FacilityAddController', function() {
         });
 
         it('should take to the user to add programs page if user agrees to it', function() {
+            this.geographicZoneService.create.andReturn(this.$q.when(this.newGeoZone));
             this.FacilityRepository.prototype.create.andReturn(this.$q.when(this.facility));
             this.vm.save();
 

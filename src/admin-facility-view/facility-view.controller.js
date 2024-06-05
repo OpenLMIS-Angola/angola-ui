@@ -354,7 +354,7 @@
          * Generates ward code based on the facility code.
          */
         function generateWardCode(facilityCode) {
-            var serialNumber = padNumber(vm.wards.length + 1, 4);
+            var serialNumber = padNumber((vm.wards.length + vm.addedWards.length) + 1, 4);
 
             return facilityCode + '.' + serialNumber;
         }

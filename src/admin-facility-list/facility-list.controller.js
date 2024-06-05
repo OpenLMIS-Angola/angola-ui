@@ -29,10 +29,10 @@
         .controller('FacilityListController', controller);
 
     controller.$inject = [
-        '$state', '$stateParams', 'facilities', 'geographicZones', 'TABLE_CONSTANTS'
+        '$state', '$stateParams', 'facilities', 'geographicZones', 'TABLE_CONSTANTS', 'WARDS_CONSTANTS'
     ];
 
-    function controller($state, $stateParams, facilities, geographicZones, TABLE_CONSTANTS) {
+    function controller($state, $stateParams, facilities, geographicZones, TABLE_CONSTANTS, WARDS_CONSTANTS) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -195,7 +195,10 @@
                             redirectLink: function(item) {
                                 return 'openlmis.administration.facilities.edit({id:\'' + item.id + '\'})';
                             },
-                            text: 'adminFacilityList.edit'
+                            text: 'adminFacilityList.edit',
+                            displayAction: function(item) {
+                                return item.type.code !== WARDS_CONSTANTS.WARD_TYPE_CODE;
+                            }
                         }
                     ]
                 },

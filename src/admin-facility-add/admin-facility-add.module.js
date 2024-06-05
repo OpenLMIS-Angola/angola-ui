@@ -27,6 +27,7 @@
         'referencedata-facility',
         'referencedata-facility-type',
         'referencedata-facility-operator',
+        'referencedata-geographic-zone',
         'admin-facility',
         'openlmis-modal',
         'openlmis-templates',
