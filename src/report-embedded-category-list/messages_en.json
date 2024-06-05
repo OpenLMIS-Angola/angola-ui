@@ -1,0 +1,17 @@
+{
+    "reportEmbeddedCategoriesList.navRoute": "Embedded Report Categories",
+    "reportEmbeddedCategoriesList.pageHeader": "Embedded Report Categories",
+    "reportEmbeddedCategoriesList.noEmbeddedReport": "No Embedded Report Categories found.",
+    "reportEmbeddedCategoriesList.filter.name": "Name",
+    "reportEmbeddedCategoriesList.column.name": "Name",
+    "reportEmbeddedCategoriesList.column.category": "Category",
+    "reportEmbeddedCategoriesList.column.enabled": "Enabled",
+    "reportEmbeddedCategoriesList.column.actions": "Actions",
+    "reportEmbeddedCategoriesList.action.edit": "Edit",
+    "reportEmbeddedCategoriesList.action.delete": "Delete",
+    "reportEmbeddedCategoriesList.addEmbeddedReport": "Add Category",
+    "reportEmbeddedCategoriesList.deleteReport.question": "Are you sure you want to remove ${categoryName} category?",
+    "reportEmbeddedCategoriesList.delete": "Delete",
+    "reportEmbeddedCategoriesList.deleteReport.success": "Embedded report category deleted successfully",
+    "reportEmbeddedCategoriesList.deleteReport.fail": "Failed to delete embedded report category"
+}

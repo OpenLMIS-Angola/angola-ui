@@ -45,7 +45,7 @@
          * @type {Object}
          *
          * @description
-         * Holds table config for organization list.
+         * Holds table config for embedded reports list.
          */
         vm.tableConfig = undefined;
 

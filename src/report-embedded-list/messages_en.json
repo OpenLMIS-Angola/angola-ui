@@ -1,6 +1,6 @@
 {
-    "reportEmbeddedList.navRoute": "Embedded Reports List",
-    "reportEmbeddedList.pageHeader": "Embedded Reports List",
+    "reportEmbeddedList.navRoute": "Embedded Reports",
+    "reportEmbeddedList.pageHeader": "Embedded Reports",
     "reportEmbeddedList.noEmbeddedReport": "No Embedded Reports found.",
     "reportEmbeddedList.filter.name": "Name",
     "reportEmbeddedList.column.name": "Name",

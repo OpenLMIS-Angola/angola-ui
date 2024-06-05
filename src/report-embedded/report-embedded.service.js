@@ -48,11 +48,15 @@
             },
             getAllByCategory: {
                 method: 'POST',
-                url: openlmisUrlFactory('/api/reports/embeddedReports?category=:categoryName')
+                url: openlmisUrlFactory('/api/reports/embeddedReports/:categoryName')
             },
             addReportCategory: {
                 method: 'POST',
                 url: openlmisUrlFactory('/api/reports/embeddedReportCategories')
+            },
+            editReportCategory: {
+                method: 'PUT',
+                url: openlmisUrlFactory('/api/reports/embeddedReportCategories/:id')
             },
             getReportCategories: {
                 method: 'GET',
@@ -60,11 +64,11 @@
             },
             getReportCategory: {
                 method: 'GET',
-                url: openlmisUrlFactory('/api/reports/embeddedReportCategories?category_id=:categoryId')
+                url: openlmisUrlFactory('/api/reports/embeddedReportCategories/:categoryId')
             },
             deleteReportCategory: {
                 method: 'DELETE',
-                url: openlmisUrlFactory('/api/reports/embeddedReportCategories?category_id=:categoryId')
+                url: openlmisUrlFactory('/api/reports/embeddedReportCategories/:categoryId')
             }
         });
 
@@ -76,6 +80,7 @@
             remove: remove,
             getAllByCategory: getAllByCategory,
             addReportCategory: addReportCategory,
+            editReportCategory: editReportCategory,
             getReportCategories: getReportCategories,
             getReportCategory: getReportCategory,
             deleteReportCategory: deleteReportCategory
@@ -117,12 +122,20 @@
             return resource.addReportCategory(category).$promise;
         }
 
+        function editReportCategory(category) {
+            return resource.editReportCategory({
+                id: category.id
+            }, category).$promise;
+        }
+
         function getReportCategories() {
             return resource.getReportCategories().$promise;
         }
 
-        function getReportCategory(category) {
-            return resource.getReportCategory(category).$promise;
+        function getReportCategory(id) {
+            return resource.getReportCategory({
+                categoryId: id
+            }).$promise;
         }
 
         function deleteReportCategory(categoryId) {

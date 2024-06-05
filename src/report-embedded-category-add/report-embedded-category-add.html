@@ -1,0 +1,42 @@
+<div class="modal" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>{{:: 'adminEmbeddedReportCategoryAdd.title' | message}}</h2>
+      </div>
+      <div class="modal-body">
+        <form id="addReport">
+          <fieldset class="form-group">
+            <label for="name" class="is-required"
+            >{{:: 'adminEmbeddedReportCategoryAdd.name' | message}}</label
+            >
+            <div
+                    class="input-control"
+                    ng-class="{'is-invalid': vm.invalidFields.has('name')}"
+            >
+              <input
+                      type="text"
+                      id="name"
+                      style="width: 100%"
+                      ng-model="vm.category.name"
+                      ng-change="vm.validateField(vm.category.name, 'name')"
+                      required
+              />
+            </div>
+            <ul class="openlmis-invalid" ng-if="vm.invalidFields.has('name')">
+              <li>{{'adminEmbeddedReportCategoryAdd.fieldRequired' | message}}</li>
+            </ul>
+          </fieldset>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button id="cancel" ng-click="vm.goBack()">
+          {{:: 'adminEmbeddedReportCategoryAdd.cancel' | message}}
+        </button>
+        <button class="primary" ng-click="vm.add()">
+          {{:: 'adminEmbeddedReportCategoryAdd.add' | message}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

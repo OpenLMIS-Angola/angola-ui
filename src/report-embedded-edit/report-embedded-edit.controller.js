@@ -58,8 +58,9 @@
             if (validateEditReport()) {
                 reportEmbeddedService.edit(vm.report)
                     .then(function() {
-                        loadingModalService.close();
-                        $state.reload('openlmis.administration.embeddedReportsList');
+                        $state.go('openlmis.administration.embeddedReportsList', {}, {
+                            reload: true
+                        });
                     });
             } else {
                 loadingModalService.close();
