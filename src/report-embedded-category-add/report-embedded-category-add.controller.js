@@ -48,7 +48,7 @@
                         notificationService.success('adminEmbeddedReportCategoryAdd.success');
                         $state.go('openlmis.administration.embeddedReportsCategoriesList', {}, {
                             reload: true
-                        })
+                        });
                     })
                     .catch(function() {
                         notificationService.error('adminEmbeddedReportCategoryAdd.error');
