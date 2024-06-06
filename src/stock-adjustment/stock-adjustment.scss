@@ -1,0 +1,9 @@
+.ward-select-wrapper {
+    .ward-select-field-group {
+        @include flex-layout(row, $align-items: center, $gap: 1rem);
+
+        label {
+            font-weight: normal;
+        }
+    }
+}

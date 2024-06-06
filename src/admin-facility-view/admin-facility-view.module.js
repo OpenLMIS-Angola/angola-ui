@@ -14,26 +14,23 @@
  */
 
 (function() {
+
     'use strict';
 
-    angular.module('stock-adjustment-creation', [
-        'openlmis-date',
-        // AO-695: Use first name + last name as a signature for Issue,Receive,Adjustment
-        'openlmis-local-storage',
-        // AO-695: Ends here
-        'stock-adjustment',
-        'stock-confirm-discard',
-        'stock-orderable-group',
-        'stock-product-name',
-        'stock-constants',
-        'stock-valid-reason',
-        'referencedata-program',
+    /**
+     * @module admin-facility-view
+     *
+     * @description
+     * Provides facility view screen for administrator.
+     */
+    angular.module('admin-facility-view', [
+        'openlmis-rights',
+        'openlmis-modal',
         'referencedata-facility',
-        'referencedata-lot',
-        'stock-unpack-kit',
-        'stock-reasons-modal',
-        'stock-edit-lot-modal',
-        'openlmis-unit-add',
-        'admin-facility-view'
+        'referencedata-facility-type',
+        'referencedata-geographic-zone',
+        'referencedata-program',
+        'referencedata-user',
+        'ui.router'
     ]);
 })();

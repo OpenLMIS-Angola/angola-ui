@@ -18,7 +18,7 @@ describe('StockAdjustmentCreationController', function() {
     var vm, q, rootScope, state, stateParams, facility, program, confirmService, VVM_STATUS, messageService, scope,
         stockAdjustmentCreationService, reasons, $controller, ADJUSTMENT_TYPE, ProgramDataBuilder, FacilityDataBuilder,
         ReasonDataBuilder, OrderableGroupDataBuilder, OrderableDataBuilder, alertService, notificationService,
-        orderableGroups, LotDataBuilder, UNPACK_REASONS, LotResource, timeout;
+        orderableGroups, LotDataBuilder, UNPACK_REASONS, LotResource, timeout, orderableGroupsByWard;
 
     beforeEach(function() {
 
@@ -53,6 +53,11 @@ describe('StockAdjustmentCreationController', function() {
             LotDataBuilder = $injector.get('LotDataBuilder');
             UNPACK_REASONS = $injector.get('UNPACK_REASONS');
             LotResource = $injector.get('LotResource');
+            orderableGroupsByWard = $injector.get('orderableGroupsByWard');
+
+            console.log(orderableGroupsByWard);
+
+            this.orderableGroupsByWard = $injector.get('orderableGroupsByWard');
             this.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
             this.OrderableChildrenDataBuilder = $injector.get('OrderableChildrenDataBuilder');
             this.offlineService = $injector.get('offlineService');
@@ -73,6 +78,7 @@ describe('StockAdjustmentCreationController', function() {
             orderableGroups = [
                 new OrderableGroupDataBuilder().build()
             ];
+
             reasons = [new ReasonDataBuilder().build()];
 
             this.kitConstituents = [

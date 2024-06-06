@@ -16,24 +16,7 @@
 (function() {
     'use strict';
 
-    angular.module('stock-adjustment-creation', [
-        'openlmis-date',
-        // AO-695: Use first name + last name as a signature for Issue,Receive,Adjustment
-        'openlmis-local-storage',
-        // AO-695: Ends here
-        'stock-adjustment',
-        'stock-confirm-discard',
-        'stock-orderable-group',
-        'stock-product-name',
-        'stock-constants',
-        'stock-valid-reason',
-        'referencedata-program',
-        'referencedata-facility',
-        'referencedata-lot',
-        'stock-unpack-kit',
-        'stock-reasons-modal',
-        'stock-edit-lot-modal',
-        'openlmis-unit-add',
-        'admin-facility-view'
+    angular.module('stock-receive-creation', [
+        'stock-adjustment-creation'
     ]);
 })();
