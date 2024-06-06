@@ -35,10 +35,12 @@ const OrderCreateTab = ({ passedOrder,
             facilityId: order.requestingFacility.id
         }).then((page) => {
             const fetchedOrderableOptions = page.content
-            const orderableOptionsValue = fetchedOrderableOptions.map(stockItem => ({
-                name: stockItem.orderable.fullProductName,
-                value: { ...stockItem.orderable, soh: stockItem.stockOnHand }
-            }));
+            const orderableOptionsValue = fetchedOrderableOptions
+                .filter(stockItem => !stockItem.orderable.quarantined)
+                .map(stockItem => ({
+                    name: stockItem.orderable.fullProductName,
+                    value: { ...stockItem.orderable, soh: stockItem.stockOnHand }
+                }));
 
             setOrderableOptions(orderableOptionsValue);
         });
