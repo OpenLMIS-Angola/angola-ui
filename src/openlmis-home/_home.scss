@@ -48,8 +48,10 @@ $image-height: 136px;
 
 .scroll {
   width: 100%;
-  float:left;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
   overflow-y: auto;
-  max-height: 60vh;
+  max-height: 30vh;
   padding-bottom: 1em;
 }
