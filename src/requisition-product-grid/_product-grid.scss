@@ -1,0 +1,42 @@
+.product-grid {
+	overflow: auto;
+	position: relative;
+
+	.skip {
+		margin: 0 auto;
+		display: table;
+	}
+
+	.skipped-line-item {
+		background: $light-gray;
+	}
+
+	button {
+		@extend .btn;
+	}
+
+	button.add-product {
+		@include button($green);
+		float: right;
+	}
+
+	button.hide-line-item {
+		@include button($red);
+	}
+
+	.openlmis-pagination {
+		flex: 0 1 auto;
+		width: inherit;
+	}
+}
+
+.requisition-product-grid-cell {
+	&.has-popover {
+		padding-right: 2em !important;
+	}
+}
+
+.quarantined {
+    color: $red;
+    font-weight: bold;
+}
