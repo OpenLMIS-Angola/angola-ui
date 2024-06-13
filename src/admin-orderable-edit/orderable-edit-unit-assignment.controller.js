@@ -94,7 +94,9 @@
         }
 
         function cancel() {
-            $state.go('openlmis.administration.orderables');
+            $state.go('openlmis.administration.orderables', {}, {
+                reload: true
+            });
         }
     }
 })();
