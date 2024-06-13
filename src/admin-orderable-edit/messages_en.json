@@ -1,5 +1,12 @@
 {
   "adminOrderableEdit.productCodeError": "Product code is not unique.",
   "adminOrderableEdit.ftapExistsError": "Facility type with program already exists.",
-  "adminOrderableEdit.isQuarantined": "Quarantined"
+  "adminOrderableEdit.isQuarantined": "Quarantined",
+  "adminOrderableEdit.unitAssignment": "Assign units",
+  "adminOrderableEdit.unitAssignment.save": "Save units",
+  "adminOrderableEdit.unitAssignment.name": "name",
+  "adminOrderableEdit.unitAssignment.factor": "factor",
+  "adminOrderableEdit.unitAssignment.description": "description",
+  "adminOrderableEdit.unitAssignment.noUnitsFound": "Orderable has no assigned units",
+  "adminOrderableEdit.assignUnit": "Assign unit"
 }
