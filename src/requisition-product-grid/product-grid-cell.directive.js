@@ -37,11 +37,12 @@
         .directive('productGridCell', productGridCell);
 
     productGridCell.$inject = [
-        '$templateRequest', '$compile', 'requisitionValidator', 'TEMPLATE_COLUMNS', 'COLUMN_TYPES', 'COLUMN_SOURCES'
+        '$templateRequest', '$compile', 'requisitionValidator', 'TEMPLATE_COLUMNS', 'COLUMN_TYPES', 'COLUMN_SOURCES',
+        'messageService'
     ];
 
     function productGridCell($templateRequest, $compile, requisitionValidator, TEMPLATE_COLUMNS, COLUMN_TYPES,
-                             COLUMN_SOURCES) {
+                             COLUMN_SOURCES, messageService) {
 
         return {
             restrict: 'A',
@@ -66,6 +67,7 @@
             scope.update = update;
             scope.isReadOnly = isReadOnly(requisition, column);
             scope.canSkip = canSkip;
+            scope.quarantinedMessage = messageService.get('requisitionProductGrid.quarantinedInfo');
 
             if (!scope.isReadOnly) {
                 setupValueWatcher(scope);
