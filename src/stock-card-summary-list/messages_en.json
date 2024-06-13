@@ -6,5 +6,6 @@
     "stockCardSummaryList.totalPrice": "Total Price",
     "stockCardSummaryList.packs": "Packs",
     "stockCardSummaryList.doses": "Doses",
-    "stockCardSummaryList.unit": "Unit"
+    "stockCardSummaryList.unit": "Unit",
+    "stockCardSummaryList.packsQuantity": "Packs quantity"
 }

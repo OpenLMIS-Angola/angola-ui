@@ -162,18 +162,6 @@
          */
         vm.unitsOfOrderable = undefined;
 
-        /**
-         * @ngdoc property
-         * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-         * @name lotAlreadyAdded
-         * @type {boolean}
-         *
-         * @description
-         * flag which specifies if the lot from add product form was already added to table
-         *  if yes then unit for new item is fixed
-         */
-        vm.lotAlreadyAdded = false;
-
         // OAM-5: Lot code filter UI improvements.
         /**
          * @ngdoc method
@@ -273,9 +261,6 @@
 
                 vm.previousAdded = vm.addedLineItems[0];
 
-                if (vm.addedLineItems[0].lot) {
-                    setLotAlreadyAdded(vm.addedLineItems[0].lot.lotCode);
-                }
                 vm.search();
             }
         }
@@ -440,27 +425,6 @@
             return lineItem;
         };
 
-        function setLotAlreadyAdded(lotCode) {
-            var matchingLineItem = vm.addedLineItems.find(function(item) {
-                return item.lot.lotCode === lotCode;
-            });
-
-            if (!matchingLineItem) {
-                vm.lotAlreadyAdded = false;
-                return;
-            }
-
-            var matchingUnit = vm.unitsOfOrderable.find(function(unit) {
-                return unit.id === matchingLineItem.unitOfOrderableId;
-            });
-
-            if (matchingUnit) {
-                vm.newItemUnitId = matchingUnit.id;
-            }
-
-            vm.lotAlreadyAdded = true;
-        }
-
         /**
          * @ngdoc method
          * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
@@ -470,10 +434,6 @@
          * Allows inputs to add missing lot to be displayed.
          */
         function lotChanged() {
-            if (vm.selectedLot) {
-                setLotAlreadyAdded(vm.selectedLot.lotCode);
-            }
-
             vm.canAddNewLot = vm.selectedLot
                 && vm.selectedLot.lotCode === messageService.get('orderableGroupService.addMissingLot');
             initiateNewLotObject();

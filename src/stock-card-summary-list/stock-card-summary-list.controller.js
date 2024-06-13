@@ -144,15 +144,10 @@
          */
         function onInit() {
             // AO-816: Add prices to the Stock On Hand view
-            unitOfOrderableService.getAll().then(function(response) {
-                vm.allUnitsOfOrderable = response.content;
-
-                stockCardSummaries.forEach(function(stockCardSummary) {
-                    stockCardSummary.orderable.unitPrice = getProductPrice(stockCardSummary);
-                    stockCardSummary.orderable.totalPrice = stockCardSummary.orderable.unitPrice *
-                        stockCardSummary.stockOnHand;
-                    stockCardSummary.orderable.unit = getOrderableUnit(stockCardSummary.orderable.unitOfOrderableId);
-                });
+            stockCardSummaries.forEach(function(stockCardSummary) {
+                stockCardSummary.orderable.unitPrice = getProductPrice(stockCardSummary);
+                stockCardSummary.orderable.totalPrice = stockCardSummary.orderable.unitPrice *
+                    stockCardSummary.stockOnHand;
             });
 
             calculateTotalCost(stockCardSummaries);
@@ -160,37 +155,54 @@
             vm.stockCardSummaries = stockCardSummaries;
             vm.displayStockCardSummaries = angular.copy(stockCardSummaries);
             checkCanFulFillIsEmpty();
+
+            unitOfOrderableService.getAll().then(function(response) {
+                vm.allUnitsOfOrderable = response.content;
+                vm.assignUnitsToCanFulfill(vm.displayStockCardSummaries);
+            });
+
             paginationService.registerList(null, $stateParams, function() {
                 return vm.displayStockCardSummaries;
             }, {
                 paginationId: 'stockCardSummaries'
             });
+
             $scope.$watchCollection(function() {
                 return vm.pagedList;
             }, function(newList) {
                 if (vm.offline()) {
                     vm.displayStockCardSummaries = newList;
+                    vm.assignUnitsToCanFulfill(vm.displayStockCardSummaries);
                 }
             }, true);
         }
+
+        vm.assignUnitsToCanFulfill = function(stockCardSummaries) {
+            stockCardSummaries.forEach(function(stockCardSummary) {
+                stockCardSummary.canFulfillForMe.forEach(function(item) {
+                    item.unit = getOrderableUnit(item.unitOfOrderable);
+                    item.packsQuantity = item.stockOnHand / item.unit.factor;
+                });
+            });
+        };
 
         vm.getSohForPacks = function(fulfills) {
             var factor = fulfills.orderable.unit ? fulfills.orderable.unit.factor : 1;
             return fulfills.stockOnHand / factor;
         };
 
-        function getOrderableUnit(orderableUnitId) {
+        function getOrderableUnit(orderableUnit) {
             var defaultOrderableUnit = {
-                name: '',
+                name: '-',
                 factor: 1
             };
 
-            if (!orderableUnitId) {
+            if (!orderableUnit) {
                 return angular.copy(defaultOrderableUnit);
             }
 
             var unitOfOrderable = vm.allUnitsOfOrderable.find(function(unit) {
-                return unit.id === orderableUnitId;
+                return unit.id === orderableUnit.id;
             });
 
             return unitOfOrderable ? {
