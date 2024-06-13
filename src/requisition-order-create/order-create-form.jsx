@@ -156,7 +156,14 @@ const OrderCreateForm = () => {
                     <SearchSelect
                         options={requestingFacilityOptions}
                         value={selectedRequestingFacilities.at(-1)}
-                        onChange={value => setSelectedRequestingFacilities(prevState => [...prevState, value])}
+                        onChange={(value) => {
+                            setSelectedRequestingFacilities((prevState) => {
+                                if (!prevState.includes(value)) {
+                                    return [...prevState, value];
+                                }
+                                return prevState;
+                            });
+                        }}
                         placeholder="Select requesting facility"
                     />
                     <EditableTable
