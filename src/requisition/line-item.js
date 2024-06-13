@@ -28,9 +28,9 @@
         .module('requisition')
         .factory('LineItem', lineItem);
 
-    lineItem.$inject = ['calculationFactory', 'COLUMN_SOURCES', 'COLUMN_TYPES'];
+    lineItem.$inject = ['calculationFactory', 'COLUMN_SOURCES', 'COLUMN_TYPES', 'messageService'];
 
-    function lineItem(calculationFactory, COLUMN_SOURCES, COLUMN_TYPES) {
+    function lineItem(calculationFactory, COLUMN_SOURCES, COLUMN_TYPES, messageService) {
 
         LineItem.prototype.getFieldValue = getFieldValue;
         LineItem.prototype.updateFieldValue = updateFieldValue;
@@ -75,8 +75,13 @@
             }
 
             angular.forEach(name.split('.'), function(property) {
-                value = property === 'productCode' && value.quarantined
-                    ? value[property] + ' [EM QUARENTENA]' : value[property];
+                value =
+                  property === 'productCode' && value.quarantined
+                      ? value[property] +
+                      ' [' +
+                      messageService.get('requisition.quarantinedLabel') +
+                      ']'
+                      : value[property];
             });
 
             return value;
