@@ -1,0 +1,45 @@
+<h3>{{'adminOrderableEdit.unitAssignment' | message}}</h3>
+<form name="saveUnitsAssignmentForm" id="saveUnitsAssignment" class="form-inline" ng-submit="vm.saveOrderableUnits()">
+    <section class="openlmis-table-container">
+        <div class="is-primary">
+            <select ng-model="vm.selectedUnit"
+                ng-options="unit as unit.name for unit in vm.availableUnits track by unit.id">
+            </select>
+            <button type="button" class="add" ng-click="vm.assignUnit()" ng-disabled="!vm.selectedUnit">
+                {{'adminOrderableEdit.assignUnit' | message}}
+            </button>
+        </div>
+        <table>
+            <caption ng-if="!vm.assignedUnits || vm.assignedUnits.length === 0">
+                {{'adminOrderableEdit.unitAssignment.noUnitsFound' | message}}
+            </caption>
+            <thead>
+                <tr>
+                    <th>{{'adminOrderableEdit.unitAssignment.name' | message}}</th>
+                    <th>{{'adminOrderableEdit.unitAssignment.description' | message}}</th>
+                    <th>{{'adminOrderableEdit.unitAssignment.factor' | message}}</th>
+                    <th>{{'adminOrderableEdit.actions' | message}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="unit in vm.assignedUnits">
+                    <td>{{ unit.name }}</td>
+                    <td>{{ unit.description }}</td>
+                    <td>{{ unit.factor }}</td>
+                    <td>
+                        <button ng-click="vm.removeUnit(unit)" type="button" class="danger">
+                            {{'adminOrderableEdit.remove' | message}}
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</form>
+
+<div class="openlmis-toolbar">
+    <button ng-click="vm.cancel()">{{'adminOrderableEdit.cancel' | message}}</button>
+    <div class="button-group primary">
+        <button class="primary" type="submit" form="saveUnitsAssignment">{{'adminOrderableEdit.unitAssignment.save' | message}}</button>
+    </div>
+</div>

@@ -50,7 +50,7 @@
                     <label for="newItemUnit">
                         {{:: 'adjustmentCreation.unit' | message }}
                     </label>
-                    <select id="newItemUnit" ng-options="unit.id as unit.name for unit in vm.unitsOfOrderable"
+                    <select id="newItemUnit" ng-options="unit.id as unit.name for unit in vm.selectedOrderableGroup[0].orderable.units"
                         ng-model="vm.newItemUnitId" ng-disabled="vm.lotAlreadyAdded">
                     </select>
                 </div>

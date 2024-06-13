@@ -1,0 +1,5 @@
+#saveUnitsAssignment {
+    .is-primary {
+        @include flex-layout(row, $gap: 1rem);
+    }
+}
