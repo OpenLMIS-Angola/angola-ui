@@ -81,13 +81,13 @@
                 <th>{{'stockPhysicalInventoryDraft.lotCode' | message}}</th>
                 <th>{{'stockPhysicalInventoryDraft.expiryDate' | message}}</th>
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.soh' | message}}</th>
+                <th ng-if="vm.activeDisplayType === vm.PACKS_DISPLAY_TYPE">{{:: 'stockPhysicalInventoryDraft.unit' | message }}</th>
+                <th ng-if="vm.activeDisplayType === vm.PACKS_DISPLAY_TYPE">{{:: 'stockPhysicalInventoryDraft.packsQuantity' | message }}</th>
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.currentStock' | message}}</th>
                 <th ng-if="vm.showVVMStatusColumn" class="col-sticky sticky-right">
                     {{'stockPhysicalInventoryDraft.VVMStatus' | message}}</th>
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.reasons' | message}}</th>
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.unaccountedQuantity' | message}}</th>
-                <th ng-if="vm.activeDisplayType === vm.PACKS_DISPLAY_TYPE">{{:: 'stockPhysicalInventoryDraft.unit' | message }}</th>
-                <th ng-if="vm.activeDisplayType === vm.PACKS_DISPLAY_TYPE">{{:: 'stockPhysicalInventoryDraft.packsQuantity' | message }}</th>
                 <th ng-if="vm.showHideButtonColumn">{{'stockPhysicalInventoryDraft.actions' | message}}</th>
             </tr>
         </thead>
@@ -98,12 +98,12 @@
                 <td></td>
                 <td></td>
                 <td align="right">{{vm.calculate(lineItems, 'stockOnHand')}}</td>
+                <td ng-if="vm.activeDisplayType === vm.PACKS_DISPLAY_TYPE" align="right"></td>
+                <td ng-if="vm.activeDisplayType === vm.PACKS_DISPLAY_TYPE" align="right"></td>
                 <td align="right">{{vm.calculate(lineItems, 'quantity')}}</td>
                 <td align="right" ng-if="vm.showVVMStatusColumn"></td>
                 <td align="right"></td>
                 <td align="right"></td>
-                <td ng-if="vm.activeDisplayType === vm.PACKS_DISPLAY_TYPE" align="right"></td>
-                <td ng-if="vm.activeDisplayType === vm.PACKS_DISPLAY_TYPE" align="right"></td>
                 <td align="right" ng-if="vm.showHideButtonColumn"></td>
             </tr>
             <tr ng-repeat="lineItem in lineItems | orderBy:'lot?lot.lotCode:\'\''" ng-repeat-end>
@@ -119,14 +119,29 @@
                 </td>
                 <td>{{lineItem.lot.expirationDate | openlmisDate}}</td>
                 <td align="right">{{lineItem.stockOnHand}}</td>
-                <td class="digit-cell" >
+                <td align="right" ng-if="vm.activeDisplayType === vm.PACKS_DISPLAY_TYPE">
+                    {{ lineItem.unit.name }}
+                </td>
+                <td align="right" ng-if="vm.activeDisplayType === vm.PACKS_DISPLAY_TYPE">
                     <input
                         class="form-control" ng-blur="vm.validateQuantity(lineItem)"
                         ng-class="{'has-popover is-invalid': vm.validateOnPageChange()}"
-                        ng-change="vm.quantityChanged(lineItem)"
+                        ng-change="vm.quantityChanged(lineItem, true)"
+                        ng-model="lineItem.packsQuantity"
+                        openlmis-invalid="{{lineItem.quantityInvalid ? lineItem.quantityInvalid : ''}}"
+                        positive-integer/>
+                </td>
+                <td class="digit-cell" ng-if="vm.activeDisplayType === vm.DOSES_DISPLAY_TYPE">
+                    <input
+                        class="form-control" ng-blur="vm.validateQuantity(lineItem)"
+                        ng-class="{'has-popover is-invalid': vm.validateOnPageChange()}"
+                        ng-change="vm.quantityChanged(lineItem, false)"
                         ng-model="lineItem.quantity"
                         openlmis-invalid="{{lineItem.quantityInvalid ? lineItem.quantityInvalid : ''}}"
                         positive-integer/>
+                </td>
+                <td align="right" class="digit-cell" ng-if="vm.activeDisplayType === vm.PACKS_DISPLAY_TYPE">
+                    {{ lineItem.quantity }}
                 </td>
                 <td ng-if="vm.showVVMStatusColumn" class="digit-cell">
                     <select ng-if="lineItem.orderable.extraData.useVVM == 'true'"
@@ -147,14 +162,6 @@
                 <td align="right"
                     ng-class="{'has-popover is-invalid': vm.validateOnPageChange()}"
                     openlmis-invalid="{{lineItem.unaccountedQuantityInvalid | message}}">{{lineItem.unaccountedQuantity}}</td>
-                </td>
-                <td align="right" ng-if="vm.activeDisplayType === vm.PACKS_DISPLAY_TYPE">
-                    <select ng-model="lineItem.unitOfOrderableId"
-                            ng-options="unit.id as unit.name for unit in vm.unitsOfOrderable">
-                    </select>
-                </td>
-                <td align="right" ng-if="vm.activeDisplayType === vm.PACKS_DISPLAY_TYPE">
-                    packs
                 </td>
                 <td ng-if="vm.showHideButtonColumn">
                     <button type="button" class="danger"

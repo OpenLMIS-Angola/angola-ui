@@ -289,6 +289,10 @@
         vm.setActiveDisplayType = function(displayType) {
             if (displayType === vm.PACKS_DISPLAY_TYPE || displayType === vm.DOSES_DISPLAY_TYPE) {
                 vm.activeDisplayType = displayType;
+
+                if (displayType === vm.PACKS_DISPLAY_TYPE) {
+                    calculateItemsPacksQuantity();
+                }
             } else {
                 // eslint-disable-next-line no-console
                 console.error('No such display type: ' + displayType);
@@ -846,7 +850,7 @@
         }
 
         function findStockCardsById() {
-            if (!vm.groupedCategories) {
+            if (!vm.groupedCategories || Object.keys(vm.groupedCategories).length === 0) {
                 return;
             }
             var stockCardIds = [];
@@ -864,7 +868,34 @@
             });
 
             $q.all(stockCardPromises).then(function(responses) {
-                console.log(responses);
+                var unitIds = responses.map(function(stockCard) {
+                    return stockCard.unitOfOrderableId;
+                });
+                assignUnitToLineItems(unitIds);
+            });
+        }
+
+        function assignUnitToLineItems(unitsIds) {
+            for (var key in vm.groupedCategories) {
+                var categories = vm.groupedCategories[key];
+                categories.forEach(function(category) {
+                    category.forEach(function(item, index) {
+                        item.unit = getUnitById(unitsIds[index]);
+                    });
+                });
+            }
+        }
+
+        function getUnitById(unitId) {
+            if (!unitId) {
+                return {
+                    name: 'Single Dose',
+                    factor: 1
+                };
+            }
+
+            return vm.unitsOfOrderable.find(function(unit) {
+                return unit.id === unitId;
             });
         }
 
@@ -895,12 +926,32 @@
          *
          * @param   {Object}    lineItem    the lineItem containing quantity
          */
-        function quantityChanged(lineItem) {
+        function quantityChanged(lineItem, withUnit) {
+            if (withUnit) {
+                lineItem.quantity = lineItem.unit.factor * lineItem.packsQuantity;
+            }
+
             vm.updateProgress();
             vm.validateQuantity(lineItem);
             vm.checkUnaccountedStockAdjustments(lineItem);
             vm.dataChanged = !vm.dataChanged;
             physicalInventoryDraftCacheService.cacheSingleItemWithNewLot(draft, lineItem);
+        }
+
+        function calculateItemsPacksQuantity() {
+            for (var key in vm.groupedCategories) {
+                var categories = vm.groupedCategories[key];
+                categories.forEach(function(category) {
+                    category.forEach(function(lineItem) {
+                        if (lineItem.quantity) {
+                            lineItem.packsQuantity = Math.floor(lineItem.quantity / lineItem.unit.factor);
+                            lineItem.quantity = lineItem.packsQuantity * lineItem.unit.factor;
+                            lineItem.unaccountedQuantity =
+                                stockReasonsCalculations.calculateUnaccounted(lineItem, lineItem.stockAdjustments);
+                        }
+                    });
+                });
+            }
         }
 
         /**
