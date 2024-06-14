@@ -75,7 +75,8 @@
         function getColumnsToBeBlockedIfQuarantined() {
             return [
                 this.REQUESTED_QUANTITY_EXPLANATION,
-                this.REQUESTED_QUANTITY
+                this.REQUESTED_QUANTITY,
+                this.APPROVED_QUANTITY
             ];
         }
     }
