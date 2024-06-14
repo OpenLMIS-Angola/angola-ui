@@ -28,9 +28,9 @@
         .module('requisition')
         .factory('LineItem', lineItem);
 
-    lineItem.$inject = ['calculationFactory', 'COLUMN_SOURCES', 'COLUMN_TYPES', 'messageService'];
+    lineItem.$inject = ['calculationFactory', 'COLUMN_SOURCES', 'COLUMN_TYPES', 'TEMPLATE_COLUMNS', 'messageService'];
 
-    function lineItem(calculationFactory, COLUMN_SOURCES, COLUMN_TYPES, messageService) {
+    function lineItem(calculationFactory, COLUMN_SOURCES, COLUMN_TYPES, TEMPLATE_COLUMNS, messageService) {
 
         LineItem.prototype.getFieldValue = getFieldValue;
         LineItem.prototype.updateFieldValue = updateFieldValue;
@@ -109,6 +109,14 @@
                         calculationFactory[fullName](this, requisition) :
                         null;
                 } else if (column.$type === COLUMN_TYPES.NUMERIC || column.$type === COLUMN_TYPES.CURRENCY) {
+                    if (
+                        Boolean(object.orderable.quarantined) &&
+                        fullName === TEMPLATE_COLUMNS.APPROVED_QUANTITY
+                    ) {
+                        // If the orderable is quarantined, the approved quantity must be 0
+                        object[propertyName] = 0;
+                    }
+
                     checkIfNullOrZero(object[propertyName]);
                 } else {
                     object[propertyName] = object[propertyName] ? object[propertyName] : '';

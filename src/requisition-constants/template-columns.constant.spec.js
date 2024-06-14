@@ -48,6 +48,7 @@ describe('TEMPLATE_COLUMNS', function() {
 
             expect(listOfColumns[0]).toEqual('requestedQuantityExplanation');
             expect(listOfColumns[1]).toEqual('requestedQuantity');
+            expect(listOfColumns[2]).toEqual('approvedQuantity');
         });
     });
 });
