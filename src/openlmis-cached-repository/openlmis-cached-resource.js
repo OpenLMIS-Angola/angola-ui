@@ -140,7 +140,7 @@
 
                 objectsList.forEach(function(item) {
                     promises.push(database.get(item.id + '/' + item.versionNumber)
-                        .then(function(result) {
+                        .then(function() {
                             throw new Error();
                             // if (result) {
                             //     return result;

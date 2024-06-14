@@ -1,5 +1,8 @@
 {
     "stockPhysicalInventoryDraft.addUnit": "Create unit",
     "stockPhysicalInventoryDraft.quantity": "Quantity",
-    "stockPhysicalInventoryDraft.unit": "Unit"
+    "stockPhysicalInventoryDraft.unit": "Unit",
+    "stockPhysicalInventoryDraft.packsQuantity": "Packs quantity",
+    "stockPhysicalInventoryDraft.doses": "Doses",
+    "stockPhysicalInventoryDraft.packs": "packs"
 }

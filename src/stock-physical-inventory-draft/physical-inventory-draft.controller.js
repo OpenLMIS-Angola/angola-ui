@@ -257,6 +257,20 @@
          */
         vm.unitsOfOrderable = undefined;
 
+        vm.PACKS_DISPLAY_TYPE = 'packs';
+        vm.DOSES_DISPLAY_TYPE = 'doses';
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name activeDisplayType
+         * @type {string}
+         *
+         * @description
+         * Based on this the units are displayed
+         */
+        vm.activeDisplayType = vm.DOSES_DISPLAY_TYPE;
+
         /**
          * @ngdoc method
          * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
@@ -270,6 +284,15 @@
          */
         vm.getStatusDisplay = function(status) {
             return messageService.get(VVM_STATUS.$getDisplayName(status));
+        };
+
+        vm.setActiveDisplayType = function(displayType) {
+            if (displayType === vm.PACKS_DISPLAY_TYPE || displayType === vm.DOSES_DISPLAY_TYPE) {
+                vm.activeDisplayType = displayType;
+            } else {
+                // eslint-disable-next-line no-console
+                console.error('No such display type: ' + displayType);
+            }
         };
 
         /**
@@ -814,11 +837,35 @@
                 return vm.pagedLineItems;
             }, function(newList) {
                 vm.groupedCategories = $filter('groupByProgramProductCategory')(newList, vm.program.id);
+                findStockCardsById();
             }, true);
 
             if (!$stateParams.noReload) {
                 vm.cacheDraft();
             }
+        }
+
+        function findStockCardsById() {
+            if (!vm.groupedCategories) {
+                return;
+            }
+            var stockCardIds = [];
+            for (var key in vm.groupedCategories) {
+                var categories = vm.groupedCategories[key];
+                categories.forEach(function(category) {
+                    category.forEach(function(item) {
+                        stockCardIds.push(item.stockCardId);
+                    });
+                });
+            }
+
+            var stockCardPromises = stockCardIds.map(function(id) {
+                return stockCardService.getStockCard(id);
+            });
+
+            $q.all(stockCardPromises).then(function(responses) {
+                console.log(responses);
+            });
         }
 
         /**
