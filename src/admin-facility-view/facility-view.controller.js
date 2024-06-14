@@ -32,13 +32,13 @@
         '$q', '$state', 'facility', 'facilityTypes', 'geographicZones', 'facilityOperators',
         'programs', 'FacilityRepository', 'loadingModalService', 'notificationService',
         'tzPeriodService', 'messageService', 'confirmService', 'wards', 'wardService',
-        'WARDS_CONSTANTS', 'currentUserService'
+        'WARDS_CONSTANTS'
     ];
 
     function controller($q, $state, facility, facilityTypes, geographicZones, facilityOperators,
                         programs, FacilityRepository, loadingModalService, notificationService,
                         tzPeriodService, messageService, confirmService, wards, wardService,
-                        WARDS_CONSTANTS, currentUserService) {
+                        WARDS_CONSTANTS) {
 
         var vm = this;
 
@@ -174,8 +174,6 @@
          */
         vm.wardFacilityType = undefined;
 
-        vm.currentUser = undefined;
-
         /**
          * @ngdoc method
          * @propertyOf admin-facility-view.controller:FacilityViewController
@@ -200,10 +198,6 @@
                 return type.code === WARDS_CONSTANTS.WARD_TYPE_CODE;
             });
             vm.newWard = getInitialNewWardValue();
-
-            currentUserService.getUserInfo().then(function(user) {
-                vm.currentUser = user;
-            });
 
             if (!vm.facilityWithPrograms.supportedPrograms) {
                 vm.facilityWithPrograms.supportedPrograms = [];
@@ -249,7 +243,7 @@
          * @methodOf admin-facility-view.controller:FacilityViewController
          * @name saveFacilityWithPrograms
          *
-         * @descriptioncurrentUserService
+         * @description
          * Saves facility with supported programs and redirects to facility list screen.
          */
         function saveFacilityWithPrograms() {
@@ -412,24 +406,6 @@
                 });
 
                 var addedWardsPromisses = vm.addedWards.map(function(ward) {
-                    // assign user a role 9e2ee288-b77c-476e-9e15-a05d25c3dcda and a7993216-de2a-4031-b641-18621e3085cb
-                    // for this facility
-                    // var rolesIds = ['9e2ee288-b77c-476e-9e15-a05d25c3dcda', 'a7993216-de2a-4031-b641-18621e3085cb'];
-
-                    // var additionalRoleAssignments = vm.facility.supportedPrograms.map(function(program) {
-                    //     return [{
-                    //         programId: program.id,
-                    //         warehouseId: '',
-                    //     }];
-                    // })
-
-                    // $q.all(rolesIdsPromisses).then(function(responses) {
-                    //     console.log(responses);
-                    //     // var roleAssignments = currentUser.roleAssignments;
-
-                    //     // console.log(roleAssignments);
-                    // });
-
                     return new FacilityRepository().create(ward);
                 });
 
