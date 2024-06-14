@@ -106,6 +106,26 @@
         vm.hasPermissionToAddNewLot = undefined;
 
         /**
+         * @ngdoc property
+         * @propertyOf stock-add-products-modal.controller:AddProductsModalController
+         * @name units
+         * 
+         * @description
+         * Holds the units of the selected orderable group.
+         */
+        vm.units = [];
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-add-products-modal.controller:AddProductsModalController
+         * @name selectedUnit
+         * 
+         * @description
+         * Holds the selected unit of the selected orderable group.
+         */
+        vm.selectedUnit = undefined;
+
+        /**
          * @ngdoc method
          * @methodOf stock-add-products-modal.controller:AddProductsModalController
          * @name $onInit
@@ -153,6 +173,12 @@
 
             vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup, vm.hasPermissionToAddNewLot);
 
+            vm.units =
+              vm.selectedOrderableGroup &&
+              vm.selectedOrderableGroup[0].orderable.units
+                  ? vm.selectedOrderableGroup[0].orderable.units
+                  : [];
+
             vm.selectedOrderableHasLots = vm.lots.length > 0;
         }
 
@@ -183,6 +209,7 @@
             var noErrors = !vm.newLot.expirationDateInvalid && !vm.newLot.lotCodeInvalid;
             if (selectedItem && !vm.addedItems.includes(selectedItem) && noErrors) {
                 selectedItem.active = true;
+                selectedItem.unit = vm.selectedUnit;
                 vm.addedItems.push(selectedItem);
             }
         }
