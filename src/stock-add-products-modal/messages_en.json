@@ -1,0 +1,19 @@
+{
+  "stockAddProductsModal.title": "Add Products to Physical Inventory",
+  "stockAddProductsModal.productCode": "Product Code",
+  "stockAddProductsModal.lotCode": "Lot Code",
+  "stockAddProductsModal.expiryDate": "Expiry Date",
+  "stockAddProductsModal.newLotCode": "New Lot Code",
+  "stockAddProductsModal.newLotExpirationDate": "Expiry Date",
+  "stockAddProductsModal.addProduct": "Add Product",
+  "stockAddProductsModal.product": "Product",
+  "stockAddProductsModal.unit": "Unit",
+  "stockAddProductsModal.noUnitsAssigned": "No units are currently assigned to the selected product. Please assign units first.",
+  "stockAddProductsModal.currentStock": "Current Stock",
+  "stockAddProductsModal.actions": "Actions",
+  "stockAddProductsModal.addProducts": "Add ${num} items to Physical Inventory",
+  "stockAddProductsModal.cancel": "Cancel",
+  "stockAddProductsModal.remove": "Remove",
+  "stockAddProductsModal.required": "This field is required",
+  "stockAddProductsModal.add": "Add"
+}
