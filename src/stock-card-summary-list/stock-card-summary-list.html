@@ -61,7 +61,7 @@
             </button>
         </div>
     </div>
-    <table>
+    <table ng-if="vm.allUnitsOfOrderable">
         <caption ng-if="!vm.displayStockCardSummaries.length">
             {{'stockCardSummaryList.noProducts' | message}}
         </caption>
@@ -73,6 +73,7 @@
             <th>{{:: 'stockCardSummaryList.expiryDate' | message}}</th>
             <th>{{:: 'stockCardSummaryList.lastUpdate' | message}}</th>
             <th ng-if="vm.activeDisplayType === vm.PACKS_DISPLAY_TYPE">{{:: 'stockCardSummaryList.unit' | message }}</th>
+            <th ng-if="vm.activeDisplayType === vm.PACKS_DISPLAY_TYPE">{{:: 'stockCardSummaryList.packsQuantity' | message }}</th>
             <th>{{:: 'stockCardSummaryList.stockOnHand' | message}}</th>
             <!-- AO-816: Add prices to the Stock On Hand view -->
             <th>{{:: 'stockCardSummaryList.unitPrice' | message}}</th>
@@ -89,6 +90,7 @@
             <td></td>
             <td></td>
             <td ng-if="vm.activeDisplayType === vm.PACKS_DISPLAY_TYPE"></td>
+            <td ng-if="vm.activeDisplayType === vm.PACKS_DISPLAY_TYPE"></td>
             <td>{{summary.stockOnHand}}</td>
             <!-- AO-816: Add prices to the Stock On Hand view -->
             <td>{{summary.orderable.unitPrice | openlmisCurrency}}</td>
@@ -104,9 +106,9 @@
             <td>{{fulfills.lot ? fulfills.lot.lotCode : ('stockCardSummaryList.noLotDefined' | message)}}</td>
             <td>{{fulfills.lot ? (fulfills.lot.expirationDate | openlmisDate) : ''}}</td>
             <td>{{fulfills.occurredDate | openlmisDate}}</td>
-            <td ng-if="vm.activeDisplayType === vm.PACKS_DISPLAY_TYPE">{{ fulfills.orderable.unit.name }}</td>
-            <td ng-if="vm.activeDisplayType === vm.DOSES_DISPLAY_TYPE">{{fulfills.stockOnHand}}</td>
-            <td ng-if="vm.activeDisplayType === vm.PACKS_DISPLAY_TYPE">{{ vm.getSohForPacks(fulfills) }}</td>
+            <td ng-if="vm.activeDisplayType === vm.PACKS_DISPLAY_TYPE">{{ fulfills.unit.name }}</td>
+            <td ng-if="vm.activeDisplayType === vm.PACKS_DISPLAY_TYPE">{{ fulfills.packsQuantity }}</td>
+            <td>{{fulfills.stockOnHand}}</td>
             <!-- AO-816: Add prices to the Stock On Hand view -->
             <td></td>
             <td></td>

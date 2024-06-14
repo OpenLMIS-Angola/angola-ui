@@ -51,7 +51,7 @@
                         {{:: 'adjustmentCreation.unit' | message }}
                     </label>
                     <select id="newItemUnit" ng-options="unit.id as unit.name for unit in vm.selectedOrderableGroup[0].orderable.units"
-                        ng-model="vm.newItemUnitId" ng-disabled="vm.lotAlreadyAdded">
+                        ng-model="vm.newItemUnitId">
                     </select>
                 </div>
                 <button type="submit" class="add">{{vm.key('add') | message}}</button>
@@ -145,9 +145,9 @@
                     <!-- AO-805: Allow users with proper rights to edit product prices-->
                     <td openlmis-invalid="{{lineItem.$errors.priceInvalid}}" class="digit-cell"
                         ng-if="vm.canEditProductPrice(lineItem)">
-                        <input class="form-control" ng-model="lineItem.price" ng-class="{'eopenlmis-modal',
-                           'openlmis-templates',
-                           'openlmis-state-tracker',
+                        <input class="form-control" ng-model="lineItem.price" ng-class="{'openlmis-modal': true,
+                           'openlmis-templates': true,
+                           'openlmis-state-tracker': true,
                            'openlmis-modal-state-error': lineItem.$errors.priceInvalid}"
                             ng-change="vm.validatePrice(lineItem)" ng-blur="vm.validatePrice(lineItem)"
                             not-negative-float />
