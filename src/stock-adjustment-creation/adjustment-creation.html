@@ -59,11 +59,6 @@
                 </div>
                 <button type="submit" class="add">{{vm.key('add') | message}}</button>
             </form>
-            <form class="form-inline" ng-submit="vm.addNewUnit()">
-                <button>
-                    {{:: 'adjustmentCreation.addNewUnit' | message }}
-                </button>
-            </form>
         </section>
         <table suppress-tr-openlmis-invalid>
             <caption ng-if="!vm.displayItems.length">{{vm.key('noProducts') | message}}</caption>
