@@ -7,5 +7,6 @@
     "stockCardSummaryList.packs": "Packs",
     "stockCardSummaryList.doses": "Doses",
     "stockCardSummaryList.unit": "Unit",
-    "stockCardSummaryList.packsQuantity": "Packs quantity"
+    "stockCardSummaryList.packsQuantity": "Packs quantity",
+    "stockCardSummaryList.titleWithWard": "Stock on Hand - ${facility} - ${ward} - ${program}"
 }

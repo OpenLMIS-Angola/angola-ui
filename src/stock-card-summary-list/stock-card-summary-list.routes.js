@@ -28,7 +28,7 @@
             isOffline: true,
             url: '/stockCardSummaries'
             + '?facility&program&supervised&page&size&includeInactive'
-            + '&productCode&productName&lotCode',
+            + '&productCode&productName&lotCode&ward',
             label: 'stockCardSummaryList.stockOnHand',
             priority: 1,
             showInNavigation: true,
@@ -67,6 +67,14 @@
                     delete paramsCopy.supervised;
 
                     return paramsCopy;
+                },
+                selectedWard: function($stateParams, facilityService) {
+                    if ($stateParams.ward) {
+                        return facilityService.get($stateParams.ward).then(function(ward) {
+                            return ward;
+                        });
+                    }
+                    return undefined;
                 },
                 // ANGOLASUP-685: Starts here
                 stockCardSummaries: function(paginationService, StockCardSummaryRepository,
