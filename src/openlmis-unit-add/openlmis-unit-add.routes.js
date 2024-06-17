@@ -32,6 +32,27 @@
             url: '/addUnit'
         });
 
+        modalStateProvider.state('openlmis.stockmanagement.receive.creation.unitAdd', {
+            controller: 'openlmisUnitAddController',
+            controllerAs: '$ctrl',
+            templateUrl: 'openlmis-unit-add/openlmis-unit-add.html',
+            url: '/addUnit'
+        });
+
+        modalStateProvider.state('openlmis.stockmanagement.issue.creation.unitAdd', {
+            controller: 'openlmisUnitAddController',
+            controllerAs: '$ctrl',
+            templateUrl: 'openlmis-unit-add/openlmis-unit-add.html',
+            url: '/addUnit'
+        });
+
+        modalStateProvider.state('openlmis.stockmanagement.kitunpack.creation.unitAdd', {
+            controller: 'openlmisUnitAddController',
+            controllerAs: '$ctrl',
+            templateUrl: 'openlmis-unit-add/openlmis-unit-add.html',
+            url: '/addUnit'
+        });
+
         modalStateProvider.state('openlmis.stockmanagement.physicalInventory.draft.unitAdd', {
             controller: 'openlmisUnitAddController',
             controllerAs: '$ctrl',
