@@ -46,6 +46,7 @@
         vm.offline = offlineService.isOffline;
         vm.goToPendingOfflineEventsPage = goToPendingOfflineEventsPage;
         vm.setActiveDisplayType = setActiveDisplayType;
+        vm.selectedWard = undefined;
         vm.PACKS_DISPLAY_TYPE = 'packs';
         vm.DOSES_DISPLAY_TYPE = 'doses';
         vm.activeDisplayType = vm.DOSES_DISPLAY_TYPE;
@@ -222,7 +223,7 @@
         function loadStockCardSummaries() {
             var stateParams = angular.copy($stateParams);
 
-            stateParams.facility = vm.facility.id;
+            stateParams.facility = vm.selectedWard ? vm.selectedWard.id : vm.facility.id;
             stateParams.program = vm.program.id;
             stateParams.active = STOCKCARD_STATUS.ACTIVE;
             stateParams.supervised = vm.isSupervised;
