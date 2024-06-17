@@ -99,7 +99,7 @@ const OrderCreateForm = () => {
 
     useEffect(
         () => {
-            facilityService.getUserFacilitiesForRight(userId, ADMINISTRATION_RIGHTS.ORDER_CREATE)
+            facilityService.getUserFacilitiesForRight(userId, ADMINISTRATION_RIGHTS.ORDER_CREATE, true)
                 .then((facilities) => {
                     setRequestingFacilityOptions(_.map(facilities, facility => ({ name: facility.name, value: facility.id })));
                 });

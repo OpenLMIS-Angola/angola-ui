@@ -50,7 +50,7 @@
 				</td>
                 <td>
 					<select ng-model="item.requisition.supplyingFacility" required
-							ng-options="depot.id as depot.name for depot in item.supplyingDepots">
+							ng-options="depot.id as depot.name for depot in item.supplyingDepots | filter: { type: { code: '!WS' }}">
 						<option ng-value="" ng-if="!item.requisition.supplyingFacility">
 							{{'label.select.none' | message}}
 						</option>
