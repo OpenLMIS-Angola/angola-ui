@@ -17,15 +17,13 @@
     'use strict';
 
     angular
-        .module('stock-adjustment-creation')
+        .module('stock-issue-creation')
         .config(routes);
 
-    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'SEARCH_OPTIONS', 'ADJUSTMENT_TYPE',
-        'WARDS_CONSTANTS'];
+    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'SEARCH_OPTIONS', 'ADJUSTMENT_TYPE'];
 
-    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS, ADJUSTMENT_TYPE,
-                    WARDS_CONSTANTS) {
-        $stateProvider.state('openlmis.stockmanagement.adjustment.creation', {
+    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS, ADJUSTMENT_TYPE) {
+        $stateProvider.state('openlmis.stockmanagement.issue.creation', {
             isOffline: true,
             url: '/:programId/create?page&size&keyword',
             views: {
@@ -43,7 +41,8 @@
                 reasons: undefined,
                 displayItems: undefined,
                 addedLineItems: undefined,
-                orderableGroups: undefined
+                orderableGroups: undefined,
+                srcDstAssignments: undefined
             },
             resolve: {
                 program: function($stateParams, programService) {
@@ -64,7 +63,7 @@
                 orderableGroups: function($stateParams, program, facility, existingStockOrderableGroupsFactory) {
                     if (!$stateParams.orderableGroups) {
                         $stateParams.orderableGroups = existingStockOrderableGroupsFactory
-                            .getGroups($stateParams, program, facility);
+                            .getGroupsWithNotZeroSoh($stateParams, program, facility);
                     }
 
                     return $stateParams.orderableGroups;
@@ -77,15 +76,20 @@
                 },
                 reasons: function($stateParams, stockReasonsFactory, facility) {
                     if (_.isUndefined($stateParams.reasons)) {
-                        return stockReasonsFactory.getAdjustmentReasons($stateParams.programId, facility.type.id);
+                        return stockReasonsFactory.getIssueReasons($stateParams.programId, facility.type.id);
                     }
                     return $stateParams.reasons;
                 },
                 adjustmentType: function() {
-                    return ADJUSTMENT_TYPE.ADJUSTMENT;
+                    return ADJUSTMENT_TYPE.ISSUE;
                 },
-                srcDstAssignments: function() {
-                    return undefined;
+                srcDstAssignments: function($stateParams, facility, sourceDestinationService) {
+                    if (_.isUndefined($stateParams.srcDstAssignments)) {
+                        return sourceDestinationService.getDestinationAssignments(
+                            $stateParams.programId, facility.id
+                        );
+                    }
+                    return $stateParams.srcDstAssignments;
                 },
                 hasPermissionToAddNewLot: function() {
                     return false;

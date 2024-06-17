@@ -62,6 +62,9 @@
                             return orderableGroupService.getKitOnlyOrderablegroup(orderableGroups);
                         });
                 },
+                orderableGroupsByWard: function() {
+                    return undefined;
+                },
                 user: function(authorizationService) {
                     return authorizationService.getUser();
                 },
