@@ -1083,10 +1083,6 @@
             return vm.hasPermissionToAddNewLot && lineItem.lot && lineItem.$isNewItem;
         };
 
-        vm.addNewUnit = function() {
-            $state.go('openlmis.stockmanagement.adjustment.creation.unitAdd');
-        };
-
         /**
          * @ngdoc method
          * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController

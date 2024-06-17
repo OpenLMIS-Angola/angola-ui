@@ -161,7 +161,7 @@
 
         $stateProvider
             .state('openlmis.administration.orderables.edit.unitAssignment', {
-                label: 'adminOrderableEdit.ftaps',
+                label: 'adminOrderableEdit.unitAssignment',
                 url: '/unitAssignment',
                 controller: 'OrderableEditUnitAssignmentController',
                 templateUrl: 'admin-orderable-edit/orderable-edit-unit-assignment.html',
