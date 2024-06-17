@@ -20,11 +20,9 @@
         .module('stock-adjustment-creation')
         .config(routes);
 
-    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'SEARCH_OPTIONS', 'ADJUSTMENT_TYPE',
-        'WARDS_CONSTANTS'];
+    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'SEARCH_OPTIONS', 'ADJUSTMENT_TYPE'];
 
-    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS, ADJUSTMENT_TYPE,
-                    WARDS_CONSTANTS) {
+    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS, ADJUSTMENT_TYPE) {
         $stateProvider.state('openlmis.stockmanagement.adjustment.creation', {
             isOffline: true,
             url: '/:programId/create?page&size&keyword',
