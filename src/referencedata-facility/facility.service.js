@@ -80,6 +80,7 @@
         this.search = search;
         this.clearFacilitiesCache = clearFacilitiesCache;
         this.getFacilitiesWithoutWards = getFacilitiesWithoutWards;
+        this.getAllMinimalWithoutWards = getAllMinimalWithoutWards;
 
         /**
          * @ngdoc method
@@ -206,13 +207,13 @@
          * @param  {String}  right  The right name that we are checking
          * @return {Promise}        An array of matching facilities.
          */
-        function getUserFacilitiesForRight(userId, right) {
+        function getUserFacilitiesForRight(userId, right, excludeWardsServices) {
             if (!userId || !right) {
                 return $q.reject();
             }
             return $q.all({
                 permissions: permissionService.load(userId),
-                minimalFacilities: this.getAllMinimal()
+                minimalFacilities: excludeWardsServices ? this.getAllMinimalWithoutWards() : this.getAllMinimal()
             })
                 .then(function(results) {
                     var permissions = results.permissions,
@@ -270,6 +271,23 @@
                 params.sort = 'name';
             }
             return resource.getAllMinimal(params).$promise.then(function(response) {
+                return response.content;
+            });
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf referencedata-facility.facilityService
+         * @name getAllMinimalWithoutWards
+         * 
+         * @description
+         * Retrieves all facilities with id and name fields that are not wards.
+         */
+        function getAllMinimalWithoutWards() {
+            return resource.getAllMinimal({
+                sort: 'name',
+                excludeWardsServices: true
+            }).$promise.then(function(response) {
                 return response.content;
             });
         }
