@@ -1,5 +1,8 @@
-<h2 ng-if="vm.facility && vm.program">
+<h2 ng-if="vm.facility && vm.program && !vm.currentlySelectedWardName">
     {{'stockCardSummaryList.title' | message: { 'facility': vm.facility.name, 'program': vm.program.name} }}
+</h2>
+<h2 ng-if="vm.facility && vm.program && vm.currentlySelectedWardName">
+    {{'stockCardSummaryList.titleWithWard' | message: { 'facility': vm.facility.name, 'ward': vm.currentlySelectedWardName, 'program': vm.program.name} }}
 </h2>
 <h2 ng-hide="vm.facility && vm.program">{{'stockCardSummaryList.stockOnHand' | message}}</h2>
 <p class="alert is-offline" ng-if="vm.offline()">
@@ -15,7 +18,8 @@
             is-supervised="vm.isSupervised"
             facility="vm.facility"
             program="vm.program"
-            module="'stock-card-summary-list'">
+            module="'stock-card-summary-list'"
+            selected-ward="vm.selectedWard">
     </openlmis-facility-program-select>
     <input type="submit" value="{{'stockCardSummaryList.search'|message}}"/>
 </form>

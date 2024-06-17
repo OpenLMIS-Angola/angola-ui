@@ -62,13 +62,16 @@ describe('StockCardSummaryListController', function() {
         });
         // AO-816: Ends here
 
+        this.selectedWard = undefined;
+
         spyOn(this.offlineService, 'isOffline').andReturn(true);
 
         this.vm = this.$controller('StockCardSummaryListController', {
             stockCardSummaries: this.stockCardSummaries,
             displayStockCardSummaries: this.stockCardSummaries,
             $stateParams: this.stateParams,
-            $scope: this.scope
+            $scope: this.scope,
+            selectedWard: this.selectedWard
         });
         this.vm.$onInit();
 
@@ -154,6 +157,7 @@ describe('StockCardSummaryListController', function() {
                     program: 'program',
                     supervised: true,
                     includeInactive: false,
+                    ward: undefined,
                     // ANGOLASUP-685: Starts here
                     page: 0,
                     size: 10

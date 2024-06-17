@@ -279,7 +279,7 @@
          * @ngdoc method
          * @methodOf referencedata-facility.facilityService
          * @name getAllMinimalWithoutWards
-         * 
+         *
          * @description
          * Retrieves all facilities with id and name fields that are not wards.
          */

@@ -75,7 +75,7 @@ describe('facilityProgramCacheService', function() {
 
         spyOn(this.authorizationService, 'getUser').andReturn(this.user);
         spyOn(this.programService, 'getUserPrograms').andReturn(this.$q.when(this.programs));
-        spyOn(this.facilityService, 'getAllMinimalWithoutWards').andReturn(this.$q.when(this.facilities));
+        spyOn(this.facilityService, 'getFacilitiesWithoutWards').andReturn(this.$q.when(this.facilities));
         spyOn(this.permissionService, 'load').andReturn(this.$q.when(permissions));
         spyOn(this.currentUserService, 'getUserInfo').andReturn(this.$q.when(this.referencedataUser));
 
@@ -91,7 +91,7 @@ describe('facilityProgramCacheService', function() {
         });
 
         it('should call facilityService', function() {
-            expect(this.facilityService.getAllMinimalWithoutWards).toHaveBeenCalled();
+            expect(this.facilityService.getFacilitiesWithoutWards).toHaveBeenCalled();
         });
 
         it('should call authorizationService', function() {

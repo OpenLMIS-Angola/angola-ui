@@ -30,12 +30,13 @@
 
     controller.$inject = [
         'loadingModalService', '$state', '$stateParams', 'StockCardSummaryRepositoryImpl', 'stockCardSummaries',
-        'offlineService', '$scope', 'STOCKCARD_STATUS', 'messageService', 'paginationService', 'unitOfOrderableService'
+        'offlineService', '$scope', 'STOCKCARD_STATUS', 'messageService', 'paginationService', 'unitOfOrderableService',
+        'selectedWard'
     ];
 
     function controller(loadingModalService, $state, $stateParams, StockCardSummaryRepositoryImpl, stockCardSummaries,
                         offlineService, $scope, STOCKCARD_STATUS, messageService, paginationService,
-                        unitOfOrderableService) {
+                        unitOfOrderableService, selectedWard) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -46,6 +47,8 @@
         vm.offline = offlineService.isOffline;
         vm.goToPendingOfflineEventsPage = goToPendingOfflineEventsPage;
         vm.setActiveDisplayType = setActiveDisplayType;
+        vm.selectedWard = undefined;
+        vm.currentlySelectedWardName = undefined;
         vm.PACKS_DISPLAY_TYPE = 'packs';
         vm.DOSES_DISPLAY_TYPE = 'doses';
         vm.activeDisplayType = vm.DOSES_DISPLAY_TYPE;
@@ -143,6 +146,10 @@
          * Initialization method for StockCardSummaryListController.
          */
         function onInit() {
+            vm.selectedWard = selectedWard;
+            if (selectedWard) {
+                vm.currentlySelectedWardName = selectedWard.name;
+            }
             // AO-816: Add prices to the Stock On Hand view
             stockCardSummaries.forEach(function(stockCardSummary) {
                 stockCardSummary.orderable.unitPrice = getProductPrice(stockCardSummary);
@@ -222,7 +229,7 @@
         function loadStockCardSummaries() {
             var stateParams = angular.copy($stateParams);
 
-            stateParams.facility = vm.facility.id;
+            stateParams.facility = vm.selectedWard ? vm.selectedWard.id : vm.facility.id;
             stateParams.program = vm.program.id;
             stateParams.active = STOCKCARD_STATUS.ACTIVE;
             stateParams.supervised = vm.isSupervised;
@@ -230,6 +237,7 @@
             stateParams.productName = vm.productName;
             stateParams.productCode = vm.productCode;
             stateParams.lotCode = vm.lotCode;
+            stateParams.ward = vm.selectedWard ? vm.selectedWard.id : undefined;
 
             $state.go('openlmis.stockmanagement.stockCardSummaries', stateParams, {
                 reload: true
