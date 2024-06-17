@@ -41,7 +41,7 @@
         // AO-805: Allow users with proper rights to edit product prices
         'OrderableResource', 'permissionService', 'ADMINISTRATION_RIGHTS', 'authorizationService',
         // AO-805: Ends here
-        'unitOfOrderableService', 'wardService', 'orderableGroupsByWard'
+        'unitOfOrderableService', 'wardService', 'orderableGroupsByWard', 'sourceDestinationService'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -54,7 +54,7 @@
                         // AO-805: Allow users with proper rights to edit product prices
                         accessTokenFactory, $window, stockmanagementUrlFactory, OrderableResource, permissionService,
                         ADMINISTRATION_RIGHTS, authorizationService, unitOfOrderableService, wardService,
-                        orderableGroupsByWard) {
+                        orderableGroupsByWard, sourceDestinationService) {
         // ANGOLASUP-717: ends here
         // AO-805: Ends here
         var vm = this;
@@ -195,6 +195,18 @@
          * It is either ward or a whole home facility. Based on user input during lineItem adding
          */
         vm.itemDestination = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name wardsValidSources
+         * @type {Object[]}
+         *
+         * @description
+         *
+         * Valid sources for all wards
+         */
+        vm.wardsValidSources = undefined;
 
         // OAM-5: Lot code filter UI improvements.
         /**
@@ -1009,6 +1021,12 @@
                     vm.homeFacilityWards = response.content.filter(function(responseFacility) {
                         return responseFacility.id !== vm.facility.id;
                     });
+                    if (vm.homeFacilityWards.length > 0) {
+                        sourceDestinationService.getDestinationAssignments(program.id, homeFacilityWards[0].id)
+                            .then(function(response) {
+                                vm.wardsValidSources = response.content;
+                            });
+                    }
                 });
             }
 
