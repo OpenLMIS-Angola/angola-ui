@@ -53,6 +53,7 @@ describe('StockAdjustmentCreationController', function() {
             LotDataBuilder = $injector.get('LotDataBuilder');
             UNPACK_REASONS = $injector.get('UNPACK_REASONS');
             LotResource = $injector.get('LotResource');
+
             this.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
             this.OrderableChildrenDataBuilder = $injector.get('OrderableChildrenDataBuilder');
             this.offlineService = $injector.get('offlineService');
@@ -73,6 +74,7 @@ describe('StockAdjustmentCreationController', function() {
             orderableGroups = [
                 new OrderableGroupDataBuilder().build()
             ];
+
             reasons = [new ReasonDataBuilder().build()];
 
             this.kitConstituents = [
@@ -564,7 +566,8 @@ describe('StockAdjustmentCreationController', function() {
             orderableGroups: orderableGroups,
             displayItems: [],
             hasPermissionToAddNewLot: true,
-            editLotModalService: this.editLotModalService
+            editLotModalService: this.editLotModalService,
+            orderableGroupsByWard: undefined
         });
     }
 

@@ -171,6 +171,10 @@
                 programId: programId,
                 facilityId: facilityId
             }).then(function(summaries) {
+                if (!summaries.content) {
+                    return [];
+                }
+
                 return groupByOrderableId(summaries.content.reduce(function(items, summary) {
                     summary.canFulfillForMe.forEach(function(fulfill) {
                         items.push(fulfill);

@@ -8,5 +8,8 @@
     "adjustmentCreation.addProduct": "Add product",
     "adjustmentCreation.unit": "Unit",
     "adjustmentCreation.itemQuantity": "Item quantity",
-    "adjustmentCreation.totalQuantity": "Total quantity"
+    "adjustmentCreation.totalQuantity": "Total quantity",
+    "adjustmentCreation.itemDestination": "Item destination",
+    "adjustmentCreation.receivingWardSelect": "Receiving ward"
+
 }

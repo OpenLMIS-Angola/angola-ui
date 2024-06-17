@@ -33,6 +33,7 @@
         'stock-unpack-kit',
         'stock-reasons-modal',
         'stock-edit-lot-modal',
-        'openlmis-unit-add'
+        'openlmis-unit-add',
+        'admin-facility-view'
     ]);
 })();

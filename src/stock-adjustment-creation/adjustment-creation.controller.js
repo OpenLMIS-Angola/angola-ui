@@ -41,7 +41,7 @@
         // AO-805: Allow users with proper rights to edit product prices
         'OrderableResource', 'permissionService', 'ADMINISTRATION_RIGHTS', 'authorizationService',
         // AO-805: Ends here
-        'unitOfOrderableService'
+        'unitOfOrderableService', 'wardService', 'orderableGroupsByWard'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -53,7 +53,8 @@
                         // ANGOLASUP-717: Create New Issue Report
                         // AO-805: Allow users with proper rights to edit product prices
                         accessTokenFactory, $window, stockmanagementUrlFactory, OrderableResource, permissionService,
-                        ADMINISTRATION_RIGHTS, authorizationService, unitOfOrderableService) {
+                        ADMINISTRATION_RIGHTS, authorizationService, unitOfOrderableService, wardService,
+                        orderableGroupsByWard) {
         // ANGOLASUP-717: ends here
         // AO-805: Ends here
         var vm = this;
@@ -162,6 +163,39 @@
          */
         vm.unitsOfOrderable = undefined;
 
+        /**
+         * @ngdoc property
+         * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name displayWardSelect
+         * @type {boolean}
+         *
+         * @description
+         * Holds information should the dialog used for ward selection be displayed
+         */
+        vm.displayWardSelect = false;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name homeFacilityWards
+         * @type {Object[]}
+         *
+         * @description
+         * Array of home facility wards
+         */
+        vm.homeFacilityWards = [];
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name productDestination
+         * @type {Object}
+         *
+         * @description
+         * It is either ward or a whole home facility. Based on user input during lineItem adding
+         */
+        vm.itemDestination = undefined;
+
         // OAM-5: Lot code filter UI improvements.
         /**
          * @ngdoc method
@@ -239,6 +273,10 @@
                     .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
             }
 
+            if (!vm.itemDestination) {
+                vm.itemDestination = facility;
+            }
+
             vm.newLot.expirationDateInvalid = undefined;
             vm.newLot.lotCodeInvalid = undefined;
             validateExpirationDate();
@@ -254,7 +292,8 @@
                     unitOfOrderableId: vm.newItemUnitId,
                     unit: getUnitOfOrderableById(vm.newItemUnitId),
                     price: getProductPrice(selectedItem),
-                    totalPrice: 0
+                    totalPrice: 0,
+                    destination: vm.itemDestination
                 },
                 selectedItem, copyDefaultValue()));
                 // AO-804: Ends here
@@ -631,25 +670,9 @@
                 .value();
         }
 
-        function confirmSubmit() {
-            loadingModalService.open();
-
-            var addedLineItems = angular.copy(vm.addedLineItems);
-
-            generateKitConstituentLineItem(addedLineItems);
-
-            var lotPromises = [],
-                errorLots = [];
-            var distinctLots = [];
+        function setLotPromisesAndErrorLots(distinctLots, lotPromises, errorLots) {
             var lotResource = new LotResource();
-            addedLineItems.forEach(function(lineItem) {
-                lineItem.quantity = vm.getLineItemTotalQuantity(lineItem);
 
-                if (lineItem.lot && lineItem.$isNewItem && _.isUndefined(lineItem.lot.id) &&
-                !listContainsTheSameLot(distinctLots, lineItem.lot)) {
-                    distinctLots.push(lineItem.lot);
-                }
-            });
             distinctLots.forEach(function(lot) {
                 lotPromises.push(lotResource.create(lot)
                     .then(function(createResponse) {
@@ -677,36 +700,34 @@
                     }));
             });
 
+            return lotPromises;
+        }
+
+        function confirmSubmit() {
+            loadingModalService.open();
+            var addedLineItems = angular.copy(vm.addedLineItems);
+            generateKitConstituentLineItem(addedLineItems);
+            var lotPromises = [],
+                errorLots = [],
+                distinctLots = [];
+
+            addedLineItems.forEach(function(lineItem) {
+                lineItem.quantity = vm.getLineItemTotalQuantity(lineItem);
+
+                if (lineItem.lot && lineItem.$isNewItem && _.isUndefined(lineItem.lot.id) &&
+                !listContainsTheSameLot(distinctLots, lineItem.lot)) {
+                    distinctLots.push(lineItem.lot);
+                }
+            });
+
+            setLotPromisesAndErrorLots(distinctLots, lotPromises, errorLots);
+
             var productsWithPriceChanged = getProductsWithPriceChanged(addedLineItems);
             var lastProductWithPriceChanged = productsWithPriceChanged[productsWithPriceChanged.length - 1];
             var priceChangesPromises = [];
 
             if (!lastProductWithPriceChanged) {
-                return stockAdjustmentCreationService.submitAdjustments(program.id, facility.id,
-                    // AO-668: Use username as signature for Issue, Receive and Adjustment
-                    addedLineItems, adjustmentType, user)
-                    // AO-668: ends here
-                    // ANGOLASUP-717: Create New Issue Report
-                    .then(function(stockEventId) {
-                        if (adjustmentType.state === ADJUSTMENT_TYPE.ISSUE.state) {
-                            confirmService.confirm('adjustmentCreation.printModal.label',
-                                'stockPhysicalInventoryDraft.printModal.yes',
-                                'stockPhysicalInventoryDraft.printModal.no')
-                                .then(function() {
-                                    $window.open(accessTokenFactory.addAccessToken(getPrintUrl(stockEventId)),
-                                        '_blank');
-                                })
-                                .finally(function() {
-                                    goToStockCardSummaries();
-                                });
-                        } else {
-                            goToStockCardSummaries();
-                        }
-                        // ANGOLASUP-717: ends here
-                    }, function(errorResponse) {
-                        loadingModalService.close();
-                        alertService.error(errorResponse.data.message);
-                    });
+                return createLotsAndSubmitAdjustments(addedLineItems, lotPromises, errorLots);
             }
 
             setProductPriceForProgram(lastProductWithPriceChanged, program);
@@ -714,68 +735,7 @@
                 lastProductWithPriceChanged.price));
 
             return $q.all(priceChangesPromises).then(function() {
-                return $q.all(lotPromises)
-                    .then(function(responses) {
-                        if (errorLots !== undefined && errorLots.length > 0) {
-                            return $q.reject();
-                        }
-                        responses.forEach(function(lot) {
-                            addedLineItems.forEach(function(lineItem) {
-                                if (lineItem.lot && lineItem.lot.lotCode === lot.lotCode
-                                    && lineItem.lot.tradeItemId === lot.tradeItemId) {
-                                    lineItem.lot = lot;
-                                }
-                            });
-                            return addedLineItems;
-                        });
-
-                        stockAdjustmentCreationService.submitAdjustments(program.id, facility.id,
-                            // AO-668: Use username as signature for Issue, Receive and Adjustment
-                            addedLineItems, adjustmentType, user)
-                            // AO-668: ends here
-                            // ANGOLASUP-717: Create New Issue Report
-                            .then(function(stockEventId) {
-                                if (adjustmentType.state === ADJUSTMENT_TYPE.ISSUE.state) {
-                                    confirmService.confirm('adjustmentCreation.printModal.label',
-                                        'stockPhysicalInventoryDraft.printModal.yes',
-                                        'stockPhysicalInventoryDraft.printModal.no')
-                                        .then(function() {
-                                            $window.open(accessTokenFactory.addAccessToken(getPrintUrl(stockEventId)),
-                                                '_blank');
-                                        })
-                                        .finally(function() {
-                                            goToStockCardSummaries();
-                                        });
-                                } else {
-                                    goToStockCardSummaries();
-                                }
-                                // ANGOLASUP-717: ends here
-                            }, function(errorResponse) {
-                                loadingModalService.close();
-                                alertService.error(errorResponse.data.message);
-                            });
-                    })
-                    .catch(function(errorResponse) {
-                        loadingModalService.close();
-                        if (errorLots) {
-                            var errorLotsReduced = errorLots.reduce(function(result, currentValue) {
-                                if (currentValue.error in result) {
-                                    result[currentValue.error].push(currentValue.lotCode);
-                                } else {
-                                    result[currentValue.error] = [currentValue.lotCode];
-                                }
-                                return result;
-                            }, {});
-                            for (var error in errorLotsReduced) {
-                                alertService.error(error, errorLotsReduced[error].join(', '));
-                            }
-                            vm.selectedOrderableGroup = undefined;
-                            vm.selectedLot = undefined;
-                            vm.lotChanged();
-                            return $q.reject(errorResponse.data.message);
-                        }
-                        alertService.error(errorResponse.data.message);
-                    });
+                return createLotsAndSubmitAdjustments(addedLineItems, lotPromises, errorLots);
             })
                 .catch(function(errorResponse) {
                     loadingModalService.close();
@@ -783,6 +743,124 @@
                     alertService.error(errorResponse.data.message);
                 });
         }
+
+        function getLineItemsByDestinationMap(addedLineItems) {
+            var addedLineItemsMap = {};
+            addedLineItems.forEach(function(lineItem) {
+                var destinationId = lineItem.destination.id;
+                if (!addedLineItemsMap[destinationId]) {
+                    addedLineItemsMap[destinationId] = [];
+                }
+                addedLineItemsMap[destinationId].push(lineItem);
+            });
+            return addedLineItemsMap;
+        }
+
+        function createLotsAndSubmitAdjustments(addedLineItems, lotPromises, errorLots) {
+            return $q.all(lotPromises)
+                .then(function(responses) {
+                    if (errorLots !== undefined && errorLots.length > 0) {
+                        return $q.reject();
+                    }
+                    responses.forEach(function(lot) {
+                        addedLineItems.forEach(function(lineItem) {
+                            if (lineItem.lot && lineItem.lot.lotCode === lot.lotCode
+                                && lineItem.lot.tradeItemId === lot.tradeItemId) {
+                                lineItem.lot = lot;
+                            }
+                        });
+                        return addedLineItems;
+                    });
+
+                    handleAdjustmentSubmission(addedLineItems);
+                })
+                .catch(function(errorResponse) {
+                    loadingModalService.close();
+                    if (errorLots) {
+                        var errorLotsReduced = errorLots.reduce(function(result, currentValue) {
+                            if (currentValue.error in result) {
+                                result[currentValue.error].push(currentValue.lotCode);
+                            } else {
+                                result[currentValue.error] = [currentValue.lotCode];
+                            }
+                            return result;
+                        }, {});
+                        for (var error in errorLotsReduced) {
+                            alertService.error(error, errorLotsReduced[error].join(', '));
+                        }
+                        vm.selectedOrderableGroup = undefined;
+                        vm.selectedLot = undefined;
+                        vm.lotChanged();
+                        return $q.reject(errorResponse.data.message);
+                    }
+                    alertService.error(errorResponse.data.message);
+                });
+        }
+
+        function handleAdjustmentSubmission(addedLineItems) {
+            if (adjustmentType.state === ADJUSTMENT_TYPE.RECEIVE.state) {
+                return handleStockReceive(addedLineItems);
+            }
+            return submitAdjustment(addedLineItems);
+        }
+
+        function handleStockReceive(addedLineItems) {
+            var lineItemsByDestinationMap = getLineItemsByDestinationMap(addedLineItems);
+            var submitAdjustmentPromises = [];
+            for (var key in lineItemsByDestinationMap) {
+                var lineItemsGroup = lineItemsByDestinationMap[key];
+                submitAdjustmentPromises.push(
+                    getSubmitAdjustmentPromise(lineItemsGroup, lineItemsGroup[0].destination)
+                );
+            }
+
+            return $q.all(submitAdjustmentPromises).then(function() {
+                goToStockCardSummaries();
+            });
+        }
+
+        function getSubmitAdjustmentPromise(addedLineItems, facility) {
+            return stockAdjustmentCreationService.submitAdjustments(program.id, facility.id,
+                addedLineItems, adjustmentType, user);
+        }
+
+        function submitAdjustment(addedLineItems) {
+            return getSubmitAdjustmentPromise(addedLineItems, facility)
+                // AO-668: ends here
+                // ANGOLASUP-717: Create New Issue Report
+                .then(function(stockEventId) {
+                    if (adjustmentType.state === ADJUSTMENT_TYPE.ISSUE.state) {
+                        confirmService.confirm('adjustmentCreation.printModal.label',
+                            'stockPhysicalInventoryDraft.printModal.yes',
+                            'stockPhysicalInventoryDraft.printModal.no')
+                            .then(function() {
+                                $window.open(accessTokenFactory.addAccessToken(getPrintUrl(stockEventId)),
+                                    '_blank');
+                            })
+                            .finally(function() {
+                                goToStockCardSummaries();
+                            });
+                    } else {
+                        goToStockCardSummaries();
+                    }
+                    // ANGOLASUP-717: ends here
+                }, function(errorResponse) {
+                    loadingModalService.close();
+                    alertService.error(errorResponse.data.message);
+                });
+        }
+
+        vm.itemDestinationChanged = function() {
+            if (vm.itemDestination) {
+                vm.orderableGroups = vm.orderableGroupsByWard.find(function(obj) {
+                    return obj.wardId === vm.itemDestination.id;
+                }).orderableGroups;
+                return;
+            }
+
+            vm.orderableGroups = orderableGroups;
+            vm.selectedOrderableGroup = undefined;
+        };
 
         // ANGOLASUP-717: Create New Issue Report
         function getPrintUrl(stockEventId) {
@@ -907,6 +985,7 @@
             vm.keyword = $stateParams.keyword;
 
             vm.orderableGroups = orderableGroups;
+            vm.orderableGroupsByWard = orderableGroupsByWard;
             vm.hasLot = false;
             vm.orderableGroups.forEach(function(group) {
                 vm.hasLot = vm.hasLot || orderableGroupService.lotsOf(group, hasPermissionToAddNewLot).length > 0;
@@ -921,6 +1000,18 @@
                     b[0].orderable.fullProductName);
             });
             // OAM-5: ends here
+
+            vm.displayWardSelect = adjustmentType.state === ADJUSTMENT_TYPE.RECEIVE.state;
+            if (vm.displayWardSelect) {
+                wardService.getWardsByFacility({
+                    zoneId: vm.facility.geographicZone.id
+                }).then(function(response) {
+                    vm.homeFacilityWards = response.content.filter(function(responseFacility) {
+                        return responseFacility.id !== vm.facility.id;
+                    });
+                });
+            }
+
             vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(vm.orderableGroups);
             vm.hasPermissionToAddNewLot = hasPermissionToAddNewLot;
             vm.canAddNewLot = false;
