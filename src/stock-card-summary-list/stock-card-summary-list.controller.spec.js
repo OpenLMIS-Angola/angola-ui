@@ -76,7 +76,10 @@ describe('StockCardSummaryListController', function() {
         this.vm.$onInit();
 
         this.vm.facility = {
-            id: 'facility'
+            id: 'facility',
+            geographicZone: {
+                id: '123'
+            }
         };
         this.vm.program = {
             id: 'program'
