@@ -41,7 +41,7 @@
         // AO-805: Allow users with proper rights to edit product prices
         'OrderableResource', 'permissionService', 'ADMINISTRATION_RIGHTS', 'authorizationService',
         // AO-805: Ends here
-        'unitOfOrderableService', 'wardService', 'orderableGroupsByWard', 'sourceDestinationService'
+        'unitOfOrderableService', 'wardService', 'orderableGroupsByWard'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -54,7 +54,7 @@
                         // AO-805: Allow users with proper rights to edit product prices
                         accessTokenFactory, $window, stockmanagementUrlFactory, OrderableResource, permissionService,
                         ADMINISTRATION_RIGHTS, authorizationService, unitOfOrderableService, wardService,
-                        orderableGroupsByWard, sourceDestinationService) {
+                        orderableGroupsByWard) {
         // ANGOLASUP-717: ends here
         // AO-805: Ends here
         var vm = this;
@@ -285,8 +285,11 @@
                     .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
             }
 
+            var isWard = true;
+
             if (!vm.itemDestination) {
                 vm.itemDestination = facility;
+                isWard = false;
             }
 
             vm.newLot.expirationDateInvalid = undefined;
@@ -305,7 +308,8 @@
                     unit: getUnitOfOrderableById(vm.newItemUnitId),
                     price: getProductPrice(selectedItem),
                     totalPrice: 0,
-                    destination: vm.itemDestination
+                    destination: vm.itemDestination,
+                    isWard: isWard
                 },
                 selectedItem, copyDefaultValue()));
                 // AO-804: Ends here
@@ -1022,9 +1026,13 @@
                         return responseFacility.id !== vm.facility.id;
                     });
                     if (vm.homeFacilityWards.length > 0) {
-                        sourceDestinationService.getDestinationAssignments(program.id, homeFacilityWards[0].id)
-                            .then(function(response) {
-                                vm.wardsValidSources = response.content;
+                        var wardNames = vm.homeFacilityWards.map(function(ward) {
+                            return ward.name;
+                        });
+                        wardNames.push(vm.facility.name);
+                        vm.wardsValidSources = vm.srcDstAssignments
+                            .filter(function(assignment) {
+                                return wardNames.includes(assignment.name);
                             });
                     }
                 });
