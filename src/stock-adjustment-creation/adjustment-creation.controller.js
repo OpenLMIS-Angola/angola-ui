@@ -41,7 +41,7 @@
         // AO-805: Allow users with proper rights to edit product prices
         'OrderableResource', 'permissionService', 'ADMINISTRATION_RIGHTS', 'authorizationService',
         // AO-805: Ends here
-        'unitOfOrderableService', 'wardService', 'orderableGroupsByWard'
+        'unitOfOrderableService', 'wardService', 'orderableGroupsByWard', 'WARDS_CONSTANTS'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -54,7 +54,7 @@
                         // AO-805: Allow users with proper rights to edit product prices
                         accessTokenFactory, $window, stockmanagementUrlFactory, OrderableResource, permissionService,
                         ADMINISTRATION_RIGHTS, authorizationService, unitOfOrderableService, wardService,
-                        orderableGroupsByWard) {
+                        orderableGroupsByWard, WARDS_CONSTANTS) {
         // ANGOLASUP-717: ends here
         // AO-805: Ends here
         var vm = this;
@@ -1019,31 +1019,52 @@
             });
             // OAM-5: ends here
 
-            vm.displayWardSelect = adjustmentType.state === ADJUSTMENT_TYPE.RECEIVE.state;
-            if (vm.displayWardSelect) {
-                wardService.getWardsByFacility({
-                    zoneId: vm.facility.geographicZone.id
-                }).then(function(response) {
-                    vm.homeFacilityWards = response.content.filter(function(responseFacility) {
-                        return responseFacility.id !== vm.facility.id;
-                    });
-                    if (vm.homeFacilityWards.length > 0) {
-                        var wardNames = vm.homeFacilityWards.map(function(ward) {
-                            return ward.name;
-                        });
-                        wardNames.push(vm.facility.name);
-                        vm.wardsValidSources = vm.srcDstAssignments
-                            .filter(function(assignment) {
-                                return wardNames.includes(assignment.name);
-                            });
-                    }
-                });
-            }
-
+            setUpWards();
             vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(vm.orderableGroups);
             vm.hasPermissionToAddNewLot = hasPermissionToAddNewLot;
             vm.canAddNewLot = false;
             initiateNewLotObject();
+        }
+
+        function setUpWards() {
+            if (!vm.facility.geographicZone) {
+                return;
+            }
+
+            wardService.getWardsByFacility({
+                zoneId: vm.facility.geographicZone.id,
+                sort: 'code,asc',
+                type: WARDS_CONSTANTS.WARD_TYPE_CODE
+            }).then(function(response) {
+                var wards = response.content;
+                var disabledWardsNames = [];
+
+                vm.homeFacilityWards = wards.filter(function(ward) {
+                    if (ward.enabled) {
+                        return true;
+                    }
+                    disabledWardsNames.push(ward.name);
+                    return false;
+                });
+
+                vm.displayWardSelect = vm.homeFacilityWards.length > 0;
+
+                if (vm.displayWardSelect) {
+                    var wardNames = vm.homeFacilityWards.map(function(ward) {
+                        return ward.name;
+                    });
+
+                    vm.srcDstAssignments = vm.srcDstAssignments.filter(function(assignment) {
+                        return !disabledWardsNames.includes(assignment.name);
+                    });
+
+                    wardNames.push(vm.facility.name);
+                    vm.wardsValidSources = vm.srcDstAssignments
+                        .filter(function(assignment) {
+                            return wardNames.includes(assignment.name);
+                        });
+                }
+            });
         }
 
         function initiateNewLotObject() {

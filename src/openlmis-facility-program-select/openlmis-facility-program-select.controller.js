@@ -77,12 +77,13 @@
                 zoneId: facility.geographicZone.id,
                 sort: 'code,asc',
                 type: WARDS_CONSTANTS.WARD_TYPE_CODE
-
             };
 
             return wardService.getWardsByFacility(searchParams)
                 .then(function(response) {
-                    return response.content;
+                    return response.content.filter(function(ward) {
+                        return ward.enabled;
+                    });
                 });
         }
 
