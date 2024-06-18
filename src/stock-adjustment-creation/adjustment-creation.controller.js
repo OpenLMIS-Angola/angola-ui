@@ -196,6 +196,18 @@
          */
         vm.itemDestination = undefined;
 
+        /**
+         * @ngdoc property
+         * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name wardsValidSources
+         * @type {Object[]}
+         *
+         * @description
+         *
+         * Valid sources for all wards
+         */
+        vm.wardsValidSources = undefined;
+
         // OAM-5: Lot code filter UI improvements.
         /**
          * @ngdoc method
@@ -273,8 +285,11 @@
                     .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
             }
 
+            var isWard = true;
+
             if (!vm.itemDestination) {
                 vm.itemDestination = facility;
+                isWard = false;
             }
 
             vm.newLot.expirationDateInvalid = undefined;
@@ -293,7 +308,8 @@
                     unit: getUnitOfOrderableById(vm.newItemUnitId),
                     price: getProductPrice(selectedItem),
                     totalPrice: 0,
-                    destination: vm.itemDestination
+                    destination: vm.itemDestination,
+                    isWard: isWard
                 },
                 selectedItem, copyDefaultValue()));
                 // AO-804: Ends here
@@ -1009,6 +1025,16 @@
                     vm.homeFacilityWards = response.content.filter(function(responseFacility) {
                         return responseFacility.id !== vm.facility.id;
                     });
+                    if (vm.homeFacilityWards.length > 0) {
+                        var wardNames = vm.homeFacilityWards.map(function(ward) {
+                            return ward.name;
+                        });
+                        wardNames.push(vm.facility.name);
+                        vm.wardsValidSources = vm.srcDstAssignments
+                            .filter(function(assignment) {
+                                return wardNames.includes(assignment.name);
+                            });
+                    }
                 });
             }
 
