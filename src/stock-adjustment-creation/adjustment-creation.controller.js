@@ -1047,9 +1047,10 @@
                     return false;
                 });
 
-                vm.displayWardSelect = vm.homeFacilityWards.length > 0;
+                vm.displayWardSelect = vm.homeFacilityWards.length > 0 &&
+                    adjustmentType.state === ADJUSTMENT_TYPE.RECEIVE.state;
 
-                if (vm.displayWardSelect) {
+                if (vm.homeFacilityWards.length > 0) {
                     var wardNames = vm.homeFacilityWards.map(function(ward) {
                         return ward.name;
                     });
