@@ -288,7 +288,9 @@
             var isWard = true;
 
             if (!vm.itemDestination) {
-                vm.itemDestination = facility;
+                vm.itemDestination = angular.copy(facility);
+            }
+            if (!vm.itemDestination || vm.itemDestination.id === facility.id) {
                 isWard = false;
             }
 
