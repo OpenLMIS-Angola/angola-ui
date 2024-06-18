@@ -41,7 +41,7 @@
         // AO-805: Allow users with proper rights to edit product prices
         'OrderableResource', 'permissionService', 'ADMINISTRATION_RIGHTS', 'authorizationService',
         // AO-805: Ends here
-        'unitOfOrderableService', 'wardService', 'orderableGroupsByWard'
+        'unitOfOrderableService', 'wardService', 'orderableGroupsByWard', 'WARDS_CONSTANTS'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -54,7 +54,7 @@
                         // AO-805: Allow users with proper rights to edit product prices
                         accessTokenFactory, $window, stockmanagementUrlFactory, OrderableResource, permissionService,
                         ADMINISTRATION_RIGHTS, authorizationService, unitOfOrderableService, wardService,
-                        orderableGroupsByWard) {
+                        orderableGroupsByWard, WARDS_CONSTANTS) {
         // ANGOLASUP-717: ends here
         // AO-805: Ends here
         var vm = this;
@@ -1019,15 +1019,19 @@
             });
             // OAM-5: ends here
 
-            vm.displayWardSelect = adjustmentType.state === ADJUSTMENT_TYPE.RECEIVE.state;
-            if (vm.displayWardSelect) {
+            if (adjustmentType.state === ADJUSTMENT_TYPE.RECEIVE.state) {
                 wardService.getWardsByFacility({
-                    zoneId: vm.facility.geographicZone.id
+                    zoneId: vm.facility.geographicZone.id,
+                    type: WARDS_CONSTANTS.WARD_TYPE_CODE
                 }).then(function(response) {
-                    vm.homeFacilityWards = response.content.filter(function(responseFacility) {
-                        return responseFacility.id !== vm.facility.id;
+                    var wards = response.content;
+                    vm.homeFacilityWards = wards.filter(function(ward) {
+                        return ward.enabled;
                     });
-                    if (vm.homeFacilityWards.length > 0) {
+
+                    vm.displayWardSelect = vm.homeFacilityWards.length > 0;
+
+                    if (vm.displayWardSelect) {
                         var wardNames = vm.homeFacilityWards.map(function(ward) {
                             return ward.name;
                         });
