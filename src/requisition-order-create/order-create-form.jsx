@@ -158,7 +158,7 @@ const OrderCreateForm = () => {
                         value={selectedRequestingFacilities.at(-1)}
                         onChange={(value) => {
                             setSelectedRequestingFacilities((prevState) => {
-                                if (!prevState.includes(value)) {
+                                if (!prevState.includes(value) && value) {
                                     return [...prevState, value];
                                 }
                                 return prevState;

@@ -74,3 +74,7 @@ export const orderCreateFormTableColumns = [
         )
     }
 ];
+
+export const ORDER_STATUS = {
+    CREATING: 'CREATING',
+};
