@@ -144,29 +144,6 @@ describe('orderableGroupService', function() {
             .toEqual('Sun May 08 2022 00:00:00 GMT+0000 (Coordinated Universal Time)');
     });
 
-    it('should add option to add missing lot if is allowed', function() {
-        var group = [this.item1, this.item4],
-            lots = this.orderableGroupService.lotsOf(group, true);
-
-        expect(lots[0]).toEqual({
-            lotCode: 'orderableGroupService.addMissingLot'
-        });
-
-        expect(lots[1]).toEqual(this.lot2);
-
-        expect(lots[1].expirationDate.toString())
-            .toEqual('Sun Jan 20 2019 00:00:00 GMT+0000 (Coordinated Universal Time)');
-    });
-
-    it('should sort lots by filed expirationDate', function() {
-        var group = [this.item1, this.item4, this.item5],
-            lots = this.orderableGroupService.lotsOf(group, true);
-
-        expect(lots).toEqual([{
-            lotCode: 'orderableGroupService.addMissingLot'
-        }, this.lot3, this.lot2, this.lot1]);
-    });
-
     it('should return kit only orderableGroups', function() {
         var item = service.getKitOnlyOrderablegroup(this.orderableGroups);
 

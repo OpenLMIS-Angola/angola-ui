@@ -278,11 +278,12 @@
             if (vm.newLot.lotCode) {
                 var createdLot = angular.copy(vm.newLot);
                 selectedItem = orderableGroupService
-                    .findByLotInOrderableGroup(vm.selectedOrderableGroup, createdLot, true);
+                    .findByLotAndUnitInOrderableGroup(vm.selectedOrderableGroup, createdLot, true, vm.newItemUnitId);
                 selectedItem.$isNewItem = true;
             } else {
                 selectedItem = orderableGroupService
-                    .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
+                    .findByLotAndUnitInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot, false,
+                        vm.newItemUnitId);
             }
 
             var isWard = true;
