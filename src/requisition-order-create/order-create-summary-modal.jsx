@@ -3,10 +3,11 @@ import Modal from '../react-components/modals/modal';
 import EditableTable from '../react-components/table/editable-table';
 import { orderTableColumns } from './order-create.constant';
 import TabNavigation from '../react-components/tab-navigation/tab-navigation';
-
+import getService from '../react-components/utils/angular-utils';
 
 const OrderCreateSummaryModal = ({ isOpen, orders, onSaveClick, onModalClose }) => {
-    const columns = useMemo(() => orderTableColumns(true), []);
+    const { formatMessage } = useMemo(() => getService('messageService'), []);
+    const columns = useMemo(() => orderTableColumns(true, formatMessage), []);
     const [currentTab, setCurrentTab] = useState(0);
 
     return (

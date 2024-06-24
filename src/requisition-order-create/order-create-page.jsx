@@ -13,23 +13,26 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { HashRouter as Router, Route, Switch, useLocation } from 'react-router-dom';
 import OrderCreateTable from './order-create-table';
 import OrderCreateForm from './order-create-form';
 import Breadcrumbs from '../react-components/breadcrumbs/breadcrumbs';
+import getService from '../react-components/utils/angular-utils';
 
 const OrderCreateRouting = () => {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const isReadOnly = queryParams.get('isReadOnly') === 'true';
+    const { formatMessage } = useMemo(() => getService('messageService'), []);
 
     return (
         <div className="page-responsive">
             <Breadcrumbs
                 routes={[
-                    { path: "/requisitions/orderCreate", breadcrumb: 'Create Order' },
-                    { path: "/requisitions/orderCreate/:orderIds", breadcrumb: isReadOnly ? 'View' : 'Edit' }
+                    { path: "/requisitions/orderCreate", breadcrumb: formatMessage('requisition.orderCreate') },
+                    { path: "/requisitions/orderCreate/:orderIds",
+                        breadcrumb: isReadOnly ? formatMessage('requisition.orderCreate.view') : formatMessage('requisition.orderCreate.edit') }
                 ]}
             />
             <Switch>

@@ -1,5 +1,9 @@
 {
   "requisition.orderCreate": "Create Orders",
+  "requisition.orderCreate.loading": "Loading",
+  "requisition.orderCreate.view": "View",
+  "requisition.orderCreate.printOrder": "Print Order",
+  "requisition.orderCreate.edit": "Edit",
   "requisition.orderCreate.create": "Create Order",
   "requisition.orderCreate.saveDraft": "Save Draft",
   "requisition.orderCreate.submitted": "Orders created successfully",
@@ -18,5 +22,17 @@
   "requisition.orderCreate.reqFacility": "Requesting Facility",
   "requisition.orderCreate.reqFacility.placeholder": "Select Requesting Facility",
   "requisition.orderCreate.supFacility": "Supplying Facility",
-  "requisition.orderCreate.supFacility.placeholder": "Select Supplying Facility"
+  "requisition.orderCreate.supFacility.placeholder": "Select Supplying Facility",
+  "requisition.orderCreate.table.productCode": "Product Code",
+  "requisition.orderCreate.table.product": "Product",
+  "requisition.orderCreate.table.soh": "SOH",
+  "requisition.orderCreate.table.quantity": "Quantity",
+  "requisition.orderCreate.table.actions": "Actions",
+  "requisition.orderCreate.table.facility": "Facility",
+  "requisition.orderCreate.table.addProduct": "Add",
+  "requisition.orderCreate.table.productAlreadyAdded": "This product was already added to the table",
+  "requisition.orderCreate.requisistionInfo.status": "Status",
+  "requisition.orderCreate.requisistionInfo.dateCreated": "Date Created",
+  "requisition.orderCreate.searchSelect.placeholder": "Select an option",
+  "requisition.orderCreate.searchSelect.empty.message": ""
 }

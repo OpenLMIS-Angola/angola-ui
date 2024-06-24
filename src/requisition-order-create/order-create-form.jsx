@@ -39,7 +39,7 @@ const OrderCreateForm = () => {
     const { formatMessage } = useMemo(() => getService('messageService'), []);
     const facilityService = useMemo(() => getService('facilityService'), []);
     const orderService = useMemo(() => getService('orderCreateService'), []);
-    const columns = useMemo(() => orderCreateFormTableColumns, []);
+    const columns = useMemo(() => orderCreateFormTableColumns(formatMessage), []);
 
     const userId = useMemo(
         () => {

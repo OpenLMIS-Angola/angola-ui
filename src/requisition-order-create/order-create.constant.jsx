@@ -2,22 +2,22 @@ import React from 'react';
 import TrashButton from '../react-components/buttons/trash-button';
 import InputCell from '../react-components/table/input-cell';
 
-const orderTableDefaultColumns = [
+const orderTableDefaultColumns = (formatMessage) => [
     {
-        Header: 'Product Code',
+        Header: formatMessage('requisition.orderCreate.table.productCode'),
         accessor: 'orderable.productCode'
     },
     {
-        Header: 'Product',
+        Header: formatMessage('requisition.orderCreate.table.product'),
         accessor: 'orderable.fullProductName'
     },
     {
-        Header: 'SOH',
+        Header: formatMessage('requisition.orderCreate.table.soh'),
         accessor: 'soh',
         Cell: ({ value }) => (<div className="text-right">{value}</div>)
     },
     {
-        Header: 'Quantity',
+        Header: formatMessage('requisition.orderCreate.table.quantity'),
         accessor: 'orderedQuantity',
         Cell: (props) => (
             <InputCell
@@ -28,7 +28,7 @@ const orderTableDefaultColumns = [
         )
     },
     {
-        Header: 'Actions',
+        Header: formatMessage('requisition.orderCreate.table.actions'),
         accessor: 'id',
         Cell: ({ row: { index }, deleteRow }) => (
             <TrashButton
@@ -37,37 +37,38 @@ const orderTableDefaultColumns = [
     }
 ];
 
-const orderReadonlyTableColumns = [
+const orderReadonlyTableColumns = (formatMessage) => [
     {
-        Header: 'Product Code',
+        Header: formatMessage('requisition.orderCreate.table.productCode'),
         accessor: 'orderable.productCode'
     },
     {
-        Header: 'Product',
+        Header: formatMessage('requisition.orderCreate.table.product'),
         accessor: 'orderable.fullProductName'
     },
     {
-        Header: 'SOH',
+        Header: formatMessage('requisition.orderCreate.table.soh'),
         accessor: 'soh',
         Cell: ({ value }) => (<div className="text-right">{value}</div>)
     },
     {
-        Header: 'Quantity',
+        Header: formatMessage('requisition.orderCreate.table.quantity'),
         accessor: 'orderedQuantity',
     }
 ];
 
-export const orderTableColumns = (isTableReadOnly) => {
-    return isTableReadOnly ? orderReadonlyTableColumns : orderTableDefaultColumns;
+export const orderTableColumns = (isTableReadOnly, formatMessage) => {
+    return isTableReadOnly ? orderReadonlyTableColumns(formatMessage) :
+        orderTableDefaultColumns(formatMessage);
 }
 
-export const orderCreateFormTableColumns = [
+export const orderCreateFormTableColumns = (formatMessage) => [
     {
-        Header: 'Facility',
+        Header: formatMessage('requisition.orderCreate.table.facility'),
         accessor: 'name'
     },
     {
-        Header: 'Actions',
+        Header: formatMessage('requisition.orderCreate.table.actions'),
         accessor: 'value',
         Cell: ({ row: { index }, deleteRow }) => (
             <TrashButton onClick={() => deleteRow(index)} />
