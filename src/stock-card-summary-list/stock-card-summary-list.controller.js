@@ -51,7 +51,7 @@
         vm.currentlySelectedWardName = undefined;
         vm.PACKS_DISPLAY_TYPE = 'packs';
         vm.DOSES_DISPLAY_TYPE = 'doses';
-        vm.activeDisplayType = vm.DOSES_DISPLAY_TYPE;
+        vm.activeDisplayType = vm.PACKS_DISPLAY_TYPE;
 
         /**
          * @ngdoc property

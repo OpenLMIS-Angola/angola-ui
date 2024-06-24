@@ -151,7 +151,7 @@ const OrderCreateTable = ({ isReadOnly }) => {
           });
       });
     };
-    
+
       const onOrderBatchDelete = () => {
         confirmDestroy(
           'requisition.orderCreate.delete.prompt.batch',
@@ -189,7 +189,7 @@ const OrderCreateTable = ({ isReadOnly }) => {
                 />
             }
             <div className="page-header-responsive">
-                <h2>Create Order</h2>
+                <h2>{ formatMessage('requisition.orderCreate') }</h2>
             </div>
             {
                 orders.length > 0 &&
@@ -235,7 +235,7 @@ const OrderCreateTable = ({ isReadOnly }) => {
                             }
                         } />
                 ) : (
-                    <p>Loading...</p>
+                    <p>{ formatMessage('requisition.orderCreate.loading') }...</p>
                 )}
             </div>
             <div className="page-footer">

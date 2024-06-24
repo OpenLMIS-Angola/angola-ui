@@ -21,7 +21,8 @@ const OrderCreateTab = ({ passedOrder,
     const [order, setOrder] = useState({ orderLineItems: [], ...passedOrder });
     const [selectedOrderable, setSelectedOrderable] = useState('');
     const [orderableOptions, setOrderableOptions] = useState(cachedOrderableOptions);
-    const columns = useMemo(() => orderTableColumns(isTableReadOnly), []);
+    const { formatMessage } = useMemo(() => getService('messageService'), []);
+    const columns = useMemo(() => orderTableColumns(isTableReadOnly, formatMessage), []);
     const orderCreatePrintService = useMemo(() => getService('orderCreatePrintService'), []);
 
     useMemo(() => {
@@ -95,11 +96,11 @@ const OrderCreateTab = ({ passedOrder,
                                     onChange={value => setSelectedOrderable(value)}
                                     objectKey={'id'}
                                     disabled={isTableReadOnly}
-                                >Product</SearchSelect>
+                                >{ formatMessage('requisition.orderCreate.table.product') }</SearchSelect>
                             }
                             <div className='buttons-container'>
                                 <Tippy
-                                    content="This product was already added to the table"
+                                    content={formatMessage('')}
                                     disabled={!isProductAdded}
                                 >
                                     {
@@ -109,7 +110,7 @@ const OrderCreateTab = ({ passedOrder,
                                                 className={"add"}
                                                 onClick={addOrderable}
                                                 disabled={!selectedOrderable || isProductAdded}
-                                            >Add</button>
+                                            >{ formatMessage('requisition.orderCreate.table.addProduct') }</button>
                                         </div>
                                     }
                                 </Tippy>
@@ -118,7 +119,7 @@ const OrderCreateTab = ({ passedOrder,
                                     <button
                                         className="order-print"
                                         onClick={printOrder}>
-                                        Print Order
+                                        { formatMessage('requisition.orderCreate.printOrder') }
                                     </button>
                                 }
                             </div>
