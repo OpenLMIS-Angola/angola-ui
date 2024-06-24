@@ -152,6 +152,7 @@ describe('StockAdjustmentCreationController', function() {
         });
 
         it('line item quantity is invalid when is greater than stock on hand and reason type is DEBIT', function() {
+            vm = initController(orderableGroups, ADJUSTMENT_TYPE.ISSUE);
             var lineItem = {
                 id: '1',
                 quantity: 6,
