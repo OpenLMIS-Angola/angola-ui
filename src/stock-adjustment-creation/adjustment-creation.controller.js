@@ -405,8 +405,9 @@
             lineItem.totalPrice = 0;
             // AO-804: Ends here
             var validatedQuantity = vm.getLineItemTotalQuantity(lineItem);
-            if (validatedQuantity > lineItem.$previewSOH && ((lineItem.reason
-                    && lineItem.reason.reasonType === REASON_TYPES.DEBIT) || !lineItem.reason)) {
+            if (adjustmentType.state === ADJUSTMENT_TYPE.ISSUE.state &&
+                    validatedQuantity > lineItem.$previewSOH && ((lineItem.reason &&
+                    lineItem.reason.reasonType === REASON_TYPES.DEBIT) || !lineItem.reason)) {
                 lineItem.$errors.quantityInvalid = messageService
                     .get('stockAdjustmentCreation.quantityGreaterThanStockOnHand');
             } else if (validatedQuantity > MAX_INTEGER_VALUE) {
