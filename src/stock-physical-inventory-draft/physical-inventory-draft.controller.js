@@ -269,7 +269,7 @@
          * @description
          * Based on this the units are displayed
          */
-        vm.activeDisplayType = vm.PACKS_DISPLAY_TYPE;
+        vm.activeDisplayType = vm.DOSES_DISPLAY_TYPE;
 
         /**
          * @ngdoc method
