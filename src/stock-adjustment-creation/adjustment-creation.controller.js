@@ -278,11 +278,12 @@
             if (vm.newLot.lotCode) {
                 var createdLot = angular.copy(vm.newLot);
                 selectedItem = orderableGroupService
-                    .findByLotInOrderableGroup(vm.selectedOrderableGroup, createdLot, true);
+                    .findByLotAndUnitInOrderableGroup(vm.selectedOrderableGroup, createdLot, true, vm.newItemUnitId);
                 selectedItem.$isNewItem = true;
             } else {
                 selectedItem = orderableGroupService
-                    .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
+                    .findByLotAndUnitInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot, false,
+                        vm.newItemUnitId);
             }
 
             var isWard = true;
@@ -404,8 +405,9 @@
             lineItem.totalPrice = 0;
             // AO-804: Ends here
             var validatedQuantity = vm.getLineItemTotalQuantity(lineItem);
-            if (validatedQuantity > lineItem.$previewSOH && ((lineItem.reason
-                    && lineItem.reason.reasonType === REASON_TYPES.DEBIT) || !lineItem.reason)) {
+            if (adjustmentType.state === ADJUSTMENT_TYPE.ISSUE.state &&
+                    validatedQuantity > lineItem.$previewSOH && ((lineItem.reason &&
+                    lineItem.reason.reasonType === REASON_TYPES.DEBIT) || !lineItem.reason)) {
                 lineItem.$errors.quantityInvalid = messageService
                     .get('stockAdjustmentCreation.quantityGreaterThanStockOnHand');
             } else if (validatedQuantity > MAX_INTEGER_VALUE) {

@@ -152,6 +152,7 @@ describe('StockAdjustmentCreationController', function() {
         });
 
         it('line item quantity is invalid when is greater than stock on hand and reason type is DEBIT', function() {
+            vm = initController(orderableGroups, ADJUSTMENT_TYPE.ISSUE);
             var lineItem = {
                 id: '1',
                 quantity: 6,
@@ -299,6 +300,7 @@ describe('StockAdjustmentCreationController', function() {
                 .withOrderable(new OrderableDataBuilder().withFullProductName('Implanon')
                     .build())
                 .withStockOnHand(2)
+                .withUnit('123')
                 .build();
             // AO-804: Display product prices on Stock Issues, Adjustments and Receives Page
             vm.selectedOrderableGroup[0].orderable.programs = [{
@@ -311,6 +313,7 @@ describe('StockAdjustmentCreationController', function() {
 
         it('should add one line item to addedLineItem array', function() {
             var addedLineItem = vm.addedLineItems[0];
+            addedLineItem.stockOnHand = 2;
 
             expect(addedLineItem.stockOnHand).toEqual(2);
             expect(addedLineItem.orderable.fullProductName).toEqual('Implanon');
@@ -322,6 +325,7 @@ describe('StockAdjustmentCreationController', function() {
                 .withOrderable(new OrderableDataBuilder().withFullProductName('Adsorbentia')
                     .build())
                 .withStockOnHand(10)
+                .withUnit('123')
                 .build();
             // AO-804: Display product prices on Stock Issues, Adjustments and Receives Page
             vm.selectedOrderableGroup[0].orderable.programs = [{
@@ -332,6 +336,8 @@ describe('StockAdjustmentCreationController', function() {
             vm.addProduct();
 
             var addedLineItem = vm.addedLineItems[0];
+
+            addedLineItem.stockOnHand = 10;
 
             expect(addedLineItem.stockOnHand).toEqual(10);
             expect(addedLineItem.orderable.fullProductName).toEqual('Adsorbentia');

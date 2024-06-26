@@ -43,6 +43,7 @@
         this.determineLotMessage = determineLotMessage;
         this.groupByOrderableId = groupByOrderableId;
         this.findByLotInOrderableGroup = findByLotInOrderableGroup;
+        this.findByLotAndUnitInOrderableGroup = findByLotAndUnitInOrderableGroup;
         this.areOrderablesUseVvm = areOrderablesUseVvm;
         this.getKitOnlyOrderablegroup = getKitOnlyOrderablegroup;
         this.addItemWithNewLot = addItemWithNewLot;
@@ -68,13 +69,16 @@
             if (orderableGroup && orderableGroup.length > 0 && orderableGroup[0].$allLotsAdded) {
                 lots = [];
             } else {
-                lots = _.chain(orderableGroup).pluck('lot')
+                lots = _.chain(orderableGroup)
+                    .pluck('lot')
                     .compact()
                     .value();
 
                 lots.forEach(function(lot) {
                     lot.expirationDate = dateUtils.toDate(lot.expirationDate);
                 });
+
+                lots = getUniqueLots(lots);
 
                 // ANGOLASUP-516: Removed the 'No Lot Defined' option
                 sortByFieldName(lots, 'expirationDate');
@@ -84,6 +88,18 @@
                 lots.unshift(addMissingLot);
             }
             return lots;
+        }
+
+        function getUniqueLots(lots) {
+            var lotCodes = [];
+
+            return lots.filter(function(lot) {
+                if (lotCodes.includes(lot.lotCode)) {
+                    return false;
+                }
+                lotCodes.push(lot.lotCode);
+                return true;
+            });
         }
 
         /**
@@ -204,6 +220,62 @@
                     return selectedNoLot || lotMatch || isNewLot;
                 })
                 .value();
+
+            if (isNewLot) {
+                var copiedSelectedItem = angular.copy(selectedItem);
+                copiedSelectedItem.lot = selectedLot;
+                copiedSelectedItem.stockOnHand = 0;
+                determineLotMessage(copiedSelectedItem, orderableGroup);
+                return copiedSelectedItem;
+            }
+
+            if (selectedItem) {
+                determineLotMessage(selectedItem, orderableGroup);
+            }
+            return selectedItem;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-orderable-group.orderableGroupService
+         * @name areOrderablesUseVvm
+         *
+         * @description
+         * Find product in orderable group based on lot.
+         *
+         * @param {Object} orderableGroup   orderable group
+         * @param {Object} selectedLot      selected lot
+         * @return {Object}                 found product
+         */
+        function findByLotAndUnitInOrderableGroup(orderableGroup, selectedLot, isNewLot, unitId) {
+            var withMatchingLot = orderableGroup
+                .filter(function(groupItem) {
+                    var selectedNoLot = !groupItem.lot && (!selectedLot || selectedLot === noLotDefined);
+                    var lotMatch = groupItem.lot && groupItem.lot === selectedLot;
+                    return selectedNoLot || lotMatch || isNewLot;
+                });
+
+            var withUnit = withMatchingLot
+                .find(function(groupItem) {
+                    if (!groupItem.unitOfOrderable) {
+                        return false;
+                    }
+                    var itemUnitId = groupItem.unitOfOrderable.id;
+                    return itemUnitId === unitId;
+                });
+
+            var selectedItem = withUnit;
+            if (!selectedItem) {
+                if (withMatchingLot.length > 0) {
+                    selectedItem = {
+                        lot: angular.copy(withMatchingLot[0].lot),
+                        orderable: angular.copy(withMatchingLot[0].orderable),
+                        stockOnHand: 0
+                    };
+                } else {
+                    selectedItem = {};
+                }
+            }
 
             if (isNewLot) {
                 var copiedSelectedItem = angular.copy(selectedItem);

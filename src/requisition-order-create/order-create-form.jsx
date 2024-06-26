@@ -36,9 +36,10 @@ const OrderCreateForm = () => {
 
     const ADMINISTRATION_RIGHTS = useMemo(() => getService('ADMINISTRATION_RIGHTS'), []);
     const programService = useMemo(() => getService('programService'), []);
+    const { formatMessage } = useMemo(() => getService('messageService'), []);
     const facilityService = useMemo(() => getService('facilityService'), []);
     const orderService = useMemo(() => getService('orderCreateService'), []);
-    const columns = useMemo(() => orderCreateFormTableColumns, []);
+    const columns = useMemo(() => orderCreateFormTableColumns(formatMessage), []);
 
     const userId = useMemo(
         () => {
@@ -139,32 +140,40 @@ const OrderCreateForm = () => {
     return (
         <div className="page-container">
             <div className="page-header-responsive">
-                <h2>Create Order</h2>
+                <h2> {formatMessage('requisition.orderCreate.create')} </h2>
             </div>
             <div className="page-content order-create-form">
                 <div className={'section'}>
-                    <div><strong className="is-required">Program</strong></div>
+                    <div>
+                      <strong className='is-required'>
+                        {formatMessage('requisition.orderCreate.program')}
+                      </strong>
+                    </div>
                     <SearchSelect
                         options={programOptions}
                         value={selectedProgram}
                         onChange={value => setSelectedProgram(value)}
-                        placeholder="Select program"
+                        placeholder={formatMessage('requisition.orderCreate.program.placeholder')}
                     />
                 </div>
                 <div className={'section'}>
-                    <div><strong className="is-required">Requesting Facility</strong></div>
+                    <div>
+                      <strong className='is-required'>
+                        {formatMessage('requisition.orderCreate.reqFacility')}
+                      </strong>
+                    </div>
                     <SearchSelect
                         options={requestingFacilityOptions}
                         value={selectedRequestingFacilities.at(-1)}
                         onChange={(value) => {
                             setSelectedRequestingFacilities((prevState) => {
-                                if (!prevState.includes(value)) {
+                                if (!prevState.includes(value) && value) {
                                     return [...prevState, value];
                                 }
                                 return prevState;
                             });
                         }}
-                        placeholder="Select requesting facility"
+                        placeholder={formatMessage('requisition.orderCreate.reqFacility.placeholder')}
                     />
                     <EditableTable
                         additionalTableClass='facilities-table'
@@ -174,12 +183,16 @@ const OrderCreateForm = () => {
                     />
                 </div>
                 <div className={'section'}>
-                    <div><strong className="is-required">Supplying Facility</strong></div>
+                    <div>
+                      <strong className='is-required'>
+                        {formatMessage('requisition.orderCreate.supFacility')}
+                      </strong>
+                    </div>
                     <SearchSelect
                         options={supplyingFacilityOptions}
                         value={selectedSupplyingFacility}
                         onChange={value => setSelectedSupplyingFacility(value)}
-                        placeholder="Select supplying facility"
+                        placeholder={formatMessage('requisition.orderCreate.supFacility.placeholder')}
                         disabled={!selectedProgram || !selectedRequestingFacilities}
                     />
                 </div>
@@ -191,7 +204,7 @@ const OrderCreateForm = () => {
                         disabled={!selectedProgram || !selectedRequestingFacilities || !selectedSupplyingFacility}
                         onClick={createOrders}
                     >
-                        Create Order
+                        {formatMessage('requisition.orderCreate.create')}
                     </button>
                 </div>
             </div>

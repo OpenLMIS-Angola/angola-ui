@@ -13,13 +13,14 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import React, { useRef, useState, useLayoutEffect } from 'react';
+import React, { useRef, useState, useLayoutEffect, useMemo } from 'react';
 import { useTable, usePagination } from 'react-table';
 
 import PrevPageButton from '../buttons/prev-page-button';
 import NextPageButton from '../buttons/next-page-button';
 import PageButton from '../buttons/page-button';
 
+import getService from '../utils/angular-utils';
 
 const Table = ({
     columns,
@@ -70,6 +71,8 @@ const Table = ({
         },
         usePagination
     );
+
+    const { formatMessage } = useMemo(() => getService('messageService'), []);
 
     const ref = useRef(null);
     // Get width of the table and pass it to the table-empty-message
@@ -157,7 +160,7 @@ const Table = ({
                     </table>
                     {!data.length ? (
                         <div className='table-empty-message' style={{ width: width }}>
-                            <span>{!noItemsMessage ? "Showing no items" : noItemsMessage}</span>
+                            <span>{!noItemsMessage ? formatMessage('react.table.noItems') : noItemsMessage}</span>
                         </div>
                     ) : null}
                 </div>
