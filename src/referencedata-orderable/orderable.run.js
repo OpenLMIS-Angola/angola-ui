@@ -28,13 +28,13 @@
         loginService.registerPostLoginAction(function(user) {
             return programService.getUserPrograms(user.userId)
                 .then(function(programs) {
-                    var supportedProgramsIds = programs.map(function(program) {
-                        return program.id;
+                    var supportedProgramsCodes = programs.map(function(program) {
+                        return program.code;
                     });
 
                     return new OrderableResource()
                         .getAll({
-                            program: supportedProgramsIds
+                            program: supportedProgramsCodes
                         })
                         .then(function(orderables) {
                             return orderables;
