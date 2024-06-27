@@ -73,7 +73,8 @@
 
                             return orderableFulfillJson;
                         }
-                    });
+                    })
+                        .filter(Boolean);
 
                     orderableFulfillsOffline.putAll(orderableFulfillsToStore);
 

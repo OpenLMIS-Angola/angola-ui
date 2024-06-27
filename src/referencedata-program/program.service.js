@@ -179,7 +179,8 @@
                     var programsToStore = programs.map(function(program) {
                         program.userIdOffline = userId;
                         return program;
-                    });
+                    })
+                        .filter(Boolean);
 
                     userProgramsCache.putAll(programsToStore);
 
