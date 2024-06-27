@@ -146,7 +146,7 @@
         function getReasons(programIds, facilityType, reasonType) {
             return $q.resolve(getReasonsPromise(programIds, facilityType, reasonType)
                 .then(function(reasonAssignments) {
-                    return reasonAssignments
+                    var filteredReasons = reasonAssignments
                         .filter(function(reasonAssignment) {
                             return !reasonAssignment.hidden;
                         })
@@ -154,11 +154,14 @@
                             if (result.indexOf(reasonAssignment.reason) < 0) {
                                 result.push(reasonAssignment.reason);
                             }
-                            if (!offlineService.isOffline()) {
-                                cacheReasons(reasonAssignment, programIds, facilityType);
-                            }
                             return result;
                         }, []);
+
+                    if (!offlineService.isOffline()) {
+                        cacheReasons(filteredReasons, programIds, facilityType);
+                    }
+
+                    return filteredReasons;
                 }));
         }
 
@@ -183,18 +186,20 @@
             });
         }
 
-        function cacheReasons(reasonAssignment, programIds, facilityType) {
-            var reason = angular.copy(reasonAssignment.reason);
-            var reasonToCache = {
-                id: reasonAssignment.id,
-                programId: programIds,
-                facilityType: facilityType,
-                reasonType: reason.reasonType,
-                reason: reason,
-                hidden: reasonAssignment.hidden
-            };
+        function cacheReasons(filteredReasons, programIds, facilityType) {
+            var reasonsToCache = filteredReasons.map(function(reason) {
+                var reasonCopy = angular.copy(reason);
+                return {
+                    id: reason.id,
+                    programId: programIds,
+                    facilityType: facilityType,
+                    reasonType: reasonCopy.reasonType,
+                    reason: reasonCopy,
+                    hidden: reason.hidden
+                };
+            });
 
-            offlineReasons.put(reasonToCache);
+            offlineReasons.putAll(reasonsToCache);
         }
 
         function clearReasonsCache() {

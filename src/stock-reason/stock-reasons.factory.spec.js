@@ -20,7 +20,7 @@ describe('stockReasonsFactory', function() {
     beforeEach(function() {
         module('stock-reasons-modal', function($provide) {
             validReasonResourceMock = jasmine.createSpyObj('validReasonResource', ['query']);
-            reasonsStorage = jasmine.createSpyObj('offlineReasons', ['search', 'getAll', 'put']);
+            reasonsStorage = jasmine.createSpyObj('offlineReasons', ['search', 'getAll', 'putAll', 'put']);
             reasonsStorage.getAll.andReturn([false]);
 
             $provide.factory('ValidReasonResource', function() {

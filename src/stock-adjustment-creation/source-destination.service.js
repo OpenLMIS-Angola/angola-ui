@@ -94,17 +94,21 @@
         }
 
         function cacheSources(sources, facilityId) {
-            sources.forEach(function(source) {
+            var sourcesToStore = sources.map(function(source) {
                 source.facilityId = facilityId;
-                offlineSources.put(source);
+                return source;
             });
+
+            offlineSources.putAll(sourcesToStore);
         }
 
         function cacheDestinations(destinations, facilityId) {
-            destinations.forEach(function(destination) {
+            var destinationsToStore = destinations.map(function(destination) {
                 destination.facilityId = facilityId;
-                offlineDestinations.put(destination);
+                return destination;
             });
+
+            offlineDestinations.putAll(destinationsToStore);
         }
 
         function clearSourcesCache() {
