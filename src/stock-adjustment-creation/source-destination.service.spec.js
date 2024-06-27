@@ -18,7 +18,7 @@ describe('sourceDestinationService', function() {
 
     beforeEach(function() {
         this.offlineService = jasmine.createSpyObj('offlineService', ['isOffline', 'checkConnection']);
-        this.storage = jasmine.createSpyObj('offlineStorage', ['put', 'search', 'getAll']);
+        this.storage = jasmine.createSpyObj('offlineStorage', ['put', 'putAll', 'search', 'getAll']);
 
         var storage = this.storage,
             offlineService = this.offlineService;
