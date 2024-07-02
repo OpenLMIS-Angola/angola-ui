@@ -41,7 +41,7 @@
         // AO-805: Allow users with proper rights to edit product prices
         'OrderableResource', 'permissionService', 'ADMINISTRATION_RIGHTS', 'authorizationService',
         // AO-805: Ends here
-        'unitOfOrderableService', 'wardService', 'orderableGroupsByWard', 'WARDS_CONSTANTS'
+        'unitOfOrderableService', 'wardService', 'orderableGroupsByWard', 'WARDS_CONSTANTS', 'sourceDestinationService'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -54,7 +54,7 @@
                         // AO-805: Allow users with proper rights to edit product prices
                         accessTokenFactory, $window, stockmanagementUrlFactory, OrderableResource, permissionService,
                         ADMINISTRATION_RIGHTS, authorizationService, unitOfOrderableService, wardService,
-                        orderableGroupsByWard, WARDS_CONSTANTS) {
+                        orderableGroupsByWard, WARDS_CONSTANTS, sourceDestinationService) {
         // ANGOLASUP-717: ends here
         // AO-805: Ends here
         var vm = this;
@@ -1010,6 +1010,7 @@
             vm.orderableGroups.forEach(function(group) {
                 vm.hasLot = vm.hasLot || orderableGroupService.lotsOf(group, hasPermissionToAddNewLot).length > 0;
             });
+
             // OAM-5: Lot code filter UI improvements.
             var collator = new Intl.Collator('pt', {
                 numeric: true,
@@ -1053,21 +1054,29 @@
                     adjustmentType.state === ADJUSTMENT_TYPE.RECEIVE.state;
 
                 if (vm.homeFacilityWards.length > 0) {
-                    var wardNames = vm.homeFacilityWards.map(function(ward) {
-                        return ward.name;
-                    });
-
-                    vm.srcDstAssignments = vm.srcDstAssignments.filter(function(assignment) {
-                        return !disabledWardsNames.includes(assignment.name);
-                    });
-
-                    wardNames.push(vm.facility.name);
-                    vm.wardsValidSources = vm.srcDstAssignments
-                        .filter(function(assignment) {
-                            return wardNames.includes(assignment.name);
-                        });
+                    setUpWardsValidSources(disabledWardsNames);
                 }
             });
+        }
+
+        function setUpWardsValidSources(disabledWardsNames) {
+            var wardNames = vm.homeFacilityWards.map(function(ward) {
+                return ward.name;
+            });
+
+            vm.srcDstAssignments = vm.srcDstAssignments.filter(function(assignment) {
+                return !disabledWardsNames.includes(assignment.name);
+            });
+
+            wardNames.push(vm.facility.name);
+
+            sourceDestinationService
+                .getSourceAssignments(program.id, vm.homeFacilityWards[0].id)
+                .then(function(wardsValidSources) {
+                    vm.wardsValidSources = wardsValidSources.filter(function(assignment) {
+                        return wardNames.includes(assignment.name);
+                    });
+                });
         }
 
         function initiateNewLotObject() {
