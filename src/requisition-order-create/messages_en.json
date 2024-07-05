@@ -1,5 +1,6 @@
 {
   "requisition.orderCreate": "Create Orders",
+  "requisition.orderCreate.cancel": "Cancel",
   "requisition.orderCreate.loading": "Loading",
   "requisition.orderCreate.view": "View",
   "requisition.orderCreate.printOrder": "Print Order",
@@ -34,5 +35,5 @@
   "requisition.orderCreate.requisistionInfo.status": "Status",
   "requisition.orderCreate.requisistionInfo.dateCreated": "Date Created",
   "requisition.orderCreate.searchSelect.placeholder": "Select an option",
-  "requisition.orderCreate.searchSelect.empty.message": ""
+  "requisition.orderCreate.searchSelect.empty.message": "Not found"
 }
