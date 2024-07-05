@@ -31,8 +31,9 @@
         disabled
         required></select>
 
-    <label for="myFacilityWard">{{'openlmisFacilityProgramSelect.ward' | message}}</label>
+    <label for="myFacilityWard" ng-if="vm.displayWardSelect">{{'openlmisFacilityProgramSelect.ward' | message}}</label>
     <select id="myFacilityWard"
+        ng-if="vm.displayWardSelect"
         ng-model="vm.selectedWard"
         ng-options="ward as ward.name for ward in vm.homeFacilityWards track by ward.id"
         placeholder="{{'openlmisFacilityProgramSelect.selectWard' | message}}"></select>

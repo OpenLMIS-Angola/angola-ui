@@ -44,7 +44,8 @@
                 program: '=',
                 facility: '=',
                 module: '=?',
-                selectedWard: '=?'
+                selectedWard: '=?',
+                displayWardSelect: '<?'
             },
             controller: 'OpenlmisFacilityProgramSelectController',
             controllerAs: 'vm',

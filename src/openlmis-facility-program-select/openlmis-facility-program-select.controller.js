@@ -50,6 +50,7 @@
          * Initialization method of the controller.
          */
         function onInit() {
+            vm.displayWardSelect = vm.displayWardSelect ? vm.displayWardSelect : false;
             facilityProgramCacheService.loadData(vm.module)
                 .then(function() {
                     vm.homeFacility = facilityProgramCacheService.getUserHomeFacility();
@@ -65,10 +66,11 @@
                     }
 
                     vm.updateFacilities();
-
-                    return getHomeFacilityWards(vm.homeFacility).then(function(wards) {
-                        vm.homeFacilityWards = wards ? wards : [];
-                    });
+                    if (vm.displayWardSelect) {
+                        return getHomeFacilityWards(vm.homeFacility).then(function(wards) {
+                            vm.homeFacilityWards = wards ? wards : [];
+                        });
+                    }
                 });
         }
 

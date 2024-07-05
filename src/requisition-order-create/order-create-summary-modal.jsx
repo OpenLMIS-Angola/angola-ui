@@ -51,12 +51,12 @@ const OrderCreateSummaryModal = ({ isOpen, orders, onSaveClick, onModalClose }) 
                             type="button"
                             className="btn"
                             onClick={() => onModalClose()}
-                        >Cancel</button>
+                        >{ formatMessage('requisition.orderCreate.cancel') }</button>
                         <button
                             type="button"
                             className="btn primary"
                             onClick={() => onSaveClick()}
-                        >Create Order</button>
+                        >{ formatMessage('requisition.orderCreate') }</button>
                     </div>
                 </>}
         >
