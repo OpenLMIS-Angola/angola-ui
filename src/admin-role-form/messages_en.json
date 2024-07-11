@@ -1,3 +1,13 @@
 {
-  "adminRoleForm.embeddedReportsView": "View Embedded Reports"
+  "adminRoleForm.embeddedReportsView": "View Embedded Reports",
+  "adminRoleForm.manageBuq": "Manage BUQ",
+  "adminRoleForm.approveBuq": "Approve BUQ",
+  "adminRoleForm.mohApproval": "MOH Approval",
+  "adminRoleForm.poralgApproval": "PORALG Approval",
+  "adminRoleForm.createForecasting": "Create Forecasting",
+  "adminRoleForm.authorizeForecasting": "Authorize Forecasting",
+  "adminRoleForm.prepareBuq": "Prepare BUQ",
+  "adminRoleForm.embeddedReportsCategoryManage": "Manage categories embedded reports",
+  "adminRoleForm.unitOfOrderablesManage": "Manage unit of orderables",
+  "adminRoleForm.ordersDelete" : "Delete orders"
 }
