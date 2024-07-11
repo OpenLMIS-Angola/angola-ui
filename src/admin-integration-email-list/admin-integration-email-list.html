@@ -1,0 +1,30 @@
+<h2>{{'adminIntegrationEmailList.header' | message}}</h2>
+<section class="openlmis-table-container">
+    <button id="add-email" class="add" ui-sref="openlmis.administration.adminIntegrationEmailList.add">
+        {{'adminIntegrationEmailList.addEmail' | message}}
+    </button>
+    <table>
+        <caption ng-if="vm.emails.length === 0">
+            {{'adminIntegrationEmailList.noEmails' | message}}
+        </caption>
+        <thead>
+        <tr>
+            <th>{{'adminIntegrationEmailList.name' | message}}</th>
+            <th>{{'adminIntegrationEmailList.actions' | message}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="email in vm.emails">
+            <td>{{email.name}}</td>
+            <td>
+                <button class="primary" ui-sref="openlmis.administration.adminIntegrationEmailList.add({emailId: email.id})">
+                    {{'adminIntegrationEmailList.edit' | message}}
+                </button>
+                <button class="danger" ng-click="vm.removeEmail({email})">
+                    {{'adminOrderableEdit.remove' | message}}
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</section>

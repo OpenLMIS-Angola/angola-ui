@@ -1,0 +1,15 @@
+{
+    "adminIntegrationEmailAdd.addEmail": "Add Email",
+    "adminIntegrationEmailAdd.editEmail": "Edit Email",
+    "adminIntegrationEmailAdd.active": "Active",
+    "adminIntegrationEmailAdd.emailName": "Email Name",
+    "adminIntegrationEmailAdd.save": "Save",
+    "adminIntegrationEmailAdd.cancel": "Cancel",
+    "adminIntegrationEmailAdd.createProgram.confirm": "Are you sure you want to save \"${email}\" email?",
+    "adminIntegrationEmailAdd.createProgram.success": "Email created successfully!",
+    "adminIntegrationEmailAdd.createProgram.failure": "Email creation failed!",
+    "adminIntegrationEmailAdd.save.success": "Email saved successfully",
+    "adminIntegrationEmailAdd.create.success": "Email created successfully",
+    "adminIntegrationEmailAdd.save.failure": "Failed to save email",
+    "adminIntegrationEmailAdd.create.failure": "Failed to create emial"
+}

@@ -1,0 +1,19 @@
+<div class="modal" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h1>{{vm.modalHeaderKey | message}}</h1>
+          </div>
+          <div class="modal-body">
+              <form id="admin-integration-email-add-form" ng-submit="vm.saveEmail()">
+                  <label for="code">{{'adminIntegrationEmailAdd.emailName' | message}}</label>
+                  <input id="code" class="form-control" ng-model="vm.email.name" ng-disabled="vm.email.id" required/>
+              </form>                
+          </div>
+          <div class="modal-footer">
+              <button id="cancel" ng-click="vm.goToPreviousState()">{{'adminIntegrationEmailAdd.cancel' | message}}</button>
+              <button class="primary" type="submit" form="admin-integration-email-add-form">{{'adminIntegrationEmailAdd.save' | message}}</button>
+          </div>
+      </div>
+  </div>
+</div>
