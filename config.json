@@ -11,8 +11,8 @@
     "/openlmis-offline-ui"
   ],
   "REPORTING_SERVICES": "angola",
-  "applicationLoadingMessage": "Iniciando SIGLOFA",
-  "applicationTitle": "SIGLOFA",
+  "applicationLoadingMessage": "Iniciando SIGECA",
+  "applicationTitle": "SIGECA",
   "defaultLanguage": "pt",
   "showRequisitionLessOrder": "true"
 }
