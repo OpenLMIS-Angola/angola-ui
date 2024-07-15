@@ -28,9 +28,9 @@
         .module('admin-integration-email-list')
         .controller('AdminIntegrationEmailListController', controller);
 
-    controller.$inject = ['$state', 'emails', 'FunctionDecorator', 'integrationEmailService', '$stateParams'];
+    controller.$inject = ['$state', '$stateParams', 'emails', 'FunctionDecorator', 'integrationEmailService'];
 
-    function controller($state, emails, FunctionDecorator, integrationEmailService, $stateParams) {
+    function controller($state, $stateParams, emails, FunctionDecorator, integrationEmailService) {
 
         var vm = this;
         vm.$onInit = onInit;
@@ -52,7 +52,7 @@
          * @description
          * Holds list of all integration emials.
          */
-        vm.emails = [];
+        vm.emails = undefined;
 
         /**
          * @ngdoc method
@@ -64,8 +64,6 @@
          */
         function onInit() {
             vm.emails = emails;
-            console.log(vm.emails);
-            console.log($stateParams);
         }
 
         /**
@@ -79,7 +77,10 @@
         function removeEmail(email) {
             return integrationEmailService.remove(email.email.id)
                 .then(function() {
-                    $state.reload();
+                    var stateParams = angular.copy($stateParams);
+                    $state.go('openlmis.administration.adminIntegrationEmailList', stateParams, {
+                        reload: true
+                    });
                 });
         }
     }

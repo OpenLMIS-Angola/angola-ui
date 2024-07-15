@@ -19,9 +19,9 @@
 
     angular.module('admin-integration-email-list').config(routes);
 
-    routes.$inject = ['$stateProvider', 'ADMINISTRATION_RIGHTS'];
+    routes.$inject = ['$stateProvider'];
 
-    function routes($stateProvider, ADMINISTRATION_RIGHTS) {
+    function routes($stateProvider) {
 
         $stateProvider.state('openlmis.administration.adminIntegrationEmailList', {
             showInNavigation: true,

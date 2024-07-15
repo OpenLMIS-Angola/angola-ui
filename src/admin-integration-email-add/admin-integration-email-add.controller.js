@@ -29,10 +29,11 @@
         .controller('AdminIntegrationEmailAddController', AdminIntegrationEmailAddController);
 
     AdminIntegrationEmailAddController.$inject = [
-        '$state', 'email', 'FunctionDecorator', 'integrationEmailService'
+        '$state', '$stateParams', 'email', 'FunctionDecorator', 'integrationEmailService'
     ];
 
-    function AdminIntegrationEmailAddController($state, email, FunctionDecorator, integrationEmailService) {
+    function AdminIntegrationEmailAddController($state, $stateParams, email, FunctionDecorator,
+                                                integrationEmailService) {
 
         var vm = this;
 
@@ -138,7 +139,8 @@
          * Redirects user to integration email list screen.
          */
         function goToEmailList() {
-            $state.go('openlmis.administration.adminIntegrationEmailList', {}, {
+            var stateParams = angular.copy($stateParams);
+            $state.go('openlmis.administration.adminIntegrationEmailList', stateParams, {
                 reload: true
             });
         }
