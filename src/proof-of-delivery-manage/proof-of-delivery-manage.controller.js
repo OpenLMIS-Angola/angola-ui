@@ -315,7 +315,7 @@
                     classes: 'col-sticky sticky-right',
                     data: [
                         {
-                            type: TABLE_CONSTANTS.CLICK,
+                            type: TABLE_CONSTANTS.actionTypes.CLICK,
                             text: 'proofOfDeliveryManage.manage',
                             classes: 'primary',
                             onClick: function(item) {
@@ -323,7 +323,7 @@
                             }
                         },
                         {
-                            type: TABLE_CONSTANTS.CLICK,
+                            type: TABLE_CONSTANTS.actionTypes.CLICK,
                             text: 'proofOfDeliveryManage.print',
                             onClick: function(item) {
                                 vm.printProofOfDelivery(item.id);
