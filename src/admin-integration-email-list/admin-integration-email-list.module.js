@@ -25,12 +25,13 @@
      */
     angular.module('admin-integration-email-list', [
         'openlmis-admin',
-        'referencedata-program',
-        'ui.router',
+        'openlmis-pagination',
         'openlmis-table',
         'openlmis-i18n',
         'openlmis-rights',
         'openlmis-urls',
-        'openlmis-permissions'
+        'openlmis-permissions',
+        'ui.router',
+        'openlmis-templates'
     ]);
 })();

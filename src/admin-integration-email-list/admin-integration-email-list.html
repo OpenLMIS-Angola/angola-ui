@@ -15,7 +15,7 @@
         </thead>
         <tbody>
         <tr ng-repeat="email in vm.emails">
-            <td>{{email.name}}</td>
+            <td>{{email.email}}</td>
             <td>
                 <button class="primary" ui-sref="openlmis.administration.adminIntegrationEmailList.add({emailId: email.id})">
                     {{'adminIntegrationEmailList.edit' | message}}
@@ -27,4 +27,6 @@
         </tr>
         </tbody>
     </table>
+    <openlmis-pagination>
+    </openlmis-pagination>
 </section>

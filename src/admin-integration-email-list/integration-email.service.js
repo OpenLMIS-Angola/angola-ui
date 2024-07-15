@@ -38,7 +38,7 @@
                 method: 'POST',
                 url: openlmisUrlFactory('/api/integrationEmails')
             },
-            edit: {
+            update: {
                 method: 'PUT',
                 url: openlmisUrlFactory('/api/integrationEmails/:id')
             },
@@ -52,12 +52,12 @@
             get: get,
             getAll: getAll,
             add: add,
-            edit: edit,
+            update: update,
             remove: remove
         };
 
-        function getAll(searchParams) {
-            return resource.getAll(searchParams).$promise;
+        function getAll(paginationParams) {
+            return resource.getAll(paginationParams).$promise;
         }
 
         function get(id) {
@@ -66,14 +66,14 @@
             }).$promise;
         }
 
-        function add(report) {
-            return resource.add(report).$promise;
+        function add(email) {
+            return resource.add(email).$promise;
         }
 
-        function edit(report) {
-            return resource.edit({
-                id: report.id
-            }, report).$promise;
+        function update(email) {
+            return resource.update({
+                id: email.id
+            }, email).$promise;
         }
 
         function remove(id) {

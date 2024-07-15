@@ -28,9 +28,9 @@
         .module('admin-integration-email-list')
         .controller('AdminIntegrationEmailListController', controller);
 
-    controller.$inject = ['$state', 'emailList', 'FunctionDecorator', 'integrationEmailService'];
+    controller.$inject = ['$state', 'emails', 'FunctionDecorator', 'integrationEmailService', '$stateParams'];
 
-    function controller($state, emailList, FunctionDecorator, integrationEmailService) {
+    function controller($state, emails, FunctionDecorator, integrationEmailService, $stateParams) {
 
         var vm = this;
         vm.$onInit = onInit;
@@ -63,7 +63,9 @@
          * Initializes controller
          */
         function onInit() {
-            vm.emails = emailList;
+            vm.emails = emails;
+            console.log(vm.emails);
+            console.log($stateParams);
         }
 
         /**
@@ -75,8 +77,7 @@
          * Remove the integration email.
          */
         function removeEmail(email) {
-            console.log('email to remove:', email);
-            return integrationEmailService.remove(email.id)
+            return integrationEmailService.remove(email.email.id)
                 .then(function() {
                     $state.reload();
                 });

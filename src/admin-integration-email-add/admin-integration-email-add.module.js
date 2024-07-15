@@ -24,17 +24,12 @@
      * Provides a modal for adding new integration emails
      */
     angular.module('admin-integration-email-add', [
-        'openlmis-admin',
-        'openlmis-rights',
-        'openlmis-permissions',
         'openlmis-function-decorator',
-        'referencedata-program',
         'openlmis-i18n',
         'ui.router',
         'openlmis-modal',
-        'openlmis-templates',
         'openlmis-state-tracker',
-        'openlmis-modal-state'
+        'openlmis-pagination'
     ]);
 
 })();

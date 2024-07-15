@@ -29,16 +29,16 @@
         .controller('AdminIntegrationEmailAddController', AdminIntegrationEmailAddController);
 
     AdminIntegrationEmailAddController.$inject = [
-        '$state', 'email', 'FunctionDecorator'
+        '$state', 'email', 'FunctionDecorator', 'integrationEmailService'
     ];
 
-    function AdminIntegrationEmailAddController($state, email, FunctionDecorator) {
+    function AdminIntegrationEmailAddController($state, email, FunctionDecorator, integrationEmailService) {
 
         var vm = this;
 
         vm.$onInit = onInit;
         vm.saveEmail = saveEmail;
-        vm.goToPreviousState = goToPreviousState;
+        vm.goToEmailList = goToEmailList;
 
         /**
          * @ngdoc property
@@ -60,7 +60,7 @@
          * @description
          * Holds successNotificationKey message.
          */
-        vm.successNotificationKey = email ? 'AdminIntegrationEmailAdd.save.success' :
+        vm.successNotificationKey = email ? 'adminIntegrationEmailAdd.save.success' :
             'adminIntegrationEmailAdd.create.success';
 
         /**
@@ -101,10 +101,9 @@
                 .decorateFunction(saveEmail)
                 .withSuccessNotification(vm.successNotificationKey)
                 .withErrorNotification(vm.errorNotificationKey)
+                .withConfirm('adminIntegrationEmailAdd.confirm')
                 .withLoading(true)
                 .getDecoratedFunction();
-            console.log('email: ', email);
-            console.log('successNotificationKey: ', vm.successNotificationKey);
         }
 
         /**
@@ -116,23 +115,32 @@
          * Saves the email address.
          */
         function saveEmail() {
-            // return new OrderableResource()
-            //     .update(vm.email)
-            //     .then(function() {
-            //         goToPreviousState();
-            //     });
+            if (email) {
+                return integrationEmailService
+                    .update(vm.email)
+                    .then(function() {
+                        vm.goToEmailList();
+                    });
+            }
+            return integrationEmailService
+                .add(vm.email)
+                .then(function() {
+                    vm.goToEmailList();
+                });
         }
 
         /**
          * @ngdoc property
          * @methodOf admin-integration-email-add.controller:AdminIntegrationEmailAddController
-         * @name goToPreviousState
+         * @name goToEmailList
          *
          * @description
          * Redirects user to integration email list screen.
          */
-        function goToPreviousState() {
-            $state.go('openlmis.administration.adminIntegrationEmailList');
+        function goToEmailList() {
+            $state.go('openlmis.administration.adminIntegrationEmailList', {}, {
+                reload: true
+            });
         }
     }
 })();

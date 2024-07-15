@@ -7,11 +7,11 @@
           <div class="modal-body">
               <form id="admin-integration-email-add-form" ng-submit="vm.saveEmail()">
                   <label for="code">{{'adminIntegrationEmailAdd.emailName' | message}}</label>
-                  <input id="code" class="form-control" ng-model="vm.email.name" ng-disabled="vm.email.id" required/>
+                  <input id="code" class="form-control" ng-model="vm.email.email" required/>
               </form>                
           </div>
           <div class="modal-footer">
-              <button id="cancel" ng-click="vm.goToPreviousState()">{{'adminIntegrationEmailAdd.cancel' | message}}</button>
+              <button id="cancel" ng-click="vm.goToEmailList()">{{'adminIntegrationEmailAdd.cancel' | message}}</button>
               <button class="primary" type="submit" form="admin-integration-email-add-form">{{'adminIntegrationEmailAdd.save' | message}}</button>
           </div>
       </div>

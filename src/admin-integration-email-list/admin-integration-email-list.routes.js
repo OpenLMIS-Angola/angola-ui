@@ -30,10 +30,20 @@
             controller: 'AdminIntegrationEmailListController',
             templateUrl: 'admin-integration-email-list/admin-integration-email-list.html',
             controllerAs: 'vm',
-            accessRights: [ADMINISTRATION_RIGHTS.USERS_MANAGE],
             resolve: {
-                emailList: function(programService) {
-                    return programService.getAll();
+                emails: function($q, paginationService, integrationEmailService, $stateParams) {
+                    console.log('$stateParams', $stateParams);
+                    return paginationService.registerUrl($stateParams, function(stateParams) {
+                        console.log('stateParams', stateParams);
+                        var deferred = $q.defer();
+                        integrationEmailService.getAll({
+                            page: stateParams.page,
+                            size: stateParams.size
+                        }).then(function(response) {
+                            deferred.resolve(response);
+                        }, deferred.reject);
+                        return deferred.promise;
+                    });
                 }
             }
         });

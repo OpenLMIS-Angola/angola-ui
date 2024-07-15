@@ -21,27 +21,23 @@
         .module('admin-integration-email-add')
         .config(routes);
 
-    routes.$inject = ['$stateProvider', 'modalStateProvider', 'ADMINISTRATION_RIGHTS'];
+    routes.$inject = ['$stateProvider', 'modalStateProvider'];
 
-    function routes($stateProvider, modalStateProvider, ADMINISTRATION_RIGHTS) {
+    function routes($stateProvider, modalStateProvider) {
 
         modalStateProvider.state('openlmis.administration.adminIntegrationEmailList.add', {
             controller: 'AdminIntegrationEmailAddController',
             controllerAs: 'vm',
             url: '/add/:emailId',
             templateUrl: 'admin-integration-email-add/admin-integration-email-add.html',
-            accessRights: [
-                ADMINISTRATION_RIGHTS.USERS_MANAGE
-            ],
             resolve: {
-                email: function($stateParams, emailList) {
-                    var email = _.findWhere(emailList, {
+                email: function($stateParams, emails) {
+                    var email = _.findWhere(emails, {
                         id: $stateParams.emailId
                     });
                     return email;
                 }
-            },
-            parentResolves: ['emailList']
+            }
         });
     }
 })();

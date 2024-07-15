@@ -1,13 +1,13 @@
 {
-    "adminIntegrationEmailList.integrationEmails": "SIGECA Integration Emails",
-    "adminIntegrationEmailList.header": "SIGECA Integration Emails",
-    "adminIntegrationEmailList.noEmails": "No emails found",
+    "adminIntegrationEmailList.integrationEmails": "Administrator e-mails",
+    "adminIntegrationEmailList.header": "Administrator e-mails",
+    "adminIntegrationEmailList.noEmails": "No e-mails found",
     "adminIntegrationEmailList.name": "Name",
     "adminIntegrationEmailList.actions": "Actions",
     "adminIntegrationEmailList.edit": "Edit",
-    "adminIntegrationEmailList.addEmail": "Add email",
+    "adminIntegrationEmailList.addEmail": "Add e-mail",
     "adminIntegrationEmailList.delete": "Delete",
     "adminIntegrationEmailList.emailRemovedSuccessfully": "Email removed successfully",
-    "adminIntegrationEmailList.failedToRemoveEmail": "Failed to remove email",
-    "adminIntegrationEmailList.confirmToRemoveEmail": "Are you sure you want to remove the emial?"
+    "adminIntegrationEmailList.failedToRemoveEmail": "Failed to remove e-mail",
+    "adminIntegrationEmailList.confirmToRemoveEmail": "Are you sure you want to remove the e-mial?"
 }
