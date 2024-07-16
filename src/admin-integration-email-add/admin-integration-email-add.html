@@ -2,17 +2,17 @@
   <div class="modal-dialog">
       <div class="modal-content">
           <div class="modal-header">
-              <h1>{{vm.modalHeaderKey | message}}</h1>
+              <h1>{{:: vm.modalHeaderKey | message}}</h1>
           </div>
           <div class="modal-body">
               <form id="admin-integration-email-add-form" ng-submit="vm.saveEmail()">
-                  <label for="code">{{'adminIntegrationEmailAdd.emailName' | message}}</label>
+                  <label for="code">{{:: 'adminIntegrationEmailAdd.emailName' | message}}</label>
                   <input id="code" class="form-control" ng-model="vm.email.email" required/>
               </form>                
           </div>
           <div class="modal-footer">
-              <button id="cancel" ng-click="vm.goToEmailList()">{{'adminIntegrationEmailAdd.cancel' | message}}</button>
-              <button class="primary" type="submit" form="admin-integration-email-add-form">{{'adminIntegrationEmailAdd.save' | message}}</button>
+              <button id="cancel" ng-click="vm.goToEmailList()">{{:: 'adminIntegrationEmailAdd.cancel' | message}}</button>
+              <button class="primary" type="submit" form="admin-integration-email-add-form">{{:: 'adminIntegrationEmailAdd.save' | message}}</button>
           </div>
       </div>
   </div>

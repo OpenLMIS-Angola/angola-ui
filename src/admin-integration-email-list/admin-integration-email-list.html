@@ -1,27 +1,27 @@
 <h2>{{'adminIntegrationEmailList.header' | message}}</h2>
 <section class="openlmis-table-container">
     <button id="add-email" class="add" ui-sref="openlmis.administration.adminIntegrationEmailList.add">
-        {{'adminIntegrationEmailList.addEmail' | message}}
+        {{:: 'adminIntegrationEmailList.addEmail' | message}}
     </button>
     <table>
         <caption ng-if="vm.emails.length === 0">
-            {{'adminIntegrationEmailList.noEmails' | message}}
+            {{:: 'adminIntegrationEmailList.noEmails' | message}}
         </caption>
         <thead>
         <tr>
-            <th>{{'adminIntegrationEmailList.name' | message}}</th>
-            <th>{{'adminIntegrationEmailList.actions' | message}}</th>
+            <th>{{:: 'adminIntegrationEmailList.name' | message}}</th>
+            <th>{{:: 'adminIntegrationEmailList.actions' | message}}</th>
         </tr>
         </thead>
         <tbody>
         <tr ng-repeat="email in vm.emails">
-            <td>{{email.email}}</td>
+            <td>{{:: email.email}}</td>
             <td>
                 <button class="primary" ui-sref="openlmis.administration.adminIntegrationEmailList.add({emailId: email.id})">
-                    {{'adminIntegrationEmailList.edit' | message}}
+                    {{:: 'adminIntegrationEmailList.edit' | message}}
                 </button>
                 <button class="danger" ng-click="vm.removeEmail({email})">
-                    {{'adminOrderableEdit.remove' | message}}
+                    {{:: 'adminOrderableEdit.remove' | message}}
                 </button>
             </td>
         </tr>
