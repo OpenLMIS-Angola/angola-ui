@@ -1,0 +1,13 @@
+{
+    "adminIntegrationEmailAdd.addEmail": "Add e-mail",
+    "adminIntegrationEmailAdd.editEmail": "Edit e-mail",
+    "adminIntegrationEmailAdd.active": "Active",
+    "adminIntegrationEmailAdd.emailName": "E-mail Name",
+    "adminIntegrationEmailAdd.save": "Save",
+    "adminIntegrationEmailAdd.cancel": "Cancel",
+    "adminIntegrationEmailAdd.confirm": "Are you sure you want to save e-mail?",
+    "adminIntegrationEmailAdd.save.success": "E-mail saved successfully",
+    "adminIntegrationEmailAdd.create.success": "E-mail created successfully",
+    "adminIntegrationEmailAdd.save.failure": "Failed to save e-mail",
+    "adminIntegrationEmailAdd.create.failure": "Failed to create e-mial"
+}
