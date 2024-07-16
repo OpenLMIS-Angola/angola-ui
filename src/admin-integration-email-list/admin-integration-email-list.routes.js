@@ -26,15 +26,13 @@
         $stateProvider.state('openlmis.administration.adminIntegrationEmailList', {
             showInNavigation: true,
             label: 'adminIntegrationEmailList.integrationEmails',
-            url: '/integrationEmails',
+            url: '/integrationEmails?page&size',
             controller: 'AdminIntegrationEmailListController',
             templateUrl: 'admin-integration-email-list/admin-integration-email-list.html',
             controllerAs: 'vm',
             resolve: {
                 emails: function($q, paginationService, integrationEmailService, $stateParams) {
-                    console.log('$stateParams', $stateParams);
                     return paginationService.registerUrl($stateParams, function(stateParams) {
-                        console.log('stateParams', stateParams);
                         var deferred = $q.defer();
                         integrationEmailService.getAll({
                             page: stateParams.page,
