@@ -45,12 +45,12 @@
 
         vm.doLogin = doLogin;
 
-        // ANGOLASUP-686: Visually distinguish between Test and Production Servers
+        // AO-879: Visually distinguish between Test and Production Servers
         var prodDomain = 'siglofa.sisangola.org';
 
         vm.isProdDomain = window.location.host.toString() === prodDomain;
-
-        // ANGOLASUP-686: ends here
+        vm.backgroundColor = vm.isProdDomain ? '#012853' : '#A80B16';
+        // AO-879: ends here
 
         /**
          * @ngdoc method

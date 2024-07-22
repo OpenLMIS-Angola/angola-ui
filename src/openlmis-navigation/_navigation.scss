@@ -69,9 +69,6 @@ header > .navbar {
   @include clearfix();
   @extend .navbar-default;
 
-  /*  AO-874: Changed navigation header color  */
-  background-color: #012853;
-  /*  AO-874: ends here */
   margin-bottom: 0em;
   box-shadow: 0 0 0.4em 0.1em $shadow;
   border-width: 0em;
@@ -96,7 +93,7 @@ header > .navbar {
     position: relative;
   }
   .navbar-right{
-    margin-top: 10px;
+    margin-top: 6px;
     margin-right: 0em;
     margin-left: 1em;
   }
