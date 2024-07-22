@@ -31,11 +31,11 @@
     OpenlmisHeaderController.$inject = [];
 
     function OpenlmisHeaderController() {
-        var vmm = this;
+        var controller = this;
         var prodDomain = 'siglofa.sisangola.org';
 
-        vmm.isProdDomain = window.location.host.toString() === prodDomain;
-        vmm.backgroundColor = vmm.isProdDomain ? '#012853' : '#A80B16';
+        controller.isProdDomain = window.location.host.toString() === prodDomain;
+        controller.backgroundColor = controller.isProdDomain ? '#012853' : '#A80B16';
     }
 
 })();
