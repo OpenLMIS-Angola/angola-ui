@@ -1,0 +1,26 @@
+<ng-include src="'openlmis-header/header.html'"></ng-include>
+<!-- AO-879: Visually distinguish between Test and Production Servers -->
+<div ng-controller="OpenlmisHeaderController as controller" class="navbar display-in-browser" ng-style="{'background-color': controller.backgroundColor}">
+    <!-- AO-879: ends here -->
+    <openlmis-navigation root-state="openlmis" class="nav navbar-nav"></openlmis-navigation>
+    <openlmis-logout class="navbar-right"></openlmis-logout>
+    <openlmis-locale class="navbar-right locale-container"></openlmis-locale>
+</div>
+
+<div class="navbar display-in-mobile">
+    <nav class="navbar" role="navigation" close-on-click="isNavCollapsed">
+        <div class="navbar-header" aria-controls="navbarToggler">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler">
+                <span class="fa fa-bars"></span>
+            </button>
+            <div class="openlmis-button-group">
+                <openlmis-locale class="locale-container"></openlmis-locale>
+                <openlmis-logout class="navbar-nav"></openlmis-logout>
+            </div>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbarToggler">
+            <openlmis-navigation root-state="openlmis" class="nav navbar-nav"></openlmis-navigation>
+        </div>
+    </nav>
+</div>
