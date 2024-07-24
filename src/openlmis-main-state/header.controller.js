@@ -28,14 +28,27 @@
         .module('openlmis-main-state')
         .controller('OpenlmisHeaderController', OpenlmisHeaderController);
 
-    OpenlmisHeaderController.$inject = [];
+    OpenlmisHeaderController.$inject = ['$scope'];
 
-    function OpenlmisHeaderController() {
+    function OpenlmisHeaderController($scope) {
         var controller = this;
-        var prodDomain = 'siglofa.sisangola.org';
+        var isProductionInstance = '@@PRODUCTION_INSTANCE';
+        var mainBackgroundColor = {
+            'background-image': 'linear-gradient(to bottom, #77cbf0 0%, #49baeb 10%, #1ba9e6 100%)'
+        };
 
-        controller.isProdDomain = window.location.host.toString() === prodDomain;
-        controller.backgroundColor = controller.isProdDomain ? '#012853' : '#A80B16';
+        controller.backgroundColor = mainBackgroundColor;
+
+        $scope.mouseEnter = function() {
+            controller.backgroundColor = {
+                'background-image': isProductionInstance === 'true'  ? 'linear-gradient(to bottom, #012853, #012853)' :
+                    'linear-gradient(to bottom, #A80B16, #A80B16)'
+            };
+        };
+
+        $scope.mouseLeave = function() {
+            controller.backgroundColor = mainBackgroundColor;
+        };
     }
 
 })();

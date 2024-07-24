@@ -69,6 +69,7 @@ header > .navbar {
   @include clearfix();
   @extend .navbar-default;
 
+  background-image: linear-gradient(to bottom, #77cbf0 0%, #49baeb 10%, #1ba9e6 100%);
   margin-bottom: 0em;
   box-shadow: 0 0 0.4em 0.1em $shadow;
   border-width: 0em;

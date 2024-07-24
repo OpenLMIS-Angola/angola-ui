@@ -33,12 +33,6 @@
     function controller($scope, authorizationService, offlineService) {
         var vm = this;
 
-        // ANGOLASUP-686: Visually distinguish between Test and Production Servers
-        var prodDomain = 'siglofa.sisangola.org';
-
-        vm.isProdDomain = window.location.host.toString() === prodDomain;
-        // ANGOLASUP-686: ends here
-
         $scope.$watch(function() {
             return authorizationService.getUser();
         }, function(user) {
