@@ -3,8 +3,10 @@
 <div ng-controller="OpenlmisHeaderController as controller" class="navbar display-in-browser" ng-style="{'background-color': controller.backgroundColor}">
     <!-- AO-879: ends here -->
     <openlmis-navigation root-state="openlmis" class="nav navbar-nav"></openlmis-navigation>
-    <openlmis-logout class="navbar-right"></openlmis-logout>
-    <openlmis-locale class="navbar-right locale-container"></openlmis-locale>
+    <div class="navbar-right-group">
+        <openlmis-logout class="navbar-right"></openlmis-logout>
+        <openlmis-locale class="navbar-right"></openlmis-locale>
+    </div>
 </div>
 
 <div class="navbar display-in-mobile">
