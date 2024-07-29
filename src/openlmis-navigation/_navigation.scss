@@ -69,6 +69,7 @@ header > .navbar {
   @include clearfix();
   @extend .navbar-default;
 
+  background-image: linear-gradient(to bottom, #77cbf0 0%, #49baeb 10%, #1ba9e6 100%);
   margin-bottom: 0em;
   box-shadow: 0 0 0.4em 0.1em $shadow;
   border-width: 0em;
@@ -100,16 +101,16 @@ header > .navbar {
 
   /* TOP LEVEL ITEMS */
   > .navbar-nav {
-
+    // AO-879 Changed the color of dropdown menu items
     a{
       display: block;
       text-decoration: none;
       padding: 0.5em 1em;
-      color: $link-color;
+      color: #012853;
       &:hover,
       &:focus{
         text-decoration: none;
-        color: $link-color-hover;
+        color: darken(#012853, 15);
       }
       &[disabled],
       &[disabled]:hover,
@@ -117,6 +118,7 @@ header > .navbar {
         color: $text-color-disabled;
       }
     }
+     // AO-879 ends here
 
     > li {
       > a {
@@ -139,9 +141,13 @@ header > .navbar {
       &.open > a,
       &.open > a:hover,
       > a:hover {
+        // AO-879 Changed the color of navigation elements on hover to a lighter shade than the base color
+        background-color: transparent;
+        -moz-box-shadow: inset 0 0 100px 100px rgba(168, 141, 170, 0.3);
+        -webkit-box-shadow: inset 0 0 100px 100px rgba(168, 141, 170, 0.3);
+        box-shadow: inset 0 0 100px 100px rgba(168, 141, 170, 0.3);
+        // AO-879 ends here
         color: $white;
-        background-color: $link-color;
-        box-shadow: inset 0.1em 0.1em 0.1em $light-shadow;
         border-radius: 0.3em;
       }
 

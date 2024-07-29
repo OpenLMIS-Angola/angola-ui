@@ -46,10 +46,8 @@
         vm.doLogin = doLogin;
 
         // AO-879: Visually distinguish between Test and Production Servers
-        var prodDomain = 'siglofa.sisangola.org';
-
-        vm.isProdDomain = window.location.host.toString() === prodDomain;
-        vm.backgroundColor = vm.isProdDomain ? '#012853' : '#A80B16';
+        var isProductionInstance = '@@PRODUCTION_INSTANCE';
+        vm.backgroundColor = isProductionInstance === 'true' ? '#012853' : '#A80B16';
         // AO-879: ends here
 
         /**
