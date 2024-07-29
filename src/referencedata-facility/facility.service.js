@@ -39,6 +39,7 @@
                      WARDS_CONSTANTS) {
 
         var facilitiesOffline = localStorageFactory('facilities'),
+            facilitiesWithoutWardsOffline = localStorageFactory('facilitiesWithoutWards'),
             facilitiesPromise,
             resource = $resource(referencedataUrlFactory('/api/facilities/:id'), {}, {
                 getAll: {
@@ -121,11 +122,17 @@
          * @return {Promise} Array of facilities
          */
         function getFacilitiesWithoutWards() {
+            if (offlineService.isOffline()) {
+                return $q.resolve(facilitiesWithoutWardsOffline.getAll());
+            }
+
             return resource.getAll().$promise
                 .then(function(response) {
-                    return response.content.filter(function(facility) {
+                    var facilitiesWithoutWards = response.content.filter(function(facility) {
                         return facility.type.code !== WARDS_CONSTANTS.WARD_TYPE_CODE;
                     });
+                    facilitiesWithoutWardsOffline.putAll(facilitiesWithoutWards);
+                    return facilitiesWithoutWards;
                 });
         }
 

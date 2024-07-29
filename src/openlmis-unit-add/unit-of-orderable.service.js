@@ -20,30 +20,44 @@
         .module('openlmis-unit-add')
         .service('unitOfOrderableService', service);
 
-    service.$inject = ['$resource', 'referencedataUrlFactory'];
+    service.$inject = ['$resource', 'referencedataUrlFactory', 'offlineService',
+        'localStorageFactory', '$q'];
 
-    function service($resource, referencedataUrlFactory) {
+    function service($resource, referencedataUrlFactory, offlineService, localStorageFactory, $q) {
 
-        var resource = $resource(referencedataUrlFactory('/api/unitOfOrderables'), {}, {
-            getAll: {
-                method: 'GET'
-            },
-            create: {
-                method: 'POST'
-            }
-        });
+        var allUnitOfOrderablesOffline = localStorageFactory('unitOfOrderables'),
+            resource = $resource(referencedataUrlFactory('/api/unitOfOrderables'), {}, {
+                getAll: {
+                    method: 'GET'
+                },
+                create: {
+                    method: 'POST'
+                }
+            });
 
         return {
             getAll: getAll,
-            create: create
+            create: create,
+            clearCachedUnitOfOrderables: clearCachedUnitOfOrderables
         };
 
         function getAll() {
-            return resource.getAll().$promise;
+            if (offlineService.isOffline()) {
+                return $q.resolve(allUnitOfOrderablesOffline.getAll());
+            }
+
+            return resource.getAll().$promise.then(function(response) {
+                allUnitOfOrderablesOffline.putAll(response.content);
+                return response.$promise;
+            });
         }
 
         function create(unit) {
             return resource.create(unit).$promise;
+        }
+
+        function clearCachedUnitOfOrderables() {
+            return allUnitOfOrderablesOffline.clearAll();
         }
     }
 })();
