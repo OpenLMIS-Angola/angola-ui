@@ -254,10 +254,9 @@
         };
 
         function getUnitOfOrderableById(unitId) {
-            var unit = vm.unitsOfOrderable.find(function(unit) {
+            return vm.unitsOfOrderable.find(function(unit) {
                 return unit.id === unitId;
             });
-            return unit;
         }
 
         /**
@@ -958,7 +957,7 @@
 
             unitOfOrderableService.getAll()
                 .then(function(response) {
-                    vm.unitsOfOrderable = response.content;
+                    vm.unitsOfOrderable = response.content ? response.content : response;
                 });
 
             initViewModel();
