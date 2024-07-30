@@ -595,7 +595,7 @@
          */
         function getPrintUrl() {
             // Angola - changed print URL
-            return requisitionUrlFactory('/api/reports/requisitions/' + vm.requisition.id + '/print');
+            return requisitionUrlFactory('/api/requisitions/' + vm.requisition.id + '/print');
             // ends here
         }
 
