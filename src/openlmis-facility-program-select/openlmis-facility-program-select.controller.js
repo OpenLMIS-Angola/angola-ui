@@ -83,7 +83,8 @@
 
             return wardService.getWardsByFacility(searchParams)
                 .then(function(response) {
-                    return response.content.filter(function(ward) {
+                    var wards = response.content ? response.content : response;
+                    return wards.filter(function(ward) {
                         return ward.enabled;
                     });
                 });

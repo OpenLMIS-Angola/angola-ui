@@ -1038,7 +1038,7 @@
                 sort: 'code,asc',
                 type: WARDS_CONSTANTS.WARD_TYPE_CODE
             }).then(function(response) {
-                var wards = response.content;
+                var wards = response.content ? response.content : response;
                 var disabledWardsNames = [];
 
                 vm.homeFacilityWards = wards.filter(function(ward) {

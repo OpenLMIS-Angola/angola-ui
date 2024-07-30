@@ -78,7 +78,7 @@
                     };
 
                     return wardService.getWardsByFacility(searchParams).then(function(response) {
-                        var wards = response.content;
+                        var wards = response.content ? response.content : response;
                         var wardsOrderableGroupPromises = wards.map(function(ward) {
                             return orderableGroupService
                                 .findAvailableProductsAndCreateOrderableGroups(program.id, ward.id, true);

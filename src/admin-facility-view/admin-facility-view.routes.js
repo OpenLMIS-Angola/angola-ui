@@ -70,8 +70,8 @@
                     };
 
                     return wardService.getWardsByFacility(searchParams).then(function(response) {
-                        return response.
-                            content.filter(function(responseFacility) {
+                        var wards = response.content ? response.content : response;
+                        return wards.filter(function(responseFacility) {
                                 return responseFacility.id !== facility.id;
                             });
                     });

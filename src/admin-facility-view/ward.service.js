@@ -28,28 +28,26 @@
         .module('admin-facility-view')
         .service('wardService', service);
 
-    service.$inject = ['$resource', 'referencedataUrlFactory'];
+    service.$inject = ['$resource', 'referencedataUrlFactory', 'offlineService', 'localStorageFactory', '$q'];
 
-    function service($resource, referencedataUrlFactory) {
+    function service($resource, referencedataUrlFactory, offlineService, localStorageFactory, $q) {
 
-        var resource = $resource(referencedataUrlFactory('/api/facilities/'), {}, {
-            getWardsByFacility: {
-                method: 'GET',
-                url: referencedataUrlFactory('/api/facilities/full')
-            },
-            updateFacilityWard: {
-                url: referencedataUrlFactory('/api/facilities/:id'),
-                method: 'PUT'
-            },
-            addNewWard: {
-                method: 'PUSH'
-            }
-        });
+        var wardsByFacilityOffline = localStorageFactory('wardsByFacility'),
+            resource = $resource(referencedataUrlFactory('/api/facilities/'), {}, {
+                getWardsByFacility: {
+                    method: 'GET',
+                    url: referencedataUrlFactory('/api/facilities/full')
+                },
+                updateFacilityWard: {
+                    url: referencedataUrlFactory('/api/facilities/:id'),
+                    method: 'PUT'
+                }
+            });
 
         return {
             getWardsByFacility: getWardsByFacility,
             updateFacilityWard: updateFacilityWard,
-            addNewWard: addNewWard
+            clearWardsByFacilityOffline: clearWardsByFacilityOffline
         };
 
         /**
@@ -64,7 +62,16 @@
          * @return {Promise}                   Array of wards
          */
         function getWardsByFacility(queryParams) {
-            return resource.getWardsByFacility(queryParams).$promise;
+            if (offlineService.isOffline()) {
+                return $q.resolve(wardsByFacilityOffline.getAll());
+            }
+
+            var wardsByFacilityPromise = resource.getWardsByFacility(queryParams).$promise.then(function(response) {
+                wardsByFacilityOffline.putAll(response.content);
+                return response.$promise;
+            });
+
+            return wardsByFacilityPromise;
         }
 
         /**
@@ -86,15 +93,13 @@
         /**
          * @ngdoc method
          * @methodOf admin-facility-view.wardService
-         * @name addNewWard
-         *
+         * @name clearWardsByFacilityOffline
+         * 
          * @description
-         * Creates a new Ward
-         *
-         * @return {Promise}
+         * Clears wards by facility offline data.
          */
-        function addNewWard(ward) {
-            return resource.addNewWard(ward).$promise;
+        function clearWardsByFacilityOffline() {
+            wardsByFacilityOffline.clearAll();
         }
     }
 })();
