@@ -72,8 +72,8 @@
                     return wardService.getWardsByFacility(searchParams).then(function(response) {
                         var wards = response.content ? response.content : response;
                         return wards.filter(function(responseFacility) {
-                                return responseFacility.id !== facility.id;
-                            });
+                            return responseFacility.id !== facility.id;
+                        });
                     });
                 }
             }
