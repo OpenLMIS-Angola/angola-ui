@@ -164,7 +164,7 @@
             checkCanFulFillIsEmpty();
 
             unitOfOrderableService.getAll().then(function(response) {
-                vm.allUnitsOfOrderable = response.content;
+                vm.allUnitsOfOrderable = response.content ? response.content : response;
                 vm.assignUnitsToCanFulfill(vm.displayStockCardSummaries);
             });
 
@@ -177,7 +177,7 @@
             $scope.$watchCollection(function() {
                 return vm.pagedList;
             }, function(newList) {
-                if (vm.offline()) {
+                if (vm.offline() && !!newList) {
                     vm.displayStockCardSummaries = newList;
                     vm.assignUnitsToCanFulfill(vm.displayStockCardSummaries);
                 }

@@ -126,8 +126,7 @@
         </tr>
         </tbody>
     </table>
-    <openlmis-pagination ng-if="!vm.offline()" list="vm.displayStockCardSummaries" paged-list="vm.pagedList" pagination-id="'stockCardList'"/>
-    <openlmis-pagination ng-if="vm.offline()" list="vm.stockCardSummaries" paged-list="vm.pagedList"></openlmis-pagination>
+    <openlmis-pagination list="vm.displayStockCardSummaries" paged-list="vm.pagedList" pagination-id="'stockCardList'"/>
 </section>
 <!-- AO-816: Add prices to the Stock On Hand view -->
 <aside class="requisition-summary">
