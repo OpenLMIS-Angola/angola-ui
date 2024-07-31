@@ -82,6 +82,7 @@
         this.clearFacilitiesCache = clearFacilitiesCache;
         this.getFacilitiesWithoutWards = getFacilitiesWithoutWards;
         this.getAllMinimalWithoutWards = getAllMinimalWithoutWards;
+        this.clearFacilitiesWithoutWardsCache = clearFacilitiesWithoutWardsCache;
 
         /**
          * @ngdoc method
@@ -310,6 +311,18 @@
         function clearFacilitiesCache() {
             facilitiesPromise = undefined;
             localStorageService.remove('facilities');
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf referencedata-facility.facilityService
+         * @name clearFacilitiesWithoutWardsCache
+         * 
+         * @description
+         * Deletes facilities without wards stored in the browser cache.
+         */
+        function clearFacilitiesWithoutWardsCache() {
+            localStorageService.remove('facilitiesWithoutWards');
         }
     }
 })();
