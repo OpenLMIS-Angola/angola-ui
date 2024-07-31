@@ -889,7 +889,7 @@
         function getUnitById(unitId) {
             if (!unitId) {
                 return {
-                    name: 'Single Dose',
+                    name: '-',
                     factor: 1
                 };
             }

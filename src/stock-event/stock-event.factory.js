@@ -75,7 +75,7 @@
                         item.quantity, physicalInventory.occurredDate,
                         {
                             vvmStatus: item.vvmStatus
-                        }, stockAdjustments, item.unitOfOrderableId
+                        }, stockAdjustments, item.unit ? item.unit.id : undefined
                     );
                 });
 

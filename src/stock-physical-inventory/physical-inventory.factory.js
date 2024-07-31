@@ -210,7 +210,7 @@
                             vvmStatus: item.vvmStatus
                         },
                         stockAdjustments: item.stockAdjustments,
-                        unitOfOrderableId: item.unitOfOrderableId
+                        unitOfOrderableId: item.unit ? item.unit.id : undefined
                     });
                 }
                 // ANGOLASUP-825: Ends here
