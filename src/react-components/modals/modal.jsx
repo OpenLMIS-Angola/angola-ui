@@ -11,6 +11,9 @@ const Modal = ({ isOpen, body, alertModal = false, sourceOfFundStyle = '' }) => 
             document.body.style.overflow = 'auto';
         }
 
+        return () => {
+            document.body.style.overflow = 'auto';
+        };
     }, [isOpen]);
 
     return (
