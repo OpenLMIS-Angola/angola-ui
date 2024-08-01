@@ -131,7 +131,7 @@ const OrderCreateTab = ({ passedOrder,
                             validateRow={validateRow}
                             showValidationErrors={showValidationErrors}
                             isReadOnly={isTableReadOnly}
-                            pageSize={6}
+                            pageSize={10} // TODO: remove this
                         />
                     </div>
                 </div>

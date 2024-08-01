@@ -13,18 +13,20 @@ const Modal = ({ isOpen, body, alertModal = false, sourceOfFundStyle = '' }) => 
 
     }, [isOpen]);
 
-    // When isOpen is false component should return nothing
-    // Added because if modal is unmounted document.body.style.overflow is not changing to 'auto'
-    // and scroll doesn't work
-    if (!isOpen) {
-        return null
-    }
     return (
-        <div className={`${showHideClassName} ${alertModalClassName}`}>
-            <section className={`modal-main ${sourceOfFundStyle ? 'source-of-fund-modal' : ''}`}>
-                {body}
-            </section>
-        </div>
+            <>
+            {
+                isOpen &&
+                (
+                    <div className={`${showHideClassName} ${alertModalClassName}`}>
+                        <section className={`modal-main ${sourceOfFundStyle ? 'source-of-fund-modal' : ''}`}>
+                            {body}
+                        </section>
+                    </div>
+                )
+            }
+        </>
+
     );
 }
 

@@ -251,7 +251,7 @@ describe('RequisitionViewController', function() {
 
             expect(this.vm.getPrintUrl())
             // Angola - changed requisition print URL
-                .toEqual(this.requisitionUrlFactory('/api/reports/requisitions/requisition-id-1/print'));
+                .toEqual(this.requisitionUrlFactory('/api/requisitions/requisition-id-1/print'));
             // ends here
         });
 
@@ -653,7 +653,7 @@ describe('RequisitionViewController', function() {
             this.$rootScope.$apply();
 
             expect(this.accessTokenFactory.addAccessToken)
-                .toHaveBeenCalledWith(this.requisitionUrlFactory('api/reports/requisitions/requisition-id-1/print'));
+                .toHaveBeenCalledWith(this.requisitionUrlFactory('api/requisitions/requisition-id-1/print'));
         });
 
         it('should not open report when sync failed', function() {

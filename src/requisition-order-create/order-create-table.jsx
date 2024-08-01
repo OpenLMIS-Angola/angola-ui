@@ -185,7 +185,10 @@ const OrderCreateTable = ({ isReadOnly }) => {
                     isOpen={isSummaryModalOpen}
                     orders={orders}
                     onSaveClick={sendOrders}
-                    onModalClose={() => setIsSummaryModalOpen(false)}
+                    onModalClose={() => {
+                        document.body.style.overflow = 'auto';
+                        setIsSummaryModalOpen(false)}
+                    }
                 />
             }
             <div className="page-header-responsive">
@@ -257,7 +260,7 @@ const OrderCreateTable = ({ isReadOnly }) => {
                         <button
                             type="button"
                             className="btn primary"
-                            disabled={createOrderDisabled(orders)}
+                            // disabled={createOrderDisabled(orders)}
                             onClick={() => setIsSummaryModalOpen(true)}
                         >{formatMessage('requisition.orderCreate.create')}</button>
                     </>
