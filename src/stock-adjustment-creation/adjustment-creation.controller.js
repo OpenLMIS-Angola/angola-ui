@@ -722,7 +722,7 @@
             return lotPromises;
         }
 
-        function confirmSubmit() {
+        function onSubmit() {
             loadingModalService.open();
             var addedLineItems = angular.copy(vm.addedLineItems);
             generateKitConstituentLineItem(addedLineItems);
@@ -761,6 +761,16 @@
                     $q.reject();
                     alertService.error(errorResponse.data.message);
                 });
+        }
+
+        function confirmSubmit() {
+            try {
+                onSubmit();
+            } catch (error) {
+                loadingModalService.close();
+                console.error(error.message);
+                alertService.error('openlmisStateChangeError.internalApplicationError.message');
+            }
         }
 
         function getLineItemsByDestinationMap(addedLineItems) {
@@ -1207,6 +1217,9 @@
 
         // AO-804: Display product prices on Stock Issues, Adjustments and Receives Page
         function getProductPrice(lineItem) {
+            if (!lineItem.orderable.programs) {
+                return undefined;
+            }
             var programOrderable = lineItem.orderable.programs.find(function(programOrderable) {
                 return programOrderable.programId === program.id;
             });
@@ -1251,7 +1264,7 @@
 
         function getProductsWithPriceChanged(products) {
             return products.filter(function(product) {
-                return product.price !== getProductPrice(product);
+                return product.price && product.price !== getProductPrice(product);
             });
         }
 
