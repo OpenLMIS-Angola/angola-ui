@@ -39,7 +39,9 @@ describe('referencedata-facilities-cache run', function() {
         this.postLogoutAction = this.getLastCall(loginServiceSpy.registerPostLogoutAction).args[0];
 
         spyOn(this.facilityService, 'cacheAllMinimal');
+        spyOn(this.facilityService, 'getFacilitiesWithoutWards');
         spyOn(this.facilityService, 'clearMinimalFacilitiesCache');
+        spyOn(this.facilityService, 'clearFacilitiesWithoutWardsCache');
     });
 
     describe('run block', function() {

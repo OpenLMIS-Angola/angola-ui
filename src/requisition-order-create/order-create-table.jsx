@@ -260,7 +260,7 @@ const OrderCreateTable = ({ isReadOnly }) => {
                         <button
                             type="button"
                             className="btn primary"
-                            // disabled={createOrderDisabled(orders)}
+                            disabled={createOrderDisabled(orders)}
                             onClick={() => setIsSummaryModalOpen(true)}
                         >{formatMessage('requisition.orderCreate.create')}</button>
                     </>
