@@ -185,7 +185,10 @@ const OrderCreateTable = ({ isReadOnly }) => {
                     isOpen={isSummaryModalOpen}
                     orders={orders}
                     onSaveClick={sendOrders}
-                    onModalClose={() => setIsSummaryModalOpen(false)}
+                    onModalClose={() => {
+                        document.body.style.overflow = 'auto';
+                        setIsSummaryModalOpen(false)}
+                    }
                 />
             }
             <div className="page-header-responsive">
