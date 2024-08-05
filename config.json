@@ -14,5 +14,6 @@
   "applicationLoadingMessage": "Iniciando SIGECA",
   "applicationTitle": "SIGECA",
   "defaultLanguage": "pt",
-  "showRequisitionLessOrder": "true"
+  "showRequisitionLessOrder": "true",
+  "PRODUCTION_INSTANCE":false
 }
