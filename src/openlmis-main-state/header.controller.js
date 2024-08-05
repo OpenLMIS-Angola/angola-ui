@@ -28,26 +28,15 @@
         .module('openlmis-main-state')
         .controller('OpenlmisHeaderController', OpenlmisHeaderController);
 
-    OpenlmisHeaderController.$inject = ['$scope'];
+    OpenlmisHeaderController.$inject = [];
 
-    function OpenlmisHeaderController($scope) {
+    function OpenlmisHeaderController() {
         var controller = this;
         var isProductionInstance = '@@PRODUCTION_INSTANCE';
-        var mainBackgroundColor = {
-            'background-image': 'linear-gradient(to bottom, #77cbf0 0%, #49baeb 10%, #1ba9e6 100%)'
-        };
 
-        controller.backgroundColor = mainBackgroundColor;
-
-        $scope.mouseEnter = function() {
-            controller.backgroundColor = {
-                'background-image': isProductionInstance === 'true'  ? 'linear-gradient(to bottom, #012853, #012853)' :
-                    'linear-gradient(to bottom, #A80B16, #A80B16)'
-            };
-        };
-
-        $scope.mouseLeave = function() {
-            controller.backgroundColor = mainBackgroundColor;
+        controller.backgroundColor = {
+            'background-image': isProductionInstance === 'true'  ? 'linear-gradient(to bottom, #012853, #012853)' :
+                'linear-gradient(to bottom, #A80B16, #A80B16)'
         };
     }
 

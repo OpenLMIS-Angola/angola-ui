@@ -1,8 +1,6 @@
 <ng-include src="'openlmis-header/header.html'"></ng-include>
 <!-- AO-879: Visually distinguish between Test and Production Servers -->
-<div ng-controller="OpenlmisHeaderController as controller" class="navbar display-in-browser" 
-ng-mouseenter="mouseEnter()" ng-mouseleave="mouseLeave()"
-ng-style="controller.backgroundColor">
+<div ng-controller="OpenlmisHeaderController as controller" class="navbar display-in-browser" ng-style="controller.backgroundColor">
     <!-- AO-879: ends here -->
     <openlmis-navigation root-state="openlmis" class="nav navbar-nav"></openlmis-navigation>
     <openlmis-logout class="navbar-right"></openlmis-logout>
