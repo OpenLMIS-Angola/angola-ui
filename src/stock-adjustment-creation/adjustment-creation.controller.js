@@ -41,8 +41,7 @@
         // AO-805: Allow users with proper rights to edit product prices
         'OrderableResource', 'permissionService', 'ADMINISTRATION_RIGHTS', 'authorizationService',
         // AO-805: Ends here
-        'unitOfOrderableService', 'wardService', 'orderableGroupsByWard', 'WARDS_CONSTANTS', 'sourceDestinationService'
-    ];
+        'unitOfOrderableService', 'wardService', 'orderableGroupsByWard', 'WARDS_CONSTANTS', 'sourceDestinationService'];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
                         facility, orderableGroups, reasons, confirmService, messageService, user,
@@ -492,6 +491,7 @@
          * Allows inputs to add missing lot to be displayed.
          */
         function lotChanged() {
+            console.log(vm.selectedOrderableGroup[0]);
             vm.canAddNewLot = vm.selectedLot
                 && vm.selectedLot.lotCode === messageService.get('orderableGroupService.addMissingLot');
             initiateNewLotObject();
@@ -768,6 +768,7 @@
                 onSubmit();
             } catch (error) {
                 loadingModalService.close();
+                // eslint-disable-next-line no-console
                 console.error(error.message);
                 alertService.error('openlmisStateChangeError.internalApplicationError.message');
             }
