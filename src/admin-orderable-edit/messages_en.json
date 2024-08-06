@@ -8,5 +8,6 @@
   "adminOrderableEdit.unitAssignment.factor": "factor",
   "adminOrderableEdit.unitAssignment.description": "description",
   "adminOrderableEdit.unitAssignment.noUnitsFound": "Orderable has no assigned units",
-  "adminOrderableEdit.assignUnit": "Assign unit"
+  "adminOrderableEdit.assignUnit": "Assign unit",
+  "adminOrderableEdit.unit": "Unit"
 }

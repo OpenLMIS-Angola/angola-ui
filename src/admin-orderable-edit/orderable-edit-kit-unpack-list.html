@@ -1,0 +1,52 @@
+<h3>{{'adminOrderableEdit.kitUnpackList' | message}}</h3>
+<form name="saveKitUnpackListForm" id="saveKitUnpackList" class="form-inline" ng-submit="vm.saveOrderable()">
+    <section class="openlmis-table-container">
+        <div class="is-primary">
+            <button type="button" class="add" ng-click="vm.addChild()">
+                {{'adminOrderableEdit.addProduct' | message}}
+            </button>
+        </div>
+        <table>
+            <caption ng-if="!vm.children || vm.children.length === 0">
+                {{'adminOrderableEdit.noKitProductsFound' | message}}
+            </caption>
+            <thead>
+                <tr>
+                    <th>{{'adminOrderableEdit.productCode' | message}}</th>
+                    <th>{{'adminOrderableEdit.name' | message}}</th>
+                    <th>{{'adminOrderableEdit.quantity' | message}}</th>
+                    <!-- OAM-273: Start -->
+                    <th>{{'adminOrderableEdit.unit' | message}}</th>
+                    <!-- OAM-273: End -->
+                    <th>{{'adminOrderableEdit.actions' | message}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="child in vm.childrenPage">
+                    <td>{{vm.orderablesMap[child.orderable.id].productCode}}</td>
+                    <td>{{vm.orderablesMap[child.orderable.id].fullProductName}}</td>
+                    <td><input positive-integer id="quantity_{{$index}}" max="100" ng-model="child.quantity"
+                            required>
+                    </td>
+                    <!-- OAM-273: Start -->
+                    <td>
+                        <select id="unitOfOrderable" ng-model="child.unitOfOrderableId"
+                            ng-options="unit.name for unit in vm.unitOfOrderables track by unit.id"></select>
+                    </td>
+                    <!-- OAM-273: End -->
+                    <td><button ng-click="vm.removeChild(child)" id="remove_{{$index}}" type="button"
+                            class="danger">
+                            {{'adminOrderableEdit.remove' | message}}</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <openlmis-pagination list="vm.children" paged-list="vm.childrenPage" pagination-id="'kitUnpackList'" />
+    </section>
+</form>
+
+<div class="openlmis-toolbar">
+    <button ng-click="vm.goToOrderableList()">{{'adminOrderableEdit.cancel' | message}}</button>
+    <div class="button-group primary">
+        <button class="primary" type="submit" form="saveKitUnpackList">{{'adminOrderableEdit.saveKitUnpackList' | message}}</button>
+    </div>
+</div>
