@@ -18,7 +18,7 @@
     'use strict';
 
     angular
-        .module('stock-adjustment-creation')
+        .module('stock-valid-sources')
         .run(routes);
 
     routes.$inject = ['loginService', 'sourceDestinationService', 'facilityFactory', '$q', 'programService',
@@ -41,9 +41,11 @@
             });
         });
 
-        // loginService.registerPostLogoutAction(function() {
-        //     return wardService.clearWardsByFacilityOffline();
-        // });
+        loginService.registerPostLogoutAction(function() {
+            return $q.all([
+                sourceDestinationService.clearSourcesCache(),
+                sourceDestinationService.clearDestinationsCache()
+            ]);
+        });
     }
-
 })();
