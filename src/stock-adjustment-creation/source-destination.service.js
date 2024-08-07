@@ -40,6 +40,7 @@
         this.getDestinationAssignments = getDestinationAssignments;
         this.clearSourcesCache = clearSourcesCache;
         this.clearDestinationsCache = clearDestinationsCache;
+        this.cacheDestinationsAndSources = cacheDestinationsAndSources;
 
         function getSourceAssignments(programIds, facilityId) {
             var resource = $resource(stockmanagementUrlFactory('/api/validSources'));
@@ -58,7 +59,6 @@
                 page: 0,
                 size: 2147483647
             }).$promise.then(function(validSourcesPage) {
-                cacheSources(validSourcesPage.content, facilityId);
                 return $q.resolve(validSourcesPage.content);
             });
         }
@@ -80,7 +80,6 @@
                 page: 0,
                 size: 2147483647
             }).$promise.then(function(validDestinationsPage) {
-                cacheDestinations(validDestinationsPage.content, facilityId);
                 return $q.resolve(validDestinationsPage.content);
             });
         }
@@ -91,6 +90,50 @@
                 return $q.reject();
             }
             return $q.resolve(array);
+        }
+
+        function cacheDestinationsAndSources(programIds, facilityId) {
+            var destinationsResource = $resource(stockmanagementUrlFactory('/api/validDestinations'));
+            var sourcesResource = $resource(stockmanagementUrlFactory('/api/validSources'));
+
+            var sourcesPormises = programIds.map(function(programId) {
+                return sourcesResource.get({
+                    programId: programId,
+                    facilityId: facilityId,
+                    page: 0,
+                    size: 2147483647
+                }).$promise;
+            });
+
+            var destinationsPormises = programIds.map(function(programId) {
+                return destinationsResource.get({
+                    programId: programId,
+                    facilityId: facilityId,
+                    page: 0,
+                    size: 2147483647
+                }).$promise;
+            });
+
+            $q.all(sourcesPormises.concat(destinationsPormises)).then(function(responses) {
+                cacheResponses(responses, facilityId);
+            });
+        }
+
+        function cacheResponses(responses, facilityId) {
+            var threshold = Math.floor(responses.length / 2);
+            var sourcesToStore = [];
+            var destinationsToStore = [];
+
+            responses.forEach(function(response, index) {
+                var pageContent = response.content;
+                if (index < threshold) {
+                    sourcesToStore = sourcesToStore.concat(pageContent);
+                    return;
+                }
+                destinationsToStore = destinationsToStore.concat(pageContent);
+            });
+            cacheSources(sourcesToStore, facilityId);
+            cacheDestinations(destinationsToStore, facilityId);
         }
 
         function cacheSources(sources, facilityId) {

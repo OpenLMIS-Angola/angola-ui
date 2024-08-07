@@ -768,6 +768,7 @@
                 onSubmit();
             } catch (error) {
                 loadingModalService.close();
+                // eslint-disable-next-line no-console
                 console.error(error.message);
                 alertService.error('openlmisStateChangeError.internalApplicationError.message');
             }
