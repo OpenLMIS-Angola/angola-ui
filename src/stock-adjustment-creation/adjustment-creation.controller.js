@@ -724,7 +724,12 @@
 
         function onSubmit() {
             loadingModalService.open();
+
             var addedLineItems = angular.copy(vm.addedLineItems);
+            // OAM-273: add unitOfOrderableId to body of line items for unpack view.
+            var unit = getUnitOfOrderableById(vm.newItemUnitId);
+            // OAM-273: end
+
             generateKitConstituentLineItem(addedLineItems);
             var lotPromises = [],
                 errorLots = [],
@@ -732,6 +737,9 @@
 
             addedLineItems.forEach(function(lineItem) {
                 lineItem.quantity = vm.getLineItemTotalQuantity(lineItem);
+                // OAM-273: add unitOfOrderableId to body of line items for unpack view.
+                lineItem.unitOfOrderableId = unit.id;
+                // OAM-273: end
 
                 if (lineItem.lot && lineItem.$isNewItem && _.isUndefined(lineItem.lot.id) &&
                 !listContainsTheSameLot(distinctLots, lineItem.lot)) {
