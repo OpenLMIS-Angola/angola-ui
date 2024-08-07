@@ -30,8 +30,8 @@
                     </td>
                     <!-- OAM-273: Start -->
                     <td>
-                        <select id="unitOfOrderable" ng-model="child.unitOfOrderableId"
-                            ng-options="unit.name for unit in vm.unitOfOrderables track by unit.id"></select>
+                        <select id="unitOfOrderable" ng-model="child.unit"
+                            ng-options="unit.name for unit in vm.unitOfOrderables track by unit.id" required></select>
                     </td>
                     <!-- OAM-273: End -->
                     <td><button ng-click="vm.removeChild(child)" id="remove_{{$index}}" type="button"

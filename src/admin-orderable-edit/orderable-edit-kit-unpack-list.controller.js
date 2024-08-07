@@ -127,7 +127,6 @@
          * Updates the orderable and return to the orderable list on success.
          */
         function saveOrderable() {
-            console.log(vm.orderable);
             return new OrderableResource()
                 .update(vm.orderable)
                 .then(goToOrderableList);
@@ -143,7 +142,7 @@
                     id: orderable.id
                 },
                 quantity: undefined,
-                unitOfOrderableId: undefined
+                unit: undefined
             };
         }
 
