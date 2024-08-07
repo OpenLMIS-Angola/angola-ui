@@ -726,9 +726,6 @@
             loadingModalService.open();
 
             var addedLineItems = angular.copy(vm.addedLineItems);
-            // OAM-273: add unitOfOrderableId to body of line items for unpack view.
-            var unit = getUnitOfOrderableById(vm.newItemUnitId);
-            // OAM-273: end
 
             generateKitConstituentLineItem(addedLineItems);
             var lotPromises = [],
@@ -738,7 +735,7 @@
             addedLineItems.forEach(function(lineItem) {
                 lineItem.quantity = vm.getLineItemTotalQuantity(lineItem);
                 // OAM-273: add unitOfOrderableId to body of line items for unpack view.
-                lineItem.unitOfOrderableId = unit.id;
+                lineItem.unitOfOrderableId = lineItem.unit.id;
                 // OAM-273: end
 
                 if (lineItem.lot && lineItem.$isNewItem && _.isUndefined(lineItem.lot.id) &&
@@ -955,7 +952,9 @@
                 lineItem.orderable.children.forEach(function(constituent) {
                     constituent.reason = creditReason;
                     constituent.occurredDate = lineItem.occurredDate;
-                    constituent.quantity = lineItem.quantity * constituent.quantity;
+                    if (lineItem.unit.id === constituent.unit.id) {
+                        constituent.quantity = lineItem.quantity * constituent.quantity;
+                    }
                     constituentLineItems.push(constituent);
                 });
             });
