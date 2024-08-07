@@ -23,6 +23,7 @@ describe('StockAdjustmentCreationController', function() {
     beforeEach(function() {
 
         module('referencedata-lot');
+        module('openlmis-unit-add');
         module('stock-adjustment-creation', function($provide) {
             var stockEventRepositoryMock = jasmine.createSpyObj('stockEventRepository', ['create']);
             $provide.factory('StockEventRepository', function() {
@@ -53,6 +54,8 @@ describe('StockAdjustmentCreationController', function() {
             LotDataBuilder = $injector.get('LotDataBuilder');
             UNPACK_REASONS = $injector.get('UNPACK_REASONS');
             LotResource = $injector.get('LotResource');
+
+            this.unitOfOrderableService = $injector.get('unitOfOrderableService');
 
             this.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
             this.OrderableChildrenDataBuilder = $injector.get('OrderableChildrenDataBuilder');
@@ -96,6 +99,9 @@ describe('StockAdjustmentCreationController', function() {
 
             scope = rootScope.$new();
             scope.productForm = jasmine.createSpyObj('productForm', ['$setUntouched', '$setPristine']);
+
+            // returns empty array, create a simple mockup if needed to test with mocked data.
+            spyOn(this.unitOfOrderableService, 'getAll').andReturn(q.resolve([]));
 
             vm = initController(orderableGroups);
         });
@@ -414,11 +420,13 @@ describe('StockAdjustmentCreationController', function() {
         });
 
         it('should redirect with proper state params after success', function() {
+            console.log('test start');
             spyOn(stockAdjustmentCreationService, 'submitAdjustments');
             stockAdjustmentCreationService.submitAdjustments.andReturn(q.resolve());
-
             vm.submit();
             rootScope.$apply();
+
+            console.log('test end - before expect');
 
             expect(alertService.error).not.toHaveBeenCalled();
         });
