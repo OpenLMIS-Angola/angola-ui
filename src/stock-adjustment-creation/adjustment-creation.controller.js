@@ -724,7 +724,6 @@
 
         function onSubmit() {
             loadingModalService.open();
-
             var addedLineItems = angular.copy(vm.addedLineItems);
 
             generateKitConstituentLineItem(addedLineItems);
@@ -733,7 +732,6 @@
                 distinctLots = [];
 
             addedLineItems.forEach(function(lineItem) {
-                lineItem.quantity = vm.getLineItemTotalQuantity(lineItem);
                 // OAM-273: add unitOfOrderableId to body of line items for unpack view.
                 lineItem.unitOfOrderableId = lineItem.unit.id;
                 // OAM-273: end
@@ -950,13 +948,15 @@
             var constituentLineItems = [];
 
             addedLineItems.forEach(function(lineItem) {
+                lineItem.quantity = vm.getLineItemTotalQuantity(lineItem);
                 lineItem.orderable.children.forEach(function(constituent) {
-                    constituent.reason = creditReason;
-                    constituent.occurredDate = lineItem.occurredDate;
-                    if (lineItem.unit.id === constituent.unit.id) {
-                        constituent.quantity = lineItem.quantity * constituent.quantity;
-                    }
-                    constituentLineItems.push(constituent);
+                    var newConstituent = JSON.parse(JSON.stringify(constituent));
+
+                    newConstituent.reason = creditReason;
+                    newConstituent.occurredDate = lineItem.occurredDate;
+                    newConstituent.quantity = lineItem.quantity * constituent.quantity * constituent.unit.factor;
+
+                    constituentLineItems.push(newConstituent);
                 });
             });
 
