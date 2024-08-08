@@ -731,10 +731,7 @@
                 errorLots = [],
                 distinctLots = [];
 
-            console.log(addedLineItems);
             addedLineItems.forEach(function(lineItem) {
-                console.log(lineItem);
-
                 // OAM-273: add unitOfOrderableId to body of line items for unpack view.
                 lineItem.unitOfOrderableId = lineItem.unit.id;
                 // OAM-273: end
