@@ -95,8 +95,10 @@
         }
 
         function cacheSources(sources, facilityId) {
-            sources.forEach(function(source) {
+            sources.forEach(function(source, i) {
                 source.facilityId = facilityId;
+                console.log('source: ' + i);
+                console.log(source)
                 offlineSources.put(source);
             });
         }
