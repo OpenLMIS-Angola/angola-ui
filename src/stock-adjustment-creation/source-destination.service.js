@@ -88,17 +88,15 @@
 
         function checkArrayAndGetData(array) {
             if (array.length === 0) {
-                alertService.error('stockAdjustmentCreation.notCachedData');
+                alertService.info('stockAdjustmentCreation.notCachedData');
                 return $q.reject();
             }
             return $q.resolve(array);
         }
 
         function cacheSources(sources, facilityId) {
-            sources.forEach(function(source, i) {
+            sources.forEach(function(source) {
                 source.facilityId = facilityId;
-                console.log('source: ' + i);
-                console.log(source)
                 offlineSources.put(source);
             });
         }
