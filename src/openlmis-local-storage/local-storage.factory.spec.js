@@ -129,7 +129,8 @@ describe('localStorageFactory', function() {
         it('should update storage', function() {
             this.itemsLocalStorage.putAll(this.putAllItems);
 
-            expect(this.localStorageService.add).toHaveBeenCalledWith('items', angular.toJson(this.putAllItems));
+            expect(this.localStorageService.add)
+                .toHaveBeenCalledWith('items', angular.toJson(this.items.concat(this.putAllItems)));
         });
     });
 

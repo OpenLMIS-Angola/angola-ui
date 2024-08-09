@@ -107,6 +107,12 @@
                     .then(function(response) {
                         isVersioned ? database.putVersioned(response.content) : database.put(response.content);
                         return response.content;
+                    }, function(response) {
+                        if (response.status === 304) {
+                            return database.allDocsByIndex(id, versionId).then(function(result) {
+                                return result[0];
+                            });
+                        }
                     });
             }
             return $q.reject();
