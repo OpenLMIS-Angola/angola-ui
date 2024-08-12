@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('referencedata-facilities-cache run', function() {
+describe('referencedata-facility run', function() {
 
     beforeEach(function() {
         this.loginServiceSpy = jasmine.createSpyObj('loginService', [
@@ -21,7 +21,7 @@ describe('referencedata-facilities-cache run', function() {
         ]);
 
         var loginServiceSpy = this.loginServiceSpy;
-        module('referencedata-facilities-cache', function($provide) {
+        module('referencedata-facility', function($provide) {
             $provide.value('loginService', loginServiceSpy);
         });
 
@@ -35,60 +35,14 @@ describe('referencedata-facilities-cache run', function() {
             return method.calls[method.calls.length - 1];
         };
 
-        this.postLoginAction = this.getLastCall(loginServiceSpy.registerPostLoginAction).args[0];
         this.postLogoutAction = this.getLastCall(loginServiceSpy.registerPostLogoutAction).args[0];
-
-        spyOn(this.facilityService, 'cacheAllMinimal');
-        spyOn(this.facilityService, 'getFacilitiesWithoutWards');
-        spyOn(this.facilityService, 'clearMinimalFacilitiesCache');
     });
 
     describe('run block', function() {
-
-        it('should register post login action', function() {
-            expect(this.loginServiceSpy.registerPostLoginAction).toHaveBeenCalled();
-        });
 
         it('should register post logout action', function() {
             expect(this.loginServiceSpy.registerPostLogoutAction).toHaveBeenCalled();
         });
 
     });
-
-    describe('post login action', function() {
-
-        it('should set up rights', function() {
-            this.facilityService.cacheAllMinimal.andReturn(this.$q.resolve());
-
-            var success;
-            this.postLoginAction()
-                .then(function() {
-                    success = true;
-                });
-            this.$rootScope.$apply();
-
-            expect(success).toBe(true);
-            expect(this.facilityService.cacheAllMinimal).toHaveBeenCalledWith();
-        });
-
-    });
-
-    describe('post logout action', function() {
-
-        it('should clear rights', function() {
-            this.facilityService.clearMinimalFacilitiesCache.andReturn(this.$q.resolve());
-
-            var success;
-            this.postLogoutAction()
-                .then(function() {
-                    success = true;
-                });
-            this.$rootScope.$apply();
-
-            expect(success).toBe(true);
-            expect(this.facilityService.clearMinimalFacilitiesCache).toHaveBeenCalled();
-        });
-
-    });
-
 });

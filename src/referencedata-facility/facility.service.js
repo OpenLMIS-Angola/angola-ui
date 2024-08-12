@@ -61,10 +61,9 @@
         this.getUserFacilitiesForRight = getUserFacilitiesForRight;
         this.getFulfillmentFacilities = getFulfillmentFacilities;
         this.search = search;
-        this.clearFacilitiesCache = clearFacilitiesCache;
         this.getFacilitiesWithoutWards = getFacilitiesWithoutWards;
         this.getAllMinimalWithoutWards = getAllMinimalWithoutWards;
-        this.clearFacilitiesWithoutWardsCache = clearFacilitiesWithoutWardsCache;
+        this.clearCache = clearCache;
 
         /**
          * @ngdoc method
@@ -261,29 +260,8 @@
             });
         }
 
-        /**
-         * @ngdoc method
-         * @methodOf referencedata-facility.facilityService
-         * @name clearFacilitiesCache
-         *
-         * @description
-         * Deletes facilities stored in the browser cache.
-         */
-        function clearFacilitiesCache() {
-            // facilitiesPromise = undefined;
-            localStorageService.remove('facilities');
-        }
-
-        /**
-         * @ngdoc method
-         * @methodOf referencedata-facility.facilityService
-         * @name clearFacilitiesWithoutWardsCache
-         *
-         * @description
-         * Deletes facilities without wards stored in the browser cache.
-         */
-        function clearFacilitiesWithoutWardsCache() {
-            localStorageService.remove('facilitiesWithoutWards');
+        function clearCache() {
+            return facilityResource.destroy();
         }
     }
 })();

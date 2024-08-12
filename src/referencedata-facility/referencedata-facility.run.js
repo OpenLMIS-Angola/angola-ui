@@ -18,25 +18,17 @@
     'use strict';
 
     angular
-        .module('referencedata-facilities-cache')
-        .run(routes);
+        .module('referencedata-facility')
+        .run(run);
 
-    routes.$inject = ['$q', 'loginService', 'facilityService'];
+    run.$inject = ['loginService', 'facilityService'];
 
-    function routes($q, loginService, facilityService) {
-
-        loginService.registerPostLoginAction(function() {
-            return $q.all([
-                facilityService.cacheAllMinimal(),
-                facilityService.getFacilitiesWithoutWards()
-            ]);
-        });
+    function run(loginService, facilityService) {
 
         loginService.registerPostLogoutAction(function() {
-            return $q.all([
-                facilityService.clearMinimalFacilitiesCache()
-            ]);
+            return facilityService.clearCache().then(function() {});
         });
+
     }
 
 })();
