@@ -98,23 +98,37 @@
              * @ngdoc method
              * @methodOf openlmis-local-storage.localStorageFactory
              * @name putAll
-             * 
+             *
              * @description
              * Stores all objects in local storage.
-             * 
+             *
              * @param {Array} collectionToStore Array of objects to store
              */
             function putAll(collectionToStore) {
                 if (Array.isArray(collectionToStore) && collectionToStore.length > 0) {
                     executeWithStorageUpdate(function() {
-                        items = collectionToStore.map(function(item) {
-                            if (item && item.id) {
-                                removeItemBy('id', item.id);
-                            }
-                            return typeof item === 'object' ? JSON.parse(JSON.stringify(item)) : item;
-                        });
+                        items = mergeArraysByID(items, collectionToStore);
                     });
                 }
+            }
+
+            function mergeArraysByID(originalArray, newArray) {
+                var idMap = {};
+                newArray.forEach(function(obj) {
+                    idMap[obj.id] = obj;
+                });
+                return originalArray.map(function(originalObj) {
+                    var newObj = idMap[originalObj.id];
+                    if (newObj) {
+                        delete idMap[originalObj.id];
+                        return Object.assign({}, originalObj, newObj);
+                    }
+                    return originalObj;
+                }).concat(
+                    newArray.filter(function(newObj) {
+                        return idMap.hasOwnProperty(newObj.id);
+                    })
+                );
             }
 
             /**

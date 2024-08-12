@@ -17,26 +17,18 @@
 
     'use strict';
 
-    /**
-     * @module referencedata-facility
-     *
-     * @description
-     * Responsible for providing facility info to other modules.
-     */
-    angular.module('referencedata-facility', [
-        'ngResource',
-        'openlmis-auth',
-        'openlmis-permissions',
-        'openlmis-local-storage',
-        'openlmis-rights',
-        'referencedata',
-        'referencedata-program',
-        'referencedata-facility-type',
-        'referencedata-facility-operator',
-        'referencedata-geographic-zone',
-        'referencedata-user',
-        'admin-facility-view',
-        'openlmis-cached-repository'
-    ]);
+    angular
+        .module('referencedata-facility')
+        .run(run);
+
+    run.$inject = ['loginService', 'facilityService'];
+
+    function run(loginService, facilityService) {
+
+        loginService.registerPostLogoutAction(function() {
+            return facilityService.clearCache().then(function() {});
+        });
+
+    }
 
 })();

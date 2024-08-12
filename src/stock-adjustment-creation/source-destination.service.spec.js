@@ -43,7 +43,7 @@ describe('sourceDestinationService', function() {
             this.alertService = $injector.get('alertService');
             PageDataBuilder = $injector.get('PageDataBuilder');
         });
-        spyOn(this.alertService, 'error');
+        spyOn(this.alertService, 'info');
 
         this.homeFacilityId = 'home-facility-id';
 
@@ -118,7 +118,7 @@ describe('sourceDestinationService', function() {
             });
 
             expect(result[0]).toBe(this.validSources[0]);
-            expect(this.alertService.error).not.toHaveBeenCalled();
+            expect(this.alertService.info).not.toHaveBeenCalled();
         });
 
         it('should reject if offline and source assignments not found in local storage', function() {
@@ -129,7 +129,7 @@ describe('sourceDestinationService', function() {
             this.$rootScope.$apply();
 
             expect(this.offlineService.isOffline).toHaveBeenCalled();
-            expect(this.alertService.error).toHaveBeenCalled();
+            expect(this.alertService.info).toHaveBeenCalled();
         });
     });
 
@@ -186,7 +186,7 @@ describe('sourceDestinationService', function() {
             });
 
             expect(result[0]).toBe(this.validDestinations[0]);
-            expect(this.alertService.error).not.toHaveBeenCalled();
+            expect(this.alertService.info).not.toHaveBeenCalled();
         });
 
         it('should reject if offline and destination assignments not found in local storage', function() {
@@ -198,7 +198,7 @@ describe('sourceDestinationService', function() {
             this.$rootScope.$apply();
 
             expect(this.offlineService.isOffline).toHaveBeenCalled();
-            expect(this.alertService.error).toHaveBeenCalled();
+            expect(this.alertService.info).toHaveBeenCalled();
         });
     });
 

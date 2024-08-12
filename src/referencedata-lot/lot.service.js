@@ -39,6 +39,7 @@
 
         this.query = query;
         this.clearLotsOffline = clearLotsOffline;
+        this.cacheAllLots = cacheAllLots;
 
         /**
          * @ngdoc method
@@ -63,21 +64,32 @@
                 });
         }
 
+        function cacheAllLots() {
+            return lotResource.query()
+                .then(function(lots) {
+                    lotsOffline.putAll(lots.content);
+                    return lots;
+                });
+        }
+
         function getFromLocalStorage(queryParams) {
             var lots = {},
-                deferred = $q.defer(),
                 paramName = Object.keys(queryParams)[0];
             lots.content = [];
 
             queryParams[paramName].forEach(function(param) {
-                return getByParamFromLocalStorage(lots, deferred, paramName, param);
+                return getByParamFromLocalStorage(lots, paramName, param);
             });
 
-            deferred.resolve(lots);
-            return deferred.promise;
+            if (lots.content.length === 0) {
+                alertService.error('referencedataLot.lotsEmpty.offlineMessage');
+                return $q.reject();
+            }
+
+            return $q.resolve(lots);
         }
 
-        function getByParamFromLocalStorage(lots, deferred, paramName, param) {
+        function getByParamFromLocalStorage(lots, paramName, param) {
             if (paramName === 'tradeItemId') {
                 var cachedLots = lotsOffline.search({
                     tradeItemId: param
@@ -85,17 +97,12 @@
                 cachedLots.forEach(function(offlineLot) {
                     lots.content.push(offlineLot);
                 });
-                if (lots.content.length === 0) {
-                    alertService.error('referencedataLot.offlineMessage');
-                    deferred.reject();
-                }
+
             } else {
                 var offlineLot = lotsOffline.getBy(paramName, param);
-                if (!offlineLot) {
-                    alertService.error('referencedataLot.offlineMessage');
-                    deferred.reject();
+                if (offlineLot) {
+                    lots.content.push(offlineLot);
                 }
-                lots.content.push(offlineLot);
             }
         }
 

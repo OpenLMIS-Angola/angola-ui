@@ -34,8 +34,7 @@
 
         loginService.registerPostLogoutAction(function() {
             return $q.all([
-                facilityService.clearMinimalFacilitiesCache(),
-                facilityService.clearFacilitiesWithoutWardsCache()
+                facilityService.clearMinimalFacilitiesCache()
             ]);
         });
     }

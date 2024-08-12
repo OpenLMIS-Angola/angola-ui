@@ -29,31 +29,16 @@
         .service('facilityService', service);
 
     service.$inject = [
-        '$q', '$resource', 'referencedataUrlFactory', 'offlineService',
-        'localStorageFactory', 'permissionService', 'FacilityResource', 'localStorageService',
+        '$q', '$resource', 'referencedataUrlFactory', 'permissionService',
+        'FacilityResource', 'localStorageService',
         'WARDS_CONSTANTS'
     ];
 
-    function service($q, $resource, referencedataUrlFactory, offlineService,
-                     localStorageFactory, permissionService, FacilityResource, localStorageService,
-                     WARDS_CONSTANTS) {
-
-        var facilitiesOffline = localStorageFactory('facilities'),
-            facilitiesWithoutWardsOffline = localStorageFactory('facilitiesWithoutWards'),
-            facilitiesPromise,
+    function service($q, $resource, referencedataUrlFactory, permissionService,
+                     FacilityResource, localStorageService, WARDS_CONSTANTS) {
+        var
+            facilityResource = new FacilityResource(),
             resource = $resource(referencedataUrlFactory('/api/facilities/:id'), {}, {
-                getAll: {
-                    url: referencedataUrlFactory('/api/facilities/'),
-                    method: 'GET'
-                },
-                getFacilitiesWithoutWards: {
-                    url: referencedataUrlFactory('/api/facilities/'),
-                    method: 'GET'
-                },
-                query: {
-                    url: referencedataUrlFactory('/api/facilities/'),
-                    method: 'GET'
-                },
                 getAllMinimal: {
                     url: referencedataUrlFactory('/api/facilities/minimal'),
                     method: 'GET'
@@ -66,9 +51,6 @@
                 search: {
                     url: referencedataUrlFactory('/api/facilities/search'),
                     method: 'POST'
-                },
-                update: {
-                    method: 'PUT'
                 }
             });
 
@@ -79,10 +61,9 @@
         this.getUserFacilitiesForRight = getUserFacilitiesForRight;
         this.getFulfillmentFacilities = getFulfillmentFacilities;
         this.search = search;
-        this.clearFacilitiesCache = clearFacilitiesCache;
         this.getFacilitiesWithoutWards = getFacilitiesWithoutWards;
         this.getAllMinimalWithoutWards = getAllMinimalWithoutWards;
-        this.clearFacilitiesWithoutWardsCache = clearFacilitiesWithoutWardsCache;
+        this.clearCache = clearCache;
 
         /**
          * @ngdoc method
@@ -97,19 +78,10 @@
          * @return {Promise}            facility promise
          */
         function get(facilityId) {
-            var cachedFacility = facilitiesOffline.getBy('id', facilityId);
-
-            if (cachedFacility) {
-                facilitiesPromise = $q.resolve(angular.fromJson(cachedFacility));
-            } else {
-                facilitiesPromise = new FacilityResource().get(facilityId)
-                    .then(function(facility) {
-                        facilitiesOffline.put(facility);
-                        return $q.resolve(facility);
-                    });
-            }
-
-            return facilitiesPromise;
+            return facilityResource.get(facilityId)
+                .then(function(facility) {
+                    return $q.resolve(facility);
+                });
         }
 
         /**
@@ -123,16 +95,11 @@
          * @return {Promise} Array of facilities
          */
         function getFacilitiesWithoutWards() {
-            if (offlineService.isOffline()) {
-                return $q.resolve(facilitiesWithoutWardsOffline.getAll());
-            }
-
-            return resource.getAll().$promise
+            return facilityResource.getAll()
                 .then(function(response) {
-                    var facilitiesWithoutWards = response.content.filter(function(facility) {
+                    var facilitiesWithoutWards = response.filter(function(facility) {
                         return facility.type.code !== WARDS_CONSTANTS.WARD_TYPE_CODE;
                     });
-                    facilitiesWithoutWardsOffline.putAll(facilitiesWithoutWards);
                     return facilitiesWithoutWards;
                 });
         }
@@ -147,27 +114,20 @@
          * When user is offline it gets facilities from offline storage.
          * If user is online it stores all facilities into offline storage.
          *
-         * @param  {String}  queryParams      the pagination parameters
          * @param  {String}  queryParams      the search parameters
          * @return {Promise} Array of facilities
          */
-        function query(paginationParams, queryParams) {
-            if (offlineService.isOffline()) {
-                return $q.resolve(facilitiesOffline.getAll());
-            }
-            return resource.query(_.extend({}, queryParams, paginationParams)).$promise
+        function query(queryParams) {
+            return facilityResource.query(queryParams)
                 .then(function(page) {
-                    page.content.forEach(function(facility) {
-                        facilitiesOffline.put(facility);
-                    });
                     return page;
                 });
         }
 
         function getAll() {
-            return resource.getAll().$promise
+            return facilityResource.getAll()
                 .then(function(response) {
-                    return response.content;
+                    return response.content ? response.content : response;
                 });
         }
 
@@ -300,29 +260,8 @@
             });
         }
 
-        /**
-         * @ngdoc method
-         * @methodOf referencedata-facility.facilityService
-         * @name clearFacilitiesCache
-         *
-         * @description
-         * Deletes facilities stored in the browser cache.
-         */
-        function clearFacilitiesCache() {
-            facilitiesPromise = undefined;
-            localStorageService.remove('facilities');
-        }
-
-        /**
-         * @ngdoc method
-         * @methodOf referencedata-facility.facilityService
-         * @name clearFacilitiesWithoutWardsCache
-         * 
-         * @description
-         * Deletes facilities without wards stored in the browser cache.
-         */
-        function clearFacilitiesWithoutWardsCache() {
-            localStorageService.remove('facilitiesWithoutWards');
+        function clearCache() {
+            return facilityResource.destroy();
         }
     }
 })();

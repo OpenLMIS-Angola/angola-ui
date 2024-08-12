@@ -13,30 +13,28 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function() {
+describe('FacilityResource', function() {
 
-    'use strict';
+    beforeEach(function() {
+        this.OpenlmisCachedResourceMock = jasmine.createSpy('OpenlmisCachedResource');
 
-    /**
-     * @module referencedata-facility
-     *
-     * @description
-     * Responsible for providing facility info to other modules.
-     */
-    angular.module('referencedata-facility', [
-        'ngResource',
-        'openlmis-auth',
-        'openlmis-permissions',
-        'openlmis-local-storage',
-        'openlmis-rights',
-        'referencedata',
-        'referencedata-program',
-        'referencedata-facility-type',
-        'referencedata-facility-operator',
-        'referencedata-geographic-zone',
-        'referencedata-user',
-        'admin-facility-view',
-        'openlmis-cached-repository'
-    ]);
+        var OpenlmisCachedResourceMock = this.OpenlmisCachedResourceMock;
+        module('referencedata-facility', function($provide) {
+            $provide.factory('OpenlmisCachedResource', function() {
+                return OpenlmisCachedResourceMock;
+            });
+        });
 
-})();
+        inject(function($injector) {
+            this.FacilityResource = $injector.get('FacilityResource');
+        });
+    });
+
+    it('should extend OpenlmisCachedResource', function() {
+        new this.FacilityResource();
+
+        expect(this.OpenlmisCachedResourceMock).toHaveBeenCalledWith('/api/facilities', 'facilities', {
+            versioned: false
+        });
+    });
+});

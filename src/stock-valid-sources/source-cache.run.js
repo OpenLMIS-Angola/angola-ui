@@ -21,31 +21,33 @@
         .module('stock-valid-sources')
         .run(routes);
 
-    routes.$inject = ['loginService', 'sourceDestinationService', 'facilityFactory', '$q', 'programService',
-        'authorizationService'];
+    routes.$inject = ['loginService', 'sourceDestinationService', 'facilityFactory', '$q'];
 
-    function routes(loginService, sourceDestinationService, facilityFactory, $q, programService,
-                    authorizationService) {
+    function routes(loginService, sourceDestinationService, facilityFactory, $q) {
 
         loginService.registerPostLoginAction(function() {
-            var userId = authorizationService.getUser().user_id;
-            var userProgramsPromise = programService.getUserPrograms(userId);
-            var homeFacilityPromise = facilityFactory.getUserHomeFacility();
+            sourceDestinationService.clearSourcesCache();
+            var homeFacility;
 
-            $q.all([userProgramsPromise, homeFacilityPromise]).then(function(responses) {
-                var userProgramsIds = responses[0].map(function(program) {
-                    return program.id;
+            return facilityFactory.getUserHomeFacility()
+                .then(function(facility) {
+                    homeFacility = facility;
+                    var programs = homeFacility.supportedPrograms;
+                    var supportedProgramsIds = programs.map(function(program) {
+                        return program.id ? program.id : program;
+                    });
+
+                    var sources = sourceDestinationService.getSourceAssignments(
+                        supportedProgramsIds,
+                        homeFacility.id ? homeFacility.id : homeFacility
+                    );
+
+                    return sources;
+                })
+                .catch(function() {
+                    return $q.resolve();
                 });
-                var homeFacility = responses[1];
-                sourceDestinationService.cacheDestinationsAndSources(userProgramsIds, homeFacility.id);
-            });
-        });
-
-        loginService.registerPostLogoutAction(function() {
-            return $q.all([
-                sourceDestinationService.clearSourcesCache(),
-                sourceDestinationService.clearDestinationsCache()
-            ]);
         });
     }
+
 })();

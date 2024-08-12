@@ -18,25 +18,29 @@
     'use strict';
 
     /**
-     * @module referencedata-facility
+     * @ngdoc service
+     * @name referencedata-facility.FacilityResource
      *
      * @description
-     * Responsible for providing facility info to other modules.
+     * Implementation of the FacilityResource interface. Communicates with the REST API of the OpenLMIS
+     * server.
      */
-    angular.module('referencedata-facility', [
-        'ngResource',
-        'openlmis-auth',
-        'openlmis-permissions',
-        'openlmis-local-storage',
-        'openlmis-rights',
-        'referencedata',
-        'referencedata-program',
-        'referencedata-facility-type',
-        'referencedata-facility-operator',
-        'referencedata-geographic-zone',
-        'referencedata-user',
-        'admin-facility-view',
-        'openlmis-cached-repository'
-    ]);
+    angular
+        .module('referencedata-facility')
+        .factory('FacilityResource', FacilityResource);
 
+    FacilityResource.$inject = ['OpenlmisCachedResource', 'classExtender'];
+
+    function FacilityResource(OpenlmisCachedResource, classExtender) {
+
+        classExtender.extend(FacilityResource, OpenlmisCachedResource);
+
+        return FacilityResource;
+
+        function FacilityResource() {
+            this.super('/api/facilities', 'facilities', {
+                versioned: false
+            });
+        }
+    }
 })();
