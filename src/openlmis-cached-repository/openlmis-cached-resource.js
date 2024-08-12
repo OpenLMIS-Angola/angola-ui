@@ -102,7 +102,6 @@
                         return result[0];
                     });
                 }
-
                 return openlmisResource.get(id, versionId)
                     .then(function(response) {
                         isVersioned ? database.putVersioned(response.content) : database.put(response.content);
@@ -209,8 +208,6 @@
                     })
                     .catch(function(error) {
                         alertService.error(config.offlineMessage);
-                        console.log(docId);
-                        console.log(database);
                         return $q.reject(error);
                     });
             }

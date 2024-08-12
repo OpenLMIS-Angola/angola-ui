@@ -13,11 +13,11 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('source-cache run', function() {
+describe('full-stock-card-summary-cache run', function() {
 
     beforeEach(function() {
         var context = this;
-        module('stock-valid-sources');
+        module('stock-products');
         module('referencedata-user', function($provide) {
             context.loginServiceSpy = jasmine.createSpyObj('loginService', [
                 'registerPostLoginAction', 'registerPostLogoutAction'
@@ -28,12 +28,19 @@ describe('source-cache run', function() {
         inject(function($injector) {
             this.$rootScope = $injector.get('$rootScope');
             this.$q = $injector.get('$q');
-            this.sourceDestinationService = $injector.get('sourceDestinationService');
             this.facilityFactory = $injector.get('facilityFactory');
             this.ProgramDataBuilder = $injector.get('ProgramDataBuilder');
             this.FacilityDataBuilder = $injector.get('FacilityDataBuilder');
             this.UserDataBuilder = $injector.get('UserDataBuilder');
+            this.StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
+            this.CanFulfillForMeEntryDataBuilder = $injector.get('CanFulfillForMeEntryDataBuilder');
+            this.PageDataBuilder = $injector.get('PageDataBuilder');
+            this.StockCardSummaryResource = $injector.get('StockCardSummaryResource');
+            this.permissionService = $injector.get('permissionService');
+            this.STOCKMANAGEMENT_RIGHTS = $injector.get('STOCKMANAGEMENT_RIGHTS');
         });
+
+        this.user = new this.UserDataBuilder().build();
 
         this.program1 = new this.ProgramDataBuilder().build();
         this.program2 = new this.ProgramDataBuilder().build();
@@ -47,24 +54,28 @@ describe('source-cache run', function() {
             .withSupportedPrograms(this.programs)
             .build();
 
-        this.user = new this.UserDataBuilder().build();
+        this.stockCardSummary1 = new this.StockCardSummaryDataBuilder()
+            .withCanFulfillForMeEntry(new this.CanFulfillForMeEntryDataBuilder()
+                .withoutStockCard()
+                .buildJson())
+            .withCanFulfillForMeEntry(new this.CanFulfillForMeEntryDataBuilder()
+                .buildJson())
+            .buildJson();
+        this.stockCardSummary2 = new this.StockCardSummaryDataBuilder()
+            .withCanFulfillForMeEntry(new this.CanFulfillForMeEntryDataBuilder()
+                .buildJson())
+            .buildJson();
 
-        this.sourceAssignments = [{
-            id: 'source-one',
-            facilityTypeId: 'fac-type-id-one',
-            programid: 'program-id-one'
-        }, {
-            id: 'source-two',
-            facilityTypeId: 'fac-type-id-two',
-            programid: 'program-id-two'
-        }];
+        this.summariesPage = new this.PageDataBuilder()
+            .withContent([this.stockCardSummary1, this.stockCardSummary2])
+            .build();
 
         this.postLoginAction = getLastCall(this.loginServiceSpy.registerPostLoginAction).args[0];
 
         spyOn(this.facilityFactory, 'getUserHomeFacility').andReturn(this.$q.resolve(this.homeFacility));
-        spyOn(this.sourceDestinationService, 'getSourceAssignments')
-            .andReturn(this.$q.resolve(this.sourceAssignments));
-        spyOn(this.sourceDestinationService, 'clearSourcesCache');
+        spyOn(this.StockCardSummaryResource.prototype, 'query').andReturn(this.$q.resolve(this.summariesPage));
+        spyOn(this.StockCardSummaryResource.prototype, 'deleteAll');
+        spyOn(this.permissionService, 'hasPermission').andReturn(this.$q.when(true));
     });
 
     describe('run block', function() {
@@ -77,13 +88,6 @@ describe('source-cache run', function() {
 
     describe('post login action', function() {
 
-        it('should clear valid sources cache', function() {
-            this.postLoginAction(this.user);
-            this.$rootScope.$apply();
-
-            expect(this.sourceDestinationService.clearSourcesCache).toHaveBeenCalled();
-        });
-
         it('should get user home facility', function() {
             this.postLoginAction(this.user);
             this.$rootScope.$apply();
@@ -91,20 +95,30 @@ describe('source-cache run', function() {
             expect(this.facilityFactory.getUserHomeFacility).toHaveBeenCalled();
         });
 
-        it('should not get sources if user has no home facility', function() {
+        it('should not query stock card summaries if user has no home facility', function() {
             this.facilityFactory.getUserHomeFacility.andReturn(this.$q.reject());
 
             this.postLoginAction(this.user);
             this.$rootScope.$apply();
 
-            expect(this.sourceDestinationService.getSourceAssignments).not.toHaveBeenCalled();
+            expect(this.StockCardSummaryResource.prototype.query).not.toHaveBeenCalled();
         });
 
-        it('should get valid sources', function() {
+        it('should not get stock card summaries page', function() {
+            var context = this;
+            this.permissionService.hasPermission.andCallFake(function(userId, permission) {
+                if (context.user.user_id === userId &&
+                    permission.right === context.STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW &&
+                    permission.programId === 'not-existing-id' &&
+                    permission.facilityId === context.homeFacility.id) {
+                    return context.$q.resolve();
+                }
+                return context.$q.reject();
+            });
             this.postLoginAction(this.user);
             this.$rootScope.$apply();
 
-            expect(this.sourceDestinationService.getSourceAssignments).toHaveBeenCalled();
+            expect(this.StockCardSummaryResource.prototype.query).not.toHaveBeenCalled();
         });
 
     });

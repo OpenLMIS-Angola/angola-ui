@@ -29,20 +29,15 @@
         .service('facilityService', service);
 
     service.$inject = [
-        '$q', '$resource', 'referencedataUrlFactory', 'offlineService',
-        'localStorageFactory', 'permissionService', 'FacilityResource', 'localStorageService',
+        '$q', '$resource', 'referencedataUrlFactory', 'permissionService',
+        'FacilityResource', 'localStorageService',
         'WARDS_CONSTANTS'
     ];
 
-    function service($q, $resource, referencedataUrlFactory, offlineService,
-                     localStorageFactory, permissionService, FacilityResource, localStorageService,
-                     WARDS_CONSTANTS) {
-
+    function service($q, $resource, referencedataUrlFactory, permissionService,
+                     FacilityResource, localStorageService, WARDS_CONSTANTS) {
         var
-            // facilitiesOffline = localStorageFactory('facilities'),
             facilityResource = new FacilityResource(),
-            // facilitiesWithoutWardsOffline = localStorageFactory('facilitiesWithoutWards'),
-            // facilitiesPromise,
             resource = $resource(referencedataUrlFactory('/api/facilities/:id'), {}, {
                 getAllMinimal: {
                     url: referencedataUrlFactory('/api/facilities/minimal'),
@@ -57,10 +52,6 @@
                     url: referencedataUrlFactory('/api/facilities/search'),
                     method: 'POST'
                 }
-                // ,
-                // update: {
-                //     method: 'PUT'
-                // }
             });
 
         this.get = get;
@@ -88,18 +79,10 @@
          * @return {Promise}            facility promise
          */
         function get(facilityId) {
-            // var cachedFacility = facilitiesOffline.getBy('id', facilityId);
-
-            // if (cachedFacility) {
-            //     facilitiesPromise = $q.resolve(angular.fromJson(cachedFacility));
-            // } else {
             return facilityResource.get(facilityId)
                 .then(function(facility) {
                     return $q.resolve(facility);
                 });
-            // }
-
-            // return facilitiesPromise;
         }
 
         /**
@@ -132,27 +115,20 @@
          * When user is offline it gets facilities from offline storage.
          * If user is online it stores all facilities into offline storage.
          *
-         * @param  {String}  queryParams      the pagination parameters
          * @param  {String}  queryParams      the search parameters
          * @return {Promise} Array of facilities
          */
-        function query(paginationParams, queryParams) {
-            // if (offlineService.isOffline()) {
-            //     return $q.resolve(facilitiesOffline.getAll());
-            // }
-            return facilityResource.query(_.extend({}, queryParams, paginationParams)).$promise
+        function query(queryParams) {
+            return facilityResource.query(queryParams)
                 .then(function(page) {
-                    // page.content.forEach(function(facility) {
-                    //     facilitiesOffline.put(facility);
-                    // });
                     return page;
                 });
         }
 
         function getAll() {
-            return facilityResource.getAll().$promise
+            return facilityResource.getAll()
                 .then(function(response) {
-                    return response.content;
+                    return response.content ? response.content : response;
                 });
         }
 

@@ -34,7 +34,6 @@ describe('FacilityResource', function() {
         new this.FacilityResource();
 
         expect(this.OpenlmisCachedResourceMock).toHaveBeenCalledWith('/api/facilities', 'facilities', {
-            paginated: true,
             versioned: false
         });
     });

@@ -155,7 +155,7 @@ describe('lotService', function() {
             expect(result).toBeUndefined();
             expect(this.offlineService.isOffline).toHaveBeenCalled();
             expect(this.lotsStorage.put).not.toHaveBeenCalled();
-            expect(this.alertService.error).toHaveBeenCalledWith('referencedataLot.offlineMessage');
+            expect(this.alertService.error).toHaveBeenCalledWith('referencedataLot.lotsEmpty.offlineMessage');
         });
 
         it('should reject if lot not found by tradeItemId in local storage', function() {
@@ -178,7 +178,7 @@ describe('lotService', function() {
             expect(result).toBeUndefined();
             expect(this.offlineService.isOffline).toHaveBeenCalled();
             expect(this.lotsStorage.put).not.toHaveBeenCalled();
-            expect(this.alertService.error).toHaveBeenCalledWith('referencedataLot.offlineMessage');
+            expect(this.alertService.error).toHaveBeenCalledWith('referencedataLot.lotsEmpty.offlineMessage');
         });
     });
 });

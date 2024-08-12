@@ -10,5 +10,6 @@
     "adjustmentCreation.totalQuantity": "Total quantity",
     "adjustmentCreation.itemDestination": "Item destination",
     "adjustmentCreation.receivingWardSelect": "Receiving ward",
-    "stockAdjustmentCreation.notCachedData": "Your home facility or it's wards does not have any valid sources. You might need to go online to download or set up data"
+    "adjustmentCreation.notCachedData.title": "No cached data",
+    "adjustmentCreation.notCachedData": "Your home facility or it's wards does not have any valid sources. You might need to go online to download or set up data"
 }

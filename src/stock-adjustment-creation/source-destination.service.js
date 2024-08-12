@@ -58,7 +58,6 @@
                 page: 0,
                 size: 2147483647
             }).$promise.then(function(validSourcesPage) {
-                console.log(validSourcesPage);
                 cacheSources(validSourcesPage.content, facilityId);
                 return $q.resolve(validSourcesPage.content);
             });
@@ -88,7 +87,10 @@
 
         function checkArrayAndGetData(array) {
             if (array.length === 0) {
-                alertService.info('stockAdjustmentCreation.notCachedData');
+                alertService.info({
+                    message: 'adjustmentCreation.notCachedData',
+                    title: 'adjustmentCreation.notCachedData.title'
+                });
                 return $q.reject();
             }
             return $q.resolve(array);
@@ -97,15 +99,15 @@
         function cacheSources(sources, facilityId) {
             sources.forEach(function(source) {
                 source.facilityId = facilityId;
-                offlineSources.put(source);
             });
+            offlineSources.putAll(sources);
         }
 
         function cacheDestinations(destinations, facilityId) {
             destinations.forEach(function(destination) {
                 destination.facilityId = facilityId;
-                offlineDestinations.put(destination);
             });
+            offlineDestinations.putAll(destinations);
         }
 
         function clearSourcesCache() {

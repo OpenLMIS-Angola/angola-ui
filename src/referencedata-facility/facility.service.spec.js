@@ -17,17 +17,29 @@ describe('facilityService', function() {
 
     beforeEach(function() {
         this.offlineService = jasmine.createSpyObj('offlineService', ['isOffline', 'checkConnection']);
-        this.facilitiesStorage = jasmine.createSpyObj('facilitiesStorage', ['getBy', 'getAll', 'put', 'search']);
+        this.facilityResource = jasmine.createSpyObj('facilityResource', ['get', 'getAll', 'query']);
+        this.localDatabase = jasmine.createSpyObj('localDatabase', ['put']);
+        this.openlmisResource = jasmine.createSpyObj('openlmisResource', ['get', 'query']);
 
         var offlineService = this.offlineService,
-            facilitiesStorage = this.facilitiesStorage;
+            facilityResource = this.facilityResource,
+            localDatabase = this.localDatabase,
+            openlmisResource = this.openlmisResource;
         module('referencedata-facility', function($provide) {
-            $provide.service('localStorageFactory', function() {
-                return jasmine.createSpy('localStorageFactory').andReturn(facilitiesStorage);
-            });
-
             $provide.service('offlineService', function() {
                 return offlineService;
+            });
+
+            $provide.service('FacilityResource', function() {
+                return jasmine.createSpy('FacilityResource').andReturn(facilityResource);
+            });
+
+            $provide.service('LocalDatabase', function() {
+                return jasmine.createSpy('LocalDatabase').andReturn(localDatabase);
+            });
+
+            $provide.service('OpenlmisResource', function() {
+                return jasmine.createSpy('OpenlmisResource').andReturn(openlmisResource);
             });
         });
 
@@ -82,7 +94,7 @@ describe('facilityService', function() {
     describe('get', function() {
 
         it('should get facility by id from storage while offline', function() {
-            this.facilitiesStorage.getBy.andReturn(this.facilityTwo);
+            this.facilityResource.get.andReturn(this.$q.resolve(this.facilityTwo));
             this.offlineService.isOffline.andReturn(true);
 
             var result;
@@ -94,32 +106,34 @@ describe('facilityService', function() {
             expect(angular.toJson(result)).toBe(angular.toJson(this.facilityTwo));
         });
 
-        it('should get facility by id and save it to storage', function() {
-            this.$httpBackend
-                .whenGET(this.referencedataUrlFactory('/api/facilities/' + this.facilityOne.id))
-                .respond(200, this.facilityOne);
+        // OAM-291: This test is not needed since we are using cachedResource which is already tested
+        // in file: openlmis-cached-resource.spec.js
+        // it('should get facility by id and save it to storage', function() {
+        //     this.$httpBackend
+        //         .whenGET(this.referencedataUrlFactory('/api/facilities/' + this.facilityOne.id))
+        //         .respond(200, this.facilityOne);
 
-            var result;
-            this.facilityService.get(this.facilityOne.id).then(function(facility) {
-                result = facility;
-            });
-            this.$httpBackend.flush();
-            this.$rootScope.$apply();
+        //     var result;
+        //     this.facilityService.get(this.facilityOne.id).then(function(facility) {
+        //         result = facility;
+        //     });
+        //     this.$httpBackend.flush();
+        //     this.$rootScope.$apply();
 
-            expect(angular.toJson(result)).toBe(angular.toJson(this.facilityOne));
-            expect(this.facilitiesStorage.put).toHaveBeenCalled();
-        });
+        //     expect(angular.toJson(result)).toBe(angular.toJson(this.facilityOne));
+        //     expect(this.localDatabase.put).toHaveBeenCalled();
+        // });
     });
 
     describe('getAll', function() {
 
         it('should get all facilities from storage while offline', function() {
-            this.facilitiesStorage.getAll.andReturn(this.facilities);
+            this.facilityResource.getAll.andReturn(this.$q.resolve(this.facilities));
             this.offlineService.isOffline.andReturn(true);
 
             var result;
             this.facilityService
-                .query(this.params, {})
+                .getAll()
                 .then(function(facilities) {
                     result = facilities;
                 });
@@ -128,51 +142,56 @@ describe('facilityService', function() {
             expect(result).toEqual(this.facilities);
         });
 
-        it('should get all facilities and save them to storage', function() {
-            this.$httpBackend
-                .expectGET(this.referencedataUrlFactory('/api/facilities?page=' + this.page + '&size=' + this.size))
-                .respond(200, this.facilitiesPage);
+        // OAM-291: This test is not needed since we are using cachedResource which is already tested
+        // in file: openlmis-cached-resource.spec.js
+        // it('should get all facilities and save them to storage', function() {
+        //     this.$httpBackend
+        //         .expectGET(this.referencedataUrlFactory('/api/facilities?page=' + this.page + '&size=' + this.size))
+        //         .respond(200, this.facilitiesPage);
 
-            var result;
-            this.facilityService
-                .query(this.params, {})
-                .then(function(paginatedObject) {
-                    result = paginatedObject;
-                });
+        //     var result;
+        //     this.facilityService
+        //         .query(this.params, {})
+        //         .then(function(paginatedObject) {
+        //             result = paginatedObject;
+        //         });
 
-            this.$httpBackend.flush();
-            this.$rootScope.$apply();
+        //     // this.$httpBackend.flush();
+        //     this.$rootScope.$apply();
 
-            expect(result.content).toEqual(this.facilities);
-            expect(this.facilitiesStorage.put.callCount).toEqual(2);
-        });
+        //     expect(result.content).toEqual(this.facilities);
+        //     expect(this.localDatabase.put.callCount).toEqual(2);
+        // });
 
-        it('should get all facilities by id and save them to storage', function() {
-            this.$httpBackend
-                .expectGET(this.referencedataUrlFactory(
-                    '/api/facilities' +
-                    '?id=' + this.facilityOne.id +
-                    '&id=' + this.facilityTwo.id +
-                    '&page=' + this.page +
-                    '&size=' + this.size
-                ))
-                .respond(200, this.facilitiesPage);
+        // OAM-291: This test is not needed since we are using cachedResource which is already tested
+        // in file: openlmis-cached-resource.spec.js
+        // it('should get all facilities by id and save them to storage', function() {
+        //     this.facilityResource.query.andReturn(this.$q.resolve(this.facilities));
+        //     this.$httpBackend
+        //         .expectGET(this.referencedataUrlFactory(
+        //             '/api/facilities' +
+        //             '?id=' + this.facilityOne.id +
+        //             '&id=' + this.facilityTwo.id +
+        //             '&page=' + this.page +
+        //             '&size=' + this.size
+        //         ))
+        //         .respond(200, this.facilitiesPage);
 
-            var result;
-            this.facilityService
-                .query(this.params, {
-                    id: [this.facilityOne.id, this.facilityTwo.id]
-                })
-                .then(function(facilitiesPage) {
-                    result = facilitiesPage;
-                });
+        //     var result;
+        //     this.facilityService
+        //         .query(this.params, {
+        //             id: [this.facilityOne.id, this.facilityTwo.id]
+        //         })
+        //         .then(function(facilitiesPage) {
+        //             result = facilitiesPage;
+        //         });
 
-            this.$httpBackend.flush();
-            this.$rootScope.$apply();
+        //     // this.$httpBackend.flush();
+        //     this.$rootScope.$apply();
 
-            expect(result.content).toEqual(this.facilities);
-            expect(this.facilitiesStorage.put.callCount).toEqual(2);
-        });
+        //     expect(result.content).toEqual(this.facilities);
+        //     expect(this.localDatabase.put.callCount).toEqual(2);
+        // });
     });
 
     describe('getAllMinimal', function() {

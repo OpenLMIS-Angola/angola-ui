@@ -39,7 +39,6 @@
 
         function FacilityResource() {
             this.super('/api/facilities', 'facilities', {
-                paginated: true,
                 versioned: false
             });
         }
