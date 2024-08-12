@@ -21,14 +21,10 @@
         .module('referencedata-facility')
         .run(run);
 
-    run.$inject = ['loginService', 'facilityService'];
+    run.$inject = [];
 
-    function run(loginService, facilityService) {
-
-        loginService.registerPostLogoutAction(function() {
-            return facilityService.clearCache().then(function() {});
-        });
-
+    function run() {
+        // cache from pouchdb cannot be cleard so the post logout action declared here is not needed
     }
 
 })();

@@ -41,7 +41,6 @@
         OpenlmisCachedResource.prototype.create = create;
         OpenlmisCachedResource.prototype.delete = deleteObject;
         OpenlmisCachedResource.prototype.deleteAll = deleteAll;
-        OpenlmisCachedResource.prototype.destroy = destroy;
         OpenlmisCachedResource.prototype.throwMethodNotSupported = throwMethodNotSupported;
 
         return OpenlmisCachedResource;
@@ -416,11 +415,6 @@
                 .catch(function(error) {
                     return $q.reject(error);
                 });
-        }
-
-        function destroy() {
-            var database = this.database;
-            return database.destroy();
         }
 
         /**

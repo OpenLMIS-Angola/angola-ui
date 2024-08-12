@@ -63,7 +63,6 @@
         this.search = search;
         this.getFacilitiesWithoutWards = getFacilitiesWithoutWards;
         this.getAllMinimalWithoutWards = getAllMinimalWithoutWards;
-        this.clearCache = clearCache;
 
         /**
          * @ngdoc method
@@ -258,10 +257,6 @@
             }).$promise.then(function(response) {
                 return response.content;
             });
-        }
-
-        function clearCache() {
-            return facilityResource.destroy();
         }
     }
 })();
