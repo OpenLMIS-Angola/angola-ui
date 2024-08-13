@@ -21,9 +21,11 @@
         .module('stock-valid-sources')
         .run(routes);
 
-    routes.$inject = ['loginService', 'sourceDestinationService', 'facilityFactory', '$q'];
+    routes.$inject = ['loginService', 'sourceDestinationService', 'facilityFactory', '$q', 'wardService',
+        'WARDS_CONSTANTS'];
 
-    function routes(loginService, sourceDestinationService, facilityFactory, $q) {
+    function routes(loginService, sourceDestinationService, facilityFactory, $q, wardService,
+                    WARDS_CONSTANTS) {
 
         loginService.registerPostLoginAction(function() {
             sourceDestinationService.clearSourcesCache();
@@ -42,12 +44,32 @@
                         homeFacility.id ? homeFacility.id : homeFacility
                     );
 
-                    return sources;
+                    return getHomeFacilityWards(homeFacility)
+                        .then(function(response) {
+                            var wards = response.content;
+                            if (wards.length) {
+                                var wardsPromise = sourceDestinationService
+                                    .getSourceAssignments(supportedProgramsIds, wards[0].id);
+                                return $q.all([sources, wardsPromise]);
+                            }
+                            return sources;
+                        })
+                        .catch(function() {
+                            return sources;
+                        });
                 })
                 .catch(function() {
                     return $q.resolve();
                 });
         });
+
+        function getHomeFacilityWards(homeFacility) {
+            return wardService.getWardsByFacility({
+                zoneId: homeFacility.geographicZone.id,
+                sort: 'code,asc',
+                type: WARDS_CONSTANTS.WARD_TYPE_CODE
+            });
+        }
     }
 
 })();

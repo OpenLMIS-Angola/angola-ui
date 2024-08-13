@@ -420,13 +420,10 @@ describe('StockAdjustmentCreationController', function() {
         });
 
         it('should redirect with proper state params after success', function() {
-            console.log('test start');
             spyOn(stockAdjustmentCreationService, 'submitAdjustments');
             stockAdjustmentCreationService.submitAdjustments.andReturn(q.resolve());
             vm.submit();
             rootScope.$apply();
-
-            console.log('test end - before expect');
 
             expect(alertService.error).not.toHaveBeenCalled();
         });
