@@ -15,5 +15,6 @@
   "applicationTitle": "SIGECA",
   "defaultLanguage": "pt",
   "showRequisitionLessOrder": "true",
-  "PRODUCTION_INSTANCE":false
+  "PRODUCTION_INSTANCE":false,
+  "supportedRTLLanguages": ["pt"]
 }

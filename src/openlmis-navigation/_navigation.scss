@@ -172,6 +172,7 @@ header > .navbar {
 
   .dropdown-menu {
     top: 90%;
+    @include text-align(left);
     background-image: linear-gradient(to bottom, $background-color 10%, $background-color-alt 100%);
     li > a:hover{
       background-color: transparent;

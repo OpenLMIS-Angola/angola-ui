@@ -1,0 +1,55 @@
+/*
+Breadcrumbs
+
+Every OpenLMIS page should have breadcrumbs at the top, allowing the user to
+understand where they are in the application, and go back to a previous page.
+
+markup:
+<ol class="breadcrumb">
+  <li><a href="#">Administration</a></li>
+  <li><a href="#">Programs</a></li>
+  <li class="active">Maternal and Child Health</li>
+</ol>
+
+
+Styleguide 2.1
+*/
+@mixin breadcrumb-no-before() {
+    [dir="ltr"] & {
+        > li:first-child {
+			&::before {
+				display: none;
+			}
+		}
+    }
+    [dir="rtl"] & {
+        > li:first-child {
+			&::before {
+				display: none;
+			}
+		}
+    }
+}
+
+@mixin breadcrumb-before-content() {
+    [dir="ltr"] & {
+        content: '/ ';
+    }
+    [dir="rtl"] & {
+        content: '\\ ';
+    }
+}
+
+.breadcrumb {
+	background-color: transparent;
+	padding: $space-size/4 0px;
+	margin-bottom: 0px;
+	> li {
+		&::before{
+			@include breadcrumb-before-content();
+			padding: 0px 0.5em;
+		}
+	}
+
+	@include breadcrumb-no-before();
+}
