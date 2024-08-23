@@ -726,6 +726,7 @@
             loadingModalService.open();
             var addedLineItems = angular.copy(vm.addedLineItems);
 
+            calculateLineItemsQuantity(addedLineItems);
             generateKitConstituentLineItem(addedLineItems);
             var lotPromises = [],
                 errorLots = [],
@@ -935,6 +936,12 @@
             return itemExistsOnList;
         }
 
+        function calculateLineItemsQuantity(addedLineItems) {
+            addedLineItems.forEach(function(lineItem) {
+                lineItem.quantity = vm.getLineItemTotalQuantity(lineItem);
+            });
+        }
+
         function generateKitConstituentLineItem(addedLineItems) {
             if (adjustmentType.state !== ADJUSTMENT_TYPE.KIT_UNPACK.state) {
                 return;
@@ -948,7 +955,6 @@
             var constituentLineItems = [];
 
             addedLineItems.forEach(function(lineItem) {
-                lineItem.quantity = vm.getLineItemTotalQuantity(lineItem);
                 lineItem.orderable.children.forEach(function(constituent) {
                     var newConstituent = JSON.parse(JSON.stringify(constituent));
 
