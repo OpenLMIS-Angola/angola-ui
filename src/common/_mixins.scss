@@ -20,6 +20,15 @@
     }
 }
 
+@mixin direction() {
+    [dir="ltr"] & {
+        direction: ltr;
+    }
+    [dir="rtl"] & {
+        direction: rtl;
+    }
+}
+
 @mixin padding-right($value) {
     [dir="ltr"] & {
         padding-right: $value;

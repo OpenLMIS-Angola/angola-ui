@@ -21,8 +21,8 @@ Styleguide 6.0
     background: $shadow;
     display: block;
     bottom: 0;
-    left: 0;
-    right: 0;
+    @include left(0);
+    @include right(0);
     padding: 0.5em;
     position: fixed;
     z-index: 15;
@@ -35,7 +35,7 @@ Styleguide 6.0
     h1, h2, h3, h4, h5, h6 {
         padding: 0px;
         & ~ * {
-            margin-left: 0px;
+            @include margin-left(0px);
         }
     }
 
