@@ -67,24 +67,6 @@
          * @return {Promise}      the promise resolving to combined JSON which can be used for creating instance of the
          *                        User class
          */
-        // function create(user) {
-        //     var authUserResource = this.authUserResource,
-        //         userContactDetailsResource = this.userContactDetailsResource;
-        //
-        //     return this.referenceDataUserResource
-        //         .update(user.getBasicInformation())
-        //         .then(function(referenceDataUser) {
-        //             user.id = referenceDataUser.id;
-        //             return userContactDetailsResource.update(user.getContactDetails()).then(function() {
-        //                 // If the first request is successful, then execute the second request
-        //                 return authUserResource.create(user.getAuthDetails());
-        //             })
-        //                 .catch(function(error) {
-        //                     // Handle the error if the first request fails
-        //                     console.error('Failed to update contact details: ', error);
-        //                 });
-        //         });
-        // }
 
         function create(user) {
             var authUserResource = this.authUserResource,
