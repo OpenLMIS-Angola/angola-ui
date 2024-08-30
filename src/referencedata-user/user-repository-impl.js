@@ -94,8 +94,21 @@
                 .update(user.getBasicInformation())
                 .then(function(referenceDataUser) {
                     user.id = referenceDataUser.id;
+
+                    var userContactDetailsPromise = $q(function(resolve, reject) {
+                        userContactDetailsResource.update(user.getContactDetails()).then(function(response) {
+                            resolve(response);
+                        }, function(error) {
+                            if (error.status === 400) {
+                                resolve(null);
+                            } else {
+                                reject(error);
+                            }
+                        });
+                    });
+
                     return $q.all([
-                        userContactDetailsResource.update(user.getContactDetails()),
+                        userContactDetailsPromise,
                         authUserResource.create(user.getAuthDetails())
                     ]).then(function(responses) {
                         return combineResponses(referenceDataUser, responses[0], responses[1]);
