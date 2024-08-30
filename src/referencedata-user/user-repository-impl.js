@@ -81,7 +81,7 @@
                         userContactDetailsResource.update(user.getContactDetails()).then(function(response) {
                             resolve(response);
                         }, function(error) {
-                            if (error.status === 400) {
+                            if (error && error.status === 400) {
                                 resolve(null);
                             } else {
                                 reject(error);
@@ -142,7 +142,7 @@
                 _this.userContactDetailsResource.get(id).then(function(response) {
                     resolve(response);
                 }, function(error) {
-                    if (error.status === 404) {
+                    if (error && error.status === 404) {
                         resolve(null);
                     } else {
                         reject(error);
