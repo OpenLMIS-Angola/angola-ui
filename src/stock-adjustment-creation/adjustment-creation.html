@@ -49,7 +49,10 @@
                         ng-change="vm.expirationDateChanged()"
                         openlmis-invalid="{{vm.newLot.expirationDateInvalid | message}}" />
                 </div>
-                <div ng-if="vm.selectedLot && vm.unitsOfOrderable">
+                <div ng-if="vm.selectedOrderableGroup &&
+                                (!vm.selectedOrderableHasLots ||
+                                 (vm.selectedOrderableHasLots && vm.selectedLot)) &&
+                                vm.unitsOfOrderable">
                     <label for="newItemUnit">
                         {{:: 'adjustmentCreation.unit' | message }}
                     </label>
