@@ -35,7 +35,7 @@
                     return new UserService().get($stateParams.id);
                 },
                 pendingVerificationEmail: function(user, authUserService) {
-                    if (user.id) {
+                    if (user.id && user.email) {
                         return authUserService.getVerificationEmail(user.id);
                     }
 
