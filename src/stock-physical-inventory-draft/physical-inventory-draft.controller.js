@@ -479,6 +479,13 @@
             });
         }
 
+        function setItemsWithUnit() {
+            var itemsWithUnit = draft.lineItems.filter(function(item) {
+                return item.unit;
+            });
+            draft.lineItems = itemsWithUnit;
+        }
+
         /**
          * @ngdoc method
          * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
@@ -488,6 +495,7 @@
          * Save physical inventory draft.
          */
         vm.saveDraft = function(withNotification) {
+            setItemsWithUnit();
             multiplyUnitsByFactor(draft.lineItems);
             loadingModalService.open();
             return physicalInventoryFactory.saveDraft(draft).then(function() {
@@ -614,7 +622,7 @@
 
                     draft.occurredDate = resolvedData.occurredDate;
                     draft.signature = resolvedData.signature;
-
+                    setItemsWithUnit();
                     return saveLots(draft, function() {
                         physicalInventoryService.submitPhysicalInventory(draft).then(function() {
                             notificationService.success('stockPhysicalInventoryDraft.submitted');
@@ -888,10 +896,7 @@
 
         function getUnitById(unitId) {
             if (!unitId) {
-                return {
-                    name: '-',
-                    factor: 1
-                };
+                return undefined;
             }
 
             return vm.unitsOfOrderable.find(function(unit) {
