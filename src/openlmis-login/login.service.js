@@ -75,7 +75,7 @@
                 })
                 // AO-223: translate error message after passing bad credentials to login modal
                 .catch(function(message) {
-                    alertService.error('openlmisServerErrorHandler.badCredentials', message);
+                    alertService.error('openlmisServerErrorHandler.badCredentials');
                     return $q.reject(message);
                 });
             // AO-223: ends here

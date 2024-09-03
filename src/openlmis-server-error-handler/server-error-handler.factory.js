@@ -56,6 +56,12 @@
                     $injector.get('alertService')
                         .error('openlmisServerErrorHandler.gatewayTimeoutError');
                 }, 200);
+            }
+            if (response.status === 502) {
+                $timeout(function() {
+                    $injector.get('alertService')
+                        .error('openlmisServerErrorHandler.badGateway');
+                }, 200);
             //  AO-442: ends here
             } else if (response.status >= 400 && response.status < 600 && response.status !== 401) {
                 $timeout(function() {

@@ -73,8 +73,12 @@
                     // ANGOLASUP-510: ends here
                 })
                 .catch(function(error) {
-                    vm.loginError = error;
                     vm.password = undefined;
+                    if (error.status) {
+                        vm.loginError = '';
+                    } else {
+                        vm.loginError = error;
+                    }
                 })
                 .finally(loadingModalService.close);
         }
