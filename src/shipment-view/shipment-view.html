@@ -28,7 +28,7 @@
         <!-- ANGOLASUP-732: Ends here -->
     </ul>
 </aside>
-<form class="openlmis-table-container" id="shipmentForm" ng-submit="vm.shipment.confirm()">
+<form class="openlmis-table-container" id="shipmentForm" ng-submit="vm.confirm()">
     <quantity-unit-toggle class="is-primary" quantity-unit="vm.quantityUnit"></quantity-unit-toggle>
     <table>
         <thead>
@@ -38,10 +38,13 @@
                 <th>{{'shipmentView.lotCode' | message}}</th>
                 <th>{{'shipmentView.vvmStatus' | message}}</th>
                 <th>{{'shipmentView.expiryDate' | message}}</th>
-                <th openlmis-popover="{{'shipmentView.quantitiesProvidedIn' | message}} {{vm.getSelectedQuantityUnitKey() | message}}">{{'shipmentView.orderQuantity' | message}}</th>
-                <th>{{'shipmentView.fillQuantityInPack' | message}}</th>
-                <th openlmis-popover="{{'shipmentView.quantitiesProvidedIn' | message}} {{vm.getSelectedQuantityUnitKey() | message}}">{{'shipmentView.availableSoh' | message}}</th>
-                <th openlmis-popover="{{'shipmentView.quantitiesProvidedIn' | message}} {{vm.getSelectedQuantityUnitKey() | message}}">{{'shipmentView.remainingSoh' | message}}</th>
+                <th openlmis-popover="{{'shipmentView.quantitiesProvidedInDoses' | message}}">{{'shipmentView.orderQuantity' | message}}</th>
+                <th ng-if="vm.quantityUnit === vm.QUANTITY_UNIT.PACKS">{{'shipmentView.unit' | message}}</th>
+                <th ng-if="vm.quantityUnit === vm.QUANTITY_UNIT.PACKS">{{'shipmentView.fillQuantityInPack' | message}}</th>
+                <th ng-if="vm.quantityUnit === vm.QUANTITY_UNIT.DOSES">{{'shipmentView.fillQuantityInDoses' | message}}</th>
+                <th ng-if="vm.quantityUnit === vm.QUANTITY_UNIT.PACKS">{{'shipmentView.fillQuantityTotal' | message}}</th>
+                <th openlmis-popover="{{'shipmentView.quantitiesProvidedInDoses' | message}}">{{'shipmentView.availableSoh' | message}}</th>
+                <th openlmis-popover="{{'shipmentView.quantitiesProvidedInDoses' | message}}">{{'shipmentView.remainingSoh' | message}}</th>
             </tr>
         </thead>
         <tbody>
@@ -52,16 +55,42 @@
                 <td ng-if="tableLineItem.isLot">{{tableLineItem.lot | lotCode}}</td>
                 <td>{{vm.getVvmStatusLabel(tableLineItem.vvmStatus) | message}}</td>
                 <td>{{tableLineItem.lot.expirationDate | openlmisDate}}</td>
-                <td>{{tableLineItem.getOrderQuantity(vm.showInDoses())}}</td>
-                <td ng-if="!tableLineItem.shipmentLineItem">{{tableLineItem.getFillQuantity()}}</td>
-                <td ng-if="tableLineItem.shipmentLineItem">
+                <td>{{tableLineItem.getOrderQuantity()}}</td>
+                <td ng-if="vm.quantityUnit === vm.QUANTITY_UNIT.PACKS">
+                    <div ng-if="tableLineItem.shipmentLineItem && tableLineItem.shipmentLineItem.unit">
+                        {{ tableLineItem.shipmentLineItem.unit.name }}
+                    </div>
+                </td>
+                <!-- Group fill quantity in packs empty cause pack size(unitOfOrderable) may vary for different lots -->
+                <td ng-if="!tableLineItem.shipmentLineItem"></td>
+                <td ng-if="tableLineItem.shipmentLineItem && vm.quantityUnit !== vm.QUANTITY_UNIT.PACKS">
                     <input ng-show="vm.shipment.isEditable()" positive-integer ng-model="tableLineItem.shipmentLineItem.quantityShipped"
                         ng-class="{'is-invalid': tableLineItem.shipmentLineItem.isInvalid().quantityShipped}"
                         openlmis-invalid="{{tableLineItem.shipmentLineItem.isInvalid().quantityShipped | message}}"/>
                     <div ng-show="!vm.shipment.isEditable()">{{tableLineItem.shipmentLineItem.quantityShipped}}</div>
                 </td>
-                <td>{{tableLineItem.getAvailableSoh(vm.showInDoses())}}</td>
-                <td>{{tableLineItem.getRemainingSoh(vm.showInDoses())}}</td>
+                <td ng-if="tableLineItem.shipmentLineItem && vm.quantityUnit === vm.QUANTITY_UNIT.PACKS">
+                    <input ng-show="vm.shipment.isEditable()" positive-integer ng-model="tableLineItem.shipmentLineItem.packsQuantity"
+                        ng-class="{'is-invalid': tableLineItem.shipmentLineItem.isInvalid().quantityShipped}"
+                        ng-change="vm.setItemQuantity(tableLineItem.shipmentLineItem)"
+                        openlmis-invalid="{{tableLineItem.shipmentLineItem.isInvalid().quantityShipped | message}}"/>
+                    <div ng-show="!vm.shipment.isEditable()">{{tableLineItem.shipmentLineItem.quantityShipped}}</div>
+                </td>
+                <!-- Total fill quantity displayed if the packs are chosed -->
+                <td ng-if="vm.quantityUnit === vm.QUANTITY_UNIT.PACKS">
+                    <div ng-if="tableLineItem.shipmentLineItem">
+                        {{ tableLineItem.shipmentLineItem.quantityShipped }}
+                    </div>
+                    <div ng-if="!tableLineItem.shipmentLineItem">
+                        {{ tableLineItem.totalQuantity }}
+                    </div>
+                </td>
+                <td ng-if="tableLineItem.shipmentLineItem">
+                    {{ tableLineItem.shipmentLineItem.stockOnHand }}
+                </td>
+                <td ng-if="!tableLineItem.shipmentLineItem">{{tableLineItem.getAvailableSoh()}}</td>
+                <td ng-if="tableLineItem.shipmentLineItem">{{vm.getRemainingSoh(tableLineItem.shipmentLineItem)}}</td>
+                <td ng-if="!tableLineItem.shipmentLineItem">{{tableLineItem.getRemainingSoh()}}</td>
             </tr>
         </tbody>
     </table>
