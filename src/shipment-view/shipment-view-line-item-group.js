@@ -68,14 +68,11 @@
          * @description
          * Returns a sum of all stock available for the children line items/line item groups.
          *
-         * @param  {boolean} inDoses flag defining whether the returned value should be returned in
-         *                           doses or in packs
          * @return {number}          the sum of all available stock on hand for the whole group
          */
-        function getAvailableSoh(inDoses) {
+        function getAvailableSoh() {
             return this.lineItems.reduce(function(availableSoh, lineItem) {
-                return availableSoh + lineItem.getAvailableSoh(inDoses,
-                    lineItem.shipmentLineItem ? lineItem.shipmentLineItem.unit.factor : 1);
+                return availableSoh + lineItem.getAvailableSoh();
             }, 0);
         }
 
@@ -87,8 +84,6 @@
          * @description
          * Returns a sum of all fill quantities for the children line items/line item groups.
          *
-         * @param  {boolean} inDoses flag defining whether the returned value should be returned in
-         *                           doses or in packs
          * @return {number}          the sum of all fill quantities for the whole group
          */
         function getFillQuantity() {
@@ -105,16 +100,14 @@
          * @description
          * Returns an ordered quantity for the commodity type related with the line item.
          *
-         * @param  {boolean} inDoses flag defining whether the returned value should be returned in
-         *                           doses or in packs
          * @return {number}          the ordered quantity for the commodity type related with the
          *                           line item
          */
-        function getOrderQuantity(inDoses) {
+        function getOrderQuantity() {
             if (this.orderQuantity === undefined || this.orderQuantity === null) {
                 return;
             }
-            return this.recalculateQuantity(this.orderQuantity, inDoses);
+            return this.orderQuantity;
         }
     }
 

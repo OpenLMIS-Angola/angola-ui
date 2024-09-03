@@ -72,7 +72,7 @@
                                     return unit.id === unitId;
                                 });
                                 currentItem.packsQuantity =
-                                    currentItem.quantityShipped / currentItem.unit.factor;
+                                    Math.floor(currentItem.quantityShipped / currentItem.unit.factor);
 
                                 shipment.lineItems[index] = currentItem;
                                 index++;

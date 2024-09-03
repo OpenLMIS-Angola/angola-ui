@@ -34,7 +34,6 @@
         ShipmentViewLineItem.prototype.getAvailableSoh = getAvailableSoh;
         ShipmentViewLineItem.prototype.getFillQuantity = getFillQuantity;
         ShipmentViewLineItem.prototype.getRemainingSoh = getRemainingSoh;
-        ShipmentViewLineItem.prototype.recalculateQuantity = recalculateQuantity;
         ShipmentViewLineItem.prototype.getOrderQuantity = getOrderQuantity;
 
         return ShipmentViewLineItem;
@@ -69,13 +68,11 @@
          * @description
          * Returns available stock on hand for the commodity type or lot.
          *
-         * @param  {boolean} inDoses flag defining whether the returned value should be returned in
-         *                           doses or in packs
          * @return {number}          the available stock on hand for the specific commodity type or
          *                           lot
          */
-        function getAvailableSoh(inDoses) {
-            return this.recalculateQuantity(this.shipmentLineItem.stockOnHand, inDoses);
+        function getAvailableSoh() {
+            return this.shipmentLineItem.stockOnHand;
         }
 
         /**
@@ -101,15 +98,11 @@
          * Returns the remaining stock after fulfilling the order for a specific commodity type or
          * lot
          *
-         * @param  {boolean} inDoses flag defining whether the returned value should be returned in
-         *                           doses or in packs
          * @return {number}          the remaining stock after fulfilling the order for a specific
          *                           commodity type or lot
          */
-        function getRemainingSoh(inDoses) {
-            var remainingQuantityInPacks = this.getAvailableSoh() - this.getFillQuantity();
-
-            return this.recalculateQuantity(remainingQuantityInPacks, inDoses);
+        function getRemainingSoh() {
+            return this.getAvailableSoh() - this.getFillQuantity();
         }
 
         /**
@@ -120,39 +113,14 @@
          * @description
          * Returns an ordered quantity for the commodity type related with the line item.
          *
-         * @param  {boolean} inDoses flag defining whether the returned value should be returned in
-         *                           doses or in packs
          * @return {number}          the ordered quantity for the commodity type related with the
          *                           line item
          */
-        function getOrderQuantity(inDoses, unitFactor) {
+        function getOrderQuantity() {
             if (this.orderQuantity === undefined || this.orderQuantity === null) {
                 return;
             }
-            return this.recalculateQuantity(this.orderQuantity, inDoses, unitFactor);
-        }
-
-        /**
-         * @ngdoc method
-         * @methodOf shipment-view.ShipmentViewLineItem
-         * @name recalculateQuantity
-         *
-         * @description
-         * Recalculates the given quantity in packs (if the flag is set) taking the net content into
-         * consideration.
-         *
-         * @param  {number}  quantity the quantity to be recalculated
-         * @param  {boolean} inDoses  flag defining whether the returned value should be returned in
-         *                            doses or in packs
-         * @return {number}           the ordered quantity for the commodity type related with the
-         *                            line item
-         */
-        function recalculateQuantity(quantity, inDoses, unitFactor) {
-            if (!inDoses && unitFactor) {
-                console.log(unitFactor);
-                return quantity * unitFactor;
-            }
-            return quantity;
+            return this.orderQuantity;
         }
     }
 

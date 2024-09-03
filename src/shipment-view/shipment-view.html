@@ -28,7 +28,7 @@
         <!-- ANGOLASUP-732: Ends here -->
     </ul>
 </aside>
-<form class="openlmis-table-container" id="shipmentForm" ng-submit="vm.shipment.confirm()">
+<form class="openlmis-table-container" id="shipmentForm" ng-submit="vm.confirm()">
     <quantity-unit-toggle class="is-primary" quantity-unit="vm.quantityUnit"></quantity-unit-toggle>
     <table>
         <thead>
@@ -55,7 +55,7 @@
                 <td ng-if="tableLineItem.isLot">{{tableLineItem.lot | lotCode}}</td>
                 <td>{{vm.getVvmStatusLabel(tableLineItem.vvmStatus) | message}}</td>
                 <td>{{tableLineItem.lot.expirationDate | openlmisDate}}</td>
-                <td>{{tableLineItem.getOrderQuantity(vm.showInDoses())}}</td>
+                <td>{{tableLineItem.getOrderQuantity()}}</td>
                 <td ng-if="vm.quantityUnit === vm.QUANTITY_UNIT.PACKS">
                     <div ng-if="tableLineItem.shipmentLineItem && tableLineItem.shipmentLineItem.unit">
                         {{ tableLineItem.shipmentLineItem.unit.name }}
@@ -88,9 +88,9 @@
                 <td ng-if="tableLineItem.shipmentLineItem">
                     {{ tableLineItem.shipmentLineItem.stockOnHand }}
                 </td>
-                <td ng-if="!tableLineItem.shipmentLineItem">{{tableLineItem.getAvailableSoh(vm.showInDoses())}}</td>
+                <td ng-if="!tableLineItem.shipmentLineItem">{{tableLineItem.getAvailableSoh()}}</td>
                 <td ng-if="tableLineItem.shipmentLineItem">{{vm.getRemainingSoh(tableLineItem.shipmentLineItem)}}</td>
-                <td ng-if="!tableLineItem.shipmentLineItem">{{tableLineItem.getRemainingSoh(vm.showInDoses())}}</td>
+                <td ng-if="!tableLineItem.shipmentLineItem">{{tableLineItem.getRemainingSoh()}}</td>
             </tr>
         </tbody>
     </table>

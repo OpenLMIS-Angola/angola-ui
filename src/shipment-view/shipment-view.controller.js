@@ -118,6 +118,21 @@
             setGroupsTotalQuantity();
         }
 
+        vm.confirm = function() {
+            vm.shipment.lineItems = vm.shipment.lineItems.map(function(item) {
+                return {
+                    id: item.id,
+                    lot: item.lot,
+                    orderable: item.orderable,
+                    quantityShipped: item.quantityShipped,
+                    stockOnHand: item.stockOnHand,
+                    unitOfOrderableId: item.unitOfOrderableId
+                };
+            });
+
+            vm.shipment.confirm();
+        };
+
         function getGroupTotalQuantity(lineItemGroup) {
             return lineItemGroup.lineItems.reduce(function(total, item) {
                 return total + item.shipmentLineItem.quantityShipped;
@@ -126,6 +141,10 @@
 
         function setGroupTotalQuantity(lineItemGroup) {
             var totalQuantity = 0;
+            if (!lineItemGroup.lineItems) {
+                return;
+            }
+
             var firstItem = lineItemGroup.lineItems[0];
             if (lineItemGroup.isMainGroup && isGroup(firstItem)) {
                 lineItemGroup.lineItems.forEach(function(itemGroup) {
