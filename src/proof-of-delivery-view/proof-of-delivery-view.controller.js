@@ -30,12 +30,11 @@
 
     ProofOfDeliveryViewController.$inject = [
         'proofOfDelivery', 'order', 'reasons', 'messageService', 'VVM_STATUS', 'orderLineItems', 'canEdit', '$q',
-        'accessTokenFactory', '$window', 'openlmisUrlFactory', 'ORDER_STATUSES'
+        'ORDER_STATUSES', 'ProofOfDeliveryPrinter'
     ];
 
     function ProofOfDeliveryViewController(proofOfDelivery, order, reasons, messageService, VVM_STATUS, orderLineItems,
-                                           canEdit, $q, accessTokenFactory, $window, openlmisUrlFactory,
-                                           ORDER_STATUSES) {
+                                           canEdit, $q, ORDER_STATUSES, ProofOfDeliveryPrinter) {
 
         var vm = this;
 
@@ -177,20 +176,18 @@
          * Prints the proof of delivery.
          */
         function printProofOfDelivery() {
+            var printer = new ProofOfDeliveryPrinter();
+
+            printer.openTab();
 
             (vm.proofOfDelivery.isInitiated() ? vm.proofOfDelivery.save() : $q.resolve(vm.proofOfDelivery))
                 .then(function(proofOfDelivery) {
-                    var popup = $window.open('', '_blank');
-                    popup.location.href = accessTokenFactory.addAccessToken(getPrintUrl(proofOfDelivery.id));
+                    printer.setId(proofOfDelivery.id);
+                    printer.print();
                 })
                 .catch(function() {
-                    $window.open(accessTokenFactory.addAccessToken(vm.getPrintUrl()), '_blank');
+                    printer.closeTab();
                 });
-        }
-
-        function getPrintUrl(orderId) {
-            return openlmisUrlFactory('/api/reports/templates/common/2db2b18e-ceff-4d24-b20b-5a232608f8a4/pdf?orderId='
-            + orderId);
         }
     }
 }());

@@ -1,0 +1,8 @@
+{
+    "shipmentView.unit": "Unit",
+    "shipmentView.totalQuantity": "Total quantity",
+    "shipmentView.packsQuantity": "Packs quantity",
+    "shipmentView.fillQuantityInDoses": "Fill Quantity (in Doses)",
+    "shipmentView.fillQuantityTotal": "Fill Quantity (Total)",
+    "shipmentView.quantitiesProvidedInDoses": "Quantities are provided in Doses"
+}

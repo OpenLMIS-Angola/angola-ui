@@ -91,6 +91,17 @@
         vm.quantityUnit = undefined;
 
         /**
+         * @ngdoc property
+         * @propertyOf shipment-view.controller:ShipmentViewController
+         * @name unitsOfOrderable
+         * @type {Object}
+         *
+         * @description
+         * Holds available units of orderable.
+         */
+        vm.unitsOfOrderable = undefined;
+
+        /**
          * @ngdoc method
          * @methodOf shipment-view.controller:ShipmentViewController
          * @name onInit
@@ -103,6 +114,39 @@
             vm.order = updatedOrder;
             vm.shipment = shipment;
             vm.tableLineItems = tableLineItems;
+            vm.QUANTITY_UNIT = QUANTITY_UNIT;
+            setGroupsTotalQuantity();
+        }
+
+        function getGroupTotalQuantity(lineItemGroup) {
+            return lineItemGroup.lineItems.reduce(function(total, item) {
+                return total + item.shipmentLineItem.quantityShipped;
+            }, 0);
+        }
+
+        function setGroupTotalQuantity(lineItemGroup) {
+            var totalQuantity = 0;
+            var firstItem = lineItemGroup.lineItems[0];
+            if (lineItemGroup.isMainGroup && isGroup(firstItem)) {
+                lineItemGroup.lineItems.forEach(function(itemGroup) {
+                    totalQuantity += getGroupTotalQuantity(itemGroup);
+                });
+            } else {
+                totalQuantity = getGroupTotalQuantity(lineItemGroup);
+            }
+            lineItemGroup.totalQuantity = totalQuantity;
+        }
+
+        function isGroup(lineItem) {
+            return lineItem.shipmentLineItem === undefined;
+        }
+
+        function setGroupsTotalQuantity() {
+            vm.tableLineItems.forEach(function(item) {
+                if (isGroup(item)) {
+                    setGroupTotalQuantity(item);
+                }
+            });
         }
 
         /**
@@ -118,6 +162,44 @@
         function showInDoses() {
             return vm.quantityUnit === QUANTITY_UNIT.DOSES;
         }
+
+        function getQuantity(quantity, unitFactor) {
+            if (showInDoses() && unitFactor) {
+                return quantity * unitFactor;
+            }
+
+            return quantity;
+        }
+
+        function getTotalQuantity(lineItems) {
+            return lineItems.reduce(function(total, lineItem) {
+                var quantity = showInDoses() ? lineItem.quantityShipped : lineItem.packsQuantity;
+                return total + quantity ? quantity : 0;
+            }, 0);
+        }
+
+        vm.getGroupFillQuantity = function(tableLineItems) {
+            var lineItems = tableLineItems.lineItems;
+            var firstItem = lineItems[0];
+            if (firstItem.shipmentLineItem) {
+                return getTotalQuantity(lineItems);
+            }
+            return getTotalQuantity(firstItem.lineItems);
+        };
+
+        vm.getAvailableSoh = function(lineItem) {
+            return getQuantity(lineItem.stockOnHand, lineItem.unit.factor);
+        };
+
+        vm.setItemQuantity = function(lineItem) {
+            lineItem.quantityShipped = lineItem.packsQuantity * lineItem.unit.factor;
+            setGroupsTotalQuantity();
+        };
+
+        vm.getRemainingSoh = function(lineItem) {
+            var quantity = getQuantity(lineItem.quantityShipped, lineItem.unit.factor);
+            return vm.getAvailableSoh(lineItem) - quantity;
+        };
 
         /**
          * @ngdoc method
@@ -135,10 +217,10 @@
          * @ngdoc method
          * @methodOf shipment-view.controller:ShipmentViewController
          * @name printShipment
-         * 
+         *
          * @description
          * Prints the shipment.
-         * 
+         *
          * @return {Promise} the promise resolved when print is successful, rejected otherwise
          */
         function printShipment() {
