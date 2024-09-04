@@ -1,5 +1,6 @@
 <div class="view-tab openlmis-table-container">
 	<h4 ng-show="vm.showSkipControls">{{'requisitionViewTab.skip' | message}}</h4>
+
 	<ul ng-show="vm.showSkipControls">
 		<li><a ng-click="vm.requisition.skipAllFullSupplyLineItems()">{{'requisitionViewTab.all' | message}}</a></li>
 		<li><a ng-click="vm.requisition.unskipAllFullSupplyLineItems()">{{'requisitionViewTab.none' | message}}</a></li>
@@ -7,6 +8,17 @@
 	<span ng-if="vm.showAddFullSupplyProductControls">
 		{{ vm.skippedFullSupplyProductCountMessage() }}
 	</span>
+	<form ng-submit="vm.filterByOrderableParams()">
+        <!-- <fieldset class="form-group">
+            <label for="code">{{'adminOrderableList.code' | message}}</label>
+            <input type="text" id="code" ng-model="vm.code" />
+        </fieldset> -->
+        <fieldset class="form-group">
+            <label for="name">{{'requisitionPatientsViewTab.name' | message}}</label>
+            <input type="text" id="name" ng-model="vm.orderableFilterProperties.name" />
+        </fieldset>
+        <input type="submit" value="{{'requisitionPatientsViewTab.search' | message}}" />
+    </form>
 	<button class="add" ng-if="vm.showAddFullSupplyProductsButton" ng-click="vm.addFullSupplyProducts()" >{{'requisitionViewTab.addProduct' | message}}</button>
 	<button class="add" ng-if="vm.showAddNonFullSupplyProductsButton" ng-click="vm.addNonFullSupplyProducts()" >{{'requisitionViewTab.addProduct' | message}}</button>
 	<button class="add" ng-if="vm.showUnskipFullSupplyProductsButton" ng-click="vm.unskipFullSupplyProducts()" >{{'requisitionViewTab.addProduct' | message}}</button>

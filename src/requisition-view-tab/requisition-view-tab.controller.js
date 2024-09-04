@@ -143,9 +143,16 @@
          */
         vm.columns = undefined;
 
+        vm.orderableFilterProperties = {
+            name: undefined
+        };
+
+        vm.filteredItems = undefined;
+
         function onInit() {
             vm.lineItems = lineItems;
             vm.items = items;
+            vm.filteredItems = lineItems;
             vm.requisition = requisition;
             vm.columns = columns;
             vm.userCanEdit = canAuthorize || canSubmit || canUnskipRequisitionItemWhenApproving;
@@ -198,7 +205,7 @@
          *
          * @description
          * Caches given requisition in the local storage.
-         * 
+         *
          * @return {Promise} the promise resolved after adding requisition to the local storage
          */
         function cacheRequisition() {
@@ -383,6 +390,14 @@
         function getCountOfSkippedFullSupplyProducts() {
             return vm.requisition.requisitionLineItems.filter(isSkippedFullSupply).length;
         }
+
+        vm.filterByOrderableParams = function() {
+            console.log('filter works!');
+            console.log(vm.orderableFilterProperties);
+            vm.filteredItems = vm.lineItems.filter(function(item) {
+                return item.name.includes(vm.orderableFilterProperties.name);
+            });
+        };
 
         function getNoProductsMessage() {
             return fullSupply ?
