@@ -141,11 +141,12 @@
 
         function setGroupTotalQuantity(lineItemGroup) {
             var totalQuantity = 0;
-            if (!lineItemGroup.lineItems) {
+            if (!lineItemGroup.lineItems || lineItemGroup.lineItems.length === 0) {
                 return;
             }
 
             var firstItem = lineItemGroup.lineItems[0];
+
             if (lineItemGroup.isMainGroup && isGroup(firstItem)) {
                 lineItemGroup.lineItems.forEach(function(itemGroup) {
                     totalQuantity += getGroupTotalQuantity(itemGroup);
