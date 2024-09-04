@@ -119,14 +119,9 @@
         }
 
         vm.confirm = function() {
-            vm.shipment.lineItems = vm.shipment.lineItems.map(function(item) {
-                return {
-                    id: item.id,
-                    lot: item.lot,
-                    orderable: item.orderable,
-                    quantityShipped: item.quantityShipped,
-                    stockOnHand: item.stockOnHand,
-                    unitOfOrderableId: item.unitOfOrderableId
+            vm.shipment.lineItems.forEach(function(lineItem) {
+                lineItem.unitOfOrderable = {
+                    id: lineItem.unit.id
                 };
             });
 
