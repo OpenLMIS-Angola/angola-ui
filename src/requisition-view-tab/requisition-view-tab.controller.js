@@ -392,10 +392,9 @@
         }
 
         vm.filterByOrderableParams = function() {
-            console.log('filter works!');
-            console.log(vm.orderableFilterProperties);
             vm.filteredItems = vm.lineItems.filter(function(item) {
-                return item.name.includes(vm.orderableFilterProperties.name);
+                return item.orderable.fullProductName.toLowerCase()
+                    .includes(vm.orderableFilterProperties.name.toLowerCase());
             });
         };
 

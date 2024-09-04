@@ -8,17 +8,10 @@
 	<span ng-if="vm.showAddFullSupplyProductControls">
 		{{ vm.skippedFullSupplyProductCountMessage() }}
 	</span>
-	<form ng-submit="vm.filterByOrderableParams()">
-        <!-- <fieldset class="form-group">
-            <label for="code">{{'adminOrderableList.code' | message}}</label>
-            <input type="text" id="code" ng-model="vm.code" />
-        </fieldset> -->
-        <fieldset class="form-group">
-            <label for="name">{{'requisitionPatientsViewTab.name' | message}}</label>
-            <input type="text" id="name" ng-model="vm.orderableFilterProperties.name" />
-        </fieldset>
-        <input type="submit" value="{{'requisitionPatientsViewTab.search' | message}}" />
-    </form>
+	<div class="productNameFilter">
+		<input type="text" placeholder="{{ 'requisitionPatientsViewTab.filterPlaceholder' | message}}"
+			ng-model="vm.orderableFilterProperties.name" ng-change="vm.filterByOrderableParams()">
+	</div>
 	<button class="add" ng-if="vm.showAddFullSupplyProductsButton" ng-click="vm.addFullSupplyProducts()" >{{'requisitionViewTab.addProduct' | message}}</button>
 	<button class="add" ng-if="vm.showAddNonFullSupplyProductsButton" ng-click="vm.addNonFullSupplyProducts()" >{{'requisitionViewTab.addProduct' | message}}</button>
 	<button class="add" ng-if="vm.showUnskipFullSupplyProductsButton" ng-click="vm.unskipFullSupplyProducts()" >{{'requisitionViewTab.addProduct' | message}}</button>
@@ -55,7 +48,7 @@
 		</tbody>
 	</table>
 	<openlmis-pagination
-		list="vm.lineItems"
+		list="vm.filteredItems"
 		paged-list="vm.items"
 		pagination-id="vm.paginationId"
 		on-page-change="vm.cacheRequisition"/>
