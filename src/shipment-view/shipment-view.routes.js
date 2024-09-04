@@ -62,10 +62,13 @@
                     unitOfOrderableService) {
                     return unitOfOrderableService.getAll().then(function(response) {
                         var unitsOfOrderable = response.content ? response.content : response;
-                        var index = 0;
                         if (shipment.lineItems && shipment.lineItems.length > 0) {
                             stockCardSummaries.forEach(function(summary) {
                                 summary.canFulfillForMe.forEach(function(canFulfill) {
+                                    var index = findLineItemIndexByLotId(canFulfill.lot.id, shipment.lineItems);
+                                    if (index === -1) {
+                                        return;
+                                    }
                                     var unitId = canFulfill.unitOfOrderable.id;
                                     var currentItem = angular.copy(shipment.lineItems[index]);
                                     currentItem.unitOfOrderableId = unitId;
@@ -76,7 +79,6 @@
                                         Math.floor(currentItem.quantityShipped / currentItem.unit.factor);
 
                                     shipment.lineItems[index] = currentItem;
-                                    index++;
                                 });
                             });
                         }
@@ -91,3 +93,11 @@
         });
     }
 })();
+
+function findLineItemIndexByLotId(lotId, lineItems) {
+    var item = lineItems.find(function(lineItem) {
+        return lineItem.lot.id === lotId;
+    });
+
+    return lineItems.indexOf(item);
+}
