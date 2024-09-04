@@ -63,21 +63,23 @@
                     return unitOfOrderableService.getAll().then(function(response) {
                         var unitsOfOrderable = response.content ? response.content : response;
                         var index = 0;
-                        stockCardSummaries.forEach(function(summary) {
-                            summary.canFulfillForMe.forEach(function(canFulfill) {
-                                var unitId = canFulfill.unitOfOrderable.id;
-                                var currentItem = angular.copy(shipment.lineItems[index]);
-                                currentItem.unitOfOrderableId = unitId;
-                                currentItem.unit = unitsOfOrderable.find(function(unit) {
-                                    return unit.id === unitId;
-                                });
-                                currentItem.packsQuantity =
-                                    Math.floor(currentItem.quantityShipped / currentItem.unit.factor);
+                        if (shipment.lineItems && shipment.lineItems.length > 0) {
+                            stockCardSummaries.forEach(function(summary) {
+                                summary.canFulfillForMe.forEach(function(canFulfill) {
+                                    var unitId = canFulfill.unitOfOrderable.id;
+                                    var currentItem = angular.copy(shipment.lineItems[index]);
+                                    currentItem.unitOfOrderableId = unitId;
+                                    currentItem.unit = unitsOfOrderable.find(function(unit) {
+                                        return unit.id === unitId;
+                                    });
+                                    currentItem.packsQuantity =
+                                        Math.floor(currentItem.quantityShipped / currentItem.unit.factor);
 
-                                shipment.lineItems[index] = currentItem;
-                                index++;
+                                    shipment.lineItems[index] = currentItem;
+                                    index++;
+                                });
                             });
-                        });
+                        }
                         return new ShipmentViewLineItemFactory().createFrom(shipment, stockCardSummaries);
                     });
 
