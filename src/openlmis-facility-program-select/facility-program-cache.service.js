@@ -30,11 +30,11 @@
 
     service.$inject = [
         '$q', 'programService', 'authorizationService', 'facilityService', 'currentUserService',
-        'permissionService'
+        'permissionService', 'loadingModalService'
     ];
 
     function service($q, programService, authorizationService, facilityService, currentUserService,
-                     permissionService) {
+                     permissionService, loadingModalService) {
 
         var modulesWithRights = {},
             facilities = [],
@@ -162,7 +162,7 @@
          */
         function loadData(moduleName) {
             var userId = authorizationService.getUser().user_id;
-
+            loadingModalService.open();
             return $q.all([
                 facilityService.getFacilitiesWithoutWards(),
                 programService.getUserPrograms(userId),
@@ -178,6 +178,7 @@
 
                     var currentUserDetails = responses[3];
                     homeFacility = getFacilityById(currentUserDetails.homeFacilityId);
+                    loadingModalService.close();
                 });
         }
 
