@@ -38,6 +38,24 @@
     }
 }
 
+@mixin translate-x($value) {
+    [dir="ltr"] & {
+        transform: translateX($value);
+    }
+    [dir="rtl"] & {
+        transform: translateX(-$value);
+    }
+}
+
+@mixin translate-xy($valueX, $valueY) {
+    [dir="ltr"] & {
+        transform: translateX($valueX) translateY($valueY);
+    }
+    [dir="rtl"] & {
+        transform: translateX(-$valueX) translateY($valueY);
+    }
+}
+
 @mixin padding-left($value) {
     [dir="ltr"] & {
         padding-left: $value;

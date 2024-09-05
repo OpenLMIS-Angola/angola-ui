@@ -22,7 +22,7 @@
         top: 50%;
         @include left(50%);
         text-indent: 0em;
-        transform: translateX(-50%) translateY(-50%);
+        @include translate-xy(-50%, -50%);
     }
 }
 
