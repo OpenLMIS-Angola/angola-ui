@@ -44,6 +44,8 @@
         </noscript>
     </head>
     <body class="no-js" onLoad="removeNoJS()">
+        <div style="display: none;" id="rtlLanguagesDiv">@@SUPPORTED_RTL_LANGUAGES</div>
+        <div style="display: none;" id="defaultLanguageDiv">@@DEFAULT_LANGUAGE</div>
         <div class="loading-view">@@APPLICATION_LOADING_MESSAGE</div>
         <header class="header" ui-view="header"></header>
         <div ui-view></div>
@@ -58,14 +60,13 @@
 
             function getCurrentLanguage() {
                 // If there is no language in local storage get the default language value
-                const defaultLanguage = '@@DEFAULT_LANGUAGE'
+                const defaultLanguage = '@@DEFAULT_LANGUAGE';
                 return localStorage.getItem('openlmis.current_locale') ?
                     localStorage.getItem('openlmis.current_locale') : defaultLanguage;
             }
 
             function setPageDirection() {
-                const rtlLanguagesString = '@@SUPPORTED_RTL_LANGUAGES';
-                const rtlLanguages = rtlLanguagesString.split(',');
+                const rtlLanguages = '@@SUPPORTED_RTL_LANGUAGES';
                 const currentLanguage = getCurrentLanguage();
                 const pageDirection = currentLanguage && rtlLanguages.includes(currentLanguage) ?
                     'rtl' : 'ltr';
