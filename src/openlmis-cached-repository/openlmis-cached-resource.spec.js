@@ -913,6 +913,33 @@ describe('OpenlmisCachedResource', function() {
             expect(this.LocalDatabase.prototype.put).toHaveBeenCalled();
         });
 
+        it('should resolve for offline', function() {
+            this.offlineService.isOffline.andReturn(true);
+            this.openlmisCachedResource.isVersioned = false;
+            spyOn(this.LocalDatabase.prototype, 'getAll').andReturn(this.getDeferred.promise);
+            spyOn(this.LocalDatabase.prototype, 'put').andReturn(this.response);
+
+            this.openlmisCachedResource.getAll(undefined);
+            this.$rootScope.$apply();
+
+            expect(this.LocalDatabase.prototype.getAll).toHaveBeenCalled();
+            expect(this.LocalDatabase.prototype.put).not.toHaveBeenCalled();
+        });
+
+        it('should resolve for online and when config.getDataFromCache is true', function() {
+            this.offlineService.isOffline.andReturn(false);
+            this.openlmisCachedResource.isVersioned = false;
+            this.config.getDataFromCache = true;
+            spyOn(this.LocalDatabase.prototype, 'getAll').andReturn(this.getDeferred.promise);
+            spyOn(this.LocalDatabase.prototype, 'put').andReturn(this.response);
+
+            this.openlmisCachedResource.getAll(undefined);
+            this.$rootScope.$apply();
+
+            expect(this.LocalDatabase.prototype.getAll).toHaveBeenCalled();
+            expect(this.LocalDatabase.prototype.put).not.toHaveBeenCalled();
+        });
+
     });
 
     describe('throwMethodNotSupported', function() {

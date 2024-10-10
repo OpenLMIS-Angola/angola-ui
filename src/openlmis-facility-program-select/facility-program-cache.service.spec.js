@@ -91,7 +91,7 @@ describe('facilityProgramCacheService', function() {
         });
 
         it('should call facilityService', function() {
-            expect(this.facilityService.getFacilitiesWithoutWards).toHaveBeenCalled();
+            expect(this.facilityService.getFacilitiesWithoutWards).toHaveBeenCalledWith(true);
         });
 
         it('should call authorizationService', function() {

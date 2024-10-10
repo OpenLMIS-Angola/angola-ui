@@ -260,7 +260,7 @@
          *                          rejected if request fails
          */
         function getAll(params) {
-            if (offlineService.isOffline()) {
+            if (offlineService.isOffline() || getDataFromCache(this.config)) {
                 var deferred = $q.defer();
                 this.database.getAll().then(function(response) {
                     deferred.resolve(response);
@@ -432,6 +432,10 @@
 
         function isVersioned(config) {
             return !config || config.versioned || config.versioned === undefined;
+        }
+
+        function getDataFromCache(config) {
+            return config && config.getDataFromCache ? config.getDataFromCache : false;
         }
 
         function getLastModifiedDate(database) {

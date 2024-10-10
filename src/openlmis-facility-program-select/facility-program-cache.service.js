@@ -164,7 +164,7 @@
             var userId = authorizationService.getUser().user_id;
             loadingModalService.open();
             return $q.all([
-                facilityService.getFacilitiesWithoutWards(),
+                facilityService.getFacilitiesWithoutWards(true),
                 programService.getUserPrograms(userId),
                 permissionService.load(userId),
                 currentUserService.getUserInfo()

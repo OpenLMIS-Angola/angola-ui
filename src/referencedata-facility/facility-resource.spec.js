@@ -31,10 +31,11 @@ describe('FacilityResource', function() {
     });
 
     it('should extend OpenlmisCachedResource', function() {
-        new this.FacilityResource();
+        new this.FacilityResource(true);
 
         expect(this.OpenlmisCachedResourceMock).toHaveBeenCalledWith('/api/facilities', 'facilities', {
-            versioned: false
+            versioned: false,
+            getDataFromCache: true
         });
     });
 });
