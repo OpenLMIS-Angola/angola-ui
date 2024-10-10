@@ -89,14 +89,15 @@ header > .navbar {
 
   ul {
     @extend .list-unstyled;
+    @include padding-left(0);
   }
   li {
     position: relative;
   }
   .navbar-right{
     margin-top: 6px;
-    margin-right: 0em;
-    margin-left: 1em;
+    @include margin-left(1em);
+    @include margin-right(0em);
   }
 
   /* TOP LEVEL ITEMS */
@@ -157,7 +158,7 @@ header > .navbar {
           content: "";
           position:absolute;
           top: -0.4em;
-          left: 2.2em;
+          @include left(2.2em);
           width: 0em;
           height: 0em;
           border-left: 0.4em solid transparent;
@@ -172,6 +173,7 @@ header > .navbar {
 
   .dropdown-menu {
     top: 90%;
+    @include text-align(left);
     background-image: linear-gradient(to bottom, $background-color 10%, $background-color-alt 100%);
     li > a:hover{
       background-color: transparent;
@@ -220,4 +222,8 @@ header > .navbar {
       margin-left:10px;
     }
   }
+}
+
+.dropdown-menu {
+  @include text-align(left);
 }
