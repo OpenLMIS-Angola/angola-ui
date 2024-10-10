@@ -37,7 +37,7 @@
     function service($q, $resource, referencedataUrlFactory, permissionService,
                      FacilityResource, localStorageService, WARDS_CONSTANTS) {
         var
-            facilityResource = new FacilityResource(),
+            facilityResource = new FacilityResource(false),
             resource = $resource(referencedataUrlFactory('/api/facilities/:id'), {}, {
                 getAllMinimal: {
                     url: referencedataUrlFactory('/api/facilities/minimal'),
@@ -91,10 +91,11 @@
          * @description
          * Retrieves all facilities that are not a ward type
          *
+         * @param  {boolean} getDataFromCache if data is retrieved from the cache or from the server
          * @return {Promise} Array of facilities
          */
-        function getFacilitiesWithoutWards() {
-            return facilityResource.getAll()
+        function getFacilitiesWithoutWards(getDataFromCache) {
+            return new FacilityResource(getDataFromCache).getAll()
                 .then(function(response) {
                     var facilitiesWithoutWards = response.filter(function(facility) {
                         return facility.type.code !== WARDS_CONSTANTS.WARD_TYPE_CODE;

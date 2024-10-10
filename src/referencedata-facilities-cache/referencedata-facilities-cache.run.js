@@ -28,7 +28,7 @@
         loginService.registerPostLoginAction(function() {
             return $q.all([
                 facilityService.cacheAllMinimal(),
-                facilityService.getFacilitiesWithoutWards()
+                facilityService.getFacilitiesWithoutWards(false)
             ]);
         });
 

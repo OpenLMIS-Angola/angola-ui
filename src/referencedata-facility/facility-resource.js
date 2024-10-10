@@ -37,9 +37,10 @@
 
         return FacilityResource;
 
-        function FacilityResource() {
+        function FacilityResource(getDataFromCache) {
             this.super('/api/facilities', 'facilities', {
-                versioned: false
+                versioned: false,
+                getDataFromCache: getDataFromCache
             });
         }
     }

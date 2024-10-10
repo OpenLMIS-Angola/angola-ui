@@ -59,6 +59,7 @@ describe('referencedata-facilities-cache run', function() {
 
         it('should set up rights', function() {
             this.facilityService.cacheAllMinimal.andReturn(this.$q.resolve());
+            this.facilityService.getFacilitiesWithoutWards.andReturn(this.$q.resolve());
 
             var success;
             this.postLoginAction()
@@ -68,7 +69,8 @@ describe('referencedata-facilities-cache run', function() {
             this.$rootScope.$apply();
 
             expect(success).toBe(true);
-            expect(this.facilityService.cacheAllMinimal).toHaveBeenCalledWith();
+            expect(this.facilityService.cacheAllMinimal).toHaveBeenCalled();
+            expect(this.facilityService.getFacilitiesWithoutWards).toHaveBeenCalledWith(false);
         });
 
     });
