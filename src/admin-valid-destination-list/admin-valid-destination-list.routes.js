@@ -44,9 +44,9 @@
                     });
                 },
                 facilities: function(FacilityResource) {
-                    return new FacilityResource().query()
+                    return new FacilityResource(true).getAll()
                         .then(function(response) {
-                            return response.content;
+                            return response;
                         });
                 },
                 facilitiesById: function(facilities) {

@@ -32,10 +32,10 @@
             controllerAs: 'vm',
             accessRights: [ADMINISTRATION_RIGHTS.SUPPLY_LINES_MANAGE],
             resolve: {
-                supplyingFacilities: function(FacilityRepository) {
-                    return new FacilityRepository().query()
+                supplyingFacilities: function(FacilityResource) {
+                    return new FacilityResource(true).getAll()
                         .then(function(response) {
-                            return response.content;
+                            return response;
                         });
                 },
                 programs: function(programService) {

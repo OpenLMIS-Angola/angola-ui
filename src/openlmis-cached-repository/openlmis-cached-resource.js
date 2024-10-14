@@ -310,11 +310,7 @@
                                 throw error;
                             })
                             .then(function(doc) {
-                                database.put({
-                                    id: doc._id,
-                                    _rev: doc._rev,
-                                    object: doc
-                                });
+                                database.put(doc);
                                 return response.content;
                             })
                             .catch(function(error) {
@@ -352,11 +348,7 @@
                         database.putVersioned(response.content);
                         return response.content;
                     }
-
-                    database.put({
-                        id: response.content.id,
-                        object: response.content
-                    });
+                    database.put(response.content);
                     return response.content;
                 })
                 .catch(function(error) {
