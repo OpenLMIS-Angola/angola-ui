@@ -352,13 +352,12 @@
                     }
                     // ANGOLASUP-806: Ends here
                     // ANGOLASUP-825: Fixed inventory saving functionality
-                    if (item.$isNewItem && item.id) {
+                    if (item.$isNewItem) {
                         selectedItems.push(item);
-                    } else if (!item.id) {
-                        physicalInventoryDraftCacheService.cacheSingleItemWithNewLot(draft, item);
                     }
                     // ANGOLASUP-825: Ends here
                 });
+                physicalInventoryDraftCacheService.cacheDraft(draft);
                 modalDeferred.resolve();
             }
         }

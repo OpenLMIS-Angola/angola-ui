@@ -3,5 +3,7 @@
     "stockPhysicalInventoryDraft.unit": "Unit",
     "stockPhysicalInventoryDraft.packsQuantity": "Packs quantity",
     "stockPhysicalInventoryDraft.doses": "Doses",
-    "stockPhysicalInventoryDraft.packs": "packs"
+    "stockPhysicalInventoryDraft.packs": "packs",
+    "stockPhysicalInventoryDraft.saveDraft": "Warning: Saving will make all newly added lots unmodifiable, but removing physical inventory row will still be possible.",
+    "stockPhysicalInventoryDraft.error": "Error"
 }

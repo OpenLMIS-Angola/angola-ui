@@ -49,9 +49,6 @@
         var vm = this;
         vm.$onInit = onInit;
         vm.cacheDraft = cacheDraft;
-        // ANGOLASUP-825: Fixed inventory saving functionality
-        vm.cacheItemsWithNewLots = cacheItemsWithNewLots;
-        // ANGOLASUP-825: Ends here
         vm.quantityChanged = quantityChanged;
         vm.checkUnaccountedStockAdjustments = checkUnaccountedStockAdjustments;
         // ANGOLASUP-806: Implement adding default reason in physical inventory
@@ -429,8 +426,8 @@
                             return item;
                         }
                     }).active = false;
-                    vm.draft = draft;
-                    vm.saveDraft(true);
+
+                    vm.cacheDraft();
                     $state.go($state.current.name, $stateParams, {
                         reload: $state.current.name
                     });
@@ -494,36 +491,38 @@
          * @description
          * Save physical inventory draft.
          */
-        vm.saveDraft = function(withNotification) {
+        vm.saveDraft = function() {
             setItemsWithUnit();
             multiplyUnitsByFactor(draft.lineItems);
-            loadingModalService.open();
-            return physicalInventoryFactory.saveDraft(draft).then(function() {
-                if (!withNotification) {
-                    notificationService.success('stockPhysicalInventoryDraft.saved');
-                }
+            confirmService.confirmDestroy(
+                'stockPhysicalInventoryDraft.saveDraft',
+                'stockPhysicalInventoryDraft.save'
+            ).then(function() {
+                loadingModalService.open();
+                return saveLots(draft, function() {
+                    return physicalInventoryFactory.saveDraft(draft).then(function() {
+                        notificationService.success('stockPhysicalInventoryDraft.saved');
 
-                // ANGOLASUP-825: Fixed inventory saving functionality
-                vm.cacheItemsWithNewLots(draft);
-                // ANGOLASUP-825: Ends here
-                draft.$modified = undefined;
-                vm.cacheDraft();
+                        draft.$modified = undefined;
+                        vm.cacheDraft();
 
-                $stateParams.program = vm.program;
-                $stateParams.facility = vm.facility;
-                draft.lineItems.forEach(function(lineItem) {
-                    if (lineItem.$isNewItem) {
-                        lineItem.$isNewItem = false;
-                    }
+                        $stateParams.program = vm.program;
+                        $stateParams.facility = vm.facility;
+                        draft.lineItems.forEach(function(lineItem) {
+                            if (lineItem.$isNewItem) {
+                                lineItem.$isNewItem = false;
+                            }
+                        });
+                        $stateParams.noReload = true;
+
+                        $state.go($state.current.name, $stateParams, {
+                            reload: $state.current.name
+                        });
+                    }, function(errorResponse) {
+                        loadingModalService.close();
+                        alertService.error(errorResponse.data.message);
+                    });
                 });
-                $stateParams.noReload = true;
-
-                $state.go($state.current.name, $stateParams, {
-                    reload: $state.current.name
-                });
-            }, function(errorResponse) {
-                loadingModalService.close();
-                alertService.error(errorResponse.data.message);
             });
         };
 
@@ -591,9 +590,6 @@
                     $state.go('openlmis.stockmanagement.physicalInventory', $stateParams, {
                         reload: true
                     });
-                    // ANGOLASUP-825: Fixed inventory saving functionality
-                    physicalInventoryDraftCacheService.removeDraftItemsWithNewLots(draft);
-                    // ANGOLASUP-825: Ends here.
                 })
                     .catch(function() {
                         loadingModalService.close();
@@ -766,7 +762,7 @@
 
             _.chain(displayLineItemsGroup).flatten()
                 .each(function(item) {
-                    if (!item.active) {
+                    if (!item.active && item.stockOnHand === 0) {
                         activeError = 'stockPhysicalInventoryDraft.submitInvalidActive';
                     } else if (vm.validateQuantity(item) || vm.validateUnaccountedQuantity(item)) {
                         qtyError = 'stockPhysicalInventoryDraft.submitInvalid';
@@ -806,35 +802,6 @@
             vm.hasLot = _.any(draft.lineItems, function(item) {
                 return item.lot;
             });
-
-            // ANGOLASUP-825: Fixed inventory saving functionality
-            var draftWithNewLots = physicalInventoryDraftCacheService
-                .getPhysicalInventoryDraftItemsWithNewLots(facility.id, program.id);
-            if (draftWithNewLots) {
-                var extendedLineItems = draft.lineItems;
-                draftWithNewLots.lineItems.forEach(function(lineItem) {
-                    var duplicate = draft.lineItems.some(function(item) {
-                        return lineItem.lot === null || ((item.orderable.id === lineItem.orderable.id) &&
-                        (item.lot && lineItem.lot && (item.lot.lotCode === lineItem.lot.lotCode)));
-                    });
-                    if (!duplicate) {
-                        extendedLineItems.push(lineItem);
-
-                        var productWithNewLotDisplayed = displayLineItemsGroup.filter(function(product) {
-                            return product[0].orderable.id === lineItem.orderable.id;
-                        });
-
-                        if (productWithNewLotDisplayed.length > 0) {
-                            productWithNewLotDisplayed[0].push(lineItem);
-                        } else {
-                            displayLineItemsGroup.push([lineItem]);
-                        }
-                    }
-                });
-
-                draft.lineItems = extendedLineItems;
-            }
-            // ANGOLASUP-825: Ends here
 
             draft.lineItems.forEach(function(item) {
                 item.unaccountedQuantity =
@@ -940,7 +907,6 @@
             vm.validateQuantity(lineItem);
             vm.checkUnaccountedStockAdjustments(lineItem);
             vm.dataChanged = !vm.dataChanged;
-            physicalInventoryDraftCacheService.cacheSingleItemWithNewLot(draft, lineItem);
         }
 
         function calculateItemsPacksQuantity() {
@@ -983,18 +949,6 @@
          */
         function cacheDraft() {
             physicalInventoryDraftCacheService.cacheDraft(draft);
-        }
-
-        /**
-         * @ngdoc method
-         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
-         * @name cacheItemsWithNewLot
-         *
-         * @description
-         * Caches draft line items with new Lots.
-         */
-        function cacheItemsWithNewLots() {
-            physicalInventoryDraftCacheService.cacheItemsWithNewLots(draft);
         }
 
         /**
