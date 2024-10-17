@@ -117,11 +117,9 @@
             var noErrors = !vm.newLot.expirationDateInvalid && !vm.newLot.lotCodeInvalid;
 
             if (noErrors) {
-                // ANGOLASUP-825: Fixed inventory saving functionality
-                physicalInventoryDraftCacheService.updateSingleItemWithNewLot(draft, selectedItem, vm.newLot);
-                // ANGOLASUP-825: Ends here
                 selectedItem.lot = vm.newLot;
                 selectedItem.displayLotMessage = vm.newLot.lotCode;
+                physicalInventoryDraftCacheService.cacheDraft(draft);
                 modalDeferred.resolve();
             }
         }

@@ -61,7 +61,6 @@ describe('PhysicalInventoryDraftController', function() {
         spyOn(this.$state, 'go');
         spyOn(this.draftFactory, 'saveDraft');
         spyOn(this.physicalInventoryDraftCacheService, 'cacheDraft');
-        spyOn(this.physicalInventoryDraftCacheService, 'cacheSingleItemWithNewLot');
         spyOn(this.alertService, 'error');
         spyOn(this.stockCardService, 'deactivateStockCard');
         spyOn(this.editLotModalService, 'show');
@@ -272,9 +271,24 @@ describe('PhysicalInventoryDraftController', function() {
 
     describe('saveDraft', function() {
 
+        it('should open confirmation modal', function() {
+            this.confirmService.confirmDestroy.andReturn(this.$q.resolve());
+            this.draftFactory.saveDraft.andReturn(this.$q.defer().promise);
+
+            this.vm.saveDraft();
+            this.$rootScope.$apply();
+
+            expect(this.confirmService.confirmDestroy).toHaveBeenCalledWith(
+                'stockPhysicalInventoryDraft.saveDraft',
+                'stockPhysicalInventoryDraft.save'
+            );
+        });
+
         it('should save draft', function() {
+            this.confirmService.confirmDestroy.andReturn(this.$q.resolve());
             this.draftFactory.saveDraft.andReturn(this.$q.defer().promise);
             this.draftFactory.saveDraft.andReturn(this.$q.resolve());
+            spyOn(this.LotResource.prototype, 'create');
 
             this.vm.saveDraft();
             this.$rootScope.$apply();
@@ -283,6 +297,7 @@ describe('PhysicalInventoryDraftController', function() {
         });
 
         it('should cache draft', function() {
+            this.confirmService.confirmDestroy.andReturn(this.$q.resolve());
             this.draftFactory.saveDraft.andReturn(this.$q.defer().promise);
             this.$rootScope.$apply();
 
@@ -364,7 +379,7 @@ describe('PhysicalInventoryDraftController', function() {
 
             this.$rootScope.$apply();
 
-            expect(this.draftFactory.saveDraft).toHaveBeenCalled();
+            expect(this.physicalInventoryDraftCacheService.cacheDraft).toHaveBeenCalledWith(this.draft);
         });
     });
 

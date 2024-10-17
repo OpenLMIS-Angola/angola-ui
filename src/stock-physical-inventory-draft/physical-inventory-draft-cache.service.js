@@ -35,18 +35,8 @@
     function physicalInventoryDraftCacheService(localStorageFactory, $q, OrderableResource) {
 
         var offlinePhysicalInventoryDrafts = localStorageFactory('physicalInventoryDrafts');
-        // ANGOLASUP-825: Fixed inventory saving functionality
-        var physicalInventoryDraftItemsWithNewLots = localStorageFactory('physicalInventoryDraftItemsWithNewLots');
-        // ANGOLASUP-825: Ends here
 
         this.cacheDraft = cacheDraft;
-        // ANGOLASUP-825: Fixed inventory saving functionality
-        this.cacheItemsWithNewLots = cacheItemsWithNewLots;
-        this.cacheSingleItemWithNewLot = cacheSingleItemWithNewLot;
-        this.updateSingleItemWithNewLot = updateSingleItemWithNewLot;
-        this.removeDraftItemsWithNewLots = removeDraftItemsWithNewLots;
-        this.getPhysicalInventoryDraftItemsWithNewLots = getPhysicalInventoryDraftItemsWithNewLots;
-        // ANGOLASUP-825: Ends here
         this.getDraft = getDraft;
         this.removeById = removeById;
         this.searchDraft = searchDraft;
@@ -68,134 +58,6 @@
             });
             offlinePhysicalInventoryDrafts.put(draftToSave);
         }
-
-        // ANGOLASUP-825: Fixed inventory saving functionality
-        /**
-         * @ngdoc method
-         * @methodOf stock-physical-inventory-draft.physicalInventoryDraftCacheService
-         * @name cacheItemsWithNewLot
-         *
-         * @description
-         * Caches line items with new Lots from given physical inventory
-         * draft in the local storage.
-         *
-         * @param {Object} draft  the draft containing items with new Lots
-         */
-        function cacheItemsWithNewLots(draft) {
-            var parsedDraft = JSON.parse(JSON.stringify(draft));
-
-            var physicalInventoryNewLots = getPhysicalInventoryDraftItemsWithNewLots(draft.facilityId, draft.programId);
-            var existingItemsWithNewLots = physicalInventoryNewLots ? physicalInventoryNewLots.lineItems : [];
-
-            var itemsWithNewLots = parsedDraft.lineItems.filter(function(lineItem) {
-                return lineItem.lot && (lineItem.lot.lotCode && !lineItem.lot.id) &&
-                (existingItemsWithNewLots.filter(function(lineItemWithNewLot) {
-                    return lineItemWithNewLot.displayLotMessage === lineItem.displayLotMessage &&
-                        lineItemWithNewLot.orderable.id === lineItem.orderable.id && lineItemWithNewLot.stockCardId;
-                }).length === 0);
-            });
-
-            existingItemsWithNewLots.forEach((function(lineItem) {
-                lineItem.stockAdjustments = getAdjustmentsReasonFromDraft(lineItem, parsedDraft);
-            }));
-
-            itemsWithNewLots.forEach(function(lineItem) {
-                lineItem.stockAdjustments = getAdjustmentsReasonFromDraft(lineItem, parsedDraft);
-                existingItemsWithNewLots.push(lineItem);
-            });
-
-            parsedDraft.lineItems = existingItemsWithNewLots;
-            physicalInventoryDraftItemsWithNewLots.put(parsedDraft);
-        }
-
-        function getAdjustmentsReasonFromDraft(lineItem, draft) {
-            var lineItemReasons = draft.lineItems.find(function(draftLineItem) {
-                return draftLineItem.displayLotMessage === lineItem.displayLotMessage &&
-                draftLineItem.orderable.id === lineItem.orderable.id;
-            }).stockAdjustments;
-
-            return lineItemReasons;
-        }
-        // ANGOLASUP-825: Ends here
-
-        // ANGOLASUP-825: Fixed inventory saving functionality
-        /**
-         * @ngdoc method
-         * @methodOf stock-physical-inventory-draft.physicalInventoryDraftCacheService
-         * @name cacheSingleItemWithNewLot
-         *
-         * @description
-         * Caches given line item with new Lot in the local storage.
-         *
-         * @param {Object} draft  the draft containing line items
-         * @param {Object} item  the item with new Lot
-         */
-        function cacheSingleItemWithNewLot(draft, item) {
-            var physicalInventoryNewLots = getPhysicalInventoryDraftItemsWithNewLots(draft.facilityId, draft.programId);
-            if (!physicalInventoryNewLots) {
-                cacheItemsWithNewLots(draft);
-                physicalInventoryNewLots = getPhysicalInventoryDraftItemsWithNewLots(draft.facilityId, draft.programId);
-            }
-
-            if (!physicalInventoryNewLots.lineItems) {
-                physicalInventoryNewLots.lineItems = [];
-            }
-
-            physicalInventoryNewLots.lineItems = physicalInventoryNewLots.lineItems.filter(function(lineItem) {
-                return item.lot === null || lineItem.lot === null || lineItem.lot.lotCode !== item.lot.lotCode;
-            });
-
-            physicalInventoryNewLots.lineItems.push(item);
-
-            physicalInventoryDraftItemsWithNewLots.put(physicalInventoryNewLots);
-        }
-        // ANGOLASUP-825: Ends here
-
-        // ANGOLASUP-825: Fixed inventory saving functionality
-        /**
-         * @ngdoc method
-         * @methodOf stock-physical-inventory-draft.physicalInventoryDraftCacheService
-         * @name updateSingleItemWithNewLot
-         *
-         * @description
-         * Update given line item with new Lot in the local storage.
-         *
-         * @param {Object} draft  the draft containing line items
-         * @param {Object} oldItem  the item to be edited
-         * @param {Object} newLot  the Lot containing the new values
-         */
-        function updateSingleItemWithNewLot(draft, oldItem, newLot) {
-            var physicalInventoryNewLots = getPhysicalInventoryDraftItemsWithNewLots(draft.facilityId, draft.programId);
-            if (physicalInventoryNewLots) {
-                physicalInventoryNewLots.lineItems.forEach(function(lineItem) {
-                    if (lineItem.orderable.id === oldItem.orderable.id
-                        && lineItem.lot.lotCode === oldItem.lot.lotCode) {
-                        lineItem.lot = newLot;
-                        lineItem.displayLotMessage = newLot.lotCode;
-                    }
-                });
-
-                physicalInventoryDraftItemsWithNewLots.put(physicalInventoryNewLots);
-            }
-        }
-        // ANGOLASUP-825: Ends here
-
-        // ANGOLASUP-825: Fixed inventory saving functionality
-        /**
-         * @ngdoc method
-         * @methodOf stock-physical-inventory-draft.physicalInventoryDraftCacheService
-         * @name removeDraftItemsWithNewLots
-         *
-         * @description
-         * Delete cached draft with line items that contains new Lots from given physical inventory
-         * draft from the local storage.
-         *
-         * @param {Object} draft  the draft containing items with new Lots
-         */
-        function removeDraftItemsWithNewLots(draft) {
-            physicalInventoryDraftItemsWithNewLots.removeBy('id', draft.id);
-        }
-        // ANGOLASUP-825: Ends here
 
         /**
          * @ngdoc method
@@ -233,15 +95,6 @@
                     return cachedDraft[0];
                 });
         }
-
-        // ANGOLASUP-825: Fixed inventory saving functionality
-        function getPhysicalInventoryDraftItemsWithNewLots(facilityId, programId) {
-            return physicalInventoryDraftItemsWithNewLots.getAll().filter(function(draftWithNewLots) {
-                return draftWithNewLots.facilityId === facilityId &&
-                       draftWithNewLots.programId === programId;
-            })[0];
-        }
-        // ANGOLASUP-825: Ends here
 
         /**
          * @ngdoc method
