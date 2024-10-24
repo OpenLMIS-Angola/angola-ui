@@ -18,22 +18,12 @@
     'use strict';
 
     /**
-     * @module openlmis-home
+     * @module openlmis-home-page-report
      *
      * @description
-     * Responsible for primary navigation elements within the OpenLMIS-UI.
+     * Responsible for displaying embedded home page report
      */
-    angular.module('openlmis-home', [
-        'openlmis-i18n',
-        'openlmis-templates',
-        'openlmis-pagination',
-        'referencedata-system-notification',
-        'openlmis-message',
-        // OAM-18: Homepage UI alerts
-        'openlmis-home-alerts-panel',
-        // OAM-18: ends here
-        'ui.router',
-        'openlmis-home-page-report'
+    angular.module('openlmis-home-page-report', [
+        'report-embedded'
     ]);
-
 })();

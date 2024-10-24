@@ -18,22 +18,29 @@
     'use strict';
 
     /**
-     * @module openlmis-home
-     *
+     * @ngdoc controller
+     * @name openlmis-home-page-report.controller:OpenlmisHomePageReportController      *
      * @description
-     * Responsible for primary navigation elements within the OpenLMIS-UI.
+     * Manages the openlmis-home-page-report component
      */
-    angular.module('openlmis-home', [
-        'openlmis-i18n',
-        'openlmis-templates',
-        'openlmis-pagination',
-        'referencedata-system-notification',
-        'openlmis-message',
-        // OAM-18: Homepage UI alerts
-        'openlmis-home-alerts-panel',
-        // OAM-18: ends here
-        'ui.router',
-        'openlmis-home-page-report'
-    ]);
+    angular
+        .module('openlmis-home-page-report')
+        .controller('OpenlmisHomePageReportController', OpenlmisHomePageReportController);
 
+    OpenlmisHomePageReportController.$inject = ['reportEmbeddedService', '$sce'];
+
+    function OpenlmisHomePageReportController(reportEmbeddedService, $sce) {
+        var vm = this;
+        var DASHBOARD_REPORT_URL = '3a792c67-1221-4d15-bbc9-cb3573b53e4c';
+        vm.report = undefined;
+        vm.$onInit = onInit;
+
+        function onInit() {
+            reportEmbeddedService.get(DASHBOARD_REPORT_URL).then(function(report) {
+                vm.report = report;
+                var trustedUrl = $sce.trustAsResourceUrl(vm.report.url);
+                vm.report.url = trustedUrl;
+            });
+        }
+    }
 })();
