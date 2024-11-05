@@ -28,6 +28,9 @@
             label: 'adminUserList.users.label',
             url: '/users?firstName&lastName&email&usersPage&usersSize&username&sort',
             controller: 'UserListController',
+            params: {
+                sort: ['username,asc']
+            },
             templateUrl: 'admin-user-list/user-list.html',
             controllerAs: 'vm',
             accessRights: [ADMINISTRATION_RIGHTS.USERS_MANAGE],
