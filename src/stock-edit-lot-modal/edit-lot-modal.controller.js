@@ -119,7 +119,9 @@
             if (noErrors) {
                 selectedItem.lot = vm.newLot;
                 selectedItem.displayLotMessage = vm.newLot.lotCode;
-                physicalInventoryDraftCacheService.cacheDraft(draft);
+                if (draft.lineItems) {
+                    physicalInventoryDraftCacheService.cacheDraft(draft);
+                }
                 modalDeferred.resolve();
             }
         }
@@ -160,7 +162,11 @@
          * Validate if on line item list exists the same orderable with the same lot code
          */
         function validateLotCode() {
-            draft.lineItems.forEach(function(lineItem) {
+            var items = vm.allLineItems;
+            if (draft.lineItems) {
+                items = draft.lineItems;
+            }
+            items.forEach(function(lineItem) {
                 if (lineItem.orderable.productCode === vm.selectedItem.orderable.productCode
                     && lineItem.lot && vm.selectedItem.lot && vm.selectedItem.lot.lotCode === lineItem.lot.lotCode
                     && !(vm.selectedItem.lot.lotCode === selectedItem.lot.lotCode)) {
