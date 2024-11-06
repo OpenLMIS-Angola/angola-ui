@@ -16,7 +16,21 @@
 describe('requisitionGroupService', function() {
 
     beforeEach(function() {
-        module('referencedata-requisition-group');
+        this.offlineService = jasmine.createSpyObj('offlineService', ['isOffline', 'checkConnection']);
+        this.requisitionGroupStorage = jasmine.createSpyObj('requisitionGroups', ['putAll', 'getAll', 'remove']);
+
+        var offlineService = this.offlineService,
+            requisitionGroupStorage = this.requisitionGroupStorage;
+
+        module('referencedata-requisition-group', function($provide) {
+            $provide.service('offlineService', function() {
+                return offlineService;
+            });
+
+            $provide.service('localStorageFactory', function() {
+                return jasmine.createSpy('localStorageFactory').andReturn(requisitionGroupStorage);
+            });
+        });
 
         inject(function($injector) {
             this.$httpBackend = $injector.get('$httpBackend');
@@ -25,6 +39,8 @@ describe('requisitionGroupService', function() {
             this.requisitionGroupService = $injector.get('requisitionGroupService');
             this.RequisitionGroupDataBuilder = $injector.get('RequisitionGroupDataBuilder');
             this.PageDataBuilder = $injector.get('PageDataBuilder');
+            this.$q = $injector.get('$q');
+            this.localStorageService = $injector.get('localStorageService');
         });
 
         this.requisitionGroups = [
@@ -35,6 +51,8 @@ describe('requisitionGroupService', function() {
         this.requisitionGroupsPage = new this.PageDataBuilder()
             .withContent(this.requisitionGroups)
             .build();
+
+        this.offlineService.isOffline.andReturn(false);
     });
 
     describe('get', function() {
@@ -59,7 +77,8 @@ describe('requisitionGroupService', function() {
 
     describe('getAll', function() {
 
-        it('should resolve to requisition groups', function() {
+        it('should resolve to requisition groups and save it to storage', function() {
+            this.offlineService.isOffline.andReturn(false);
             this.$httpBackend
                 .expectGET(this.referencedataUrlFactory('/api/requisitionGroups'))
                 .respond(200, this.requisitionGroups);
@@ -72,6 +91,21 @@ describe('requisitionGroupService', function() {
             this.$rootScope.$apply();
 
             expect(angular.toJson(result)).toEqual(angular.toJson(this.requisitionGroups));
+            expect(this.requisitionGroupStorage.putAll).toHaveBeenCalled();
+        });
+
+        it('should resolve to requisition groups when offline', function() {
+            this.offlineService.isOffline.andReturn(true);
+            this.requisitionGroupStorage.getAll.andReturn(this.requisitionGroups);
+
+            var result;
+            this.requisitionGroupService.getAll().then(function(data) {
+                result = data;
+            });
+            this.$rootScope.$apply();
+
+            expect(angular.toJson(result)).toEqual(angular.toJson(this.requisitionGroups));
+            expect(this.requisitionGroupStorage.getAll).toHaveBeenCalled();
         });
     });
 
