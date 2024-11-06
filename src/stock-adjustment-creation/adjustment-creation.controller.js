@@ -848,9 +848,13 @@
                 );
             }
 
-            return $q.all(submitAdjustmentPromises).then(function() {
-                goToStockCardSummaries();
-            });
+            return $q.all(submitAdjustmentPromises)
+                .then(function() {
+                    console.log('success');
+                })
+                .finally(function() {
+                    goToStockCardSummaries();
+                });
         }
 
         function getSubmitAdjustmentPromise(addedLineItems, facility) {
@@ -875,7 +879,7 @@
                                 goToStockCardSummaries();
                             });
                     } else {
-                        goToStockCardSummaries();
+                        return goToStockCardSummaries();
                     }
                     // ANGOLASUP-717: ends here
                 }, function(errorResponse) {
