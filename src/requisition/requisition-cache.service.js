@@ -30,17 +30,16 @@
 
     requisitionCacheService.$inject = [
         'localStorageFactory', '$filter', 'paginationFactory', '$q', 'permissionService', 'authorizationService',
-        'REQUISITION_RIGHTS'
+        'REQUISITION_RIGHTS', 'facilityService'
     ];
 
     function requisitionCacheService(localStorageFactory, $filter, paginationFactory, $q, permissionService,
-                                     authorizationService, REQUISITION_RIGHTS) {
+                                     authorizationService, REQUISITION_RIGHTS, facilityService) {
 
         var offlineRequisitions = localStorageFactory('requisitions'),
             offlineBatchRequisitions = localStorageFactory('batchApproveRequisitions'),
             offlineProcessingPeriods = localStorageFactory('processingPeriods'),
-            offlineUserPrograms = localStorageFactory('userPrograms'),
-            offlineFacilities = localStorageFactory('facilities');
+            offlineUserPrograms = localStorageFactory('userPrograms');
 
         this.cacheRequisition = cacheRequisition;
         this.cacheRequisitionToStorage = cacheRequisitionToStorage;
@@ -174,10 +173,12 @@
             requisitions.forEach(function(requisition) {
                 var processingPeriod = offlineProcessingPeriods.getBy('id', requisition.processingPeriod.id);
                 var program = offlineUserPrograms.getBy('id', requisition.program.id);
-                var facilities = offlineFacilities.getBy('id', requisition.facility.id);
+                facilityService.get(requisition.facility.id).then(function(facilityItem) {
+                    requisition.facility = facilityItem;
+                });
+
                 requisition.processingPeriod = processingPeriod;
                 requisition.program = program;
-                requisition.facility = facilities;
             });
             return requisitions;
         }

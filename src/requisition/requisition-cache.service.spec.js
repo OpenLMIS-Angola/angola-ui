@@ -25,15 +25,12 @@ describe('requisitionCacheService', function() {
             .createSpyObj('processingPeriod', ['getBy']);
         this.userProgramsStorage = jasmine
             .createSpyObj('userPrograms', ['getBy']);
-        this.facilitiesStorage = jasmine
-            .createSpyObj('facilities', ['getBy']);
 
         var localStorageMap = {
             requisitions: this.requisitionStorage,
             batchApproveRequisitions: this.batchRequisitionStorage,
             processingPeriods: this.processingPeriodsStorage,
-            userPrograms: this.userProgramsStorage,
-            facilities: this.facilitiesStorage
+            userPrograms: this.userProgramsStorage
         };
 
         module('requisition-view-tab');
@@ -60,6 +57,7 @@ describe('requisitionCacheService', function() {
             this.REQUISITION_RIGHTS = $injector.get('REQUISITION_RIGHTS');
             this.$rootScope = $injector.get('$rootScope');
             this.AuthUser = $injector.get('AuthUser');
+            this.facilityService = $injector.get('facilityService');
         });
 
         this.requisitionOne = new this.RequisitionDataBuilder().buildJson();
@@ -82,7 +80,6 @@ describe('requisitionCacheService', function() {
 
         this.processingPeriodsStorage.getBy.andReturn(this.requisitionOne.processingPeriod);
         this.userProgramsStorage.getBy.andReturn(this.requisitionOne.program);
-        this.facilitiesStorage.getBy.andReturn(this.requisitionOne.facility);
 
         this.searchParams = {
             program: this.requisitionOne.program.id,
@@ -96,6 +93,7 @@ describe('requisitionCacheService', function() {
         spyOn(this.authorizationService, 'getUser').andReturn(this.user);
         spyOn(this.permissionService, 'hasPermission').andReturn(this.$q.resolve(true));
         spyOn(this.permissionService, 'hasRoleWithRightForProgramAndSupervisoryNode').andReturn(this.$q.resolve(true));
+        spyOn(this.facilityService, 'get').andReturn(this.$q.when(this.requisitionOne.facility));
     });
 
     describe('cacheRequisition', function() {
