@@ -41,7 +41,8 @@
         // AO-805: Allow users with proper rights to edit product prices
         'OrderableResource', 'permissionService', 'ADMINISTRATION_RIGHTS', 'authorizationService',
         // AO-805: Ends here
-        'unitOfOrderableService', 'wardService', 'orderableGroupsByWard', 'WARDS_CONSTANTS', 'sourceDestinationService'
+        'unitOfOrderableService', 'wardService', 'orderableGroupsByWard', 'WARDS_CONSTANTS', 'sourceDestinationService',
+        '$timeout'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -54,7 +55,7 @@
                         // AO-805: Allow users with proper rights to edit product prices
                         accessTokenFactory, $window, stockmanagementUrlFactory, OrderableResource, permissionService,
                         ADMINISTRATION_RIGHTS, authorizationService, unitOfOrderableService, wardService,
-                        orderableGroupsByWard, WARDS_CONSTANTS, sourceDestinationService) {
+                        orderableGroupsByWard, WARDS_CONSTANTS, sourceDestinationService, $timeout) {
         // ANGOLASUP-717: ends here
         // AO-805: Ends here
         var vm = this;
@@ -849,7 +850,9 @@
             }
 
             return $q.all(submitAdjustmentPromises).then(function() {
-                goToStockCardSummaries();
+                $timeout(function() {
+                    goToStockCardSummaries();
+                });
             });
         }
 
@@ -875,7 +878,9 @@
                                 goToStockCardSummaries();
                             });
                     } else {
-                        goToStockCardSummaries();
+                        $timeout(function() {
+                            goToStockCardSummaries();
+                        });
                     }
                     // ANGOLASUP-717: ends here
                 }, function(errorResponse) {
